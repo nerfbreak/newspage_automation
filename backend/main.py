@@ -51,12 +51,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS - restrict to known origins
+# CORS - restrict to known client origins
 _allowed_origins = [
     "http://localhost:8501",       # Streamlit local
     "http://localhost:8000",       # FastAPI local
     "http://10.0.2.2:8000",       # Android emulator
-    "https://optimize-newspage-api-production-2338.up.railway.app",  # Railway
 ]
 app.add_middleware(
     CORSMiddleware,
