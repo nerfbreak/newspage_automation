@@ -1,7 +1,16 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+}
+
+// Read local.properties (gitignored) for API URLs
+val localProps = Properties()
+val localPropsFile = rootProject.file("local.properties")
+if (localPropsFile.exists()) {
+    localPropsFile.inputStream().use { localProps.load(it) }
 }
 
 android {
@@ -24,8 +33,8 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            buildConfigField("String", "API_BASE_URL", "\"https://optimize-newspage-api-production-2338.up.railway.app/\"")
-            buildConfigField("String", "WS_BASE_URL", "\"wss://optimize-newspage-api-production-2338.up.railway.app\"")
+            buildConfigField("String", "API_BASE_URL", "\"${localProps.getProperty("API_BASE_URL", "http://10.0.2.2:8000/")}\"")
+            buildConfigField("String", "WS_BASE_URL", "\"${localProps.getProperty("WS_BASE_URL", "ws://10.0.2.2:8000")}\"")
         }
     }
 

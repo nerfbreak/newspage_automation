@@ -193,7 +193,7 @@ def render_footer():
     st.markdown(clean_html("""
     <div style='text-align: center; margin-top: 80px; margin-bottom: 20px;'>
         <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.6rem; color: #0068C9; letter-spacing: 0.05em; text-transform: uppercase;'>
-            &copy; 2026 IT Support Newspage. by kopi mang toni.
+            &copy; 2026 IT Support Newspage.
         </span>
     </div>
     """), unsafe_allow_html=True)
