@@ -147,7 +147,7 @@ fun DashboardScreen(
             Spacer(Modifier.height(80.dp))
 
             Text(
-                "\u00A9 2026 IT Support Newspage. by kopi mang toni.",
+                "\u00A9 2026 IT Support Newspage.",
                 fontSize = 9.sp, color = BrandBlue.copy(alpha = 0.6f),
                 modifier = Modifier.padding(bottom = 16.dp),
             )

@@ -111,7 +111,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(48.dp))
 
             Text(
-                text = "\u00A9 2026 IT Support Newspage. by kopi mang toni.",
+                text = "\u00A9 2026 IT Support Newspage.",
                 fontSize = 10.sp,
                 color = BrandBlue.copy(alpha = 0.6f),
             )
