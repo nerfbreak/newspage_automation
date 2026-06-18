@@ -1,6 +1,3 @@
-.web
-assets/external/
-.states
 # Streamlit
 .streamlit/secrets.toml
 .env
@@ -9,10 +6,11 @@ assets/external/
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
+*.pyo
 .venv/
-env/
 venv/
-ENV/
+env/
 
 # OS
 .DS_Store
@@ -26,9 +24,8 @@ temp_promo_*
 # Dev/Scratch
 scratch/
 *.ps1
-sign_apk.ps1
 
-# Test & debug files (may contain credentials)
+# Test & debug files
 test_*.py
 test_*.html
 dump_html.py
@@ -40,69 +37,22 @@ login_page.png
 login_result.png
 extract_dir/
 
-# Flutter / Dart
-frontend/build/
-frontend/.dart_tool/
-frontend/.flutter-plugins
-frontend/.flutter-plugins-dependencies
-frontend/.packages
-frontend/pubspec.lock
-frontend/**/*.g.dart
-frontend/**/*.freezed.dart
-
-# Android build artifacts
-frontend/android/.gradle/
-frontend/android/local.properties
-frontend/android/app/debug/
-frontend/android/app/release/
-frontend/android/app/profile/
-frontend/android/captures/
-frontend/android/generatedDebugSources/
-frontend/android/generatedReleaseSources/
-frontend/android/generatedProfileSources/
-
-# iOS build artifacts
-frontend/ios/Pods/
-frontend/ios/.symlinks/
-frontend/ios/Flutter/Generated.xcconfig
-frontend/ios/Flutter/flutter_export_environment.sh
-frontend/ios/Runner.xcworkspace/
-
 # Compiled Figma export / temp JSON
 figma_*.json
 figma_file.json
 
 # Logs
 *.log
-
-# Backend temp files
-backend/**/*.pyc
 *.db
-
-# Android build outputs
-android/.gradle/
-android/app/build/
-android/build/
-android/local.properties
-android/.idea/
-android/*.iml
-android/captures/
-*.apk
-*.idsig
-*.jks
-gradle-*-bin.zip
-android/*.jks
-android/*.apk
 
 # Plan temp
 .plan_temp
 
-# Compiled Python
-*.pyc
-*.pyo
+# Android / APK build artifacts (on disk but not tracked)
+android/
+*.apk
+*.idsig
+*.jks
 
-# Reflex
-.web/
-__pycache__/
-*.db
-.states/
+# Flutter build artifacts (on disk but not tracked)
+frontend/
