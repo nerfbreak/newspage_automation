@@ -8,6 +8,7 @@ import zipfile
 import pandas as pd
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 import database
+from utils import render_terminal
 def ensure_playwright():
     try:
         with sync_playwright() as p:
@@ -679,3 +680,251 @@ def run_promotion_sync(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIM
         st.session_state.is_promo_bot_running = False
         ext_ui_log("ERROR", f"SYSTEM FAILURE: {str(e)}")
         st.error(f"System error: {e}")
+
+# --- MUTASI STOCK ENGINE (Parallel Dual-Distributor Execution) ---
+
+def run_mutasi_execution(
+    df_mutasi,
+    bot_user_a, bot_pass_a, dist_a,
+    bot_user_b, bot_pass_b, dist_b,
+    URL_LOGIN, TIMEOUT_MS, WAREHOUSE,
+    REASON_CODE, TABLE_UPDATE_INTERVAL,
+    alert_callback,
+    table_a_ph, table_b_ph,
+    prog_a_ph, prog_b_ph,
+    log_a_ph, log_b_ph,
+    supabase,
+):
+    """Execute parallel stock deduction (Dist A) and addition (Dist B) via two Playwright sessions."""
+    ensure_playwright()
+    import threading
+
+    global_start_time = time.time()
+
+    # Thread-safe shared state
+    lock = threading.Lock()
+    state = {
+        "result_a": None, "result_b": None,
+        "success_a": 0, "failed_a": 0,
+        "success_b": 0, "failed_b": 0,
+        "progress_a": 0.0, "progress_b": 0.0,
+        "df_a_dirty": False, "df_b_dirty": False,
+    }
+    # Append-only log lists (workers write, main thread reads)
+    logs_a_list = []
+    logs_b_list = []
+
+    # Simple append-only log functions (NO Streamlit calls — thread-safe)
+    def _make_log_fn(log_list, last_time):
+        def log_fn(module, msg):
+            from datetime import datetime, timezone, timedelta
+            now = time.time()
+            diff_ms = int((now - last_time[0]) * 1000)
+            last_time[0] = now
+            timestamp = datetime.now(timezone(timedelta(hours=7))).strftime('%H:%M:%S')
+            tag_class = f"tag-{module.lower()}"
+            log_list.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>[{module}]</span><span class='log-msg'>{msg}</span>")
+        return log_fn
+
+    last_time_a = [time.time()]
+    last_time_b = [time.time()]
+    log_a_fn = _make_log_fn(logs_a_list, last_time_a)
+    log_b_fn = _make_log_fn(logs_b_list, last_time_b)
+
+    # Prepare per-side DataFrames
+    df_a = df_mutasi[['SKU', 'Description', 'Qty']].copy()
+    df_a['Qty'] = df_a['Qty'].apply(lambda x: f"-{str(x).strip()}" if not str(x).strip().startswith('-') else str(x).strip())
+    df_a['Status'] = 'Pending'
+    df_a['Keterangan'] = 'Ready'
+
+    df_b = df_mutasi[['SKU', 'Description', 'Qty']].copy()
+    df_b['Status'] = 'Pending'
+    df_b['Keterangan'] = 'Ready'
+
+    alert_callback(
+        f"<b>MUTASI STARTED</b>\n"
+        f"From: {dist_a}\nTo: {dist_b}\n"
+        f"Total SKU: {len(df_mutasi)}"
+    )
+
+    def _run_side(user, password, dist_name, df_side, log_fn, table_ph, prog_ph, side_key):
+        """Worker function for one side of the mutation."""
+        try:
+            if sys.platform == "win32":
+                asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+            try:
+                asyncio.get_event_loop()
+            except RuntimeError:
+                asyncio.set_event_loop(asyncio.new_event_loop())
+
+            with sync_playwright() as p:
+                log_fn("SYS", f"Spawning browser for [{dist_name}]...")
+                browser = p.chromium.launch(headless=True)
+                context = browser.new_context(no_viewport=True)
+                page = context.new_page()
+
+                _login(page, user, password, dist_name, URL_LOGIN, TIMEOUT_MS, log_fn)
+
+                # Fetch warehouse exceptions
+                exception_dict = database.get_distributor_warehouse_exceptions(supabase)
+                target_whs = exception_dict.get(user)
+                actual_warehouse = target_whs if target_whs and WAREHOUSE == "GOOD_WHS" else WAREHOUSE
+
+                _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, log_fn)
+
+                total = len(df_side)
+                success = 0
+                failed = 0
+
+                for i, (idx, row) in enumerate(df_side.iterrows()):
+                    sku = str(row['SKU']).strip()
+                    qty = str(row['Qty']).strip()
+                    log_fn("INJECT", f"Processing {i+1}/{total} | SKU [{sku}] qty={qty}")
+                    try:
+                        _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, log_fn)
+                        df_side.at[idx, 'Status'] = 'Success'
+                        df_side.at[idx, 'Keterangan'] = f'Input {qty} EA'
+                        success += 1
+                        log_fn("SUCCESS", f"Transaction {i+1} committed.")
+                        database.log_adjustment(supabase, sku, qty, "Success", f"Mutasi {qty} EA", user)
+                    except Exception:
+                        df_side.at[idx, 'Status'] = 'Failed'
+                        df_side.at[idx, 'Keterangan'] = 'Node Timeout'
+                        failed += 1
+                        log_fn("ERROR", f"Timeout on SKU [{sku}]. Skipping.")
+                        database.log_adjustment(supabase, sku, qty, "Failed", "Mutasi Node Timeout", user)
+
+                    with lock:
+                        state[f"progress_{side_key}"] = (i + 1) / total
+                        state[f"df_{side_key}_dirty"] = True
+
+                # Save
+                log_fn("SERVER", "Saving document to server...")
+                page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
+                try:
+                    yes_btn = page.locator("id=pag_PopUp_YesNo_btn_Yes_Value")
+                    yes_btn.wait_for(state="visible", timeout=5000)
+                    log_fn("SERVER", "Confirming save dialog...")
+                    yes_btn.click()
+                except Exception:
+                    log_fn("SERVER", "Auto-save confirmed.")
+
+                page.wait_for_timeout(5000)
+
+                # Logout
+                log_fn("AUTH", "Initiating logout...")
+                try:
+                    page.once("dialog", lambda dialog: dialog.accept())
+                    page.locator("id=btnLogout").click(timeout=10000)
+                    page.wait_for_timeout(2000)
+                    log_fn("SUCCESS", "Logged out.")
+                except Exception:
+                    log_fn("ERROR", "Logout issue (non-fatal).")
+
+                browser.close()
+                log_fn("SYS", "Browser closed.")
+
+                with lock:
+                    state[f"result_{side_key}"] = True
+                    state[f"success_{side_key}"] = success
+                    state[f"failed_{side_key}"] = failed
+
+        except Exception as e:
+            with lock:
+                state[f"result_{side_key}"] = False
+            log_fn("ERROR", f"FATAL: {str(e)[:200]}")
+
+    # Spawn threads
+    thread_a = threading.Thread(
+        target=_run_side,
+        args=(bot_user_a, bot_pass_a, dist_a, df_a, log_a_fn, table_a_ph, prog_a_ph, "a"),
+        daemon=True,
+    )
+    thread_b = threading.Thread(
+        target=_run_side,
+        args=(bot_user_b, bot_pass_b, dist_b, df_b, log_b_fn, table_b_ph, prog_b_ph, "b"),
+        daemon=True,
+    )
+
+    thread_a.start()
+    thread_b.start()
+
+    # Poll UI updates from main thread (Streamlit thread-safety)
+    while thread_a.is_alive() or thread_b.is_alive():
+        with lock:
+            prog_a_ph.progress(state["progress_a"])
+            prog_b_ph.progress(state["progress_b"])
+            if state["df_a_dirty"]:
+                table_a_ph.dataframe(df_a, width="stretch", height=400, hide_index=True)
+                state["df_a_dirty"] = False
+            if state["df_b_dirty"]:
+                table_b_ph.dataframe(df_b, width="stretch", height=400, hide_index=True)
+                state["df_b_dirty"] = False
+        # Render logs from main thread
+        render_terminal(log_a_ph, logs_a_list)
+        render_terminal(log_b_ph, logs_b_list)
+        time.sleep(0.3)
+
+    # Final UI update
+    with lock:
+        prog_a_ph.progress(state["progress_a"])
+        prog_b_ph.progress(state["progress_b"])
+        table_a_ph.dataframe(df_a, width="stretch", height=400, hide_index=True)
+        table_b_ph.dataframe(df_b, width="stretch", height=400, hide_index=True)
+    render_terminal(log_a_ph, logs_a_list)
+    render_terminal(log_b_ph, logs_b_list)
+
+    thread_a.join()
+    thread_b.join()
+
+    # Post-execution reconciliation
+    elapsed = int(time.time() - global_start_time)
+    res_a = state["result_a"]
+    res_b = state["result_b"]
+    s_a, f_a = state["success_a"], state["failed_a"]
+    s_b, f_b = state["success_b"], state["failed_b"]
+
+    if res_a and res_b:
+        box_html = (
+            f'<div style="background-color: #292c3c; color: #a6d189; padding: 14px 20px; border-radius: 4px; '
+            f'border: 1px solid #a6d189; font-weight: 600; font-size: 13px; margin: 8px 0; text-align: center; '
+            f'font-family: \'Inter\', sans-serif;">'
+            f'Mutasi Complete | '
+            f'Deduct [{dist_a}]: {s_a} OK / {f_a} fail | '
+            f'Add [{dist_b}]: {s_b} OK / {f_b} fail | '
+            f'Time: {elapsed // 60}m {elapsed % 60}s</div>'
+        )
+        st.markdown(box_html, unsafe_allow_html=True)
+        alert_callback(
+            f"[OK] <b>MUTASI COMPLETE</b>\n"
+            f"From: {dist_a} ({s_a} OK, {f_a} fail)\n"
+            f"To: {dist_b} ({s_b} OK, {f_b} fail)\n"
+            f"Runtime: {elapsed // 60}m {elapsed % 60}s"
+        )
+        st.toast("Mutasi stock berhasil!")
+    elif res_a and not res_b:
+        st.warning(
+            f"Dist A ({dist_a}) berhasil dikurangi ({s_a} OK), "
+            f"tetapi Dist B ({dist_b}) GAGAL ditambah. Silakan retry Dist B secara manual."
+        )
+        alert_callback(
+            f"[WARN] <b>MUTASI PARTIAL</b>\n"
+            f"Dist A deducted: {s_a} OK\nDist B FAILED\nRuntime: {elapsed // 60}m {elapsed % 60}s"
+        )
+    elif not res_a and res_b:
+        st.warning(
+            f"Dist B ({dist_b}) berhasil ditambah ({s_b} OK), "
+            f"tetapi Dist A ({dist_a}) GAGAL dikurangi. Silakan retry Dist A secara manual."
+        )
+        alert_callback(
+            f"[WARN] <b>MUTASI PARTIAL</b>\n"
+            f"Dist A FAILED\nDist B added: {s_b} OK\nRuntime: {elapsed // 60}m {elapsed % 60}s"
+        )
+    else:
+        st.error("Kedua distributor gagal. Tidak ada stock yang berubah.")
+        alert_callback(
+            f"[ALERT] <b>MUTASI FAILED</b>\nBoth sides failed.\nRuntime: {elapsed // 60}m {elapsed % 60}s"
+        )
+
+    log_a_fn("SUCCESS", f"Total runtime: {elapsed // 60}m {elapsed % 60}s")
+    st.session_state.is_mutasi_running = False

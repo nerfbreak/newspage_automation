@@ -161,6 +161,18 @@ with nav_col3:
 
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
+# --- NAVIGATION ROW 2 ---
+nav_col4, nav_col5, nav_col6 = st.columns(3)
+
+with nav_col4:
+    with st.container(border=True):
+        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Mutasi Stock</h4>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Transfer stock between distributors. Deduct from sender and add to receiver in parallel.</p>", unsafe_allow_html=True)
+        if st.button("Open Mutasi Stock", key="btn_nav_mutasi", use_container_width=True, type="primary"):
+            st.switch_page("pages/4_stock_mutation.py")
+
+st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+
 # --- SYSTEM MONITORING SECTION ---
 with st.container(border=False):
     st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>System Health</div>", unsafe_allow_html=True)
