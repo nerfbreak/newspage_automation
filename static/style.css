@@ -11,25 +11,6 @@
 /* --- FONTS --- */
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
-
-/* --- Material Symbols Icon Helper --- */
-.material-symbols-outlined {
-    font-family: 'Material Symbols Outlined';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 1em;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-feature-settings: 'liga';
-    -webkit-font-smoothing: antialiased;
-    vertical-align: middle;
-}
 
 /* --- Global Elements & Reset --- */
 [data-testid="stMainViewContainer"] {
@@ -265,32 +246,6 @@ button[kind="primary"]:hover {
     font-size: 0.82rem;
     color: #3b82f6;
     margin: 0;
-}
-
-.live-indicator {
-    display: inline-flex;
-    align-items: center;
-    color: #3b82f6;
-    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
-    font-weight: 700;
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    background: rgba(59, 130, 246, 0.15);
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(59, 130, 246, 0.3);
-}
-
-.status-pill {
-    display: inline-flex;
-    align-items: center;
-    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
-    font-weight: 700;
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid transparent;
 }
 
 /* --- Selectbox & Text Input --- */

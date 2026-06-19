@@ -156,21 +156,13 @@ def check_auth():
         st.session_state.current_user = "Guest"
 
 def render_indicators(db_status, bot_status, bot_type="ENGINE"):
-    db_color = "#3b82f6" if db_status == "CONNECTED" else "#ef4444"
-    bot_color = "#e5e5e5" if "PROMO" not in bot_type else "#3b82f6"
-    
-    html = clean_html(f"""
-        <div style='display: flex; gap: 10px; margin-bottom: 16px; align-items: center;'>
-            <div class='live-indicator'><span class="material-symbols-outlined" style="font-size: 0.7em;">fiber_manual_record</span> LIVE</div>
-            <div class='status-pill' style='color: {db_color}; border-color: {db_color}33; background-color: {db_color}1a;'>
-                <span class="material-symbols-outlined" style="font-size: 0.85em;">database</span> DB: {db_status}
-            </div>
-            <div class='status-pill' style='color: {bot_color}; border-color: {bot_color}33; background-color: {bot_color}1a;'>
-                <span class="material-symbols-outlined" style="font-size: 0.85em;">smart_toy</span> {bot_type}: {bot_status}
-            </div>
-        </div>
-    """)
-    st.markdown(html, unsafe_allow_html=True)
+    c1, c2, c3 = st.columns([0.2, 0.4, 0.4], gap="small")
+    with c1:
+        st.markdown(":material/fiber_manual_record: **LIVE**")
+    with c2:
+        st.markdown(f":material/database: **DB:** {db_status}")
+    with c3:
+        st.markdown(f":material/smart_toy: **{bot_type}:** {bot_status}")
 
 def render_header(title, subtitle=""):
     inject_css()  # uses cached CSS, no repeated file I/O
