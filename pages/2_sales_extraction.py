@@ -90,8 +90,8 @@ if extract_btn:
     st.session_state.is_bot_running = True
     ext_label_placeholder.markdown(f"""
         <div style='display: inline-block; margin-bottom: 4px;'>
-            <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
-            <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #e5e5e5; text-transform: uppercase; letter-spacing: 0.1em;'>EXTRACT_LOG</span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #e5e5e5; text-transform: uppercase; letter-spacing: 0.1em;'>EXTRACT_LOG</span>
         </div>
     """, unsafe_allow_html=True)
     ext_logs_history  = []

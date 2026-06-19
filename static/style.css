@@ -5,52 +5,12 @@
    Container/Card Background: #262626
    Sidebar/Surface: #171717
    Borders: #404040
-   Fonts: "Inter", "JetBrains Mono"
+   Fonts: "Source Sans 3", "Source Sans Pro", "Source Code Pro"
    ============================================================ */
 
 /* --- FONTS --- */
-@font-face {
-    font-family: 'Inter';
-    src: url('Inter_18pt-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Inter';
-    src: url('Inter_18pt-Medium.ttf') format('truetype');
-    font-weight: 500;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Inter';
-    src: url('Inter_18pt-SemiBold.ttf') format('truetype');
-    font-weight: 600;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Inter';
-    src: url('Inter_18pt-Bold.ttf') format('truetype');
-    font-weight: 700;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'JetBrains Mono';
-    src: url('JetBrainsMono-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'JetBrains Mono';
-    src: url('JetBrainsMono-Medium.ttf') format('truetype');
-    font-weight: 500;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'JetBrains Mono';
-    src: url('JetBrainsMono-Bold.ttf') format('truetype');
-    font-weight: 700;
-    font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;600;700;800;900&display=swap');
 
 /* --- Global Elements & Reset --- */
 [data-testid="stMainViewContainer"] {
@@ -64,7 +24,7 @@
 
 /* --- Typography --- */
 h1 {
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     font-size: 1.75rem !important;
     font-weight: 700 !important;
     color: #e5e5e5 !important;
@@ -74,7 +34,7 @@ h1 {
 }
 
 h2, h3 {
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     font-size: 1.15rem !important;
     font-weight: 600 !important;
     color: #e5e5e5 !important;
@@ -84,7 +44,7 @@ h2, h3 {
 }
 
 html, body, [data-testid="stAppViewContainer"], p, label, small {
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
 
 /* --- Form Labels --- */
@@ -99,7 +59,7 @@ div[data-testid="stFileUploader"] label {
 div[data-testid="stSelectbox"] label p,
 div[data-testid="stTextInput"] label p,
 div[data-testid="stFileUploader"] label p {
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     font-size: 0.7rem !important;
     font-weight: 700 !important;
     color: #3b82f6 !important;
@@ -111,11 +71,11 @@ div[data-testid="stFileUploader"] label p {
 }
 
 div[data-testid="stFileUploadDropzone"] {
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
 
 div[data-baseweb="select"] * {
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
 
 [data-testid="stFileUploadDropzone"] small {
@@ -148,7 +108,7 @@ div[data-testid="stButton"] button:active {
 
 div[data-testid="stButton"] button,
 div[data-testid="stButton"] button p {
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     font-size: 0.8rem !important;
     font-weight: 600 !important;
     letter-spacing: 0.04em !important;
@@ -163,7 +123,7 @@ button[kind="primary"] {
     letter-spacing: 0.04em !important;
     transition: all 0.15s ease !important;
     border-radius: 8px !important;
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
 
 button[kind="primary"]:hover {
@@ -176,7 +136,7 @@ button[kind="primary"]:hover {
 .terminal-box {
     background-color: #0E1117;
     color: #FAFAFA;
-    font-family: "JetBrains Mono", monospace;
+    font-family: "Source Code Pro", monospace;
     font-size: 0.8rem;
     padding: 14px 18px;
     border: 1px solid #404040;
@@ -193,7 +153,7 @@ button[kind="primary"]:hover {
 .terminal-box::-webkit-scrollbar { display: none; }
 
 .terminal-label {
-    font-family: "Inter", sans-serif;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -205,10 +165,10 @@ button[kind="primary"]:hover {
 .blink_me { animation: blinker 1s linear infinite; font-weight: bold; color: #3b82f6; }
 @keyframes blinker { 50% { opacity: 0; } }
 
-.log-time    { display: inline-block; width: 85px;  color: #94A3B8; font-family: "JetBrains Mono", monospace; }
-.log-ms      { display: inline-block; width: 75px;  text-align: right; margin-right: 15px; color: #94A3B8; font-size: 0.75rem; font-family: "JetBrains Mono", monospace; }
-.log-tag     { display: inline-block; width: 95px;  font-weight: 700; font-family: "JetBrains Mono", monospace; }
-.log-msg     { color: #E2E8F0; font-weight: 400; font-family: "JetBrains Mono", monospace; }
+.log-time    { display: inline-block; width: 85px;  color: #94A3B8; font-family: "Source Code Pro", monospace; }
+.log-ms      { display: inline-block; width: 75px;  text-align: right; margin-right: 15px; color: #94A3B8; font-size: 0.75rem; font-family: "Source Code Pro", monospace; }
+.log-tag     { display: inline-block; width: 95px;  font-weight: 700; font-family: "Source Code Pro", monospace; }
+.log-msg     { color: #E2E8F0; font-weight: 400; font-family: "Source Code Pro", monospace; }
 
 /* Log tag color palette */
 .tag-sys     { color: #F97316; }   /* System info - Bright Orange */
@@ -227,7 +187,7 @@ button[kind="primary"]:hover {
     border-radius: 10px;
     font-size: 0.82rem;
     font-weight: 600;
-    font-family: "Inter", sans-serif;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
     border: 1px solid #404040;
     margin-bottom: 12px;
     letter-spacing: 0.02em;
@@ -259,14 +219,14 @@ button[kind="primary"]:hover {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: #a3a3a3;
-    font-family: "Inter", sans-serif;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
 }
 
 .metric-box-match .metric-value {
     color: #e5e5e5;
     font-size: 1.85rem;
     font-weight: 700;
-    font-family: "Inter", sans-serif;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
     margin-top: 4px;
     line-height: 1;
 }
@@ -275,14 +235,14 @@ button[kind="primary"]:hover {
     color: #ef4444;
     font-size: 1.85rem;
     font-weight: 700;
-    font-family: "Inter", sans-serif;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
     margin-top: 4px;
     line-height: 1;
 }
 
 /* --- Live Indicator & Status Pills --- */
 .typewriter-sub {
-    font-family: "JetBrains Mono", monospace;
+    font-family: "Source Code Pro", monospace;
     font-size: 0.82rem;
     color: #3b82f6;
     margin: 0;
@@ -292,7 +252,7 @@ button[kind="primary"]:hover {
     display: inline-flex;
     align-items: center;
     color: #3b82f6;
-    font-family: "Inter", sans-serif;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
     font-weight: 700;
     font-size: 0.65rem;
     letter-spacing: 0.08em;
@@ -305,7 +265,7 @@ button[kind="primary"]:hover {
 .status-pill {
     display: inline-flex;
     align-items: center;
-    font-family: "Inter", sans-serif;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
     font-weight: 700;
     font-size: 0.65rem;
     letter-spacing: 0.08em;
@@ -317,7 +277,7 @@ button[kind="primary"]:hover {
 /* --- Selectbox & Text Input --- */
 div[data-testid="stSelectbox"] div[data-baseweb="select"] > div,
 div[data-testid="stTextInput"] input {
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     font-size: 0.85rem !important;
     font-weight: 400 !important;
     color: #e5e5e5 !important;
@@ -339,7 +299,7 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] {
 }
 
 div[data-testid="stSelectbox"] label p {
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     font-size: 0.7rem !important;
     font-weight: 700 !important;
     color: #3b82f6 !important;
@@ -482,7 +442,7 @@ div[data-testid="stNotificationContent"] p,
 div[role="alert"] p,
 div[data-testid="stNotificationContent"] div {
     color: #e5e5e5 !important;
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     font-weight: 500 !important;
     font-size: 0.82rem !important;
     line-height: 1.5 !important;
@@ -566,7 +526,7 @@ div[data-testid="stNotification"][aria-label="Info"] div {
 .custom-table {
     width: 100%;
     border-collapse: collapse;
-    font-family: "Inter", sans-serif;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
     font-size: 0.84rem;
     color: #e5e5e5;
     text-align: left;

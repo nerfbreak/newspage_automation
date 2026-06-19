@@ -32,7 +32,7 @@ div[data-testid="stForm"] {
     margin-bottom: 0 !important;
 }
 div[data-testid="stTextInput"] label p {
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     font-size: 0.7rem !important;
     font-weight: 700 !important;
     color: #3b82f6 !important;
@@ -46,7 +46,7 @@ div[data-testid="stTextInput"] input {
     border: 1px solid #404040 !important;
     border-radius: 8px !important;
     color: #e5e5e5 !important;
-    font-family: "Inter", sans-serif !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     text-align: left !important;
     padding-left: 15px !important;
     transition: border-color 0.25s ease, box-shadow 0.25s ease !important;

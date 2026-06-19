@@ -110,7 +110,7 @@ def make_solid_box(text: str, border_color: str, text_color: str) -> str:
             margin: 12px 0;
             width: 100%;
             box-sizing: border-box;
-            font-family: "Inter", sans-serif;
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
         '>{text}</div>
     """)
 
@@ -130,7 +130,7 @@ def make_success_box(text: str) -> str:
             margin-top: 12px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            font-family: "Inter", sans-serif;
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
             border: 1px solid transparent;
             width: 100%;
             box-sizing: border-box;
@@ -184,15 +184,15 @@ def render_header(title, subtitle=""):
     if subtitle:
         st.markdown(clean_html(f"""
             <div style='display: inline-block; margin-top: -4px;'>
-                <span style='font-family: "Inter", sans-serif; font-size: 0.65rem; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Session</span>
-                <span style='font-family: "Inter", sans-serif; font-size: 0.65rem; font-weight: 700; color: #e5e5e5; text-transform: uppercase; letter-spacing: 0.1em;'>{subtitle}</span>
+                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.65rem; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Session</span>
+                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.65rem; font-weight: 700; color: #e5e5e5; text-transform: uppercase; letter-spacing: 0.1em;'>{subtitle}</span>
             </div>
         """), unsafe_allow_html=True)
 
 def render_footer():
     st.markdown(clean_html("""
     <div style='text-align: center; margin-top: 80px; margin-bottom: 20px;'>
-        <span style='font-family: "Inter", sans-serif; font-size: 0.6rem; color: #3b82f6; letter-spacing: 0.05em; text-transform: uppercase;'>
+        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.6rem; color: #3b82f6; letter-spacing: 0.05em; text-transform: uppercase;'>
             &copy; 2026 IT Support Newspage.
         </span>
     </div>
@@ -207,11 +207,11 @@ def style_status(df):
     def _color_status(val):
         v = str(val).strip().lower()
         if v == 'success':
-            return 'background-color: #d4edda; color: #155724; font-weight: 600;'
+            return 'color: #4ade80; font-weight: 600;'
         elif v in ('failed', 'error'):
-            return 'background-color: #f8d7da; color: #721c24; font-weight: 600;'
+            return 'color: #f87171; font-weight: 600;'
         elif v == 'pending':
-            return 'background-color: #fff3cd; color: #856404; font-weight: 600;'
+            return 'color: #facc15; font-weight: 600;'
         return ''
 
     if 'Status' not in df.columns:

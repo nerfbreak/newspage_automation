@@ -112,7 +112,7 @@ def render_metric_card(title, value, accent=False):
         width: 100%;
         height: 125px;
         box-sizing: border-box;
-        font-family: "Inter", sans-serif;
+        font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
         margin-bottom: 16px;
         box-shadow: {shadow};
         display: flex;
@@ -140,22 +140,22 @@ nav_col1, nav_col2, nav_col3 = st.columns(3)
 
 with nav_col1:
     with st.container(border=True):
-        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #e5e5e5; font-size: 1.1rem; font-family: \"Inter\", sans-serif; letter-spacing: -0.01em;'>Inventory Adjustment</h4>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 13px; color: #a3a3a3; font-family: \"Inter\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Sync real-time stock levels and reconcile inventory data with distributor files.</p>", unsafe_allow_html=True)
+        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #e5e5e5; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Inventory Adjustment</h4>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 13px; color: #a3a3a3; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Sync real-time stock levels and reconcile inventory data with distributor files.</p>", unsafe_allow_html=True)
         if st.button("Open Inventory Adjustment", key="btn_nav_inv", use_container_width=True, type="primary"):
             st.switch_page("pages/1_inventory_adjustment.py")
 
 with nav_col2:
     with st.container(border=True):
-        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #e5e5e5; font-size: 1.1rem; font-family: \"Inter\", sans-serif; letter-spacing: -0.01em;'>Sales Extraction</h4>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 13px; color: #a3a3a3; font-family: \"Inter\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Run Playwright automated bots to extract distributor invoices and sync sales databases.</p>", unsafe_allow_html=True)
+        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #e5e5e5; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Sales Extraction</h4>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 13px; color: #a3a3a3; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Run Playwright automated bots to extract distributor invoices and sync sales databases.</p>", unsafe_allow_html=True)
         if st.button("Open Sales Extraction", key="btn_nav_sales", use_container_width=True, type="primary"):
             st.switch_page("pages/2_sales_extraction.py")
 
 with nav_col3:
     with st.container(border=True):
-        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #e5e5e5; font-size: 1.1rem; font-family: \"Inter\", sans-serif; letter-spacing: -0.01em;'>Promotion Comparison</h4>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 13px; color: #a3a3a3; font-family: \"Inter\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Compare distributor pricing files and monitor active campaign claims.</p>", unsafe_allow_html=True)
+        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #e5e5e5; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Promotion Comparison</h4>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 13px; color: #a3a3a3; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Compare distributor pricing files and monitor active campaign claims.</p>", unsafe_allow_html=True)
         if st.button("Open Promotion Comparison", key="btn_nav_promo", use_container_width=True, type="primary"):
             st.switch_page("pages/3_promotion_comparison.py")
 
@@ -166,15 +166,15 @@ nav_col4, nav_col5, nav_col6 = st.columns(3)
 
 with nav_col4:
     with st.container(border=True):
-        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #e5e5e5; font-size: 1.1rem; font-family: \"Inter\", sans-serif; letter-spacing: -0.01em;'>Mutasi Stock</h4>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 13px; color: #a3a3a3; font-family: \"Inter\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Transfer stock between distributors. Deduct from sender and add to receiver in parallel.</p>", unsafe_allow_html=True)
+        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #e5e5e5; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Mutasi Stock</h4>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 13px; color: #a3a3a3; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Transfer stock between distributors. Deduct from sender and add to receiver in parallel.</p>", unsafe_allow_html=True)
         if st.button("Open Mutasi Stock", key="btn_nav_mutasi", use_container_width=True, type="primary"):
             st.switch_page("pages/4_stock_mutation.py")
 
 with nav_col5:
     with st.container(border=True):
-        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #e5e5e5; font-size: 1.1rem; font-family: \"Inter\", sans-serif; letter-spacing: -0.01em;'>Clearance Stock</h4>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 13px; color: #a3a3a3; font-family: \"Inter\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Extract and clear all distributor stock to zero via automated Playwright adjustments.</p>", unsafe_allow_html=True)
+        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #e5e5e5; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Clearance Stock</h4>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 13px; color: #a3a3a3; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Extract and clear all distributor stock to zero via automated Playwright adjustments.</p>", unsafe_allow_html=True)
         if st.button("Open Clearance Stock", key="btn_nav_clearance", use_container_width=True, type="primary"):
             st.switch_page("pages/5_clearance_stock.py")
 
@@ -194,7 +194,7 @@ with st.container(border=False):
     
     with h_col1:
         st.markdown(clean_html(f"""
-            <div style="background-color: #1e1e1e; border: 1px solid #333333; border-radius: 10px; padding: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.2); min-height: 72px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 16px;">
+            <div style="background-color: #1e1e1e; border: 1px solid #333333; border-radius: 10px; padding: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.2); min-height: 72px; box-sizing: border-box; font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif; margin-bottom: 16px;">
                 <span style="font-size: 0.85rem; font-weight: 600; color: #e5e5e5;">Playwright Bots</span>
                 <div style="display: flex; align-items: center; gap: 8px; background: {bot_color}1a; border: 1px solid {bot_color}33; padding: 4px 12px; border-radius: 20px;">
                     <span style="width: 6px; height: 6px; border-radius: 50%; background-color: {bot_color}; display: inline-block;"></span>
@@ -205,7 +205,7 @@ with st.container(border=False):
         
     with h_col2:
         st.markdown(clean_html(f"""
-            <div style="background-color: #1e1e1e; border: 1px solid #333333; border-radius: 10px; padding: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.2); min-height: 72px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 16px;">
+            <div style="background-color: #1e1e1e; border: 1px solid #333333; border-radius: 10px; padding: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.2); min-height: 72px; box-sizing: border-box; font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif; margin-bottom: 16px;">
                 <span style="font-size: 0.85rem; font-weight: 600; color: #e5e5e5;">Database Connection</span>
                 <div style="display: flex; align-items: center; gap: 8px; background: {db_color}1a; border: 1px solid {db_color}33; padding: 4px 12px; border-radius: 20px;">
                     <span style="width: 6px; height: 6px; border-radius: 50%; background-color: {db_color}; display: inline-block;"></span>
@@ -216,7 +216,7 @@ with st.container(border=False):
         
     with h_col3:
         st.markdown(clean_html(f"""
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-height: 72px; box-sizing: border-box; font-family: 'Inter', sans-serif; margin-bottom: 16px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-height: 72px; box-sizing: border-box; font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif; margin-bottom: 16px;">
                 <div style="background-color: #1e1e1e; border: 1px solid #333333; border-radius: 10px; padding: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: flex; flex-direction: column; justify-content: center;">
                     <div style="font-size: 0.6rem; font-weight: 700; color: #a3a3a3; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;">Last Sync</div>
                     <div style="font-size: 0.82rem; font-weight: 700; color: #e5e5e5; margin-top: 6px; line-height: 1.2;">{last_extracted_time}</div>

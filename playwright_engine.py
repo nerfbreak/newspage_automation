@@ -462,12 +462,12 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 html = f"""
                 <div style='display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; margin-bottom: 8px;'>
                     <div>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #93C5FD; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #93C5FD; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
                     </div>
                     <div>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Processed</span>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #93C5FD; text-transform: uppercase; letter-spacing: 0.1em;'>{current}/{total}</span>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Processed</span>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #93C5FD; text-transform: uppercase; letter-spacing: 0.1em;'>{current}/{total}</span>
                     </div>
                 </div>
                 """
@@ -529,7 +529,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             browser.close()
             elapsed = int(time.time() - global_start_time)
             ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
-            box_html = f'<div style="background-color: #292c3c; color: #a6d189; padding: 14px 20px; border-radius: 4px; border: 1px solid #a6d189; font-weight: 600; font-size: 13px; margin: 8px 0; text-align: center; display: block; width: 100%; font-family: \'Inter\', sans-serif;">Done — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s</div>'
+            box_html = f'<div style="background-color: #292c3c; color: #a6d189; padding: 14px 20px; border-radius: 4px; border: 1px solid #a6d189; font-weight: 600; font-size: 13px; margin: 8px 0; text-align: center; display: block; width: 100%; font-family: \'Source Sans 3\', \'Source Sans Pro\', sans-serif;">Done — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s</div>'
             st.markdown(box_html, unsafe_allow_html=True)
             alert_callback(f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
 
@@ -888,7 +888,7 @@ def run_mutasi_execution(
         box_html = (
             f'<div style="background-color: #292c3c; color: #a6d189; padding: 14px 20px; border-radius: 4px; '
             f'border: 1px solid #a6d189; font-weight: 600; font-size: 13px; margin: 8px 0; text-align: center; '
-            f'font-family: \'Inter\', sans-serif;">'
+            f'font-family: \'Source Sans 3\', \'Source Sans Pro\', sans-serif;">'
             f'Mutasi Complete | '
             f'Deduct [{dist_a}]: {s_a} OK / {f_a} fail | '
             f'Add [{dist_b}]: {s_b} OK / {f_b} fail | '

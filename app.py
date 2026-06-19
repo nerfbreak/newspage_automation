@@ -43,7 +43,7 @@ if not st.session_state.logged_in:
     inject_css("login.css")
 
     with st.form("login_form"):
-        st.markdown("<div style='text-align: center;'><h4 style='color: #e5e5e5; font-weight: 500; margin-bottom: 24px; font-family: \"Inter\", sans-serif;'>Sign in</h4></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center;'><h4 style='color: #e5e5e5; font-weight: 500; margin-bottom: 24px; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>Sign in</h4></div>", unsafe_allow_html=True)
         username = st.text_input("Username", placeholder="")
         password = st.text_input("Password", type="password", placeholder="")
         
