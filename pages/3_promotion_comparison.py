@@ -110,7 +110,7 @@ with st.container(border=True):
     st.query_params["sd"] = encode_param(start_date.strftime("%Y-%m-%d"))
     st.query_params["ed"] = encode_param(end_date.strftime("%Y-%m-%d"))
 
-    st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+    st.space("medium")
     btn_label = "Syncing & Comparing..." if st.session_state.is_promo_bot_running else "Start Sync & Compare (Extraction + Comparison)"
     promo_btn = st.button(btn_label, type="primary", width="stretch", disabled=st.session_state.is_promo_bot_running)
 
@@ -271,8 +271,8 @@ if st.session_state.promo_zip_data:
 
     # Display Results
     if st.session_state.comparison_results is not None:
-        st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
-        filter_status = st.radio("Filter Results", ["All", "MATCH", "CONFLICT", "MISSING"], horizontal=True)
+        st.space("medium")
+        filter_status = st.segmented_control("Filter Results", ["All", "MATCH", "CONFLICT", "MISSING"], default="All")
         
         df_view = st.session_state.comparison_results
         if filter_status != "All":

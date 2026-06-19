@@ -14,6 +14,59 @@ supabase = database.init_supabase()
 db_connected = supabase is not None
 db_status = "CONNECTED" if db_connected else "DISCONNECTED"
 
+# --- CACHED DATA QUERIES (60s TTL) ---
+@st.cache_data(ttl=60, show_spinner=False)
+def fetch_total_extractions(_supabase):
+    try:
+        res = _supabase.table("extraction_history").select("id", count="exact").execute()
+        return res.count if res.count is not None else 0
+    except Exception:
+        return 0
+
+@st.cache_data(ttl=60, show_spinner=False)
+def fetch_last_extraction(_supabase):
+    try:
+        res = _supabase.table("extraction_history").select("distributor_name, created_at").order("created_at", desc=True).limit(1).execute()
+        if res.data:
+            dist_name = res.data[0]["distributor_name"]
+            raw_time = res.data[0]["created_at"]
+            try:
+                from datetime import timezone, timedelta
+                t_str = raw_time.replace("Z", "+00:00")
+                dt = datetime.fromisoformat(t_str)
+                dt_local = dt + timedelta(hours=7)
+                time_str = dt_local.strftime("%Y-%m-%d %H:%M")
+            except Exception:
+                time_str = raw_time[:16].replace("T", " ")
+            return dist_name, time_str
+    except Exception:
+        pass
+    return "N/A", "N/A"
+
+@st.cache_data(ttl=60, show_spinner=False)
+def fetch_total_distributors(_supabase):
+    try:
+        res = _supabase.table("distributor_vault").select("id", count="exact").execute()
+        return res.count if res.count is not None else 0
+    except Exception:
+        return 0
+
+@st.cache_data(ttl=60, show_spinner=False)
+def fetch_total_logs(_supabase):
+    try:
+        res = _supabase.table("adjustment_logs").select("id", count="exact").execute()
+        return res.count if res.count is not None else 0
+    except Exception:
+        return 0
+
+@st.cache_data(ttl=60, show_spinner=False)
+def fetch_audit_logs(_supabase):
+    try:
+        res = _supabase.table("audit_logs").select("*").order("created_at", desc=True).limit(5).execute()
+        return res.data if res.data else []
+    except Exception:
+        return []
+
 # --- DATA RETRIEVAL ---
 total_extractions = 0
 last_extracted_dist = "N/A"
@@ -24,58 +77,11 @@ audit_logs = []
 dist_nodes = []
 
 if db_connected:
-    # 1. Total extractions
-    try:
-        res_ext = supabase.table("extraction_history").select("id", count="exact").execute()
-        total_extractions = res_ext.count if res_ext.count is not None else 0
-    except Exception:
-        pass
-
-    # 2. Last extraction
-    try:
-        res_last = supabase.table("extraction_history").select("distributor_name, created_at").order("created_at", desc=True).limit(1).execute()
-        if res_last.data:
-            last_extracted_dist = res_last.data[0]["distributor_name"]
-            raw_time = res_last.data[0]["created_at"]
-            try:
-                from datetime import timezone, timedelta
-                t_str = raw_time.replace("Z", "+00:00")
-                dt = datetime.fromisoformat(t_str)
-                # Convert UTC to local if needed, assuming GMT+7 for ID
-                dt_local = dt + timedelta(hours=7)
-                last_extracted_time = dt_local.strftime("%Y-%m-%d %H:%M")
-            except Exception:
-                last_extracted_time = raw_time[:16].replace("T", " ")
-    except Exception:
-        pass
-
-    # 3. Total distributors
-    try:
-        res_dist = supabase.table("distributor_vault").select("id", count="exact").execute()
-        total_distributors = res_dist.count if res_dist.count is not None else 0
-    except Exception:
-        pass
-
-    # 4. Total Synced Logs
-    try:
-        res_logs = supabase.table("adjustment_logs").select("id", count="exact").execute()
-        total_logs = res_logs.count if res_logs.count is not None else 0
-    except Exception:
-        pass
-
-    # 5. Fetch audit logs (latest 5)
-    try:
-        res_audit = supabase.table("audit_logs").select("*").order("created_at", desc=True).limit(5).execute()
-        audit_logs = res_audit.data if res_audit.data else []
-    except Exception:
-        pass
-
-    # 6. Fetch nodes (for Network Graph)
-    try:
-        res_nodes = supabase.table("distributor_vault").select("nama_distributor").execute()
-        dist_nodes = [r["nama_distributor"] for r in res_nodes.data] if res_nodes.data else []
-    except Exception:
-        pass
+    total_extractions = fetch_total_extractions(supabase)
+    last_extracted_dist, last_extracted_time = fetch_last_extraction(supabase)
+    total_distributors = fetch_total_distributors(supabase)
+    total_logs = fetch_total_logs(supabase)
+    audit_logs = fetch_audit_logs(supabase)
 
 # --- METRIC CARDS ---
 col1, col2, col3 = st.columns(3)
@@ -232,6 +238,60 @@ with st.container(border=False):
                 <div style="background-color: #1e1e1e; border: 1px solid #333333; border-radius: 10px; padding: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: flex; flex-direction: column; justify-content: center; text-align: right;">
                     <div style="font-size: 0.6rem; font-weight: 700; color: #a3a3a3; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;">Synced Logs</div>
                     <div style="font-size: 0.95rem; font-weight: 700; color: #e5e5e5; margin-top: 6px; line-height: 1.2;">{total_logs}</div>
+                </div>
+            </div>
+        """), unsafe_allow_html=True)
+
+st.space("medium")
+
+# --- AUDIT LOG TIMELINE ---
+if audit_logs:
+    st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>:material/history: &nbsp;Recent Activity</div>", unsafe_allow_html=True)
+    
+    for log in audit_logs:
+        action = log.get("action", "unknown")
+        user = log.get("user_name", "system")
+        raw_ts = log.get("created_at", "")
+        details = log.get("details", "")
+        
+        # Parse timestamp
+        try:
+            from datetime import timedelta
+            t_str = raw_ts.replace("Z", "+00:00")
+            dt = datetime.fromisoformat(t_str)
+            dt_local = dt + timedelta(hours=7)
+            time_display = dt_local.strftime("%H:%M %d/%m")
+        except Exception:
+            time_display = raw_ts[:16].replace("T", " ") if raw_ts else "N/A"
+        
+        # Color code by action type
+        if "login" in action.lower():
+            icon = ":material/login:"
+            accent = "#3b82f6"
+        elif "extract" in action.lower():
+            icon = ":material/cloud_download:"
+            accent = "#22c55e"
+        elif "error" in action.lower() or "fail" in action.lower():
+            icon = ":material/error:"
+            accent = "#ef4444"
+        elif "adjust" in action.lower() or "execute" in action.lower():
+            icon = ":material/build:"
+            accent = "#f97316"
+        else:
+            icon = ":material/info:"
+            accent = "#a3a3a3"
+        
+        detail_html = f'<span style="color: #737373; font-size: 0.72rem; margin-left: 8px;">{details}</span>' if details else ''
+        st.markdown(clean_html(f"""
+            <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-left: 3px solid {accent}; background: #1e1e1e; border-radius: 0 8px 8px 0; margin-bottom: 8px; font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif;">
+                <span style="font-size: 1rem;">{icon}</span>
+                <div style="flex: 1;">
+                    <span style="font-size: 0.82rem; font-weight: 600; color: #e5e5e5;">{action}</span>
+                    {detail_html}
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 0.65rem; color: #a3a3a3;">{user}</div>
+                    <div style="font-size: 0.6rem; color: #737373;">{time_display}</div>
                 </div>
             </div>
         """), unsafe_allow_html=True)

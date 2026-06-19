@@ -47,7 +47,7 @@ if not st.session_state.logged_in:
         username = st.text_input("Username", placeholder="")
         password = st.text_input("Password", type="password", placeholder="")
         
-        st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+        st.space("medium")
         
         # Check lockout
         is_locked = time.time() < st.session_state.lockout_until
