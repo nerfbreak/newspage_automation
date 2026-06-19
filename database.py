@@ -82,6 +82,7 @@ def get_system_config(supabase):
     """Fetch system config with in-memory caching (avoids repeated DB calls).
     Returns a dict with keys: REASON_CODE, WAREHOUSE, URL_LOGIN, TIMEOUT_MS, TABLE_UPDATE_INTERVAL.
     """
+    global _config_cache_ts
     if "system_config" in _config_cache and (time.time() - _config_cache_ts) < _CACHE_TTL:
         return _config_cache["system_config"]
 
@@ -131,6 +132,7 @@ _distributor_cache_ts: float = 0
 
 def get_distributor_list(supabase):
     """Fetch distributor list with in-memory caching."""
+    global _distributor_cache_ts
     if "distributor_list" in _distributor_cache and (time.time() - _distributor_cache_ts) < _CACHE_TTL:
         return _distributor_cache["distributor_list"]
     
