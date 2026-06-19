@@ -161,12 +161,12 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
     
     html = clean_html(f"""
         <div style='display: flex; gap: 10px; margin-bottom: 16px; align-items: center;'>
-            <div class='live-indicator'>🟢 LIVE</div>
+            <div class='live-indicator'><span class="material-symbols-outlined" style="font-size: 0.7em;">fiber_manual_record</span> LIVE</div>
             <div class='status-pill' style='color: {db_color}; border-color: {db_color}33; background-color: {db_color}1a;'>
-                💾 DB: {db_status}
+                <span class="material-symbols-outlined" style="font-size: 0.85em;">database</span> DB: {db_status}
             </div>
             <div class='status-pill' style='color: {bot_color}; border-color: {bot_color}33; background-color: {bot_color}1a;'>
-                🤖 {bot_type}: {bot_status}
+                <span class="material-symbols-outlined" style="font-size: 0.85em;">smart_toy</span> {bot_type}: {bot_status}
             </div>
         </div>
     """)
