@@ -69,8 +69,11 @@ with st.container(border=True):
 ext_label_placeholder = st.empty()
 ext_log_placeholder = st.empty()
 
-btn_label = "Extracting..." if st.session_state.is_bot_running else "Step 1: Extract Real-time Stock from Newspage"
-extract_btn = st.button(btn_label, type="primary", width="stretch", disabled=st.session_state.is_bot_running or not bot_user)
+if st.session_state.is_bot_running:
+    st.markdown("<div style='text-align: center; padding: 8px; color: #a3a3a3; font-size: 0.85rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>⏳ Extracting stock data...</div>", unsafe_allow_html=True)
+    extract_btn = False
+else:
+    extract_btn = st.button("Step 1: Extract Real-time Stock from Newspage", type="primary", width="stretch", disabled=not bot_user)
 
 if extract_btn:
     if not bot_user or not bot_pass:

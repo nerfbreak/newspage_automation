@@ -71,8 +71,11 @@ with col1:
         with np_col2:
             st.text_input("NP Password", value="********", type="password", disabled=True, key="np_pass_dummy")
         
-        btn_label = "Step 1: Extracting..." if st.session_state.is_bot_running else "Step 1: Extract Real-time Stock from Newspage"
-        extract_btn = st.button(btn_label, type="primary", width="stretch", disabled=st.session_state.is_bot_running)
+        if st.session_state.is_bot_running:
+            st.markdown("<div style='text-align: center; padding: 8px; color: #a3a3a3; font-size: 0.85rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>⏳ Extracting stock data...</div>", unsafe_allow_html=True)
+            extract_btn = False
+        else:
+            extract_btn = st.button("Step 1: Extract Real-time Stock from Newspage", type="primary", width="stretch")
         file1 = None
 
 with col2:
