@@ -76,6 +76,11 @@ with col1:
             extract_btn = False
         else:
             extract_btn = st.button("Step 1: Extract Real-time Stock from Newspage", type="primary", width="stretch")
+        # Use pending flag so extraction starts AFTER rerun hides the button
+        if extract_btn:
+            st.session_state._pending_inv_extract = True
+            st.session_state.is_bot_running = True
+            st.rerun()
         file1 = None
 
 with col2:
@@ -111,7 +116,8 @@ ext_label_placeholder = st.empty()
 ext_log_placeholder = st.empty()
 
 # --- TRIGGER EXTRACTION ---
-if extract_btn:
+if st.session_state.get("_pending_inv_extract", False):
+    st.session_state._pending_inv_extract = False
     if not bot_user or not bot_pass:
         st.error("Gagal! Kredensial untuk distributor ini tidak ditemukan di Supabase.")
         st.stop()

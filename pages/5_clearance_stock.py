@@ -75,9 +75,17 @@ if st.session_state.is_bot_running:
 else:
     extract_btn = st.button("Step 1: Extract Real-time Stock from Newspage", type="primary", width="stretch", disabled=not bot_user)
 
+# Use pending flag so extraction starts AFTER rerun hides the button
 if extract_btn:
+    st.session_state._pending_clearance_extract = True
+    st.session_state.is_bot_running = True
+    st.rerun()
+
+if st.session_state.get("_pending_clearance_extract", False):
+    st.session_state._pending_clearance_extract = False
     if not bot_user or not bot_pass:
         st.error("Kredensial untuk distributor ini tidak ditemukan.")
+        st.session_state.is_bot_running = False
         st.stop()
 
     st.session_state.is_bot_running = True
