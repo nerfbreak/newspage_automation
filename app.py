@@ -102,8 +102,9 @@ inventory_page = st.Page("pages/1_inventory_adjustment.py", title="Inventory Adj
 sales_page = st.Page("pages/2_sales_extraction.py", title="Sales Extraction", url_path="p2")
 promotion_page = st.Page("pages/3_promotion_comparison.py", title="Promotion Comparison", url_path="p3")
 mutation_page = st.Page("pages/4_stock_mutation.py", title="Mutasi Stock", url_path="p4")
+clearance_page = st.Page("pages/5_clearance_stock.py", title="Clearance Stock", url_path="p5")
 
 # Run navigation
-pg = st.navigation([dashboard_page, inventory_page, sales_page, promotion_page, mutation_page], position="hidden")
+pg = st.navigation([dashboard_page, inventory_page, sales_page, promotion_page, mutation_page, clearance_page], position="hidden")
 pg.run()
 
