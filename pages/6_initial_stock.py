@@ -82,10 +82,14 @@ if uploaded_file is not None and st.session_state.initial_stock_df is None:
 
         df_raw.columns = [str(c).strip() for c in df_raw.columns]
 
-        # Identify SKU and Qty columns (flexible matching)
-        sku_col = next((c for c in df_raw.columns if c.lower() in ['sku', 'product code', 'code', 'item code']), None)
-        qty_col = next((c for c in df_raw.columns if c.lower() in ['qty', 'quantity', 'stock', 'initial stock', 'jumlah']), None)
-        desc_col = next((c for c in df_raw.columns if 'desc' in c.lower() or 'name' in c.lower() or 'product' in c.lower()), None)
+        # Identify SKU and Qty columns (flexible matching - English + Indonesian)
+        sku_patterns = ['sku', 'product code', 'code', 'item code', 'kode', 'kode barang', 'kode produk']
+        qty_patterns = ['qty', 'quantity', 'stock', 'initial stock', 'jumlah', 'stokakhir', 'stok', 'pcs', 'stokawal']
+        desc_patterns = ['desc', 'name', 'product', 'merek', 'nama', 'variant', 'keterangan']
+
+        sku_col = next((c for c in df_raw.columns if c.lower() in sku_patterns), None)
+        qty_col = next((c for c in df_raw.columns if c.lower() in qty_patterns), None)
+        desc_col = next((c for c in df_raw.columns if any(p in c.lower() for p in desc_patterns)), None)
 
         if not sku_col or not qty_col:
             st.error(f"Could not identify SKU/Qty columns. Found: {list(df_raw.columns)}")
