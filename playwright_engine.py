@@ -499,8 +499,9 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     
                 progress_bar.progress((i+1)/total_rows)
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1:
+                    table_placeholder.empty()
                     with table_placeholder:
-                        render_aggrid(df_view, key="pw_inv_exec", live_update=True)
+                        render_aggrid(df_view, key=f"pw_inv_exec_{i}", live_update=True)
                     
             ui_log("SERVER", "Finalizing batch. Saving document to main server...")
             page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
@@ -851,18 +852,23 @@ def run_mutasi_execution(
     thread_b.start()
 
     # Poll UI updates from main thread (Streamlit thread-safety)
+    mutasi_render_count = 0
     while thread_a.is_alive() or thread_b.is_alive():
         with lock:
             prog_a_ph.progress(state["progress_a"])
             prog_b_ph.progress(state["progress_b"])
             if state["df_a_dirty"]:
+                table_a_ph.empty()
                 with table_a_ph:
-                    render_aggrid(df_a, key="pw_mutasi_a", live_update=True)
+                    render_aggrid(df_a, key=f"pw_mutasi_a_{mutasi_render_count}", live_update=True)
                 state["df_a_dirty"] = False
+                mutasi_render_count += 1
             if state["df_b_dirty"]:
+                table_b_ph.empty()
                 with table_b_ph:
-                    render_aggrid(df_b, key="pw_mutasi_b", live_update=True)
+                    render_aggrid(df_b, key=f"pw_mutasi_b_{mutasi_render_count}", live_update=True)
                 state["df_b_dirty"] = False
+                mutasi_render_count += 1
         # Render logs from main thread
         render_terminal(log_a_ph, logs_a_list)
         render_terminal(log_b_ph, logs_b_list)
@@ -872,8 +878,10 @@ def run_mutasi_execution(
     with lock:
         prog_a_ph.progress(state["progress_a"])
         prog_b_ph.progress(state["progress_b"])
+        table_a_ph.empty()
         with table_a_ph:
             render_aggrid(df_a, key="pw_mutasi_a_final", live_update=True)
+        table_b_ph.empty()
         with table_b_ph:
             render_aggrid(df_b, key="pw_mutasi_b_final", live_update=True)
     render_terminal(log_a_ph, logs_a_list)
