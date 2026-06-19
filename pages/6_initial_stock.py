@@ -24,6 +24,7 @@ TABLE_UPDATE_INTERVAL = _sys_cfg["TABLE_UPDATE_INTERVAL"]
 # --- STATE MANAGEMENT ---
 init_session_state(
     initial_stock_df=None,
+    initial_stock_raw=None,
     is_bot_running=False,
 )
 
@@ -72,52 +73,74 @@ uploaded_file = st.file_uploader(
     key="init_stock_file"
 )
 
-# Parse uploaded file
-if uploaded_file is not None and st.session_state.initial_stock_df is None:
+# Parse uploaded file into raw dataframe
+if uploaded_file is not None and st.session_state.initial_stock_raw is None and st.session_state.initial_stock_df is None:
     try:
         if uploaded_file.name.endswith('.csv'):
             df_raw = pd.read_csv(uploaded_file, dtype=str, on_bad_lines='skip')
         else:
             df_raw = pd.read_excel(uploaded_file, dtype=str)
-
         df_raw.columns = [str(c).strip() for c in df_raw.columns]
-
-        # Identify SKU and Qty columns (flexible matching - English + Indonesian)
-        sku_patterns = ['sku', 'product code', 'code', 'item code', 'kode', 'kode barang', 'kode produk']
-        qty_patterns = ['qty', 'quantity', 'stock', 'initial stock', 'jumlah', 'stokakhir', 'stok', 'pcs', 'stokawal']
-        desc_patterns = ['desc', 'name', 'product', 'merek', 'nama', 'variant', 'keterangan']
-
-        sku_col = next((c for c in df_raw.columns if c.lower() in sku_patterns), None)
-        qty_col = next((c for c in df_raw.columns if c.lower() in qty_patterns), None)
-        desc_col = next((c for c in df_raw.columns if any(p in c.lower() for p in desc_patterns)), None)
-
-        if not sku_col or not qty_col:
-            st.error(f"Could not identify SKU/Qty columns. Found: {list(df_raw.columns)}")
-        else:
-            df_init = df_raw[[sku_col, qty_col]].copy()
-            if desc_col and desc_col != sku_col:
-                df_init[desc_col] = df_raw[desc_col]
-            df_init.columns = ['SKU', 'Qty'] + (['Description'] if desc_col and desc_col != sku_col else [])
-
-            # Clean data
-            df_init = df_init.dropna(subset=['SKU'])
-            df_init['SKU'] = df_init['SKU'].astype(str).str.strip()
-            df_init = df_init[~df_init['SKU'].str.lower().isin(['nan', 'none', '', 'total', 'grand total'])]
-            df_init['Qty'] = pd.to_numeric(
-                df_init['Qty'].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False),
-                errors='coerce'
-            ).fillna(0).astype(int)
-
-            # Filter out zero qty
-            df_init = df_init[df_init['Qty'] != 0].reset_index(drop=True)
-
-            if 'Description' not in df_init.columns:
-                df_init['Description'] = ''
-
-            st.session_state.initial_stock_df = df_init
-            st.rerun()
+        st.session_state.initial_stock_raw = df_raw
+        st.rerun()
     except Exception as e:
         st.error(f"Failed to parse file: {e}")
+
+# --- COLUMN SELECTION ---
+if st.session_state.initial_stock_raw is not None and st.session_state.initial_stock_df is None:
+    df_raw = st.session_state.initial_stock_raw
+    cols = list(df_raw.columns)
+
+    st.markdown("<div class='box-review'>Map Columns</div>", unsafe_allow_html=True)
+    mc1, mc2, mc3 = st.columns(3)
+    with mc1:
+        # Auto-detect SKU column
+        sku_default = next((i for i, c in enumerate(cols) if c.lower() in ['sku', 'kode', 'product code', 'item code', 'code']), 0)
+        sel_sku = st.selectbox("SKU Column", cols, index=sku_default, key="init_sel_sku")
+    with mc2:
+        # Auto-detect Qty column
+        qty_default = next((i for i, c in enumerate(cols) if c.lower() in ['stokakhir', 'qty', 'quantity', 'stock', 'pcs', 'stokawal', 'stok']), 0)
+        sel_qty = st.selectbox("Qty Column", cols, index=qty_default, key="init_sel_qty")
+    with mc3:
+        # Optional description column
+        desc_options = ['(None)'] + cols
+        desc_default = next((i + 1 for i, c in enumerate(cols) if any(p in c.lower() for p in ['merek', 'desc', 'name', 'variant', 'nama'])), 0)
+        sel_desc = st.selectbox("Description Column (optional)", desc_options, index=desc_default, key="init_sel_desc")
+
+    # Preview raw data
+    with st.expander("Preview raw data", expanded=False):
+        st.dataframe(df_raw.head(20), width="stretch", height=300, hide_index=True)
+
+    if st.button("Confirm & Load Data", type="primary", width="stretch"):
+        df_init = df_raw[[sel_sku, sel_qty]].copy()
+        has_desc = sel_desc != '(None)' and sel_desc != sel_sku
+        if has_desc:
+            df_init[sel_desc] = df_raw[sel_desc]
+
+        # Rename columns
+        new_cols = ['SKU', 'Qty']
+        if has_desc:
+            new_cols.append('Description')
+        df_init.columns = new_cols
+
+        # Clean data
+        df_init = df_init.dropna(subset=['SKU'])
+        df_init['SKU'] = df_init['SKU'].astype(str).str.strip()
+        df_init = df_init[~df_init['SKU'].str.lower().isin(['nan', 'none', '', 'total', 'grand total'])]
+        df_init['Qty'] = pd.to_numeric(
+            df_init['Qty'].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False),
+            errors='coerce'
+        ).fillna(0).astype(int)
+
+        # Filter out zero qty
+        df_init = df_init[df_init['Qty'] != 0].reset_index(drop=True)
+
+        if 'Description' not in df_init.columns:
+            df_init['Description'] = ''
+
+        st.session_state.initial_stock_df = df_init
+        st.session_state.initial_stock_raw = None
+        st.rerun()
 
 # --- REVIEW UPLOADED DATA ---
 if st.session_state.initial_stock_df is not None:
@@ -127,6 +150,7 @@ if st.session_state.initial_stock_df is not None:
 
     if st.button("Clear uploaded data", width="stretch"):
         st.session_state.initial_stock_df = None
+        st.session_state.initial_stock_raw = None
         st.rerun()
 
 # --- REVIEW TABLE ---
