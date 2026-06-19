@@ -93,32 +93,32 @@ def clean_html(html_str: str) -> str:
     return " ".join(line.strip() for line in html_str.splitlines())
 
 def make_solid_box(text: str, border_color: str, text_color: str) -> str:
-    # Use Streamlit Light Card/Surface background (#F0F2F6) and default border (rgba(0, 0, 0, 0.08))
+    # Dark card surface (#262626) and border (#404040)
     return clean_html(f"""
         <div style='
-            background-color: #F0F2F6;
+            background-color: #262626;
             color: {text_color};
             height: 38.4px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            border: 1px solid #404040;
             border-left: 5px solid {border_color};
             font-weight: 600;
             font-size: 0.85rem;
             margin: 12px 0;
             width: 100%;
             box-sizing: border-box;
-            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+            font-family: "Inter", sans-serif;
         '>{text}</div>
     """)
 
 def make_success_box(text: str) -> str:
-    # Use Streamlit Brand Blue (#0068C9) background with Light text (#FAFAFA)
+    # Primary blue (#3b82f6) background with light text
     return clean_html(f"""
         <div style='
-            background-color: #0068C9;
+            background-color: #3b82f6;
             color: #FAFAFA;
             height: 38.4px;
             display: flex;
@@ -130,7 +130,7 @@ def make_success_box(text: str) -> str:
             margin-top: 12px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+            font-family: "Inter", sans-serif;
             border: 1px solid transparent;
             width: 100%;
             box-sizing: border-box;
@@ -156,8 +156,8 @@ def check_auth():
         st.session_state.current_user = "Guest"
 
 def render_indicators(db_status, bot_status, bot_type="ENGINE"):
-    db_color = "#0068C9" if db_status == "CONNECTED" else "#FF2B2B"
-    bot_color = "#31333F" if "PROMO" not in bot_type else "#0068C9"
+    db_color = "#3b82f6" if db_status == "CONNECTED" else "#ef4444"
+    bot_color = "#e5e5e5" if "PROMO" not in bot_type else "#3b82f6"
     
     html = clean_html(f"""
         <div style='display: flex; gap: 10px; margin-bottom: 16px; align-items: center;'>
@@ -184,15 +184,15 @@ def render_header(title, subtitle=""):
     if subtitle:
         st.markdown(clean_html(f"""
             <div style='display: inline-block; margin-top: -4px;'>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Session</span>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.65rem; font-weight: 700; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{subtitle}</span>
+                <span style='font-family: "Inter", sans-serif; font-size: 0.65rem; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Session</span>
+                <span style='font-family: "Inter", sans-serif; font-size: 0.65rem; font-weight: 700; color: #e5e5e5; text-transform: uppercase; letter-spacing: 0.1em;'>{subtitle}</span>
             </div>
         """), unsafe_allow_html=True)
 
 def render_footer():
     st.markdown(clean_html("""
     <div style='text-align: center; margin-top: 80px; margin-bottom: 20px;'>
-        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.6rem; color: #0068C9; letter-spacing: 0.05em; text-transform: uppercase;'>
+        <span style='font-family: "Inter", sans-serif; font-size: 0.6rem; color: #3b82f6; letter-spacing: 0.05em; text-transform: uppercase;'>
             &copy; 2026 IT Support Newspage.
         </span>
     </div>

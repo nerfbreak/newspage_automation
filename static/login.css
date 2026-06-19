@@ -4,7 +4,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMainViewContaine
     width: 100vw !important;
     margin: 0 !important;
     padding: 0 !important;
-    background-color: #F0F2F6 !important;
+    background-color: #262626 !important;
 }
 [data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stDecoration"] {
     display: none !important;
@@ -17,43 +17,43 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMainViewContaine
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    background-color: #F0F2F6 !important;
+    background-color: #262626 !important;
 }
 div[data-testid="stForm"] {
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #404040 !important;
     border-radius: 16px !important;
-    background-color: #FFFFFF !important;
+    background-color: #1e1e1e !important;
     padding: 40px !important;
     width: 380px !important;
-    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.08), 0 0 0 1px rgba(0, 104, 201, 0.05) !important;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.4), 0 0 0 1px rgba(59, 130, 246, 0.1) !important;
     margin-left: auto !important;
     margin-right: auto !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
 }
 div[data-testid="stTextInput"] label p {
-    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    font-family: "Inter", sans-serif !important;
     font-size: 0.7rem !important;
     font-weight: 700 !important;
-    color: #0068C9 !important;
+    color: #3b82f6 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.08em !important;
     text-align: center !important;
     width: 100% !important;
 }
 div[data-testid="stTextInput"] input {
-    background-color: #FFFFFF !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    background-color: #171717 !important;
+    border: 1px solid #404040 !important;
     border-radius: 8px !important;
-    color: #31333F !important;
-    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    color: #e5e5e5 !important;
+    font-family: "Inter", sans-serif !important;
     text-align: left !important;
     padding-left: 15px !important;
     transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
 }
 div[data-testid="stTextInput"] input:focus {
-    border-color: #0068C9 !important;
-    box-shadow: 0 0 0 3px rgba(0, 104, 201, 0.15) !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
 }
 div[data-testid="InputInstructions"] { display: none !important; }
 button[data-testid="stTextInputPasswordVisibilityToggle"],

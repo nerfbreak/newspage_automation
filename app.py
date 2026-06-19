@@ -43,7 +43,7 @@ if not st.session_state.logged_in:
     inject_css("login.css")
 
     with st.form("login_form"):
-        st.markdown("<div style='text-align: center;'><h4 style='color: #31333F; font-weight: 500; margin-bottom: 24px; font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif;'>Sign in</h4></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center;'><h4 style='color: #e5e5e5; font-weight: 500; margin-bottom: 24px; font-family: \"Inter\", sans-serif;'>Sign in</h4></div>", unsafe_allow_html=True)
         username = st.text_input("Username", placeholder="")
         password = st.text_input("Password", type="password", placeholder="")
         
@@ -53,7 +53,7 @@ if not st.session_state.logged_in:
         is_locked = time.time() < st.session_state.lockout_until
         if is_locked:
             remaining = int(st.session_state.lockout_until - time.time())
-            st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Too many failed attempts. Locked for {remaining}s.</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='color: #ef4444; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Too many failed attempts. Locked for {remaining}s.</p>", unsafe_allow_html=True)
         
         submit = st.form_submit_button("LOGIN", type="primary", width="stretch", disabled=is_locked)
         
@@ -74,10 +74,10 @@ if not st.session_state.logged_in:
                 if st.session_state.login_attempts >= MAX_LOGIN_ATTEMPTS:
                     st.session_state.lockout_until = time.time() + LOCKOUT_SECONDS
                     send_telegram_alert(f"[ALERT] Account lockout triggered for user: <b>{_html.escape(username)}</b>\n{MAX_LOGIN_ATTEMPTS} failed attempts.")
-                    st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Account locked for {LOCKOUT_SECONDS // 60} minutes due to too many failed attempts.</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='color: #ef4444; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Account locked for {LOCKOUT_SECONDS // 60} minutes due to too many failed attempts.</p>", unsafe_allow_html=True)
                 else:
                     time.sleep(1.5)  # Slow down brute-force attempts
-                    st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Invalid credentials. {attempts_left} attempt(s) remaining.</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='color: #ef4444; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Invalid credentials. {attempts_left} attempt(s) remaining.</p>", unsafe_allow_html=True)
 
     render_footer()
     st.stop()
