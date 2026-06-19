@@ -498,8 +498,9 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     database.log_adjustment(supabase, sku, qty, "Failed", "Node Timeout", bot_user)
                     
                 progress_bar.progress((i+1)/total_rows)
-                if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
-                    render_aggrid(df_view, key="pw_inv_exec", live_update=True)
+                if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1:
+                    with table_placeholder:
+                        render_aggrid(df_view, key="pw_inv_exec", live_update=True)
                     
             ui_log("SERVER", "Finalizing batch. Saving document to main server...")
             page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
@@ -855,10 +856,12 @@ def run_mutasi_execution(
             prog_a_ph.progress(state["progress_a"])
             prog_b_ph.progress(state["progress_b"])
             if state["df_a_dirty"]:
-                render_aggrid(df_a, key="pw_mutasi_a", live_update=True)
+                with table_a_ph:
+                    render_aggrid(df_a, key="pw_mutasi_a", live_update=True)
                 state["df_a_dirty"] = False
             if state["df_b_dirty"]:
-                render_aggrid(df_b, key="pw_mutasi_b", live_update=True)
+                with table_b_ph:
+                    render_aggrid(df_b, key="pw_mutasi_b", live_update=True)
                 state["df_b_dirty"] = False
         # Render logs from main thread
         render_terminal(log_a_ph, logs_a_list)
@@ -869,8 +872,10 @@ def run_mutasi_execution(
     with lock:
         prog_a_ph.progress(state["progress_a"])
         prog_b_ph.progress(state["progress_b"])
-        render_aggrid(df_a, key="pw_mutasi_a_final", live_update=True)
-        render_aggrid(df_b, key="pw_mutasi_b_final", live_update=True)
+        with table_a_ph:
+            render_aggrid(df_a, key="pw_mutasi_a_final", live_update=True)
+        with table_b_ph:
+            render_aggrid(df_b, key="pw_mutasi_b_final", live_update=True)
     render_terminal(log_a_ph, logs_a_list)
     render_terminal(log_b_ph, logs_b_list)
 
