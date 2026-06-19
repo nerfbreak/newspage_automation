@@ -6,7 +6,7 @@ import playwright_engine
 from utils import (
     make_solid_box, render_footer,
     check_auth, render_indicators, render_header,
-    send_telegram_alert, init_session_state, render_wakelock, style_status,
+    send_telegram_alert, init_session_state, render_wakelock, style_status, render_aggrid,
 )
 
 # --- AUTH CHECK ---
@@ -133,8 +133,7 @@ if uploaded_file is not None:
             df_display[f'Add ({dist_b})'] = df_display['Qty'].apply(lambda x: f"+{abs(x)}")
 
             st.markdown("<div class='box-review'>Stock Review</div>", unsafe_allow_html=True)
-            st.dataframe(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']],
-                         width="stretch", height=400, hide_index=True)
+            render_aggrid(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']], key="mutasi_review", enable_filters=True)
         else:
             st.warning("Tidak ada SKU valid di file yang diupload.")
     else:
@@ -168,12 +167,12 @@ if st.button("EXECUTE MUTASI", type="primary", width="stretch", disabled=not can
     df_a_display['Qty'] = '-' + df_a_display['Qty'].astype(str)
     df_a_display['Status'] = 'Pending'
     df_a_display['Keterangan'] = 'Ready'
-    table_a_ph.dataframe(style_status(df_a_display), width="stretch", height=400, hide_index=True)
+    render_aggrid(df_a_display, key="mutasi_exec_a", live_update=True)
 
     df_b_display = df_mutasi[['SKU', 'Description', 'Qty']].copy()
     df_b_display['Status'] = 'Pending'
     df_b_display['Keterangan'] = 'Ready'
-    table_b_ph.dataframe(style_status(df_b_display), width="stretch", height=400, hide_index=True)
+    render_aggrid(df_b_display, key="mutasi_exec_b", live_update=True)
 
     prog_a_ph.progress(0)
     prog_b_ph.progress(0)

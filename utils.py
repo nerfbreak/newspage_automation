@@ -217,3 +217,64 @@ def style_status(df):
     if 'Status' not in df.columns:
         return df.style
     return df.style.map(_color_status, subset=['Status'])
+
+
+# AgGrid theme (quartz + dark + row borders)
+_AGGRID_THEME = None
+
+def _get_aggrid_theme():
+    global _AGGRID_THEME
+    if _AGGRID_THEME is None:
+        from st_aggrid import StAggridTheme
+        _AGGRID_THEME = (
+            StAggridTheme(base="quartz")
+            .withParams(rowBorder=True)
+            .withParts("iconSetQuartz", "colorSchemeDark")
+        )
+    return _AGGRID_THEME
+
+
+def render_aggrid(df, key="ag_grid", height=400, enable_filters=False, live_update=False):
+    """Render DataFrame using AgGrid with quartz dark theme and status column coloring.
+
+    Args:
+        df: pandas DataFrame to display
+        key: unique widget key (required for state persistence)
+        height: grid height in pixels (default 400)
+        enable_filters: if True, enable column filtering
+        live_update: if True, use server_wins strategy for live-updating tables
+    """
+    from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
+
+    # Status column cell styling
+    status_cell_style = JsCode("""
+    function(params) {
+        if (!params.value) return {};
+        var val = params.value.toString().toLowerCase();
+        if (val === 'success') return {color: '#4ade80', fontWeight: '600'};
+        if (val === 'failed' || val === 'error') return {color: '#f87171', fontWeight: '600'};
+        if (val === 'pending') return {color: '#facc15', fontWeight: '600'};
+        return {};
+    }
+    """)
+
+    gb = GridOptionsBuilder.from_dataframe(df)
+    gb.configure_default_column(resizable=True, sortable=True, filter=enable_filters)
+
+    if 'Status' in df.columns:
+        gb.configure_column('Status', cellStyle=status_cell_style)
+
+    grid_options = gb.build()
+
+    AgGrid(
+        df,
+        gridOptions=grid_options,
+        height=height,
+        theme=_get_aggrid_theme(),
+        allow_unsafe_jscode=True,
+        key=key,
+        update_on=[],
+        show_toolbar=False,
+        show_download_button=False,
+        server_sync_strategy='server_wins' if live_update else 'client_wins',
+    )
