@@ -7,7 +7,7 @@ from utils import (
     make_solid_box, make_success_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
     encode_param, decode_param, send_telegram_alert,
-    init_session_state, render_wakelock, style_status, render_aggrid,
+    init_session_state, render_wakelock, style_status,
 )
 
 # --- AUTH CHECK ---
@@ -177,7 +177,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
     df_display = df_clear.copy()
     df_display['Clear Qty'] = df_display['Qty'].apply(lambda x: f"-{abs(x)}")
     display_cols = ['SKU', 'Description', 'Qty', 'Clear Qty'] if 'Description' in df_display.columns else ['SKU', 'Qty', 'Clear Qty']
-    render_aggrid(df_display[display_cols], key="clearance_review", enable_filters=True)
+    st.dataframe(style_status(df_display[display_cols]), width="stretch", height=400, hide_index=True)
 
     # --- EXECUTE ---
     if st.button("EXECUTE CLEARANCE", type="primary", width="stretch"):

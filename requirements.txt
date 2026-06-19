@@ -7,4 +7,3 @@ requests
 supabase
 bcrypt
 python-dotenv
-streamlit-aggrid==1.2.1

@@ -6,7 +6,7 @@ import playwright_engine
 from utils import (
     make_solid_box, render_footer,
     check_auth, render_indicators, render_header,
-    send_telegram_alert, init_session_state, render_wakelock, style_status, render_aggrid,
+    send_telegram_alert, init_session_state, render_wakelock, style_status,
 )
 
 # --- AUTH CHECK ---
@@ -133,7 +133,7 @@ if uploaded_file is not None:
             df_display[f'Add ({dist_b})'] = df_display['Qty'].apply(lambda x: f"+{abs(x)}")
 
             st.markdown("<div class='box-review'>Stock Review</div>", unsafe_allow_html=True)
-            render_aggrid(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']], key="mutasi_review", enable_filters=True)
+            st.dataframe(style_status(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']]), width="stretch", height=400, hide_index=True)
         else:
             st.warning("Tidak ada SKU valid di file yang diupload.")
     else:

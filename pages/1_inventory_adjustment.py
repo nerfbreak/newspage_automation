@@ -7,7 +7,7 @@ from utils import (
     make_solid_box, make_success_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
     encode_param, decode_param, send_telegram_alert,
-    init_session_state, render_wakelock, style_status, render_aggrid,
+    init_session_state, render_wakelock, style_status,
 )
 
 # --- AUTH CHECK ---
@@ -205,7 +205,7 @@ if st.session_state.reconcile_summary is not None and st.session_state.reconcile
     m1, m2 = st.columns(2); match_count = st.session_state.reconcile_summary['total_match']; mismatch_count = st.session_state.reconcile_summary['total_mismatch']
     with m1: st.markdown(f'''<div class="metric-box-match"><div class="metric-label">Match</div><div class="metric-value">{match_count}</div></div>''', unsafe_allow_html=True)
     with m2: st.markdown(f'''<div class="metric-box-mismatch"><div class="metric-label">Stock difference</div><div class="metric-value">{mismatch_count}</div></div>''', unsafe_allow_html=True)
-    render_aggrid(st.session_state.reconcile_summary['df_view'], key="inv_review", enable_filters=True)
+    st.dataframe(style_status(st.session_state.reconcile_summary['df_view']), width="stretch", height=400, hide_index=True)
     
     df_view = st.session_state.reconcile_result.copy()
     df_view['Status'] = df_view['Status'].apply(lambda x: 'Pending' if x == 'Mismatch' else x)

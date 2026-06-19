@@ -8,7 +8,7 @@ import zipfile
 import pandas as pd
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 import database
-from utils import render_terminal, style_status, render_aggrid
+from utils import render_terminal, style_status
 def ensure_playwright():
     try:
         with sync_playwright() as p:
@@ -501,7 +501,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1:
                     table_placeholder.empty()
                     with table_placeholder:
-                        render_aggrid(df_view, key=f"pw_inv_exec_{i}", live_update=True)
+                        table_placeholder.dataframe(style_status(df_view), width="stretch", height=400, hide_index=True)
                     
             ui_log("SERVER", "Finalizing batch. Saving document to main server...")
             page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
@@ -860,13 +860,13 @@ def run_mutasi_execution(
             if state["df_a_dirty"]:
                 table_a_ph.empty()
                 with table_a_ph:
-                    render_aggrid(df_a, key=f"pw_mutasi_a_{mutasi_render_count}", live_update=True)
+                    table_a_ph.dataframe(style_status(df_a), width="stretch", height=400, hide_index=True)
                 state["df_a_dirty"] = False
                 mutasi_render_count += 1
             if state["df_b_dirty"]:
                 table_b_ph.empty()
                 with table_b_ph:
-                    render_aggrid(df_b, key=f"pw_mutasi_b_{mutasi_render_count}", live_update=True)
+                    table_b_ph.dataframe(style_status(df_b), width="stretch", height=400, hide_index=True)
                 state["df_b_dirty"] = False
                 mutasi_render_count += 1
         # Render logs from main thread
@@ -880,10 +880,10 @@ def run_mutasi_execution(
         prog_b_ph.progress(state["progress_b"])
         table_a_ph.empty()
         with table_a_ph:
-            render_aggrid(df_a, key="pw_mutasi_a_final", live_update=True)
+            table_a_ph.dataframe(style_status(df_a), width="stretch", height=400, hide_index=True)
         table_b_ph.empty()
         with table_b_ph:
-            render_aggrid(df_b, key="pw_mutasi_b_final", live_update=True)
+            table_b_ph.dataframe(style_status(df_b), width="stretch", height=400, hide_index=True)
     render_terminal(log_a_ph, logs_a_list)
     render_terminal(log_b_ph, logs_b_list)
 
