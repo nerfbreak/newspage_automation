@@ -178,6 +178,13 @@ with nav_col5:
         if st.button("Open Clearance Stock", key="btn_nav_clearance", use_container_width=True, type="primary"):
             st.switch_page("pages/5_clearance_stock.py")
 
+with nav_col6:
+    with st.container(border=True):
+        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #e5e5e5; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Initial Stock</h4>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 13px; color: #a3a3a3; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Upload stock file and populate empty distributor inventory via automated Playwright adjustments.</p>", unsafe_allow_html=True)
+        if st.button("Open Initial Stock", key="btn_nav_init_stock", use_container_width=True, type="primary"):
+            st.switch_page("pages/6_initial_stock.py")
+
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
 # --- SYSTEM MONITORING SECTION ---
