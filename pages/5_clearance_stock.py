@@ -183,7 +183,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
 
             st.markdown("<div class='box-queue'>Clearance Execution</div>", unsafe_allow_html=True)
             table_placeholder = st.empty()
-            render_aggrid(df_exec, key="clearance_exec", live_update=True)
+            table_placeholder.dataframe(style_status(df_exec), width="stretch", height=400, hide_index=True)
 
             log_label_placeholder = st.empty()
             log_placeholder = st.empty()

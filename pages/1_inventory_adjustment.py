@@ -203,7 +203,7 @@ if st.session_state.reconcile_summary is not None and st.session_state.reconcile
     if 'Keterangan' not in df_view.columns: df_view['Keterangan'] = 'Ready to Process'
     
     st.markdown(f"<div class='box-queue'>Adjustment SKU List</div>", unsafe_allow_html=True)
-    table_placeholder = st.empty(); render_aggrid(df_view, key="inv_exec", live_update=True)
+    table_placeholder = st.empty(); table_placeholder.dataframe(style_status(df_view), width="stretch", height=400, hide_index=True)
     
     log_label_placeholder = st.empty()
     log_placeholder = st.empty()
