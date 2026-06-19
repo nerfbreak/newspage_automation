@@ -2,6 +2,7 @@
 Uses environment variables instead of st.secrets, no @st.cache_resource.
 """
 import os
+import time
 import logging
 import bcrypt
 from cryptography.fernet import Fernet
@@ -74,12 +75,14 @@ def decrypt_data(encrypted_data: str) -> str:
         return ""  # Return empty string instead of ciphertext to prevent silent data corruption
 
 _config_cache: dict = {}
+_config_cache_ts: float = 0
+_CACHE_TTL = 300  # 5 minutes
 
 def get_system_config(supabase):
     """Fetch system config with in-memory caching (avoids repeated DB calls).
     Returns a dict with keys: REASON_CODE, WAREHOUSE, URL_LOGIN, TIMEOUT_MS, TABLE_UPDATE_INTERVAL.
     """
-    if "system_config" in _config_cache:
+    if "system_config" in _config_cache and (time.time() - _config_cache_ts) < _CACHE_TTL:
         return _config_cache["system_config"]
 
     cfg = {
@@ -108,6 +111,7 @@ def get_system_config(supabase):
             logging.error(f"Error fetching system_config: {e}")
 
     _config_cache["system_config"] = cfg
+    _config_cache_ts = time.time()
     return cfg
 
 def authenticate_user(supabase, username, password):
@@ -123,10 +127,11 @@ def authenticate_user(supabase, username, password):
     return False
 
 _distributor_cache: dict = {}
+_distributor_cache_ts: float = 0
 
 def get_distributor_list(supabase):
     """Fetch distributor list with in-memory caching."""
-    if "distributor_list" in _distributor_cache:
+    if "distributor_list" in _distributor_cache and (time.time() - _distributor_cache_ts) < _CACHE_TTL:
         return _distributor_cache["distributor_list"]
     
     list_dist = []
@@ -139,6 +144,7 @@ def get_distributor_list(supabase):
     if not list_dist: list_dist = ["Belum ada data di Database"]
     
     _distributor_cache["distributor_list"] = list_dist
+    _distributor_cache_ts = time.time()
     return list_dist
 
 def get_distributor_creds(supabase, selected_distributor):

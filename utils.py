@@ -179,7 +179,7 @@ def render_header(title, subtitle=""):
         back_key = f"btn_back_to_dash_{title.lower().replace(' ', '_')}"
         if st.button("Dashboard", key=back_key, type="primary", icon=":material/home:"):
             st.switch_page("pages/0_dashboard.py")
-        st.markdown("<div style='margin-top: 12px;'></div>", unsafe_allow_html=True)
+        st.space("small")
     st.markdown(f"<h1>{title}</h1>", unsafe_allow_html=True)
     if subtitle:
         st.markdown(clean_html(f"""

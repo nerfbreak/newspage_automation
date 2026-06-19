@@ -1,3 +1,4 @@
+import html
 import streamlit as st
 from datetime import datetime
 from utils import check_auth, render_header, render_footer, clean_html
@@ -249,10 +250,10 @@ if audit_logs:
     st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>:material/history: &nbsp;Recent Activity</div>", unsafe_allow_html=True)
     
     for log in audit_logs:
-        action = log.get("action", "unknown")
-        user = log.get("user_name", "system")
+        action = html.escape(log.get("action", "unknown"))
+        user = html.escape(log.get("user_name", "system"))
         raw_ts = log.get("created_at", "")
-        details = log.get("details", "")
+        details = html.escape(log.get("details", ""))
         
         # Parse timestamp
         try:

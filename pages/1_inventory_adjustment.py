@@ -88,7 +88,7 @@ with col2:
         st.markdown(f"<div class='box-dist'>Distributor Stock Data</div>", unsafe_allow_html=True)
         def handle_fragment_upload():
             f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key="file2_uploader")
-            st.markdown("<div style='margin-bottom: 28px;'></div>", unsafe_allow_html=True)
+            st.space("large")
             curr_f = getattr(f, "file_id", f.name if f else None) if f else None
             if curr_f != st.session_state.prev_file2:
                 st.session_state.prev_file2 = curr_f
