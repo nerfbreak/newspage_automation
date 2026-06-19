@@ -161,12 +161,12 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
     
     html = clean_html(f"""
         <div style='display: flex; gap: 10px; margin-bottom: 16px; align-items: center;'>
-            <div class='live-indicator'>LIVE</div>
+            <div class='live-indicator'>:material/fiber_manual_record: LIVE</div>
             <div class='status-pill' style='color: {db_color}; border-color: {db_color}33; background-color: {db_color}1a;'>
-                DB: {db_status}
+                :material/database: DB: {db_status}
             </div>
             <div class='status-pill' style='color: {bot_color}; border-color: {bot_color}33; background-color: {bot_color}1a;'>
-                {bot_type}: {bot_status}
+                :material/smart_toy: {bot_type}: {bot_status}
             </div>
         </div>
     """)
@@ -177,7 +177,7 @@ def render_header(title, subtitle=""):
 
     if "Automation Tool" not in title:
         back_key = f"btn_back_to_dash_{title.lower().replace(' ', '_')}"
-        if st.button("Dashboard", key=back_key, type="primary"):
+        if st.button("Dashboard", key=back_key, type="primary", icon=":material/home:"):
             st.switch_page("pages/0_dashboard.py")
         st.markdown("<div style='margin-top: 12px;'></div>", unsafe_allow_html=True)
     st.markdown(f"<h1>{title}</h1>", unsafe_allow_html=True)
