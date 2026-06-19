@@ -7,7 +7,7 @@ from utils import (
     make_solid_box, make_success_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
     encode_param, decode_param, send_telegram_alert,
-    init_session_state, render_wakelock,
+    init_session_state, render_wakelock, style_status,
 )
 
 # --- AUTH CHECK ---
@@ -183,7 +183,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
 
             st.markdown("<div class='box-queue'>Clearance Execution</div>", unsafe_allow_html=True)
             table_placeholder = st.empty()
-            table_placeholder.dataframe(df_exec, width="stretch", height=400, hide_index=True)
+            table_placeholder.dataframe(style_status(df_exec), width="stretch", height=400, hide_index=True)
 
             log_label_placeholder = st.empty()
             log_placeholder = st.empty()

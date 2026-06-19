@@ -166,19 +166,19 @@ button[kind="primary"]:hover {
 .blink_me { animation: blinker 1s linear infinite; font-weight: bold; color: #0068C9; }
 @keyframes blinker { 50% { opacity: 0; } }
 
-.log-time    { display: inline-block; width: 85px;  color: #808495; font-family: "Source Code Pro", monospace; }
-.log-ms      { display: inline-block; width: 75px;  text-align: right; margin-right: 15px; color: #FF2B2B; font-size: 0.75rem; font-family: "Source Code Pro", monospace; }
-.log-tag     { display: inline-block; width: 95px;  font-weight: 600; font-family: "Source Code Pro", monospace; }
-.log-msg     { color: #FAFAFA; font-weight: 400; font-family: "Source Code Pro", monospace; }
+.log-time    { display: inline-block; width: 85px;  color: #94A3B8; font-family: "Source Code Pro", monospace; }
+.log-ms      { display: inline-block; width: 75px;  text-align: right; margin-right: 15px; color: #94A3B8; font-size: 0.75rem; font-family: "Source Code Pro", monospace; }
+.log-tag     { display: inline-block; width: 95px;  font-weight: 700; font-family: "Source Code Pro", monospace; }
+.log-msg     { color: #E2E8F0; font-weight: 400; font-family: "Source Code Pro", monospace; }
 
 /* Log tag color palette */
-.tag-sys     { color: #FB923C; }   /* System info - Orange */
-.tag-auth    { color: #C084FC; }   /* Auth - Purple */
-.tag-nav     { color: #60A5FA; }   /* Nav - Blue */
-.tag-inject  { color: #FFAD4D; }   /* Inject - Amber */
-.tag-success { color: #96D334; }   /* Success - Lime */
-.tag-error   { color: #FB7185; }   /* Error - Rose */
-.tag-server  { color: #FD9BA7; }   /* Server - Light Rose */
+.tag-sys     { color: #F97316; }   /* System info - Bright Orange */
+.tag-auth    { color: #A855F7; }   /* Auth - Vivid Purple */
+.tag-nav     { color: #3B82F6; }   /* Nav - Vivid Blue */
+.tag-inject  { color: #FBBF24; }   /* Inject - Bright Amber/Yellow */
+.tag-success { color: #22C55E; }   /* Success - Vivid Green */
+.tag-error   { color: #EF4444; }   /* Error - Vivid Red */
+.tag-server  { color: #EC4899; }   /* Server - Vivid Pink */
 
 /* --- Box Section Headers --- */
 .box-np, .box-dist, .box-review, .box-queue, .box-results {

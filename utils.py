@@ -197,3 +197,23 @@ def render_footer():
         </span>
     </div>
     """), unsafe_allow_html=True)
+
+
+def style_status(df):
+    """Apply color-coded styling to the Status column.
+    Success = green, Failed/Error = red, Pending = yellow.
+    Returns a pandas Styler object.
+    """
+    def _color_status(val):
+        v = str(val).strip().lower()
+        if v == 'success':
+            return 'background-color: #d4edda; color: #155724; font-weight: 600;'
+        elif v in ('failed', 'error'):
+            return 'background-color: #f8d7da; color: #721c24; font-weight: 600;'
+        elif v == 'pending':
+            return 'background-color: #fff3cd; color: #856404; font-weight: 600;'
+        return ''
+
+    if 'Status' not in df.columns:
+        return df.style
+    return df.style.map(_color_status, subset=['Status'])

@@ -8,7 +8,7 @@ import zipfile
 import pandas as pd
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 import database
-from utils import render_terminal
+from utils import render_terminal, style_status
 def ensure_playwright():
     try:
         with sync_playwright() as p:
@@ -462,12 +462,12 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 html = f"""
                 <div style='display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; margin-bottom: 8px;'>
                     <div>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #a5adce; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #c6d0f5; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
+                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
+                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #93C5FD; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
                     </div>
                     <div>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #a5adce; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Processed</span>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #c6d0f5; text-transform: uppercase; letter-spacing: 0.1em;'>{current}/{total}</span>
+                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Processed</span>
+                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #93C5FD; text-transform: uppercase; letter-spacing: 0.1em;'>{current}/{total}</span>
                     </div>
                 </div>
                 """
@@ -499,7 +499,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     
                 progress_bar.progress((i+1)/total_rows)
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
-                    table_placeholder.dataframe(df_view, width="stretch", height=400, hide_index=True)
+                    table_placeholder.dataframe(style_status(df_view), width="stretch", height=400, hide_index=True)
                     
             ui_log("SERVER", "Finalizing batch. Saving document to main server...")
             page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
@@ -855,10 +855,10 @@ def run_mutasi_execution(
             prog_a_ph.progress(state["progress_a"])
             prog_b_ph.progress(state["progress_b"])
             if state["df_a_dirty"]:
-                table_a_ph.dataframe(df_a, width="stretch", height=400, hide_index=True)
+                table_a_ph.dataframe(style_status(df_a), width="stretch", height=400, hide_index=True)
                 state["df_a_dirty"] = False
             if state["df_b_dirty"]:
-                table_b_ph.dataframe(df_b, width="stretch", height=400, hide_index=True)
+                table_b_ph.dataframe(style_status(df_b), width="stretch", height=400, hide_index=True)
                 state["df_b_dirty"] = False
         # Render logs from main thread
         render_terminal(log_a_ph, logs_a_list)
@@ -869,8 +869,8 @@ def run_mutasi_execution(
     with lock:
         prog_a_ph.progress(state["progress_a"])
         prog_b_ph.progress(state["progress_b"])
-        table_a_ph.dataframe(df_a, width="stretch", height=400, hide_index=True)
-        table_b_ph.dataframe(df_b, width="stretch", height=400, hide_index=True)
+        table_a_ph.dataframe(style_status(df_a), width="stretch", height=400, hide_index=True)
+        table_b_ph.dataframe(style_status(df_b), width="stretch", height=400, hide_index=True)
     render_terminal(log_a_ph, logs_a_list)
     render_terminal(log_b_ph, logs_b_list)
 

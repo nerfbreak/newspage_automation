@@ -7,7 +7,7 @@ from utils import (
     make_solid_box, make_success_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
     encode_param, decode_param, send_telegram_alert,
-    init_session_state, render_wakelock,
+    init_session_state, render_wakelock, style_status,
 )
 
 # --- AUTH CHECK ---
@@ -203,7 +203,7 @@ if st.session_state.reconcile_summary is not None and st.session_state.reconcile
     if 'Keterangan' not in df_view.columns: df_view['Keterangan'] = 'Ready to Process'
     
     st.markdown(f"<div class='box-queue'>Adjustment SKU List</div>", unsafe_allow_html=True)
-    table_placeholder = st.empty(); table_placeholder.dataframe(df_view, width="stretch", height=400, hide_index=True)
+    table_placeholder = st.empty(); table_placeholder.dataframe(style_status(df_view), width="stretch", height=400, hide_index=True)
     
     log_label_placeholder = st.empty()
     log_placeholder = st.empty()
