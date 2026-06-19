@@ -156,9 +156,9 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
     # Summary metrics
     sm1, sm2 = st.columns(2)
     with sm1:
-        st.markdown(f'''<div class="metric-box-match"><div class="metric-label">Total SKU</div><div class="metric-value">{len(df_clear)}</div></div>''', unsafe_allow_html=True)
+        st.markdown(f'''<div class="metric-box-match"><div class="metric-label">Total SKU to Clear</div><div class="metric-value">{len(df_clear)}</div></div>''', unsafe_allow_html=True)
     with sm2:
-        st.markdown(f'''<div class="metric-box-mismatch"><div class="metric-label">Total Stock to Zero</div><div class="metric-value">-{df_clear['Qty'].sum()}</div></div>''', unsafe_allow_html=True)
+        st.markdown(f'''<div class="metric-box-mismatch"><div class="metric-label">Total SKU to Process</div><div class="metric-value">{len(df_clear)}</div></div>''', unsafe_allow_html=True)
 
     st.markdown("<div class='box-review'>Stock Clearance Review</div>", unsafe_allow_html=True)
 
