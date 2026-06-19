@@ -131,7 +131,7 @@ with col2:
 with col3:
     st.markdown(render_metric_card("Registered Distributors", str(total_distributors)), unsafe_allow_html=True)
 
-st.divider()
+st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
 # --- NAVIGATION HUB ---
 st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>Navigation</div>", unsafe_allow_html=True)
@@ -159,7 +159,7 @@ with nav_col3:
         if st.button("Open Promotion Comparison", key="btn_nav_promo", use_container_width=True, type="primary"):
             st.switch_page("pages/3_promotion_comparison.py")
 
-st.divider()
+st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
 # --- NAVIGATION ROW 2 ---
 nav_col4, nav_col5, nav_col6 = st.columns(3)
@@ -178,7 +178,7 @@ with nav_col5:
         if st.button("Open Clearance Stock", key="btn_nav_clearance", use_container_width=True, type="primary"):
             st.switch_page("pages/5_clearance_stock.py")
 
-st.divider()
+st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
 # --- SYSTEM MONITORING SECTION ---
 with st.container(border=False):
