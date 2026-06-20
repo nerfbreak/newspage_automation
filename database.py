@@ -1,12 +1,17 @@
-"""Database module - framework-agnostic version for Reflex migration.
-Uses environment variables instead of st.secrets, no @st.cache_resource.
-"""
 import os
 import time
 import logging
 import bcrypt
 from cryptography.fernet import Fernet
 from supabase import create_client, Client
+
+# Configure logging if not already configured (critical for production)
+if not logging.getLogger().handlers:
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
 
 logger = logging.getLogger(__name__)
 

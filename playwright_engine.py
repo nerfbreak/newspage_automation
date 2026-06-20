@@ -6,9 +6,13 @@ import asyncio
 import sys
 import zipfile
 import pandas as pd
+import threading
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 import database
 from utils import render_terminal, style_status
+
+# Thread lock for DataFrame operations (prevents race conditions in multi-threaded execution)
+_df_lock = threading.Lock()
 def ensure_playwright():
     try:
         with sync_playwright() as p:
@@ -229,12 +233,26 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
                 st.session_state.np_df = df_ext
                 database.log_extraction_history(supabase, selected_distributor, current_user)
                 st.session_state.is_bot_running = False
+                # Cleanup temp file after successful processing
+                try:
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                        ext_ui_log("SYS", f"Temp file cleaned: {file_path}")
+                except Exception as cleanup_err:
+                    ext_ui_log("WARN", f"Temp file cleanup failed: {cleanup_err}")
                 st.rerun()
             else: 
                 st.session_state.is_bot_running = False
                 ext_ui_log("ERROR", "DataFrame validation failed.")
                 st.error("Gagal membaca file dari server.")
                 alert_callback(f"[WARN] <b>EXTRACT FAILED</b>\nUser: {current_user}\nDist: {selected_distributor}\nReason: Invalid DataFrame")
+                # Cleanup temp file even on failure
+                try:
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                        ext_ui_log("SYS", f"Temp file cleaned: {file_path}")
+                except Exception as cleanup_err:
+                    ext_ui_log("WARN", f"Temp file cleanup failed: {cleanup_err}")
                 
     except PlaywrightTimeoutError: 
         st.session_state.is_bot_running = False
@@ -370,6 +388,14 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
             with open(file_path, "rb") as f:
                 st.session_state.sales_csv_data = f.read()
                 st.session_state.sales_csv_filename = real_filename
+            
+            # Cleanup temp file after reading
+            try:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                    ext_ui_log("SYS", f"Temp file cleaned: {file_path}")
+            except Exception as cleanup_err:
+                ext_ui_log("WARN", f"Temp file cleanup failed: {cleanup_err}")
                 
             st.session_state.is_bot_running = False
             st.rerun()
@@ -670,6 +696,14 @@ def run_promotion_sync(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIM
             with open(file_path, "rb") as f:
                 st.session_state.promo_zip_data = f.read()
                 st.session_state.promo_zip_filename = real_filename
+            
+            # Cleanup temp file after reading
+            try:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                    ext_ui_log("SYS", f"Temp file cleaned: {file_path}")
+            except Exception as cleanup_err:
+                ext_ui_log("WARN", f"Temp file cleanup failed: {cleanup_err}")
                 
             st.session_state.is_promo_bot_running = False
             st.rerun()

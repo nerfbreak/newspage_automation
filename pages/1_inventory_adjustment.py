@@ -94,12 +94,8 @@ with col2:
                 st.session_state.prev_file2 = curr_f
                 if not st.session_state.is_bot_running: st.rerun()
 
-        if hasattr(st, "fragment"):
+        elif hasattr(st, "fragment"):
             @st.fragment
-            def render_upload_dist(): handle_fragment_upload()
-            render_upload_dist()
-        elif hasattr(st, "experimental_fragment"):
-            @st.experimental_fragment
             def render_upload_dist(): handle_fragment_upload()
             render_upload_dist()
         else:

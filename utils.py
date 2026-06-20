@@ -4,6 +4,14 @@ import logging
 import requests
 import streamlit as st
 
+# Configure logging if not already configured (critical for production)
+if not logging.getLogger().handlers:
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+
 logger = logging.getLogger(__name__)
 
 # ── Constants ──────────────────────────────────────────────
