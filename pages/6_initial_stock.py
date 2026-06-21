@@ -153,8 +153,7 @@ if st.session_state.initial_stock_df is not None and len(st.session_state.initia
     df_init = st.session_state.initial_stock_df
 
     # Summary metrics
-    with st.container(horizontal=True):
-        st.markdown(render_metric_card("Total SKU", len(df_init)), unsafe_allow_html=True)
+    st.markdown(render_metric_card("Total SKU", len(df_init)), unsafe_allow_html=True)
 
     st.subheader("Initial Stock Review")
 
