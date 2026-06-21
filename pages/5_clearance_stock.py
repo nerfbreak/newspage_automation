@@ -117,6 +117,11 @@ if st.session_state.get("np_df") is not None and st.session_state.clearance_df i
         df_clear = df_clear.dropna(subset=['SKU'])
         df_clear['SKU'] = df_clear['SKU'].astype(str).str.split('.').str[0].str.strip()
         df_clear = df_clear[~df_clear['SKU'].str.lower().isin(['nan', 'none', '', 'total', 'grand total'])]
+        
+        # Apply SKU mapping rule
+        TARGET_SKUS = database.get_target_skus(supabase)
+        EXCLUDE_PREFIX = ['8021803', '8021804']
+        df_clear['SKU'] = df_clear['SKU'].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
         df_clear['Qty'] = pd.to_numeric(
             df_clear['Qty'].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False),
             errors='coerce'
