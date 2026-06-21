@@ -197,3 +197,38 @@ def render_footer():
         </span>
     </div>
     """), unsafe_allow_html=True)
+
+
+def style_status(df):
+    return df
+
+def make_terminal_logger(placeholder):
+    import time
+    from datetime import datetime, timezone, timedelta
+    
+    logs_history = []
+    last_log_time = [time.time()]
+
+    def ui_log(module, msg):
+        now = time.time()
+        diff_ms = int((now - last_log_time[0]) * 1000)
+        last_log_time[0] = now
+        timestamp = datetime.now(timezone(timedelta(hours=7))).strftime('%H:%M:%S')
+        tag_class = f"tag-{module.lower()}"
+        logs_history.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>[{module}]</span><span class='log-msg'>{msg}</span>")
+        render_terminal(placeholder, logs_history)
+
+    return ui_log, logs_history
+
+def resolve_distributor_url(list_dist):
+    url_d = st.query_params.get("d", None)
+    url_dist = None
+    if url_d:
+        url_dist = decode_param(url_d)
+    else:
+        plain_dist = st.query_params.get("distributor", None)
+        if plain_dist:
+            url_dist = plain_dist
+            st.query_params.pop("distributor", None)
+    default_index = list_dist.index(url_dist) if url_dist in list_dist else 0
+    return url_dist, default_index
