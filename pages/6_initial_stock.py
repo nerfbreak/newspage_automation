@@ -127,8 +127,8 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
             errors='coerce'
         ).fillna(0).astype(int)
 
-        # Filter out zero qty
-        df_init = df_init[df_init['Qty'] != 0].reset_index(drop=True)
+        # Do NOT filter out zero qty for Initial Stock
+        df_init = df_init.reset_index(drop=True)
 
         if 'Description' not in df_init.columns:
             df_init['Description'] = ''
