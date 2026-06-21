@@ -8,9 +8,13 @@ from utils import (
     check_auth, render_indicators, render_header,
     send_telegram_alert, init_session_state, render_wakelock, style_status,
 )
+from utils.theme import load_theme
 
 # --- AUTH CHECK ---
 check_auth()
+
+# --- Load Theme (in case page is accessed directly) ---
+load_theme()
 
 supabase = database.init_supabase()
 _sys_cfg = database.get_system_config(supabase)

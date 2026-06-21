@@ -6,9 +6,11 @@ from utils import (
     render_footer, inject_css, send_telegram_alert,
     init_session_state, render_wakelock,
 )
+from utils.theme import load_theme
 
 # --- 1. CONFIG & UI HELPERS ---
 st.set_page_config(page_title="Stock Adjustment Newspage", page_icon=":material/analytics:", layout="wide")
+load_theme()  # Apply Flat Design Corporativo theme
 inject_css()
 supabase = database.init_supabase()
 # Pre-warm the config cache so pages can access it without re-querying

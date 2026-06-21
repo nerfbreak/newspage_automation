@@ -2,10 +2,14 @@ import html
 import streamlit as st
 from datetime import datetime, timedelta
 from utils import check_auth, render_header, render_footer
+from utils.theme import load_theme
 import database
 
 # --- AUTH CHECK ---
 check_auth()
+
+# --- Load Theme (in case page is accessed directly) ---
+load_theme()
 
 # --- HEADER ---
 render_header("Automation Tool", st.session_state.current_user)
