@@ -3,7 +3,7 @@ import streamlit as st
 import database
 import playwright_engine
 from utils import (
-    render_footer,
+    render_footer, make_solid_box,
     check_auth, render_indicators, render_header,
     encode_param, send_telegram_alert,
     init_session_state, render_wakelock, style_status,
@@ -136,7 +136,7 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
 if st.session_state.initial_stock_df is not None:
     df_init = st.session_state.initial_stock_df
 
-    st.info(f"Loaded — {len(df_init)} items from uploaded file")
+    st.markdown(make_solid_box(f"Loaded — {len(df_init)} items from uploaded file", "#0068C9", "#0068C9"), unsafe_allow_html=True)
 
     if st.button("Clear uploaded data", width="stretch"):
         st.session_state.initial_stock_df = None
@@ -161,7 +161,7 @@ if st.session_state.initial_stock_df is not None and len(st.session_state.initia
 
     # --- EXECUTE ---
     if st.session_state.is_bot_running:
-        st.info("Initializing stock data...")
+        st.markdown(make_solid_box("Initializing stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
     else:
         if st.button("EXECUTE INITIAL STOCK", type="primary", width="stretch"):
             if not bot_user or not bot_pass:

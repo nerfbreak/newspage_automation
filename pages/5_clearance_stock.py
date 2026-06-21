@@ -3,7 +3,7 @@ import streamlit as st
 import database
 import playwright_engine
 from utils import (
-    render_footer,
+    render_footer, make_solid_box,
     check_auth, render_indicators, render_header,
     encode_param, send_telegram_alert,
     init_session_state, render_wakelock, style_status,
@@ -60,7 +60,7 @@ ext_label_placeholder = st.empty()
 ext_log_placeholder = st.empty()
 
 if st.session_state.is_bot_running:
-    st.info("Extracting stock data...")
+    st.markdown(make_solid_box("Extracting stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
     extract_btn = False
 else:
     extract_btn = st.button("Step 1: Extract Real-time Stock from Newspage", type="primary", width="stretch", disabled=not bot_user)
@@ -89,7 +89,7 @@ if st.session_state.get("_pending_clearance_extract", False):
 
 # --- REVIEW EXTRACTED DATA ---
 if st.session_state.clearance_df is not None:
-    st.info(f"Extracted — {len(st.session_state.clearance_df)} items loaded from server")
+    st.markdown(make_solid_box(f"Extracted — {len(st.session_state.clearance_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
     if st.button("Clear extracted data", width="stretch"):
         st.session_state.clearance_df = None
         st.rerun()

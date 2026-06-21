@@ -4,7 +4,7 @@ import database
 import data_processor
 import playwright_engine
 from utils import (
-    render_footer,
+    render_footer, make_solid_box,
     check_auth, render_indicators, render_header,
     send_telegram_alert, init_session_state, render_wakelock, style_status,
 )
@@ -77,7 +77,7 @@ if uploaded_file is not None:
     df_raw = data_processor.load_data(uploaded_file)
 
     if df_raw is not None and not df_raw.empty:
-        st.info(f"File loaded — {len(df_raw)} rows, {len(df_raw.columns)} columns")
+        st.markdown(make_solid_box(f"File loaded — {len(df_raw)} rows, {len(df_raw.columns)} columns", "#0068C9", "#0068C9"), unsafe_allow_html=True)
 
         # --- COLUMN MAPPING ---
         st.subheader("Column Mapping")
