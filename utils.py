@@ -137,6 +137,50 @@ def make_success_box(text: str) -> str:
         '>{text}</div>
     """)
 
+def render_metric_card(title, value, accent=False):
+    # Styling variables to match Streamlit Design System theme
+    bg = "#0068C9" if accent else "#F0F2F6"
+    fg = "#FFFFFF" if accent else "#31333F"
+    border = "1px solid rgba(0, 104, 201, 0.15)" if accent else "1px solid rgba(0, 0, 0, 0.08)"
+    shadow = "0 4px 16px rgba(0, 0, 0, 0.15)" if accent else "0 4px 12px rgba(0, 0, 0, 0.03)"
+    
+    value_str = str(value)
+    
+    # Dynamic font sizing and centering calculations
+    if len(value_str) > 20:
+        font_size_px = 18
+    elif len(value_str) > 10:
+        font_size_px = 24
+    else:
+        font_size_px = 38
+        
+    font_size = f"{font_size_px}px"
+    
+    target_center = 70
+    margin_top = int((target_center - font_size_px / 2) - 31)
+    
+    return clean_html(f"""
+    <div style='
+        background-color: {bg};
+        color: {fg};
+        border: {border};
+        border-radius: 10px;
+        padding: 20px 24px;
+        width: 100%;
+        height: 125px;
+        box-sizing: border-box;
+        font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+        margin-bottom: 16px;
+        box-shadow: {shadow};
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    '>
+        <div style='font-size: 11px; font-weight: 600; color: {"rgba(255, 255, 255, 0.7)" if accent else "#808495"}; text-transform: uppercase; letter-spacing: 0.05em; height: 11px; line-height: 1;'>{title}</div>
+        <div style='font-size: {font_size}; font-weight: 700; color: {fg}; margin-top: {margin_top}px; line-height: 1;'>{value_str}</div>
+    </div>
+    """)
+
 def render_terminal(placeholder, logs_history: list):
     display_logs = "<br>".join(logs_history[-100:])
     html_content = f"""

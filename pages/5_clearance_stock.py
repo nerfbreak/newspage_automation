@@ -3,7 +3,7 @@ import streamlit as st
 import database
 import playwright_engine
 from utils import (
-    render_footer, make_solid_box,
+    render_footer, make_solid_box, render_metric_card,
     check_auth, render_indicators, render_header,
     encode_param, send_telegram_alert,
     init_session_state, render_wakelock, style_status,
@@ -142,8 +142,8 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
 
     # Summary metrics
     with st.container(horizontal=True):
-        st.metric("Total SKU to Clear", len(df_clear), border=True)
-        st.metric("Total SKU to Process", len(df_clear), border=True)
+        st.markdown(render_metric_card("Total SKU to Clear", len(df_clear)), unsafe_allow_html=True)
+        st.markdown(render_metric_card("Total SKU to Process", len(df_clear)), unsafe_allow_html=True)
 
     st.subheader("Stock Clearance Review")
 

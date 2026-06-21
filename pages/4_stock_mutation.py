@@ -4,7 +4,7 @@ import database
 import data_processor
 import playwright_engine
 from utils import (
-    render_footer, make_solid_box,
+    render_footer, make_solid_box, render_metric_card,
     check_auth, render_indicators, render_header,
     send_telegram_alert, init_session_state, render_wakelock, style_status,
 )
@@ -120,9 +120,9 @@ if uploaded_file is not None:
 
             # Summary metrics
             with st.container(horizontal=True):
-                st.metric("Total SKU", len(df_review), border=True)
-                st.metric(f"Total Qty Dikurangi ({dist_a})", f"-{df_review['Qty'].sum()}", border=True)
-                st.metric(f"Total Qty Ditambah ({dist_b})", f"+{df_review['Qty'].sum()}", border=True)
+                st.markdown(render_metric_card("Total SKU", len(df_review)), unsafe_allow_html=True)
+                st.markdown(render_metric_card(f"Total Qty Dikurangi ({dist_a})", f"-{df_review['Qty'].sum()}"), unsafe_allow_html=True)
+                st.markdown(render_metric_card(f"Total Qty Ditambah ({dist_b})", f"+{df_review['Qty'].sum()}"), unsafe_allow_html=True)
 
             # Review table with deduction/addition preview
             df_display = df_review.copy()
