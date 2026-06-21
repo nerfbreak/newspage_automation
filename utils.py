@@ -156,9 +156,6 @@ def render_metric_card(title, value, accent=False):
         
     font_size = f"{font_size_px}px"
     
-    target_center = 70
-    margin_top = int((target_center - font_size_px / 2) - 31)
-    
     return clean_html(f"""
     <div style='
         background-color: {bg};
@@ -174,10 +171,12 @@ def render_metric_card(title, value, accent=False):
         box-shadow: {shadow};
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
     '>
-        <div style='font-size: 11px; font-weight: 600; color: {"rgba(255, 255, 255, 0.7)" if accent else "#808495"}; text-transform: uppercase; letter-spacing: 0.05em; height: 11px; line-height: 1;'>{title}</div>
-        <div style='font-size: {font_size}; font-weight: 700; color: {fg}; margin-top: {margin_top}px; line-height: 1;'>{value_str}</div>
+        <div style='font-size: 11px; font-weight: 600; color: {"rgba(255, 255, 255, 0.7)" if accent else "#808495"}; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;'>{title}</div>
+        <div style='font-size: {font_size}; font-weight: 700; color: {fg}; line-height: 1;'>{value_str}</div>
     </div>
     """)
 
