@@ -331,4 +331,9 @@ elif adj_mode == "Manual Entry":
                     REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase
                 )
 
+if st.session_state.get('execute_done', False):
+    st.balloons()
+    st.markdown(make_success_box("Eksekusi berhasil diselesaikan! Data telah disimpan di database."), unsafe_allow_html=True)
+    st.session_state.execute_done = False
+
 render_footer()
