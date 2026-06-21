@@ -2,6 +2,7 @@ import time
 import streamlit as st
 import database
 import data_processor
+import pandas as pd
 import playwright_engine
 from utils import (
     make_solid_box, make_success_box, render_terminal, render_footer,
@@ -30,6 +31,8 @@ init_session_state(
     prev_file2=None,
     current_np_user_id="",
     execute_done=False,
+    adj_mode="Auto Compare",
+    manual_df=pd.DataFrame([{"SKU": "", "PAC": 0, "CAR": 0, "EA": 0}]),
 )
 
 render_wakelock()
@@ -41,9 +44,14 @@ bot_status = "RUNNING" if st.session_state.is_bot_running else "STANDBY"
 render_indicators(db_status, bot_status)
 render_header("Inventory Adjustment", st.session_state.current_user)
 
-col1, col2 = st.columns(2)
+st.markdown("<br>", unsafe_allow_html=True)
+adj_mode = st.radio("Adjustment Mode", ["Auto Compare", "Manual Entry"], horizontal=True, label_visibility="collapsed")
+st.markdown("<hr style='margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
-with col1:
+if adj_mode == "Auto Compare":
+    col1, col2 = st.columns(2)
+    
+    with col1:
     with st.container(border=True):
         st.markdown(f"<div class='box-np'>Newspage Stock Data</div>", unsafe_allow_html=True)
         np_col1, np_col2 = st.columns(2)
@@ -237,5 +245,90 @@ if st.session_state.reconcile_summary is not None and st.session_state.reconcile
                 df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
                 REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase
             )
+
+elif adj_mode == "Manual Entry":
+    list_dist = database.get_distributor_list(supabase)
+    url_d = st.query_params.get("d", None)
+    url_dist = decode_param(url_d) if url_d else st.query_params.get("distributor", None)
+    default_index = list_dist.index(url_dist) if url_dist in list_dist else 0
+    
+    st.markdown(f"<div class='box-np'>Target Distributor Setup</div>", unsafe_allow_html=True)
+    d_col1, d_col2 = st.columns(2)
+    with d_col1:
+        selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index, key="manual_dist_sel")
+        st.query_params.clear()
+        st.query_params["d"] = encode_param(selected_distributor)
+        bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
+    with d_col2:
+        st.text_input("NP Password", value="********", type="password", disabled=True, key="manual_pass_dummy")
+        
+    st.markdown(f"<br><div class='box-dist'>Manual Data Entry</div>", unsafe_allow_html=True)
+    st.caption("Input SKU and its respective quantities. Rows with missing SKUs or all quantities 0 will be ignored during execution.")
+    
+    edited_df = st.data_editor(
+        st.session_state.manual_df,
+        num_rows="dynamic",
+        use_container_width=True,
+        column_config={
+            "SKU": st.column_config.TextColumn("SKU Code", required=True),
+            "PAC": st.column_config.NumberColumn("Qty PAC", min_value=0, default=0),
+            "CAR": st.column_config.NumberColumn("Qty CAR", min_value=0, default=0),
+            "EA": st.column_config.NumberColumn("Qty EA", min_value=0, default=0),
+        },
+        key="manual_editor"
+    )
+    st.session_state.manual_df = edited_df
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    log_label_placeholder = st.empty()
+    log_placeholder = st.empty()
+    btn_placeholder = st.empty()
+    table_placeholder = st.empty()
+
+    if btn_placeholder.button("EXECUTE MANUAL ADJUSTMENT", type="primary", width="stretch"):
+        if not bot_user or not bot_pass: 
+            st.error("Access Denied: Kredensial tidak ditemukan di Database!")
+        else:
+            # Clean dataframe
+            df_exec = edited_df.copy()
+            df_exec['SKU'] = df_exec['SKU'].astype(str).str.strip()
+            # Filter valid rows: SKU not empty and (PAC>0 or CAR>0 or EA>0)
+            df_exec = df_exec[
+                (df_exec['SKU'] != "") & (df_exec['SKU'] != "nan") & (df_exec['SKU'].notna()) &
+                ((df_exec['PAC'] > 0) | (df_exec['CAR'] > 0) | (df_exec['EA'] > 0))
+            ].copy()
+            
+            if len(df_exec) == 0:
+                st.warning("Data kosong atau invalid. Masukkan minimal 1 SKU dengan qty lebih dari 0.")
+            else:
+                df_exec['Status'] = 'Pending'
+                df_exec['Keterangan'] = 'Ready to Process'
+                df_exec = df_exec.reset_index(drop=True)
+                
+                table_placeholder.dataframe(df_exec, width="stretch", height=400, hide_index=True)
+                st.session_state.is_bot_running = True
+                st.session_state.execute_done = False
+                btn_placeholder.empty()
+                
+                log_label_placeholder.markdown(f"""
+                    <div style='display: inline-block; margin-bottom: 4px;'>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
+                    </div>
+                """, unsafe_allow_html=True)
+                bot_logs_history  = []; bot_last_log_time = [time.time()]
+                
+                def bot_ui_log(module, msg):
+                    now = time.time(); diff_ms = int((now - bot_last_log_time[0]) * 1000); bot_last_log_time[0] = now
+                    from datetime import datetime, timezone, timedelta
+                    timestamp = datetime.now(timezone(timedelta(hours=7))).strftime('%H:%M:%S')
+                    tag_class = f"tag-{module.lower()}"
+                    bot_logs_history.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>[{module}]</span><span class='log-msg'>{msg}</span>")
+                    render_terminal(log_placeholder, bot_logs_history)
+
+                playwright_engine.run_execution_manual(
+                    df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
+                    REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase
+                )
 
 render_footer()

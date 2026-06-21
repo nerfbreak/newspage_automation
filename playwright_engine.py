@@ -718,3 +718,122 @@ def run_promotion_sync(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIM
         st.session_state.is_promo_bot_running = False
         ext_ui_log("ERROR", f"SYSTEM FAILURE: {str(e)}")
         st.error(f"System error: {e}")
+
+
+def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
+    sku_input = page.locator("id=pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value")
+    ui_log("INJECT", f"Locking target node for SKU [{sku}]...")
+    sku_input.fill(sku)
+    ui_log("INJECT", "Triggering system lookup (Tab event)...")
+    sku_input.press("Tab")
+    page.wait_for_timeout(1500)
+    
+    if str(pac).strip() and str(pac).strip() != '0':
+        pac_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_QTY3_Value")
+        pac_input.wait_for(state="visible", timeout=TIMEOUT_MS)
+        ui_log("INJECT", f"Assigning PAC quantity: {pac}")
+        pac_input.fill(str(pac))
+        
+    if str(car).strip() and str(car).strip() != '0':
+        car_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_QTY2_Value")
+        car_input.wait_for(state="visible", timeout=TIMEOUT_MS)
+        ui_log("INJECT", f"Assigning CAR quantity: {car}")
+        car_input.fill(str(car))
+        
+    if str(ea).strip() and str(ea).strip() != '0':
+        ea_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_QTY1_Value")
+        ea_input.wait_for(state="visible", timeout=TIMEOUT_MS)
+        ui_log("INJECT", f"Assigning EA quantity: {ea}")
+        ea_input.fill(str(ea))
+        
+    page.locator("id=pag_I_StkAdj_NewGeneral_btn_Add_Value").click(force=True)
+    page.wait_for_timeout(1000)
+
+def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase):
+    try:
+        import asyncio
+        try: asyncio.get_event_loop()
+        except RuntimeError: asyncio.set_event_loop(asyncio.new_event_loop())
+        
+        with sync_playwright() as p:
+            ui_log("SYS", "Spawning browser context...")
+            browser = p.chromium.launch(headless=True)
+            context = browser.new_context(no_viewport=True)
+            page = context.new_page()
+            
+            _login(page, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log)
+            _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_log)
+            
+            success_count = 0
+            failed_count = 0
+            total_rows = len(df_view)
+            
+            def update_progress_label(current, total):
+                html = f"""
+                <div style='display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; margin-bottom: 8px;'>
+                    <div>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
+                    </div>
+                    <div>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Processed</span>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{current}/{total}</span>
+                    </div>
+                </div>
+                """
+                log_label_placeholder.markdown(html, unsafe_allow_html=True)
+
+            update_progress_label(0, total_rows)
+            
+            for i, (idx, row) in enumerate(df_view.iterrows()):
+                update_progress_label(i + 1, total_rows)
+                sku = str(row['SKU']).strip()
+                pac = str(row.get('PAC', '0')).strip()
+                car = str(row.get('CAR', '0')).strip()
+                ea = str(row.get('EA', '0')).strip()
+
+                ui_log("INJECT", f"Processing Payload {i+1}/{total_rows} | Target SKU: [{sku}]")
+                try:
+                    _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log)
+                    
+                    df_view.at[idx, 'Status'] = 'Success'
+                    df_view.at[idx, 'Keterangan'] = f'PAC:{pac} CAR:{car} EA:{ea}'
+                    success_count += 1
+                    ui_log("SUCCESS", f"Transaction {i+1} committed. Grid updated.")
+                    database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", "Success", "Manual Adjustment", bot_user)
+                except Exception as loop_err: 
+                    err_msg = str(loop_err)
+                    df_view.at[idx, 'Status'] = 'Failed'
+                    df_view.at[idx, 'Keterangan'] = 'Node Timeout'
+                    failed_count += 1
+                    ui_log("ERROR", f"Timeout on SKU [{sku}]. Node unresponsive. Skipping.")
+                    database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", "Failed", "Node Timeout", bot_user)
+                    
+                if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
+                    table_placeholder.dataframe(df_view, width="stretch", height=400, hide_index=True)
+                    
+            if failed_count > 0:
+                ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
+            else:
+                ui_log("SERVER", "Finalizing batch. Saving document to main server...")
+                page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
+                try: 
+                    yes_btn = page.locator("id=pag_PopUp_YesNo_btn_Yes_Value")
+                    yes_btn.wait_for(state="visible", timeout=5000)
+                    yes_btn.click()
+                except: pass
+                ui_log("SERVER", "Transaction committed successfully!")
+                st.session_state.execute_done = True
+                
+            browser.close()
+            st.session_state.is_bot_running = False
+            st.rerun()
+
+    except PlaywrightTimeoutError: 
+        st.session_state.is_bot_running = False
+        ui_log("ERROR", "TIMEOUT: Server tidak merespon.")
+        st.error("Operation Timeout. Target element tidak ditemukan.")
+    except Exception as e: 
+        st.session_state.is_bot_running = False
+        ui_log("ERROR", f"SYSTEM FAILURE: {str(e).split(chr(10))[0]}")
+        st.error(f"System error: {e}")
