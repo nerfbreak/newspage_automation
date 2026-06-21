@@ -1,0 +1,581 @@
+/* ============================================================
+   Streamlit Design System (Community) Theme - Dark Mode
+   Primary: #3b82f6
+   Background Canvas: #171717
+   Container/Card Background: #262626
+   Sidebar/Surface: #171717
+   Borders: #404040
+   Fonts: "Source Sans 3", "Source Sans Pro", "Source Code Pro"
+   ============================================================ */
+
+/* --- FONTS --- */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;600;700;800;900&display=swap');
+
+/* --- Global Elements & Reset --- */
+[data-testid="stMainViewContainer"] {
+    animation: fadeInPage 0.2s ease-in-out;
+}
+
+@keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(2px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Typography --- */
+h1 {
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: #e5e5e5 !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.85rem !important;
+}
+
+h2, h3 {
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    font-size: 1.15rem !important;
+    font-weight: 600 !important;
+    color: #e5e5e5 !important;
+    letter-spacing: -0.01em !important;
+    line-height: 1.3 !important;
+    margin-bottom: 0.65rem !important;
+}
+
+html, body, [data-testid="stAppViewContainer"], p, label, small {
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+}
+
+/* --- Form Labels --- */
+div[data-testid="stSelectbox"] label,
+div[data-testid="stTextInput"] label,
+div[data-testid="stFileUploader"] label {
+    width: 100% !important;
+    justify-content: center !important;
+    display: flex !important;
+}
+
+div[data-testid="stSelectbox"] label p,
+div[data-testid="stTextInput"] label p,
+div[data-testid="stFileUploader"] label p {
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    color: #3b82f6 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin-bottom: 6px !important;
+}
+
+div[data-testid="stFileUploadDropzone"] {
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+}
+
+div[data-baseweb="select"] * {
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+}
+
+[data-testid="stFileUploadDropzone"] small {
+    font-size: 0.7rem !important;
+    color: #a3a3a3 !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
+
+
+
+div[data-testid="InputInstructions"] {
+    display: none !important;
+}
+
+/* --- Buttons --- */
+div[data-testid="stButton"] button {
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+div[data-testid="stButton"] button:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15) !important;
+    border-color: #3b82f6 !important;
+}
+
+div[data-testid="stButton"] button:active {
+    transform: translateY(0.5px) !important;
+}
+
+div[data-testid="stButton"] button,
+div[data-testid="stButton"] button p {
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+}
+
+button[kind="primary"] {
+    background-color: #3b82f6 !important;
+    color: #FFFFFF !important;
+    border: 1px solid transparent !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.04em !important;
+    transition: all 0.15s ease !important;
+    border-radius: 8px !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+}
+
+button[kind="primary"]:hover {
+    background-color: #2563eb !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* --- Terminal & Live Log Components --- */
+.terminal-box {
+    background-color: #0E1117;
+    color: #FAFAFA;
+    font-family: "Source Code Pro", monospace;
+    font-size: 0.8rem;
+    padding: 14px 18px;
+    border: 1px solid #404040;
+    border-radius: 10px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+    height: 320px;
+    overflow-y: auto;
+    line-height: 1.6;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    margin-top: 6px;
+    margin-bottom: 24px;
+}
+.terminal-box::-webkit-scrollbar { display: none; }
+
+.terminal-label {
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #3b82f6;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.blink_me { animation: blinker 1s linear infinite; font-weight: bold; color: #3b82f6; }
+@keyframes blinker { 50% { opacity: 0; } }
+
+.log-time    { display: inline-block; width: 85px;  color: #94A3B8; font-family: "Source Code Pro", monospace; }
+.log-ms      { display: inline-block; width: 75px;  text-align: right; margin-right: 15px; color: #94A3B8; font-size: 0.75rem; font-family: "Source Code Pro", monospace; }
+.log-tag     { display: inline-block; width: 95px;  font-weight: 700; font-family: "Source Code Pro", monospace; }
+.log-msg     { color: #E2E8F0; font-weight: 400; font-family: "Source Code Pro", monospace; }
+
+/* Log tag color palette */
+.tag-sys     { color: #F97316; }   /* System info - Bright Orange */
+.tag-auth    { color: #A855F7; }   /* Auth - Vivid Purple */
+.tag-nav     { color: #3B82F6; }   /* Nav - Vivid Blue */
+.tag-inject  { color: #FBBF24; }   /* Inject - Bright Amber/Yellow */
+.tag-success { color: #22C55E; }   /* Success - Vivid Green */
+.tag-error   { color: #EF4444; }   /* Error - Vivid Red */
+.tag-server  { color: #EC4899; }   /* Server - Vivid Pink */
+
+/* --- Box Section Headers --- */
+.box-np, .box-dist, .box-review, .box-queue, .box-results {
+    background: #262626;
+    color: #e5e5e5;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+    border: 1px solid #404040;
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.box-np      { border-top: 3px solid #3b82f6; }
+.box-dist    { border-top: 3px solid #3b82f6; }
+.box-review  { border-top: 3px solid #3b82f6; }
+.box-queue   { border-top: 3px solid #3b82f6; }
+.box-results { border-top: 3px solid #3b82f6; }
+
+/* --- Metric Cards --- */
+.metric-box-match, .metric-box-mismatch {
+    background-color: #262626;
+    border: 1px solid #404040;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.metric-box-match    { border-left: 4px solid #3b82f6; }
+.metric-box-mismatch { border-left: 4px solid #ef4444; }
+
+.metric-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #a3a3a3;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+}
+
+.metric-box-match .metric-value {
+    color: #e5e5e5;
+    font-size: 1.85rem;
+    font-weight: 700;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+    margin-top: 4px;
+    line-height: 1;
+}
+
+.metric-box-mismatch .metric-value {
+    color: #ef4444;
+    font-size: 1.85rem;
+    font-weight: 700;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+    margin-top: 4px;
+    line-height: 1;
+}
+
+/* --- Live Indicator & Status Pills --- */
+.typewriter-sub {
+    font-family: "Source Code Pro", monospace;
+    font-size: 0.82rem;
+    color: #3b82f6;
+    margin: 0;
+}
+
+.live-indicator {
+    display: inline-flex;
+    align-items: center;
+    color: #3b82f6;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+    font-weight: 700;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    background: rgba(59, 130, 246, 0.15);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+    font-weight: 700;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+}
+
+/* --- Selectbox & Text Input --- */
+div[data-testid="stSelectbox"] div[data-baseweb="select"] > div,
+div[data-testid="stTextInput"] input {
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    font-size: 0.85rem !important;
+    font-weight: 400 !important;
+    color: #e5e5e5 !important;
+    letter-spacing: 0.01em !important;
+    border-radius: 8px !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+div[data-testid="stSelectbox"] div[data-baseweb="select"]:focus-within > div,
+div[data-testid="stTextInput"] input:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+}
+
+div[data-testid="stSelectbox"] div[data-baseweb="select"] {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+div[data-testid="stSelectbox"] label p {
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    color: #3b82f6 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+}
+
+/* --- Divider --- */
+hr {
+    border: none !important;
+    height: 1px !important;
+    background-color: #404040 !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+}
+
+/* --- Card Containers --- */
+div[data-testid="stContainer"] {
+    border: 1px solid #404040;
+    border-radius: 14px;
+    padding: 20px;
+    background-color: #262626;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+div[data-testid="stContainer"]:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.4), 0 0 0 1px rgba(59, 130, 246, 0.1);
+}
+
+/* --- Password Input Fix --- */
+button[data-testid="stTextInputPasswordVisibilityToggle"],
+button[title="Show password text"],
+button[aria-label="Show password text"],
+button[title="Hide password text"],
+button[aria-label="Hide password text"],
+div[data-testid="stTextInputAdornment"] {
+    display: none !important;
+    width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+}
+
+div[data-testid="stTextInput"] input[type="password"] {
+    width: 100% !important;
+    flex-grow: 1 !important;
+}
+
+div[data-testid="stTextInput"] > div {
+    padding-right: 0 !important;
+    background-color: transparent !important;
+}
+
+/* --- Sidebar --- */
+section[data-testid="stSidebar"] {
+    background-color: #171717 !important;
+    border-right: 1px solid #2a2a2a !important;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3) !important;
+}
+
+section[data-testid="stSidebar"] [data-testid="stSidebarNav"] {
+    padding-top: 1.75rem !important;
+}
+
+[data-testid="stSidebarNav"] ul li a,
+[data-testid="stSidebarNavItems"] ul li a,
+[data-testid="stSidebarNavLink"] {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    margin: 3px 10px !important;
+    padding: 8px 14px !important;
+    border-radius: 10px !important;
+    border: 1px solid transparent !important;
+    transition: all 0.15s ease-in-out !important;
+    background-color: transparent !important;
+    text-decoration: none !important;
+}
+
+[data-testid="stSidebarNav"] ul li a:hover,
+[data-testid="stSidebarNavItems"] ul li a:hover,
+[data-testid="stSidebarNavLink"]:hover {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    transform: translateX(2px) !important;
+}
+
+[data-testid="stSidebarNav"] a[aria-current="page"],
+[data-testid="stSidebarNavItems"] a[aria-current="page"] {
+    background-color: rgba(59, 130, 246, 0.15) !important;
+    border-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+[data-testid="stSidebarNav"] ul li a span,
+[data-testid="stSidebarNavItems"] ul li a span,
+[data-testid="stSidebarNavLink"] span {
+    padding-left: 24px !important;
+    position: relative !important;
+    display: inline-block !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.01em !important;
+    font-weight: 500 !important;
+    color: #a3a3a3 !important;
+    transition: color 0.15s ease !important;
+}
+
+[data-testid="stSidebarNav"] ul li a span::before,
+[data-testid="stSidebarNavItems"] ul li a span::before,
+[data-testid="stSidebarNavLink"] span::before {
+    display: none !important;
+}
+
+[data-testid="stSidebarNav"] a[aria-current="page"] span,
+[data-testid="stSidebarNavItems"] a[aria-current="page"] span {
+    color: #3b82f6 !important;
+    font-weight: 600 !important;
+}
+
+/* --- Notification / Alert Overrides --- */
+div[data-testid="stNotification"],
+div[data-testid="stNotification"] > div,
+div[data-testid="stNotificationContent"],
+div[role="alert"] {
+    background-color: #262626 !important;
+    background-image: none !important;
+    border: 1px solid #404040 !important;
+    border-radius: 10px !important;
+    color: #e5e5e5 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+}
+
+div[data-testid="stNotification"] svg,
+div[role="alert"] svg {
+    display: none !important;
+}
+
+div[data-testid="stNotificationContent"] p,
+div[role="alert"] p,
+div[data-testid="stNotificationContent"] div {
+    color: #e5e5e5 !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 0.82rem !important;
+    line-height: 1.5 !important;
+}
+
+/* Success — Streamlit Lime/Green */
+div[data-testid="stNotification"][aria-label="Success"],
+div[role="alert"][aria-label="Success"],
+div[data-testid="stNotification"]:has(svg[aria-label="Success"]) {
+    border-left: 5px solid #2E7D32 !important;
+    background-color: rgba(46, 125, 50, 0.05) !important;
+}
+div[data-testid="stNotification"][aria-label="Success"] p,
+div[role="alert"][aria-label="Success"] p,
+div[data-testid="stNotification"][aria-label="Success"] div {
+    color: #2E7D32 !important;
+    font-weight: 600 !important;
+}
+
+/* Error — Streamlit Red */
+div[data-testid="stNotification"][aria-label="Error"],
+div[role="alert"][aria-label="Error"],
+div[data-testid="stNotification"]:has(svg[aria-label="Error"]) {
+    border-left: 5px solid #D32F2F !important;
+    background-color: rgba(211, 47, 47, 0.05) !important;
+}
+div[data-testid="stNotification"][aria-label="Error"] p,
+div[role="alert"][aria-label="Error"] p,
+div[data-testid="stNotification"][aria-label="Error"] div {
+    color: #D32F2F !important;
+    font-weight: 600 !important;
+}
+
+/* Warning — Streamlit Orange */
+div[data-testid="stNotification"][aria-label="Warning"],
+div[role="alert"][aria-label="Warning"],
+div[data-testid="stNotification"]:has(svg[aria-label="Warning"]) {
+    border-left: 5px solid #D97706 !important;
+    background-color: rgba(217, 119, 6, 0.05) !important;
+}
+div[data-testid="stNotification"][aria-label="Warning"] p,
+div[role="alert"][aria-label="Warning"] p,
+div[data-testid="stNotification"][aria-label="Warning"] div {
+    color: #D97706 !important;
+    font-weight: 600 !important;
+}
+
+/* Info — Streamlit Blue */
+div[data-testid="stNotification"][aria-label="Info"],
+div[role="alert"][aria-label="Info"],
+div[data-testid="stNotification"]:has(svg[aria-label="Info"]) {
+    border-left: 5px solid #3b82f6 !important;
+    background-color: rgba(59, 130, 246, 0.1) !important;
+}
+div[data-testid="stNotification"][aria-label="Info"] p,
+div[role="alert"][aria-label="Info"] p,
+div[data-testid="stNotification"][aria-label="Info"] div {
+    color: #3b82f6 !important;
+    font-weight: 600 !important;
+}
+
+/* --- Custom HTML Table --- */
+.table-container {
+    width: 100%;
+    max-height: 420px;
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #404040;
+    border-radius: 10px;
+    background-color: #1e1e1e;
+    margin: 12px 0 24px 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) #262626;
+}
+
+.table-container::-webkit-scrollbar { width: 5px; height: 5px; }
+.table-container::-webkit-scrollbar-track { background: #262626; border-radius: 8px; }
+.table-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 8px; }
+.table-container::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+    font-size: 0.84rem;
+    color: #e5e5e5;
+    text-align: left;
+}
+
+.custom-table th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #262626;
+    color: #3b82f6;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 12px 16px;
+    border-bottom: 2px solid #404040;
+    font-size: 0.72rem;
+}
+
+.custom-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #333333;
+    line-height: 1.5;
+    vertical-align: middle;
+}
+
+.custom-table tbody tr:nth-of-type(even) {
+    background-color: rgba(38, 38, 38, 0.5);
+}
+
+.custom-table tbody tr:last-of-type td {
+    border-bottom: none;
+}
+
+.custom-table tbody tr:hover {
+    background-color: rgba(59, 130, 246, 0.08);
+    transition: background-color 0.15s ease-in-out;
+}
+
+/* --- Native st.dataframe Scrollbar Hide --- */
+[data-testid="stDataFrame"] ::-webkit-scrollbar,
+div[data-testid="stDataFrame"] ::-webkit-scrollbar {
+    display: none !important;
+    width: 0px !important;
+    height: 0px !important;
+}
+
+[data-testid="stDataFrame"],
+div[data-testid="stDataFrame"] {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}

@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: optimize-newspage-api
+    runtime: python
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: MASTER_KEY
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+      - key: NP_USER_SUPER
+        sync: false
+      - key: NP_PASS_SUPER
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true

@@ -1,0 +1,42 @@
+# Keep Docker image small - exclude everything not needed for backend
+.git
+.gitignore
+.venv/
+env/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Android project (not needed in backend container)
+android/
+frontend/
+
+# Streamlit (old app)
+pages/
+app.py
+utils.py
+data_processor.py
+database.py
+playwright_engine.py
+.streamlit/
+static/
+uploaded_files/
+
+# Scratch/test files
+scratch/
+backup/
+*.html
+*.zip
+*.png
+*.json
+*.md
+*.toml
+.env
+.env.example
+
+# Extract dirs
+extract_dir/
+
+# Plan temp files
+.plan_temp

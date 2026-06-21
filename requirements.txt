@@ -1,0 +1,9 @@
+streamlit
+pandas
+playwright
+openpyxl
+cryptography>=42.0.0
+requests
+supabase
+bcrypt
+python-dotenv

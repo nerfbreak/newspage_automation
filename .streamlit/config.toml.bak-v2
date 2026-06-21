@@ -1,0 +1,61 @@
+[theme]
+base = "dark"
+
+# === Core colors (unchanged) ===
+primaryColor = "#3b82f6"
+backgroundColor = "#171717"
+secondaryBackgroundColor = "#262626"
+textColor = "#e5e5e5"
+linkColor = "#60a5fa"
+codeTextColor = "#d4d4d8"
+codeBackgroundColor = "#1e1e1e"
+borderColor = "#3f3f46"
+
+# === Semantic colors ===
+greenColor = "#22c55e"
+redColor = "#ef4444"
+yellowColor = "#eab308"
+orangeColor = "#f97316"
+blueColor = "#3b82f6"
+violetColor = "#8b5cf6"
+grayColor = "#71717a"
+
+# === Typography ===
+font = "'Source Sans 3':https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+codeFont = "'Source Code Pro':https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap"
+baseFontSize = 14
+baseFontWeight = 400
+codeFontSize = "13px"
+headingFontSizes = ["28px", "22px", "18px", "16px", "14px", "12px"]
+headingFontWeights = [700, 600, 600, 600, 500, 500]
+linkUnderline = false
+
+# === Shape ===
+baseRadius = "6px"
+buttonRadius = "6px"
+showWidgetBorder = true
+showSidebarBorder = true
+
+# === Chart colors ===
+chartCategoricalColors = ["#3b82f6", "#22c55e", "#8b5cf6", "#ef4444", "#eab308", "#f97316", "#71717a"]
+
+# === Dataframe ===
+dataframeBorderColor = "#3f3f46"
+dataframeHeaderBackgroundColor = "#262626"
+
+# === Sidebar ===
+[theme.sidebar]
+backgroundColor = "#171717"
+secondaryBackgroundColor = "#262626"
+codeBackgroundColor = "#1e1e1e"
+textColor = "#e5e5e5"
+borderColor = "#3f3f46"
+primaryColor = "#3b82f6"
+dataframeBorderColor = "#3f3f46"
+dataframeHeaderBackgroundColor = "#262626"
+
+[server]
+headless = true
+port = 8501
+enableCORS = false
+enableStaticServing = true
