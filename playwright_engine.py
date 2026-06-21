@@ -750,6 +750,7 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
     page.wait_for_timeout(1000)
 
 def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase):
+    ensure_playwright()
     try:
         import asyncio
         try: asyncio.get_event_loop()
