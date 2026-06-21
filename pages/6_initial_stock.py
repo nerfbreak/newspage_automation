@@ -115,8 +115,13 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
 
         # Clean data
         df_init = df_init.dropna(subset=['SKU'])
-        df_init['SKU'] = df_init['SKU'].astype(str).str.strip()
+        df_init['SKU'] = df_init['SKU'].astype(str).str.split('.').str[0].str.strip()
         df_init = df_init[~df_init['SKU'].str.lower().isin(['nan', 'none', '', 'total', 'grand total'])]
+        
+        # Apply SKU mapping rule
+        TARGET_SKUS = database.get_target_skus(supabase)
+        EXCLUDE_PREFIX = ['8021803', '8021804']
+        df_init['SKU'] = df_init['SKU'].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
         df_init['Qty'] = pd.to_numeric(
             df_init['Qty'].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False),
             errors='coerce'
