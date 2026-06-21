@@ -414,6 +414,28 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     
     qty_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_QTY1_Value")
     qty_input.wait_for(state="visible", timeout=TIMEOUT_MS)
+    
+    # Double cross-check for negative adjustments
+    try:
+        int_qty = int(qty)
+        if int_qty < 0:
+            ui_log("INJECT", "Negative adjustment detected. Verifying live screen stock...")
+            stock_lbl = page.locator("id=pag_I_StkAdj_NewGeneral_lbl_Adjustable_Qty_Value")
+            stock_lbl.wait_for(state="visible", timeout=5000)
+            stock_text = stock_lbl.inner_text().strip()
+            
+            import re
+            match = re.search(r'(\d+)\s*EA', stock_text.upper())
+            if match:
+                curr_ea = int(match.group(1))
+                if abs(int_qty) > curr_ea:
+                    raise Exception(f"Insufficient Stock (Has {curr_ea} EA, wants {int_qty} EA)")
+            else:
+                ui_log("WARN", f"Could not parse EA stock from: {stock_text}")
+    except Exception as e:
+        if "Insufficient" in str(e):
+            raise e # Reraise to be caught by the outer loop as failed
+            
     ui_log("INJECT", f"Node resolved. Assigning adjustment quantity: {qty} EA")
     qty_input.fill(qty)
     page.wait_for_timeout(500)
@@ -490,11 +512,19 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     ui_log("SUCCESS", f"Transaction {i+1} committed. Grid updated.")
                     database.log_adjustment(supabase, sku, qty, "Success", f"Attached {qty} EA", bot_user)
                 except Exception as loop_err: 
+                    err_msg = str(loop_err)
                     df_view.at[idx, 'Status'] = 'Failed'
-                    df_view.at[idx, 'Keterangan'] = 'Node Timeout'
-                    failed_count += 1
-                    ui_log("ERROR", f"Timeout on SKU [{sku}]. Node unresponsive. Skipping.")
-                    database.log_adjustment(supabase, sku, qty, "Failed", "Node Timeout", bot_user)
+                    
+                    if "Insufficient" in err_msg:
+                        df_view.at[idx, 'Keterangan'] = 'Insufficient Stock'
+                        failed_count += 1
+                        ui_log("ERROR", f"Failed on SKU [{sku}]: {err_msg}. Skipping.")
+                        database.log_adjustment(supabase, sku, qty, "Failed", "Insufficient Stock", bot_user)
+                    else:
+                        df_view.at[idx, 'Keterangan'] = 'Node Timeout'
+                        failed_count += 1
+                        ui_log("ERROR", f"Timeout on SKU [{sku}]. Node unresponsive. Skipping.")
+                        database.log_adjustment(supabase, sku, qty, "Failed", "Node Timeout", bot_user)
                     
                 progress_bar.progress((i+1)/total_rows)
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
