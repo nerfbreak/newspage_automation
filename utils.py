@@ -137,6 +137,29 @@ def make_success_box(text: str) -> str:
         '>{text}</div>
     """)
 
+def make_error_box(text: str) -> str:
+    # Use Streamlit Brand Red (#FF2B2B) background with Light text (#FAFAFA)
+    return clean_html(f"""
+        <div style='
+            background-color: #FF2B2B;
+            color: #FAFAFA;
+            height: 38.4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-top: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+            border: 1px solid transparent;
+            width: 100%;
+            box-sizing: border-box;
+        '>{text}</div>
+    """)
+
 def render_metric_card(title, value, accent=False):
     # Styling variables to match Streamlit Design System theme
     bg = "#0068C9" if accent else "#F0F2F6"
