@@ -292,7 +292,9 @@ elif adj_mode == "Manual Entry":
             # Clean dataframe
             df_exec = edited_df.copy()
             df_exec['SKU'] = df_exec['SKU'].astype(str).str.strip()
-            # Filter valid rows: SKU not empty and (PAC>0 or CAR>0 or EA>0)
+            for col in ['PAC', 'CAR', 'EA']:
+                df_exec[col] = pd.to_numeric(df_exec[col], errors='coerce').fillna(0)
+            # Filter valid rows: SKU not empty and (PAC != 0 or CAR != 0 or EA != 0)
             df_exec = df_exec[
                 (df_exec['SKU'] != "") & (df_exec['SKU'] != "nan") & (df_exec['SKU'].notna()) &
                 ((df_exec['PAC'] != 0) | (df_exec['CAR'] != 0) | (df_exec['EA'] != 0))

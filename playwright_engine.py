@@ -792,10 +792,19 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             
             for i, (idx, row) in enumerate(df_view.iterrows()):
                 update_progress_label(i + 1, total_rows)
+                def fmt(v):
+                    try:
+                        if pd.isna(v): return ''
+                        f = float(v)
+                        if f == 0: return ''
+                        return str(int(f)) if f.is_integer() else str(f)
+                    except:
+                        return str(v).strip()
+
                 sku = str(row['SKU']).strip()
-                pac = str(row.get('PAC', '0')).strip()
-                car = str(row.get('CAR', '0')).strip()
-                ea = str(row.get('EA', '0')).strip()
+                pac = fmt(row.get('PAC', 0))
+                car = fmt(row.get('CAR', 0))
+                ea = fmt(row.get('EA', 0))
 
                 ui_log("INJECT", f"Processing Payload {i+1}/{total_rows} | Target SKU: [{sku}]")
                 try:
