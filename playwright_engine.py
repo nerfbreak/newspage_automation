@@ -529,7 +529,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     
                 progress_bar.progress((i+1)/total_rows)
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
-                    table_placeholder.dataframe(df_view, width="stretch", height=400, hide_index=True)
+                    table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
                     
             if failed_count > 0:
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
@@ -815,7 +815,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", "Failed", "Node Timeout", bot_user)
                     
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
-                    table_placeholder.dataframe(df_view, width="stretch", height=400, hide_index=True)
+                    table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
                     
             if failed_count > 0:
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
