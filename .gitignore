@@ -1,3 +1,57 @@
+# Streamlit
+.streamlit/secrets.toml
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp artifacts
+temp_sales_*
+temp_ext_*
+temp_promo_*
+
+# Dev/Scratch
+scratch/
+*.ps1
+
+# Test & debug files (may contain credentials)
+test_*.py
+test_*.html
+dump_html.py
+default_page.html
+timeout_dump.html
+scratch_p1.html
+parse_menu*.py
+login_page.png
+login_result.png
+extract_dir/
+
+# Compiled Figma export / temp JSON
+figma_*.json
+figma_file.json
+
+# Logs
+*.log
+
+# Backend temp files
+*.db
+
+# Plan temp
+.plan_temp
+
+# Compiled Python
+*.pyc
+*.pyo
 .web
 assets/external/
 .states
