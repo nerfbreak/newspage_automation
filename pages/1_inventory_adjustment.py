@@ -219,7 +219,7 @@ if st.session_state.reconcile_summary is not None and st.session_state.reconcile
             
             log_label_placeholder.markdown(f"""
                 <div style='display: inline-block; margin-bottom: 4px;'>
-                    <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #808495; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
+                    <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
                     <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
                 </div>
             """, unsafe_allow_html=True)

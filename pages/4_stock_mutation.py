@@ -180,9 +180,18 @@ if st.button("EXECUTE MUTASI", type="primary", width="stretch", disabled=not can
     log_label_b_ph = st.empty()
     log_b_ph = st.empty()
 
-    log_label_a_ph.caption(f"**System Activity**: DEDUCT LOG — {dist_a}")
-
-    log_label_b_ph.caption(f"**System Activity**: ADD LOG — {dist_b}")
+    log_label_a_ph.markdown(f"""
+        <div style='display: inline-block; margin-bottom: 4px;'>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>DEDUCT LOG — {dist_a}</span>
+        </div>
+    """, unsafe_allow_html=True)
+    log_label_b_ph.markdown(f"""
+        <div style='display: inline-block; margin-bottom: 4px;'>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>ADD LOG — {dist_b}</span>
+        </div>
+    """, unsafe_allow_html=True)
 
     # Execute — engine handles log rendering internally
     playwright_engine.run_mutasi_execution(

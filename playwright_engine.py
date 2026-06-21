@@ -461,12 +461,12 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 html = f"""
                 <div style='display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; margin-bottom: 8px;'>
                     <div>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #a5adce; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #c6d0f5; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
                     </div>
                     <div>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #a5adce; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Processed</span>
-                        <span style='font-family: "Inter", sans-serif; font-size: 10px; font-weight: 600; color: #c6d0f5; text-transform: uppercase; letter-spacing: 0.1em;'>{current}/{total}</span>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Processed</span>
+                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{current}/{total}</span>
                     </div>
                 </div>
                 """

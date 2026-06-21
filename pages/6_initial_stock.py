@@ -186,7 +186,12 @@ if st.session_state.is_bot_running and st.session_state.initial_stock_df is not 
     log_label_placeholder = st.empty()
     log_placeholder = st.empty()
 
-    log_label_placeholder.caption(f"**Active Account**: {selected_distributor} ({bot_user})")
+    log_label_placeholder.markdown(f"""
+        <div style='display: inline-block; margin-bottom: 4px;'>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
+        </div>
+    """, unsafe_allow_html=True)
     bot_ui_log, _ = make_terminal_logger(log_placeholder)
 
     playwright_engine.run_execution(
