@@ -530,19 +530,22 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
                     table_placeholder.dataframe(df_view, width="stretch", height=400, hide_index=True)
                     
-            ui_log("SERVER", "Finalizing batch. Saving document to main server...")
-            page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
-            try: 
-                yes_btn = page.locator("id=pag_PopUp_YesNo_btn_Yes_Value")
-                yes_btn.wait_for(state="visible", timeout=5000)
-                ui_log("SERVER", "Confirming save dialog...")
-                yes_btn.click()
-                ui_log("SERVER", "Document physically written to database.")
-            except Exception: 
-                ui_log("SERVER", "Auto-save confirmed. Document written to database.")
-                
-            ui_log("SYS", "Holding session for 5 seconds to ensure Newspage database write...")
-            page.wait_for_timeout(5000)
+            if failed_count > 0:
+                ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
+            else:
+                ui_log("SERVER", "Finalizing batch. Saving document to main server...")
+                page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
+                try: 
+                    yes_btn = page.locator("id=pag_PopUp_YesNo_btn_Yes_Value")
+                    yes_btn.wait_for(state="visible", timeout=5000)
+                    ui_log("SERVER", "Confirming save dialog...")
+                    yes_btn.click()
+                    ui_log("SERVER", "Document physically written to database.")
+                except Exception: 
+                    ui_log("SERVER", "Auto-save confirmed. Document written to database.")
+                    
+                ui_log("SYS", "Holding session for 5 seconds to ensure Newspage database write...")
+                page.wait_for_timeout(5000)
             
             ui_log("AUTH", "Initiating system logout sequence...")
             try:
@@ -557,15 +560,21 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             ui_log("SYS", "Closing browser and releasing memory...")
             browser.close()
             elapsed = int(time.time() - global_start_time)
-            ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
-            box_html = f'<div style="background-color: #292c3c; color: #a6d189; padding: 14px 20px; border-radius: 4px; border: 1px solid #a6d189; font-weight: 600; font-size: 13px; margin: 8px 0; text-align: center; display: block; width: 100%; font-family: \'Inter\', sans-serif;">Done — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s</div>'
-            st.markdown(box_html, unsafe_allow_html=True)
-            alert_callback(f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
-
-            if success_count > 0: 
+            
+            if failed_count > 0:
+                ui_log("ERROR", f"Aborted. Total runtime: {elapsed//60}m {elapsed%60}s")
+                box_html = f'<div style="background-color: #F8D7DA; color: #DC3545; padding: 14px 20px; border-radius: 4px; border: 1px solid #DC3545; font-weight: 600; font-size: 13px; margin: 8px 0; text-align: center; display: block; width: 100%; font-family: \'Source Sans 3\', \'Inter\', sans-serif;">ABORTED — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s</div>'
+                st.markdown(box_html, unsafe_allow_html=True)
+                alert_callback(f"[WARNING] <b>BOT ABORTED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
+                st.toast('Execution aborted due to errors!', icon="🚨")
+            else:
+                ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
+                box_html = f'<div style="background-color: #E8F4F8; color: #007BFF; padding: 14px 20px; border-radius: 4px; border: 1px solid #007BFF; font-weight: 600; font-size: 13px; margin: 8px 0; text-align: center; display: block; width: 100%; font-family: \'Source Sans 3\', \'Inter\', sans-serif;">SUCCESS — Processed: {success_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s</div>'
+                st.markdown(box_html, unsafe_allow_html=True)
+                alert_callback(f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
                 st.toast('System override complete!')
                 st.session_state.reconcile_result = None
-                
+
             st.session_state.is_bot_running = False
 
     except Exception as e:
