@@ -332,7 +332,6 @@ elif adj_mode == "Manual Entry":
                 )
 
 if st.session_state.get('execute_done', False):
-    st.balloons()
     st.markdown(make_success_box("Eksekusi berhasil diselesaikan! Data telah disimpan di database."), unsafe_allow_html=True)
     st.session_state.execute_done = False
 
