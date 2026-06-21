@@ -99,21 +99,21 @@ with nav_col1:
     with st.container(border=True):
         st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Inventory Adjustment</h4>", unsafe_allow_html=True)
         st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Sync real-time stock levels and reconcile inventory data with distributor files.</p>", unsafe_allow_html=True)
-        if st.button("Open Inventory Adjustment", key="btn_nav_inv", use_container_width=True, type="primary"):
+        if st.button("Open Inventory Adjustment", key="btn_nav_inv", width="stretch", type="primary"):
             st.switch_page("pages/1_inventory_adjustment.py")
 
 with nav_col2:
     with st.container(border=True):
         st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Sales Extraction</h4>", unsafe_allow_html=True)
         st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Run Playwright automated bots to extract distributor invoices and sync sales databases.</p>", unsafe_allow_html=True)
-        if st.button("Open Sales Extraction", key="btn_nav_sales", use_container_width=True, type="primary"):
+        if st.button("Open Sales Extraction", key="btn_nav_sales", width="stretch", type="primary"):
             st.switch_page("pages/2_sales_extraction.py")
 
 with nav_col3:
     with st.container(border=True):
         st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Promotion Comparison</h4>", unsafe_allow_html=True)
         st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Compare distributor pricing files and monitor active campaign claims.</p>", unsafe_allow_html=True)
-        if st.button("Open Promotion Comparison", key="btn_nav_promo", use_container_width=True, type="primary"):
+        if st.button("Open Promotion Comparison", key="btn_nav_promo", width="stretch", type="primary"):
             st.switch_page("pages/3_promotion_comparison.py")
 
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
@@ -124,21 +124,21 @@ with nav_col4:
     with st.container(border=True):
         st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Stock Mutation</h4>", unsafe_allow_html=True)
         st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Track stock movement and mutation records across distributors.</p>", unsafe_allow_html=True)
-        if st.button("Open Stock Mutation", key="btn_nav_mutation", use_container_width=True, type="primary"):
+        if st.button("Open Stock Mutation", key="btn_nav_mutation", width="stretch", type="primary"):
             st.switch_page("pages/4_stock_mutation.py")
 
 with nav_col5:
     with st.container(border=True):
         st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Clearance Stock</h4>", unsafe_allow_html=True)
         st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Monitor and reconcile clearance inventory.</p>", unsafe_allow_html=True)
-        if st.button("Open Clearance Stock", key="btn_nav_clearance", use_container_width=True, type="primary"):
+        if st.button("Open Clearance Stock", key="btn_nav_clearance", width="stretch", type="primary"):
             st.switch_page("pages/5_clearance_stock.py")
 
 with nav_col6:
     with st.container(border=True):
         st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Initial Stock</h4>", unsafe_allow_html=True)
         st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Manage initial stock setup and baseline data.</p>", unsafe_allow_html=True)
-        if st.button("Open Initial Stock", key="btn_nav_initial", use_container_width=True, type="primary"):
+        if st.button("Open Initial Stock", key="btn_nav_initial", width="stretch", type="primary"):
             st.switch_page("pages/6_initial_stock.py")
 
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)

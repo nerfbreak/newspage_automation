@@ -268,7 +268,7 @@ elif adj_mode == "Manual Entry":
     edited_df = st.data_editor(
         st.session_state.manual_df,
         num_rows="dynamic",
-        use_container_width=True,
+        width="stretch",
         column_config={
             "SKU": st.column_config.TextColumn("SKU Code", required=True),
             "PAC": st.column_config.NumberColumn("Qty PAC", min_value=0, default=0),
