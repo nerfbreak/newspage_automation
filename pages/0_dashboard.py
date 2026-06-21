@@ -161,6 +161,31 @@ with nav_col3:
 
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
+nav_col4, nav_col5, nav_col6 = st.columns(3)
+
+with nav_col4:
+    with st.container(border=True):
+        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Stock Mutation</h4>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Track stock movement and mutation records across distributors.</p>", unsafe_allow_html=True)
+        if st.button("Open Stock Mutation", key="btn_nav_mutation", use_container_width=True, type="primary"):
+            st.switch_page("pages/4_stock_mutation.py")
+
+with nav_col5:
+    with st.container(border=True):
+        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Clearance Stock</h4>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Monitor and reconcile clearance inventory.</p>", unsafe_allow_html=True)
+        if st.button("Open Clearance Stock", key="btn_nav_clearance", use_container_width=True, type="primary"):
+            st.switch_page("pages/5_clearance_stock.py")
+
+with nav_col6:
+    with st.container(border=True):
+        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Initial Stock</h4>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Manage initial stock setup and baseline data.</p>", unsafe_allow_html=True)
+        if st.button("Open Initial Stock", key="btn_nav_initial", use_container_width=True, type="primary"):
+            st.switch_page("pages/6_initial_stock.py")
+
+st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+
 # --- SYSTEM MONITORING SECTION ---
 with st.container(border=False):
     st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>System Health</div>", unsafe_allow_html=True)
