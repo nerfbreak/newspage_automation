@@ -811,7 +811,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log)
                     
                     df_view.at[idx, 'Status'] = 'Success'
-                    df_view.at[idx, 'Keterangan'] = f'PAC:{pac} CAR:{car} EA:{ea}'
+                    df_view.at[idx, 'Keterangan'] = 'Data successfully inputted'
                     success_count += 1
                     ui_log("SUCCESS", f"Transaction {i+1} committed. Grid updated.")
                     database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", "Success", "Manual Adjustment", bot_user)

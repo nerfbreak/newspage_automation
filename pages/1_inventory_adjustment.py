@@ -277,7 +277,6 @@ elif adj_mode == "Manual Entry":
         },
         key="manual_editor"
     )
-    st.session_state.manual_df = edited_df
 
     st.markdown("<br>", unsafe_allow_html=True)
     log_label_placeholder = st.empty()
