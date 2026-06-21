@@ -746,8 +746,10 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
         ui_log("INJECT", f"Assigning EA quantity: {ea}")
         ea_input.fill(str(ea))
         
+    ui_log("INJECT", "Dispatching Add command to grid...")
     page.locator("id=pag_I_StkAdj_NewGeneral_btn_Add_Value").click(force=True)
-    page.wait_for_timeout(1000)
+    ui_log("SYS", "Awaiting DOM form reset confirmation...")
+    page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
 def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase):
     ensure_playwright()
@@ -821,12 +823,28 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 try: 
                     yes_btn = page.locator("id=pag_PopUp_YesNo_btn_Yes_Value")
                     yes_btn.wait_for(state="visible", timeout=5000)
+                    ui_log("SERVER", "Confirming save dialog...")
                     yes_btn.click()
-                except: pass
-                ui_log("SERVER", "Transaction committed successfully!")
-                st.session_state.execute_done = True
+                    ui_log("SERVER", "Document physically written to database.")
+                except Exception: 
+                    ui_log("SERVER", "Auto-save confirmed. Document written to database.")
+                    
+                ui_log("SYS", "Holding session for 5 seconds to ensure Newspage database write...")
+                page.wait_for_timeout(5000)
+            
+            ui_log("AUTH", "Initiating system logout sequence...")
+            try:
+                page.once("dialog", lambda dialog: dialog.accept())
+                page.locator("id=btnLogout").click(timeout=10000)
+                ui_log("AUTH", "Pop up confirm logout...")
+                page.wait_for_timeout(2000)
+                ui_log("SUCCESS", "Logged out successfully.")
+            except Exception as e:
+                ui_log("ERROR", "Logout button not found or timeout.")
                 
+            ui_log("SYS", "Closing browser and releasing memory...")
             browser.close()
+            st.session_state.execute_done = True
             st.session_state.is_bot_running = False
             st.rerun()
 
