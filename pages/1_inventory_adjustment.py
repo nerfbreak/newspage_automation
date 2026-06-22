@@ -48,24 +48,34 @@ render_header("Inventory Adjustment")  # Subtitle dipindah ke bawah agar bisa se
 
 st.markdown("""
 <style>
-/* Memaksa font Segmented Control agar persis seperti font Active Session/Support */
-div[data-testid="stSegmentedControl"] p, div[data-testid="stSegmentedControl"] span {
+/* Memaksa font Segmented Control di semua layer elemen (button, span, p, label) */
+div[data-testid="stSegmentedControl"] * {
     font-family: "Source Sans 3", sans-serif !important;
     font-size: 0.65rem !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
-    font-weight: 800; /* Default (Unselected) seperti Support */
 }
 
-/* Streamlit menggunakan atribut ini untuk state terpilih (selected) */
-div[data-testid="stSegmentedControl"] [data-selected="true"] p,
-div[data-testid="stSegmentedControl"] [data-selected="true"] span,
-div[data-testid="stSegmentedControl"] [aria-selected="true"] p,
-div[data-testid="stSegmentedControl"] [aria-selected="true"] span,
-div[data-testid="stSegmentedControl"] [aria-checked="true"] p,
-div[data-testid="stSegmentedControl"] [aria-checked="true"] span {
-    font-weight: 700 !important; /* Seperti Active Session */
-    color: #0068C9 !important; /* Biru */
+/* Default state: Unselected (seperti tulisan SUPPORT) */
+div[data-testid="stSegmentedControl"] label,
+div[data-testid="stSegmentedControl"] div[role="button"],
+div[data-testid="stSegmentedControl"] p,
+div[data-testid="stSegmentedControl"] span {
+    font-weight: 800 !important;
+    color: #31333F !important;
+}
+
+/* Selected state: (seperti tulisan ACTIVE SESSION) */
+div[data-testid="stSegmentedControl"] [aria-selected="true"],
+div[data-testid="stSegmentedControl"] [aria-selected="true"] *,
+div[data-testid="stSegmentedControl"] [aria-checked="true"],
+div[data-testid="stSegmentedControl"] [aria-checked="true"] *,
+div[data-testid="stSegmentedControl"] [data-selected="true"],
+div[data-testid="stSegmentedControl"] [data-selected="true"] *,
+div[data-testid="stSegmentedControl"] input:checked + div,
+div[data-testid="stSegmentedControl"] input:checked + div * {
+    font-weight: 700 !important;
+    color: #0068C9 !important;
 }
 </style>
 """, unsafe_allow_html=True)
