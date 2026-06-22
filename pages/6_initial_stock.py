@@ -157,7 +157,21 @@ if st.session_state.initial_stock_df is not None and len(st.session_state.initia
     # Warning alert if there are items with Qty <= 0
     has_invalid = (df_init['Qty'] <= 0).any()
     if has_invalid:
-        st.warning("⚠️ Warning: Terdapat SKU dengan Qty <= 0. SKU tersebut akan ditandai sebagai 'Invalid' dan dilewati saat eksekusi agar proses tetap berhasil.")
+        st.markdown("""
+            <div style='
+                background-color: #F0F2F6;
+                color: #31333F;
+                padding: 12px 16px;
+                border-radius: 8px;
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                border-left: 5px solid #FF9800;
+                font-size: 0.85rem;
+                margin-bottom: 16px;
+                font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+            '>
+                Warning: Terdapat SKU dengan Qty &le; 0. SKU tersebut akan ditandai sebagai 'Invalid' dan dilewati saat eksekusi agar proses tetap berhasil.
+            </div>
+        """, unsafe_allow_html=True)
 
     # Show review table
     df_display = df_init.copy()
