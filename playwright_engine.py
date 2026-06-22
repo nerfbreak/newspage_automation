@@ -508,6 +508,19 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             for i, (idx, row) in enumerate(df_view.iterrows()):
                 update_progress_label(i + 1, total_rows)
                 sku = str(row['SKU']).strip()
+
+                if row.get('Status') == 'Invalid':
+                    ui_log("WARN", f"SKU [{sku}] skipped: {row.get('Keterangan', 'Invalid Qty')}")
+                    if supabase:
+                        try:
+                            database.log_adjustment(supabase, sku, str(row.get('Qty')), "Invalid", f"Skipped: {row.get('Keterangan')}", bot_user)
+                        except Exception:
+                            pass
+                    progress_bar.progress((i+1)/total_rows)
+                    if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1:
+                        table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
+                    continue
+
                 try: qty = str(int(float(row['Qty'])))
                 except Exception: qty = str(row['Qty']).strip()
 

@@ -124,8 +124,8 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
         df_init['SKU'] = df_init['SKU'].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
         df_init['Qty'] = df_init['Qty'].apply(safe_parse_numeric).astype(int)
 
-        # Filter out zero and negative qty
-        df_init = df_init[df_init['Qty'] > 0].reset_index(drop=True)
+        # Reset index
+        df_init = df_init.reset_index(drop=True)
 
         if 'Description' not in df_init.columns:
             df_init['Description'] = ''
@@ -154,6 +154,11 @@ if st.session_state.initial_stock_df is not None and len(st.session_state.initia
 
     st.subheader("Initial Stock Review")
 
+    # Warning alert if there are items with Qty <= 0
+    has_invalid = (df_init['Qty'] <= 0).any()
+    if has_invalid:
+        st.warning("⚠️ Warning: Terdapat SKU dengan Qty <= 0. SKU tersebut akan ditandai sebagai 'Invalid' dan dilewati saat eksekusi agar proses tetap berhasil.")
+
     # Show review table
     df_display = df_init.copy()
     display_cols = ['SKU', 'Description', 'Qty'] if 'Description' in df_display.columns else ['SKU', 'Qty']
@@ -174,10 +179,10 @@ if st.session_state.initial_stock_df is not None and len(st.session_state.initia
 if st.session_state.is_bot_running and st.session_state.initial_stock_df is not None:
     df_init = st.session_state.initial_stock_df
 
-    # Build execution DataFrame (positive qty for initial stock)
+    # Build execution DataFrame (mark non-positive qty as Invalid)
     df_exec = df_init[['SKU', 'Qty']].copy()
-    df_exec['Status'] = 'Pending'
-    df_exec['Keterangan'] = 'Ready to Input'
+    df_exec['Status'] = df_exec['Qty'].apply(lambda q: 'Invalid' if q <= 0 else 'Pending')
+    df_exec['Keterangan'] = df_exec['Qty'].apply(lambda q: 'Invalid Qty (<= 0)' if q <= 0 else 'Ready to Input')
 
     st.subheader("Initial Stock Execution")
     table_placeholder = st.empty()
