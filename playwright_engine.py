@@ -388,7 +388,7 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
 def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_log):
     ui_log("NAV", "Navigating to Stock Adjustment module...")
     page.wait_for_timeout(3000)
-    page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").dispatch_event("click")
+    page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
     
     add_btn = page.locator("id=pag_I_StkAdj_btn_Add_Value")
     add_btn.wait_for(state="attached", timeout=TIMEOUT_MS)
@@ -580,7 +580,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 # Retrieve Document Number from the list page
                 try:
                     ui_log("NAV", "Navigating to Stock Adjustment list to fetch Document No...")
-                    page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").dispatch_event("click")
+                    page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
                     
                     status_dropdown = page.locator("id=pag_I_StkAdj_drp_Status_Value")
                     status_dropdown.wait_for(state="visible", timeout=10000)
@@ -936,7 +936,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 # Retrieve Document Number from the list page
                 try:
                     ui_log("NAV", "Navigating to Stock Adjustment list to fetch Document No...")
-                    page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").dispatch_event("click")
+                    page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
                     
                     status_dropdown = page.locator("id=pag_I_StkAdj_drp_Status_Value")
                     status_dropdown.wait_for(state="visible", timeout=10000)
