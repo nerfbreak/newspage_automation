@@ -148,8 +148,10 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
     df_clear = st.session_state.clearance_df
 
     # Summary metrics
-    with st.container(horizontal=True):
+    col_clear1, col_clear2 = st.columns(2)
+    with col_clear1:
         st.markdown(render_metric_card("Total SKU to Clear", len(df_clear)), unsafe_allow_html=True)
+    with col_clear2:
         st.markdown(render_metric_card("Total SKU to Process", len(df_clear)), unsafe_allow_html=True)
 
     st.subheader("Stock Clearance Review")

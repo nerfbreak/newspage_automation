@@ -122,9 +122,12 @@ if uploaded_file is not None:
             st.session_state.mutasi_review_df = df_review
 
             # Summary metrics
-            with st.container(horizontal=True):
+            mc1, mc2, mc3 = st.columns(3)
+            with mc1:
                 st.markdown(render_metric_card("Total SKU", len(df_review)), unsafe_allow_html=True)
+            with mc2:
                 st.markdown(render_metric_card(f"Total Qty Dikurangi ({dist_a})", f"-{df_review['Qty'].sum()}"), unsafe_allow_html=True)
+            with mc3:
                 st.markdown(render_metric_card(f"Total Qty Ditambah ({dist_b})", f"+{df_review['Qty'].sum()}"), unsafe_allow_html=True)
 
             # Review table with deduction/addition preview
