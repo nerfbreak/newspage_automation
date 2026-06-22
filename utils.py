@@ -301,3 +301,56 @@ def resolve_distributor_url(list_dist):
             st.query_params.pop("distributor", None)
     default_index = list_dist.index(url_dist) if url_dist in list_dist else 0
     return url_dist, default_index
+
+
+def safe_parse_numeric(val) -> float:
+    if val is None:
+        return 0.0
+    if isinstance(val, (int, float)):
+        import math
+        return float(val) if not math.isnan(val) else 0.0
+    s = str(val).strip()
+    if not s or s.lower() in ('nan', 'none'):
+        return 0.0
+    
+    # Remove any spaces
+    s = s.replace(' ', '')
+    
+    # Move minus sign from end to front (e.g. 125.00-)
+    if s.endswith('-'):
+        s = '-' + s[:-1]
+        
+    # Check for both comma and dot
+    if ',' in s and '.' in s:
+        if s.rfind(',') > s.rfind('.'):
+            # Indonesian format: 1.250,00 -> 1250.00
+            s = s.replace('.', '').replace(',', '.')
+        else:
+            # English format: 1,250.00 -> 1250.00
+            s = s.replace(',', '')
+    elif ',' in s:
+        # Only comma is present: e.g. 72,00 or 1,250
+        parts = s.split(',')
+        if len(parts[-1]) == 3:
+            # Thousands separator: 1,250 -> 1250
+            s = s.replace(',', '')
+        else:
+            # Decimal point: 72,00 -> 72.00
+            s = s.replace(',', '.')
+    elif '.' in s:
+        # Only dot is present: e.g. 72.00 or 1.250
+        if s.count('.') > 1:
+            s = s.replace('.', '')
+        else:
+            parts = s.split('.')
+            if len(parts[-1]) == 3:
+                # Thousands separator: 1.250 -> 1250
+                s = s.replace('.', '')
+            else:
+                # Decimal point: 72.00 -> 72.00
+                pass
+    try:
+        return float(s)
+    except ValueError:
+        return 0.0
+

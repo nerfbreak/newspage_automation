@@ -8,7 +8,7 @@ from utils import (
     encode_param, send_telegram_alert,
     init_session_state, render_wakelock, style_status,
     make_terminal_logger,
-    resolve_distributor_url,
+    resolve_distributor_url, safe_parse_numeric,
 )
 
 # --- AUTH CHECK ---
@@ -122,10 +122,7 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
         TARGET_SKUS = database.get_target_skus(supabase)
         EXCLUDE_PREFIX = ['8021803', '8021804']
         df_init['SKU'] = df_init['SKU'].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
-        df_init['Qty'] = pd.to_numeric(
-            df_init['Qty'].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False),
-            errors='coerce'
-        ).fillna(0).astype(int)
+        df_init['Qty'] = df_init['Qty'].apply(safe_parse_numeric).astype(int)
 
         # Filter out zero qty
         df_init = df_init[df_init['Qty'] != 0].reset_index(drop=True)
