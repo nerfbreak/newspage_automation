@@ -242,8 +242,8 @@ def render_header(title, subtitle=""):
     inject_css()  # uses cached CSS, no repeated file I/O
 
     if "Automation Tool" not in title:
-        st.page_link("pages/0_dashboard.py", label="← Back to Dashboard")
-    st.markdown(f"<h1 style='margin-top: 0px; padding-top: 0px;'>{title}</h1>", unsafe_allow_html=True)
+        st.markdown(f"<span style='font-family: \"Source Sans 3\", sans-serif; font-size: 14px; font-weight: 600;'>[Dashboard](dashboard) &nbsp;<span style='color: #aaa; font-size: 12px;'>/</span>&nbsp; <span style='color: #555;'>{title}</span></span>", unsafe_allow_html=True)
+    st.markdown(f"<h1 style='margin-top: -5px; padding-top: 0px;'>{title}</h1>", unsafe_allow_html=True)
     if subtitle:
         st.markdown(clean_html(f"""
             <div style='display: inline-block; margin-top: -4px;'>
