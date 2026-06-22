@@ -457,7 +457,7 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
 
 def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase):
     ensure_playwright()
-    global_start_time = time.time(); success_count, failed_count = 0, 0
+    global_start_time = time.time(); success_count, failed_count = 0, 0; saved_doc_no = "N/A"
     ui_log("SYS", "Allocating memory and initializing Chromium headless core...")
     if supabase: ui_log("SYS", "Supabase client active.")
 
@@ -532,7 +532,6 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     df_view.at[idx, 'Keterangan'] = f'Input {qty} EA'
                     success_count += 1
                     ui_log("SUCCESS", f"Transaction {i+1} committed. Grid updated.")
-                    database.log_adjustment(supabase, sku, qty, "Success", f"Attached {qty} EA", bot_user)
                 except Exception as loop_err: 
                     err_msg = str(loop_err)
                     df_view.at[idx, 'Status'] = 'Failed'
@@ -541,12 +540,10 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                         df_view.at[idx, 'Keterangan'] = 'Insufficient Stock'
                         failed_count += 1
                         ui_log("ERROR", f"Failed on SKU [{sku}]: {err_msg}. Skipping.")
-                        database.log_adjustment(supabase, sku, qty, "Failed", "Insufficient Stock", bot_user)
                     else:
                         df_view.at[idx, 'Keterangan'] = 'Node Timeout'
                         failed_count += 1
                         ui_log("ERROR", f"Timeout on SKU [{sku}]. Node unresponsive. Skipping.")
-                        database.log_adjustment(supabase, sku, qty, "Failed", "Node Timeout", bot_user)
                     
                 progress_bar.progress((i+1)/total_rows)
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
@@ -554,6 +551,17 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     
             if failed_count > 0:
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
+                # Log all non-invalid entries as failed/pending to database
+                if supabase:
+                    for idx, row in df_view.iterrows():
+                        if row.get('Status') == 'Invalid':
+                            continue
+                        sku = str(row['SKU']).strip()
+                        qty = str(row['Qty']).strip()
+                        status = str(row['Status']).strip()
+                        ket = str(row['Keterangan']).strip()
+                        try: database.log_adjustment(supabase, sku, qty, status, ket, bot_user)
+                        except Exception: pass
             else:
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
                 page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
@@ -568,6 +576,36 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     
                 ui_log("SYS", "Holding session for 5 seconds to ensure Newspage database write...")
                 page.wait_for_timeout(5000)
+
+                # Retrieve Document Number from read-only page
+                try:
+                    doc_no_locator = page.locator("#pag_I_StkAdj_ViewGeneral_lbl_TXN_NO_Value")
+                    doc_no_locator.wait_for(state="visible", timeout=15000)
+                    doc_no_text = doc_no_locator.text_content()
+                    if doc_no_text:
+                        saved_doc_no = doc_no_text.strip()
+                    ui_log("SUCCESS", f"Document saved successfully! Document No: {saved_doc_no}")
+                except Exception as e:
+                    ui_log("WARN", f"Could not retrieve running Document Number: {e}")
+
+                # Update descriptions in df_view and write to Supabase
+                for idx, row in df_view.iterrows():
+                    if row.get('Status') == 'Success':
+                        df_view.at[idx, 'Keterangan'] = f"Input {row['Qty']} EA (Doc: {saved_doc_no})"
+
+                if supabase:
+                    for idx, row in df_view.iterrows():
+                        if row.get('Status') == 'Invalid':
+                            continue
+                        sku = str(row['SKU']).strip()
+                        qty = str(row['Qty']).strip()
+                        status = str(row['Status']).strip()
+                        ket = str(row['Keterangan']).strip()
+                        try: database.log_adjustment(supabase, sku, qty, status, ket, bot_user)
+                        except Exception: pass
+
+                # Refresh the final dataframe view in the UI
+                table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
             
             ui_log("AUTH", "Initiating system logout sequence...")
             try:
@@ -591,9 +629,9 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 st.toast('Execution aborted due to errors!', icon="🚨")
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
-                box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s")
+                box_html = utils.make_success_box(f"SUCCESS — Doc: {saved_doc_no} | Processed: {success_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s")
                 st.markdown(box_html, unsafe_allow_html=True)
-                alert_callback(f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
+                alert_callback(f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nDoc No: {saved_doc_no}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
                 st.toast('System override complete!')
                 st.session_state.reconcile_result = None
 
@@ -776,7 +814,7 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
 def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase):
     ensure_playwright()
     try:
-        global_start_time = time.time(); success_count, failed_count = 0, 0
+        global_start_time = time.time(); success_count, failed_count = 0, 0; saved_doc_no = "N/A"
         import asyncio
         try: asyncio.get_event_loop()
         except RuntimeError: asyncio.set_event_loop(asyncio.new_event_loop())
@@ -835,20 +873,28 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     df_view.at[idx, 'Keterangan'] = 'Input successfully'
                     success_count += 1
                     ui_log("SUCCESS", f"Transaction {i+1} committed. Grid updated.")
-                    database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", "Success", "Manual Adjustment", bot_user)
                 except Exception as loop_err: 
                     err_msg = str(loop_err)
                     df_view.at[idx, 'Status'] = 'Failed'
                     df_view.at[idx, 'Keterangan'] = 'Node Timeout'
                     failed_count += 1
                     ui_log("ERROR", f"Timeout on SKU [{sku}]. Node unresponsive. Skipping.")
-                    database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", "Failed", "Node Timeout", bot_user)
                     
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
                     table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
                     
             if failed_count > 0:
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
+                if supabase:
+                    for idx, row in df_view.iterrows():
+                        sku = str(row['SKU']).strip()
+                        pac = str(row.get('PAC', 0)).strip()
+                        car = str(row.get('CAR', 0)).strip()
+                        ea = str(row.get('EA', 0)).strip()
+                        status = str(row['Status']).strip()
+                        ket = str(row['Keterangan']).strip()
+                        try: database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", status, ket, bot_user)
+                        except Exception: pass
             else:
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
                 page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
@@ -863,6 +909,36 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     
                 ui_log("SYS", "Holding session for 5 seconds to ensure Newspage database write...")
                 page.wait_for_timeout(5000)
+
+                # Retrieve Document Number from read-only page
+                try:
+                    doc_no_locator = page.locator("#pag_I_StkAdj_ViewGeneral_lbl_TXN_NO_Value")
+                    doc_no_locator.wait_for(state="visible", timeout=15000)
+                    doc_no_text = doc_no_locator.text_content()
+                    if doc_no_text:
+                        saved_doc_no = doc_no_text.strip()
+                    ui_log("SUCCESS", f"Document saved successfully! Document No: {saved_doc_no}")
+                except Exception as e:
+                    ui_log("WARN", f"Could not retrieve running Document Number: {e}")
+
+                # Update descriptions in df_view and write to Supabase
+                for idx, row in df_view.iterrows():
+                    if row.get('Status') == 'Success':
+                        df_view.at[idx, 'Keterangan'] = f"Manual Input (Doc: {saved_doc_no})"
+
+                if supabase:
+                    for idx, row in df_view.iterrows():
+                        sku = str(row['SKU']).strip()
+                        pac = str(row.get('PAC', 0)).strip()
+                        car = str(row.get('CAR', 0)).strip()
+                        ea = str(row.get('EA', 0)).strip()
+                        status = str(row['Status']).strip()
+                        ket = str(row['Keterangan']).strip()
+                        try: database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", status, ket, bot_user)
+                        except Exception: pass
+
+                # Refresh the final dataframe view in the UI
+                table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
             
             ui_log("AUTH", "Initiating system logout sequence...")
             try:
@@ -886,9 +962,9 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 st.toast('Execution aborted due to errors!', icon="🚨")
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
-                box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s")
+                box_html = utils.make_success_box(f"SUCCESS — Doc: {saved_doc_no} | Processed: {success_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s")
                 st.markdown(box_html, unsafe_allow_html=True)
-                alert_callback(f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
+                alert_callback(f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nDoc No: {saved_doc_no}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
                 st.toast('System override complete!')
 
             st.session_state.is_bot_running = False
