@@ -48,32 +48,28 @@ render_header("Inventory Adjustment")  # Subtitle dipindah ke bawah agar bisa se
 
 st.markdown("""
 <style>
-/* Memaksa font Segmented Control di semua layer elemen (button, span, p, label) */
-div[data-testid="stSegmentedControl"] * {
+/* Trik Anchor CSS untuk memaksa style masuk tepat di kolom widget Segmented Control */
+div[data-testid="column"]:has(#segmented-anchor) p,
+div[data-testid="column"]:has(#segmented-anchor) span {
     font-family: "Source Sans 3", sans-serif !important;
     font-size: 0.65rem !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
-}
-
-/* Default state: Unselected (seperti tulisan SUPPORT) */
-div[data-testid="stSegmentedControl"] label,
-div[data-testid="stSegmentedControl"] div[role="button"],
-div[data-testid="stSegmentedControl"] p,
-div[data-testid="stSegmentedControl"] span {
     font-weight: 800 !important;
     color: #31333F !important;
 }
 
 /* Selected state: (seperti tulisan ACTIVE SESSION) */
-div[data-testid="stSegmentedControl"] [aria-selected="true"],
-div[data-testid="stSegmentedControl"] [aria-selected="true"] *,
-div[data-testid="stSegmentedControl"] [aria-checked="true"],
-div[data-testid="stSegmentedControl"] [aria-checked="true"] *,
-div[data-testid="stSegmentedControl"] [data-selected="true"],
-div[data-testid="stSegmentedControl"] [data-selected="true"] *,
-div[data-testid="stSegmentedControl"] input:checked + div,
-div[data-testid="stSegmentedControl"] input:checked + div * {
+div[data-testid="column"]:has(#segmented-anchor) [aria-selected="true"] p,
+div[data-testid="column"]:has(#segmented-anchor) [aria-selected="true"] span,
+div[data-testid="column"]:has(#segmented-anchor) [aria-checked="true"] p,
+div[data-testid="column"]:has(#segmented-anchor) [aria-checked="true"] span,
+div[data-testid="column"]:has(#segmented-anchor) [data-selected="true"] p,
+div[data-testid="column"]:has(#segmented-anchor) [data-selected="true"] span,
+div[data-testid="column"]:has(#segmented-anchor) input:checked + div p,
+div[data-testid="column"]:has(#segmented-anchor) input:checked + div span,
+div[data-testid="column"]:has(#segmented-anchor) [data-baseweb="radio"] input:checked + div span,
+div[data-testid="column"]:has(#segmented-anchor) [data-baseweb="radio"] input:checked + div p {
     font-weight: 700 !important;
     color: #0068C9 !important;
 }
@@ -82,6 +78,7 @@ div[data-testid="stSegmentedControl"] input:checked + div * {
 
 col1, col2 = st.columns([1, 1])
 with col1:
+    st.markdown('<div id="segmented-anchor"></div>', unsafe_allow_html=True)
     adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
     adj_mode = adj_mode_sel if adj_mode_sel else "Auto Compare"
 
