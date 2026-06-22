@@ -170,12 +170,12 @@ if st.button("EXECUTE MUTASI", type="primary", width="stretch", disabled=not can
     df_a_display['Qty'] = '-' + df_a_display['Qty'].astype(str)
     df_a_display['Status'] = 'Pending'
     df_a_display['Keterangan'] = 'Ready'
-    table_a_ph.dataframe(style_status(df_a_display), width="stretch", height=400, hide_index=True)
+    table_a_ph.dataframe(style_status(df_a_display), width="stretch", hide_index=True)
 
     df_b_display = df_mutasi[['SKU', 'Description', 'Qty']].copy()
     df_b_display['Status'] = 'Pending'
     df_b_display['Keterangan'] = 'Ready'
-    table_b_ph.dataframe(style_status(df_b_display), width="stretch", height=400, hide_index=True)
+    table_b_ph.dataframe(style_status(df_b_display), width="stretch", hide_index=True)
 
     prog_a_ph.progress(0)
     prog_b_ph.progress(0)

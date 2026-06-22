@@ -99,7 +99,7 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
 
     # Preview raw data
     with st.expander("Preview raw data", expanded=False):
-        st.dataframe(df_raw.head(20), width="stretch", height=300, hide_index=True)
+        st.dataframe(df_raw.head(20), width="stretch", hide_index=True)
 
     if st.button("Confirm & Load Data", type="primary", width="stretch"):
         df_init = df_raw[[sel_sku, sel_qty]].copy()
@@ -181,7 +181,7 @@ if st.session_state.is_bot_running and st.session_state.initial_stock_df is not 
 
     st.subheader("Initial Stock Execution")
     table_placeholder = st.empty()
-    table_placeholder.dataframe(style_status(df_exec), width="stretch", height=400, hide_index=True)
+    table_placeholder.dataframe(style_status(df_exec), width="stretch", hide_index=True)
 
     log_label_placeholder = st.empty()
     log_placeholder = st.empty()
