@@ -106,6 +106,10 @@ clearance_page = st.Page("pages/5_clearance_stock.py", title="Clearance Stock", 
 initial_page = st.Page("pages/6_initial_stock.py", title="Initial Stock", url_path="p6")
 
 # Run navigation
-pg = st.navigation([dashboard_page, inventory_page, sales_page, promotion_page, mutation_page, clearance_page, initial_page], position="hidden")
+pg = st.navigation({
+    "🏠 Main": [dashboard_page],
+    "⚙️ Operations": [inventory_page, sales_page, promotion_page],
+    "📦 Stock Management": [mutation_page, clearance_page, initial_page]
+})
 pg.run()
 
