@@ -416,26 +416,8 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     qty_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_QTY1_Value")
     qty_input.wait_for(state="visible", timeout=TIMEOUT_MS)
     
-    # Double cross-check for negative adjustments
-    try:
-        int_qty = int(qty)
-        if int_qty < 0:
-            ui_log("INJECT", "Negative adjustment detected. Verifying live screen stock...")
-            stock_lbl = page.locator("id=pag_I_StkAdj_NewGeneral_lbl_Adjustable_Qty_Value")
-            stock_lbl.wait_for(state="visible", timeout=5000)
-            stock_text = stock_lbl.inner_text().strip()
-            
-            import re
-            match = re.search(r'(\d+)\s*EA', stock_text.upper())
-            if match:
-                curr_ea = int(match.group(1))
-                if abs(int_qty) > curr_ea:
-                    raise Exception(f"Insufficient Stock (Has {curr_ea} EA, wants {int_qty} EA)")
-            else:
-                ui_log("WARN", f"Could not parse EA stock from: {stock_text}")
-    except Exception as e:
-        if "Insufficient" in str(e):
-            raise e # Reraise to be caught by the outer loop as failed
+    # The negative adjustment cross-check was removed because it 
+    # failed to accurately parse mixed units (e.g., PAC/CAR/EA) from the live screen.
             
     ui_log("INJECT", f"Node resolved. Assigning adjustment quantity: {qty} EA")
     qty_input.fill(qty)
