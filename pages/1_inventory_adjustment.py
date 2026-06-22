@@ -46,6 +46,30 @@ bot_status = "RUNNING" if st.session_state.is_bot_running else "STANDBY"
 render_indicators(db_status, bot_status)
 render_header("Inventory Adjustment")  # Subtitle dipindah ke bawah agar bisa sejajar
 
+st.markdown("""
+<style>
+/* Memaksa font Segmented Control agar persis seperti font Active Session/Support */
+div[data-testid="stSegmentedControl"] p, div[data-testid="stSegmentedControl"] span {
+    font-family: "Source Sans 3", sans-serif !important;
+    font-size: 0.65rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    font-weight: 800; /* Default (Unselected) seperti Support */
+}
+
+/* Streamlit menggunakan atribut ini untuk state terpilih (selected) */
+div[data-testid="stSegmentedControl"] [data-selected="true"] p,
+div[data-testid="stSegmentedControl"] [data-selected="true"] span,
+div[data-testid="stSegmentedControl"] [aria-selected="true"] p,
+div[data-testid="stSegmentedControl"] [aria-selected="true"] span,
+div[data-testid="stSegmentedControl"] [aria-checked="true"] p,
+div[data-testid="stSegmentedControl"] [aria-checked="true"] span {
+    font-weight: 700 !important; /* Seperti Active Session */
+    color: #0068C9 !important; /* Biru */
+}
+</style>
+""", unsafe_allow_html=True)
+
 col1, col2 = st.columns([1, 1])
 with col1:
     adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
