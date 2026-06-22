@@ -47,7 +47,14 @@ render_indicators(db_status, bot_status)
 render_header("Inventory Adjustment", st.session_state.current_user)
 
 st.markdown("<br>", unsafe_allow_html=True)
-adj_mode = st.radio("Adjustment Mode", ["Auto Compare", "Manual Entry"], horizontal=True, label_visibility="collapsed")
+adj_mode_sel = st.segmented_control(
+    "Adjustment Mode", 
+    ["Auto Compare", "Manual Entry"], 
+    default="Auto Compare", 
+    label_visibility="collapsed",
+    selection_mode="single"
+)
+adj_mode = adj_mode_sel if adj_mode_sel else "Auto Compare"
 st.markdown("<hr style='margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
 if adj_mode == "Auto Compare":
