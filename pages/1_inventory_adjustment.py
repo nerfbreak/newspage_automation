@@ -47,7 +47,7 @@ render_indicators(db_status, bot_status)
 render_header("Inventory Adjustment", st.session_state.current_user)
 
 st.markdown("<br>", unsafe_allow_html=True)
-adj_mode_sel = st.pills("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
+adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
 adj_mode = adj_mode_sel if adj_mode_sel else "Auto Compare"
 st.markdown("<hr style='margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
