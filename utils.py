@@ -246,9 +246,11 @@ def render_header(title, subtitle=""):
     st.markdown(f"<h1 style='margin-top: -5px; padding-top: 0px;'>{title}</h1>", unsafe_allow_html=True)
     if subtitle:
         st.markdown(clean_html(f"""
-            <div style='display: inline-block; margin-top: -4px;'>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Session</span>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.65rem; font-weight: 700; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{subtitle}</span>
+            <div style='display: flex; justify-content: flex-end; margin-top: -50px; margin-bottom: 20px; position: relative; pointer-events: none;'>
+                <div style='background-color: #f0f2f6; border: 1px solid #e0e2e6; padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'>
+                    <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
+                    <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #31333F; text-transform: uppercase; letter-spacing: 0.05em;'>{subtitle}</span>
+                </div>
             </div>
         """), unsafe_allow_html=True)
 
