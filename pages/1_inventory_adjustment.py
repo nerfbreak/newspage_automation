@@ -4,6 +4,8 @@ import database
 import data_processor
 import pandas as pd
 import playwright_engine
+import importlib
+importlib.reload(playwright_engine)
 from utils import (
     make_solid_box, make_success_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,

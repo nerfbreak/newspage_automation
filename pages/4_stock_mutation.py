@@ -3,6 +3,8 @@ import streamlit as st
 import database
 import data_processor
 import playwright_engine
+import importlib
+importlib.reload(playwright_engine)
 from utils import (
     render_footer, make_solid_box, render_metric_card,
     check_auth, render_indicators, render_header,
