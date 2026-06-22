@@ -124,8 +124,8 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
         df_init['SKU'] = df_init['SKU'].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
         df_init['Qty'] = df_init['Qty'].apply(safe_parse_numeric).astype(int)
 
-        # Filter out zero qty
-        df_init = df_init[df_init['Qty'] != 0].reset_index(drop=True)
+        # Filter out zero and negative qty
+        df_init = df_init[df_init['Qty'] > 0].reset_index(drop=True)
 
         if 'Description' not in df_init.columns:
             df_init['Description'] = ''

@@ -416,8 +416,34 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     qty_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_QTY1_Value")
     qty_input.wait_for(state="visible", timeout=TIMEOUT_MS)
     
-    # The negative adjustment cross-check was removed because it 
-    # failed to accurately parse mixed units (e.g., PAC/CAR/EA) from the live screen.
+    # For negative adjustments, cross-check live available stock on screen
+    if qty.startswith('-'):
+        try:
+            ui_log("INJECT", "Negative adjustment detected. Verifying live screen stock...")
+            stock_lbl = page.locator("id=pag_I_StkAdj_NewGeneral_lbl_Adjustable_Qty_Value")
+            stock_lbl.wait_for(state="visible", timeout=5000)
+            stock_text = stock_lbl.inner_text().strip().upper()
+            
+            req_qty = abs(int(qty))
+            import re
+            numbers = re.findall(r'\d+', stock_text)
+            is_zero = not numbers or all(int(n) == 0 for n in numbers)
+            
+            insufficient = False
+            if is_zero:
+                insufficient = True
+            elif 'PAC' not in stock_text and 'CAR' not in stock_text:
+                match = re.search(r'(\d+)\s*EA', stock_text)
+                if match:
+                    live_ea = int(match.group(1))
+                    if live_ea < req_qty:
+                        insufficient = True
+            
+            if insufficient:
+                raise Exception(f"Insufficient Stock (Has {stock_text}, wants {qty} EA)")
+        except Exception as e:
+            if "Insufficient" in str(e):
+                raise e
             
     ui_log("INJECT", f"Node resolved. Assigning adjustment quantity: {qty} EA")
     qty_input.fill(qty)
