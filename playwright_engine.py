@@ -590,8 +590,15 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     search_btn.click()
                     page.wait_for_timeout(3000) # Wait for list to load
                     
+                    # Wait up to 10 seconds for the first transaction row to appear in the DOM
+                    try:
+                        first_doc_link = page.locator("a[id*='TXN_NO_Value']").first
+                        first_doc_link.wait_for(state="attached", timeout=10000)
+                    except Exception:
+                        pass
+
                     # Scrape all transaction numbers from the grid
-                    locators = page.locator("a[id*='grs_TXN_NO_Value']")
+                    locators = page.locator("a[id*='TXN_NO_Value']")
                     count = locators.count()
                     doc_numbers = []
                     for idx_loc in range(count):
@@ -946,8 +953,15 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     search_btn.click()
                     page.wait_for_timeout(3000) # Wait for list to load
                     
+                    # Wait up to 10 seconds for the first transaction row to appear in the DOM
+                    try:
+                        first_doc_link = page.locator("a[id*='TXN_NO_Value']").first
+                        first_doc_link.wait_for(state="attached", timeout=10000)
+                    except Exception:
+                        pass
+
                     # Scrape all transaction numbers from the grid
-                    locators = page.locator("a[id*='grs_TXN_NO_Value']")
+                    locators = page.locator("a[id*='TXN_NO_Value']")
                     count = locators.count()
                     doc_numbers = []
                     for idx_loc in range(count):
