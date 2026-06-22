@@ -5,6 +5,7 @@ import data_processor
 import pandas as pd
 import playwright_engine
 import importlib
+from streamlit_option_menu import option_menu
 importlib.reload(playwright_engine)
 from utils import (
     make_solid_box, make_success_box, render_terminal, render_footer,
@@ -47,14 +48,24 @@ render_indicators(db_status, bot_status)
 render_header("Inventory Adjustment", st.session_state.current_user)
 
 st.markdown("<br>", unsafe_allow_html=True)
-adj_mode_sel = st.segmented_control(
-    "Adjustment Mode", 
-    ["Auto Compare", "Manual Entry"], 
-    default="Auto Compare", 
-    label_visibility="collapsed",
-    selection_mode="single"
+adj_mode = option_menu(
+    menu_title=None,
+    options=["Auto Compare", "Manual Entry"],
+    icons=["robot", "keyboard"],
+    default_index=0,
+    orientation="horizontal",
+    styles={
+        "container": {"padding": "0!important", "background-color": "transparent", "border": "1px solid #ddd", "border-radius": "10px"},
+        "icon": {"color": "orange", "font-size": "14px"}, 
+        "nav-link": {
+            "font-size": "14px", 
+            "text-align": "center", 
+            "margin":"0px", 
+            "--hover-color": "#eee"
+        },
+        "nav-link-selected": {"background-color": "#0252b3", "font-weight": "bold"}
+    }
 )
-adj_mode = adj_mode_sel if adj_mode_sel else "Auto Compare"
 st.markdown("<hr style='margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
 if adj_mode == "Auto Compare":
