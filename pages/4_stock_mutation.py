@@ -136,7 +136,7 @@ if uploaded_file is not None:
             df_display[f'Add ({dist_b})'] = df_display['Qty'].apply(lambda x: f"+{abs(x)}")
 
             st.subheader("Stock Review")
-            st.dataframe(style_status(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']]), width="stretch", height=400, hide_index=True)
+            st.dataframe(style_status(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']]), width="stretch", hide_index=True)
         else:
             st.warning("Tidak ada SKU valid di file yang diupload.")
     else:

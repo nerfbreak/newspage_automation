@@ -157,7 +157,7 @@ if st.session_state.initial_stock_df is not None and len(st.session_state.initia
     # Show review table
     df_display = df_init.copy()
     display_cols = ['SKU', 'Description', 'Qty'] if 'Description' in df_display.columns else ['SKU', 'Qty']
-    st.dataframe(style_status(df_display[display_cols]), width="stretch", height=400, hide_index=True)
+    st.dataframe(style_status(df_display[display_cols]), width="stretch", hide_index=True)
 
     # --- EXECUTE ---
     if st.session_state.is_bot_running:

@@ -121,7 +121,7 @@ promo_log_placeholder = st.empty()
 # --- PREVIEW DATA ---
 if st.session_state.uploaded_mdm_data is not None:
     with st.expander("Preview SharePoint Data (MDM)"):
-        st.dataframe(st.session_state.uploaded_mdm_data.head(50), width="stretch", height=400, hide_index=True)
+        st.dataframe(st.session_state.uploaded_mdm_data.head(50), width="stretch", hide_index=True)
 
 # --- TRIGGER EXTRACTION ---
 if promo_btn:
@@ -278,7 +278,7 @@ if st.session_state.promo_zip_data:
         if filter_status != "All":
             df_view = df_view[df_view['MATCH_STATUS'] == filter_status]
             
-        st.dataframe(df_view, width="stretch", height=400, hide_index=True)
+        st.dataframe(df_view, width="stretch", hide_index=True)
         
         csv_buffer = io.StringIO()
         df_view.to_csv(csv_buffer, index=False)
