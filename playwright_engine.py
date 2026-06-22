@@ -579,8 +579,8 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
 
                 # Retrieve Document Number from read-only page
                 try:
-                    doc_no_locator = page.locator("#pag_I_StkAdj_ViewGeneral_lbl_TXN_NO_Value")
-                    doc_no_locator.wait_for(state="visible", timeout=15000)
+                    doc_no_locator = page.locator("id=pag_I_StkAdj_ViewGeneral_lbl_TXN_NO_Value")
+                    doc_no_locator.wait_for(state="visible", timeout=45000)
                     doc_no_text = doc_no_locator.text_content()
                     if doc_no_text:
                         saved_doc_no = doc_no_text.strip()
@@ -912,8 +912,8 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
 
                 # Retrieve Document Number from read-only page
                 try:
-                    doc_no_locator = page.locator("#pag_I_StkAdj_ViewGeneral_lbl_TXN_NO_Value")
-                    doc_no_locator.wait_for(state="visible", timeout=15000)
+                    doc_no_locator = page.locator("id=pag_I_StkAdj_ViewGeneral_lbl_TXN_NO_Value")
+                    doc_no_locator.wait_for(state="visible", timeout=45000)
                     doc_no_text = doc_no_locator.text_content()
                     if doc_no_text:
                         saved_doc_no = doc_no_text.strip()
