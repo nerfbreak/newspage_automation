@@ -44,12 +44,24 @@ db_status = "CONNECTED" if supabase is not None else "DISCONNECTED"
 bot_status = "RUNNING" if st.session_state.is_bot_running else "STANDBY"
 
 render_indicators(db_status, bot_status)
-render_header("Inventory Adjustment", st.session_state.current_user)
+render_header("Inventory Adjustment")  # Subtitle dipindah ke bawah agar bisa sejajar
 
-st.markdown("<br>", unsafe_allow_html=True)
-adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
-adj_mode = adj_mode_sel if adj_mode_sel else "Auto Compare"
-st.markdown("<hr style='margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
+col1, col2 = st.columns([1, 1])
+with col1:
+    adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
+    adj_mode = adj_mode_sel if adj_mode_sel else "Auto Compare"
+
+with col2:
+    st.markdown(f"""
+        <div style='display: flex; justify-content: flex-end; align-items: center; margin-top: 5px;'>
+            <div style='background-color: #f0f2f6; border: 1px solid #e0e2e6; padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #31333F; text-transform: uppercase; letter-spacing: 0.05em;'>{st.session_state.current_user}</span>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("<hr style='margin-top: 10px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
 if adj_mode == "Auto Compare":
     col1, col2 = st.columns(2)
