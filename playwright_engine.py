@@ -577,16 +577,39 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 ui_log("SYS", "Holding session for 5 seconds to ensure Newspage database write...")
                 page.wait_for_timeout(5000)
 
-                # Retrieve Document Number from read-only page
+                # Retrieve Document Number from the list page
                 try:
-                    doc_no_locator = page.locator("id=pag_I_StkAdj_ViewGeneral_lbl_TXN_NO_Value")
-                    doc_no_locator.wait_for(state="visible", timeout=45000)
-                    doc_no_text = doc_no_locator.text_content()
-                    if doc_no_text:
-                        saved_doc_no = doc_no_text.strip()
-                    ui_log("SUCCESS", f"Document saved successfully! Document No: {saved_doc_no}")
+                    ui_log("NAV", "Navigating to Stock Adjustment list to fetch Document No...")
+                    page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").dispatch_event("click")
+                    
+                    status_dropdown = page.locator("id=pag_I_StkAdj_drp_Status_Value")
+                    status_dropdown.wait_for(state="visible", timeout=10000)
+                    status_dropdown.select_option("") # Select empty to show all statuses
+                    
+                    search_btn = page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value")
+                    search_btn.click()
+                    page.wait_for_timeout(3000) # Wait for list to load
+                    
+                    # Scrape all transaction numbers from the grid
+                    locators = page.locator("a[id*='grs_TXN_NO_Value']")
+                    count = locators.count()
+                    doc_numbers = []
+                    for idx_loc in range(count):
+                        txt = locators.nth(idx_loc).text_content()
+                        if txt:
+                            txt = txt.strip()
+                            if txt.startswith("IJ") and txt[2:].isdigit():
+                                doc_numbers.append((int(txt[2:]), txt))
+                    
+                    if doc_numbers:
+                        # Find the highest sequential transaction number
+                        doc_numbers.sort(key=lambda x: x[0], reverse=True)
+                        saved_doc_no = doc_numbers[0][1]
+                        ui_log("SUCCESS", f"Document saved successfully! Retrieved running No: {saved_doc_no}")
+                    else:
+                        ui_log("WARN", "No transaction numbers found in grid list.")
                 except Exception as e:
-                    ui_log("WARN", f"Could not retrieve running Document Number: {e}")
+                    ui_log("WARN", f"Could not retrieve running Document Number from list: {e}")
 
                 # Update descriptions in df_view and write to Supabase
                 for idx, row in df_view.iterrows():
@@ -910,16 +933,39 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 ui_log("SYS", "Holding session for 5 seconds to ensure Newspage database write...")
                 page.wait_for_timeout(5000)
 
-                # Retrieve Document Number from read-only page
+                # Retrieve Document Number from the list page
                 try:
-                    doc_no_locator = page.locator("id=pag_I_StkAdj_ViewGeneral_lbl_TXN_NO_Value")
-                    doc_no_locator.wait_for(state="visible", timeout=45000)
-                    doc_no_text = doc_no_locator.text_content()
-                    if doc_no_text:
-                        saved_doc_no = doc_no_text.strip()
-                    ui_log("SUCCESS", f"Document saved successfully! Document No: {saved_doc_no}")
+                    ui_log("NAV", "Navigating to Stock Adjustment list to fetch Document No...")
+                    page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").dispatch_event("click")
+                    
+                    status_dropdown = page.locator("id=pag_I_StkAdj_drp_Status_Value")
+                    status_dropdown.wait_for(state="visible", timeout=10000)
+                    status_dropdown.select_option("") # Select empty to show all statuses
+                    
+                    search_btn = page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value")
+                    search_btn.click()
+                    page.wait_for_timeout(3000) # Wait for list to load
+                    
+                    # Scrape all transaction numbers from the grid
+                    locators = page.locator("a[id*='grs_TXN_NO_Value']")
+                    count = locators.count()
+                    doc_numbers = []
+                    for idx_loc in range(count):
+                        txt = locators.nth(idx_loc).text_content()
+                        if txt:
+                            txt = txt.strip()
+                            if txt.startswith("IJ") and txt[2:].isdigit():
+                                doc_numbers.append((int(txt[2:]), txt))
+                    
+                    if doc_numbers:
+                        # Find the highest sequential transaction number
+                        doc_numbers.sort(key=lambda x: x[0], reverse=True)
+                        saved_doc_no = doc_numbers[0][1]
+                        ui_log("SUCCESS", f"Document saved successfully! Retrieved running No: {saved_doc_no}")
+                    else:
+                        ui_log("WARN", "No transaction numbers found in grid list.")
                 except Exception as e:
-                    ui_log("WARN", f"Could not retrieve running Document Number: {e}")
+                    ui_log("WARN", f"Could not retrieve running Document Number from list: {e}")
 
                 # Update descriptions in df_view and write to Supabase
                 for idx, row in df_view.iterrows():
