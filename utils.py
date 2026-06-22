@@ -257,15 +257,13 @@ def render_header(title, subtitle=""):
 
 def render_footer():
     st.markdown(clean_html("""
-    <div style='
-        text-align: center; 
-        margin-top: 80px; 
-        margin-bottom: 20px; 
-        font-family: "Source Sans 3", "Source Sans Pro", sans-serif; 
-        font-size: 11px; 
-        color: #808495;
-    '>
-        &copy; 2026 IT Support Newspage. by kopi mang toni.
+    <div style='text-align: center; margin-top: 80px; margin-bottom: 20px;'>
+        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
+            &copy; 2026 IT Support Newspage.
+        </span>
+        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>
+            by kopi mang toni.
+        </span>
     </div>
     """), unsafe_allow_html=True)
 
