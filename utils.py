@@ -266,7 +266,8 @@ def render_header(title, subtitle=""):
         st.markdown("""
         <style>
         /* Jadikan parent container dari st.page_link bersifat inline-block */
-        div.element-container:has(div[data-testid="stPageLink-NavLink"]) {
+        div.element-container:has(a[data-testid="stPageLink-NavLink"]),
+        div.element-container:has(.stPageLink) {
             display: inline-block !important;
             width: auto !important;
             vertical-align: middle !important;
@@ -283,13 +284,17 @@ def render_header(title, subtitle=""):
         }
 
         /* Styling font Dashboard: Biru dan Bold */
-        div[data-testid="stPageLink-NavLink"] {
+        a[data-testid="stPageLink-NavLink"] {
             padding: 0px !important;
             margin: 0px !important;
             background: transparent !important;
             border: none !important;
+            text-decoration: none !important;
         }
-        div[data-testid="stPageLink-NavLink"] p {
+        
+        a[data-testid="stPageLink-NavLink"],
+        a[data-testid="stPageLink-NavLink"] p,
+        a[data-testid="stPageLink-NavLink"] span {
             font-family: "Source Sans 3", sans-serif !important;
             font-size: 14px !important;
             font-weight: 800 !important;
