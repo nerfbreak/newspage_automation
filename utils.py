@@ -269,13 +269,11 @@ def render_header(title, subtitle=""):
         a[data-testid="stPageLink-NavLink"] {
             padding: 0px !important;
             margin: 0px !important;
+            margin-bottom: -5px !important;
             background: transparent !important;
             border: none !important;
             text-decoration: none !important;
             width: fit-content !important;
-            height: 20px !important;
-            display: flex !important;
-            align-items: center !important;
         }
         
         a[data-testid="stPageLink-NavLink"] p {
@@ -289,10 +287,7 @@ def render_header(title, subtitle=""):
         </style>
         """, unsafe_allow_html=True)
         
-        st.page_link("pages/0_dashboard.py", label="Dashboard")
-        
-        # Tarik teks ini ke atas sejajar dengan link Dashboard menggunakan negative margin
-        st.markdown(f"<div style='margin-top: -28px; margin-left: 80px; height: 20px; display: flex; align-items: center;'><span style='color: #aaa; font-size: 14px; font-weight: 600;'>/</span> &nbsp;<span style='color: #555; font-size: 14px; font-weight: 600;'>{title}</span></div>", unsafe_allow_html=True)
+        st.page_link("pages/0_dashboard.py", label="← Dashboard")
         
     st.markdown(f"<h1 style='margin-top: -5px; padding-top: 0px;'>{title}</h1>", unsafe_allow_html=True)
 
