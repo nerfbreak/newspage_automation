@@ -289,7 +289,7 @@ def render_header(title, subtitle=""):
         
         st.page_link("pages/0_dashboard.py", label="< Back To Dashboard")
         
-    st.markdown(f"<h1 style='margin-top: -5px; padding-top: 0px;'>{title}</h1>", unsafe_allow_html=True)
+    st.markdown(f"<h1 style='margin-top: -5px; margin-bottom: -15px; padding-top: 0px; padding-bottom: 0px; border-bottom: none !important;'>{title}</h1>", unsafe_allow_html=True)
 
 def render_footer():
     st.markdown(clean_html("""
