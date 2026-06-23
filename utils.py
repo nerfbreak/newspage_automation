@@ -225,6 +225,15 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
     db_color = "#0068C9" if db_status == "CONNECTED" else "#FF2B2B"
     bot_color = "#31333F" if "PROMO" not in bot_type else "#0068C9"
     
+    user_pill = ""
+    if "current_user" in st.session_state and st.session_state.current_user:
+        user_pill = f"""
+            <div style='margin-left: auto; pointer-events: none; background-color: #f0f2f6; border: 1px solid #e0e2e6; padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #31333F; text-transform: uppercase; letter-spacing: 0.05em;'>{st.session_state.current_user}</span>
+            </div>
+        """
+        
     html = clean_html(f"""
         <div style='display: flex; gap: 10px; margin-bottom: 16px; align-items: center;'>
             <div class='live-indicator'>LIVE</div>
@@ -234,6 +243,7 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
             <div class='status-pill' style='color: {bot_color}; border-color: {bot_color}33; background-color: {bot_color}1a;'>
                 {bot_type}: {bot_status}
             </div>
+            {user_pill}
         </div>
     """)
     st.markdown(html, unsafe_allow_html=True)
@@ -242,7 +252,8 @@ def render_header(title, subtitle=""):
     inject_css()  # uses cached CSS, no repeated file I/O
 
     active_sess = ""
-    if subtitle:
+    # Hanya tampilkan Active Session di header jika di halaman Dashboard
+    if subtitle and "Automation Tool" in title:
         active_sess = f"""<div style='float: right; margin-top: 5px; pointer-events: none; background-color: #f0f2f6; border: 1px solid #e0e2e6; padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'>
             <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
             <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #31333F; text-transform: uppercase; letter-spacing: 0.05em;'>{subtitle}</span>
