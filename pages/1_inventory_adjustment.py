@@ -48,9 +48,9 @@ render_header("Inventory Adjustment", st.session_state.current_user)
 
 st.markdown("""
 <style>
-/* Trik Anchor CSS untuk memaksa style masuk tepat di area Segmented Control */
-div:has(> div > #segmented-anchor) p,
-div:has(> div > #segmented-anchor) span {
+/* Styling khusus untuk stSegmentedControl (Auto Compare / Manual Entry) */
+div[data-testid="stSegmentedControl"] p,
+div[data-testid="stSegmentedControl"] span {
     font-family: "Source Sans 3", sans-serif !important;
     font-size: 0.65rem !important;
     text-transform: uppercase !important;
@@ -59,28 +59,21 @@ div:has(> div > #segmented-anchor) span {
     color: #31333F !important;
 }
 
-/* Selected state: (seperti tulisan ACTIVE SESSION) */
-div:has(> div > #segmented-anchor) [aria-selected="true"] p,
-div:has(> div > #segmented-anchor) [aria-selected="true"] span,
-div:has(> div > #segmented-anchor) [aria-checked="true"] p,
-div:has(> div > #segmented-anchor) [aria-checked="true"] span,
-div:has(> div > #segmented-anchor) [data-selected="true"] p,
-div:has(> div > #segmented-anchor) [data-selected="true"] span,
-div:has(> div > #segmented-anchor) input:checked + div p,
-div:has(> div > #segmented-anchor) input:checked + div span,
-div:has(> div > #segmented-anchor) [data-baseweb="radio"] input:checked + div span,
-div:has(> div > #segmented-anchor) [data-baseweb="radio"] input:checked + div p {
+/* Selected state */
+div[data-testid="stSegmentedControl"] [aria-selected="true"] p,
+div[data-testid="stSegmentedControl"] [aria-selected="true"] span,
+div[data-testid="stSegmentedControl"] [data-selected="true"] p,
+div[data-testid="stSegmentedControl"] [data-selected="true"] span,
+div[data-testid="stSegmentedControl"] input:checked + div p,
+div[data-testid="stSegmentedControl"] input:checked + div span {
     font-weight: 700 !important;
     color: #0068C9 !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div id="segmented-anchor"></div>', unsafe_allow_html=True)
 adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
 adj_mode = adj_mode_sel if adj_mode_sel else "Auto Compare"
-
-st.markdown("<hr style='margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
 if adj_mode == "Auto Compare":
     col1, col2 = st.columns(2)
