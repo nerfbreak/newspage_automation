@@ -241,21 +241,35 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
 def render_header(title, subtitle=""):
     inject_css()  # uses cached CSS, no repeated file I/O
 
-    breadcrumb = ""
-    if "Automation Tool" not in title:
-        breadcrumb = f"<span style='font-family: \"Source Sans 3\", sans-serif; font-size: 14px; font-weight: 600;'>[Dashboard](dashboard) &nbsp;<span style='color: #aaa; font-size: 12px;'>/</span>&nbsp; <span style='color: #555;'>{title}</span></span>"
-        
     active_sess = ""
     if subtitle:
-        active_sess = f"""<span style='float: right; margin-top: -5px; pointer-events: none; background-color: #f0f2f6; border: 1px solid #e0e2e6; padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'>
+        active_sess = f"""<div style='float: right; margin-top: 5px; pointer-events: none; background-color: #f0f2f6; border: 1px solid #e0e2e6; padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'>
             <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
             <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #31333F; text-transform: uppercase; letter-spacing: 0.05em;'>{subtitle}</span>
-        </span>"""
+        </div>"""
         
-    if breadcrumb or active_sess:
-        st.markdown(f"{active_sess}{breadcrumb}", unsafe_allow_html=True)
+    if active_sess:
+        st.markdown(active_sess, unsafe_allow_html=True)
         
-    st.markdown(f"<h1 style='margin-top: -5px; padding-top: 0px;'>{title}</h1>", unsafe_allow_html=True)
+    if "Automation Tool" not in title:
+        st.markdown("""
+        <style>
+        div[data-testid="stPageLink-NavLink"] {
+            padding: 0px !important;
+            margin-bottom: -15px !important;
+            display: inline-block;
+        }
+        div[data-testid="stPageLink-NavLink"] p {
+            font-family: "Source Sans 3", sans-serif !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            color: #0068c9 !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        st.page_link("pages/0_dashboard.py", label=f"Dashboard / {title}")
+        
+    st.markdown(f"<h1 style='margin-top: 0px; padding-top: 0px;'>{title}</h1>", unsafe_allow_html=True)
 
 def render_footer():
     st.markdown(clean_html("""
