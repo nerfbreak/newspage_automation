@@ -287,7 +287,7 @@ def render_header(title, subtitle=""):
         </style>
         """, unsafe_allow_html=True)
         
-        st.page_link("pages/0_dashboard.py", label="‹ Dashboard")
+        st.page_link("pages/0_dashboard.py", label="< Back To Dashboard")
         
     st.markdown(f"<h1 style='margin-top: -5px; padding-top: 0px;'>{title}</h1>", unsafe_allow_html=True)
 
