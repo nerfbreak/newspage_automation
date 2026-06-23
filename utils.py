@@ -265,22 +265,52 @@ def render_header(title, subtitle=""):
     if "Automation Tool" not in title:
         st.markdown("""
         <style>
-        div[data-testid="stPageLink-NavLink"] {
-            padding: 0px !important;
-            margin-bottom: -15px !important;
-            display: inline-block;
+        /* Sembunyikan div anchor */
+        div.element-container:has(#breadcrumb-start) {
+            display: none !important;
         }
-        div[data-testid="stPageLink-NavLink"] p {
+
+        /* Jadikan st.page_link inline block */
+        div.element-container:has(#breadcrumb-start) + div.element-container {
+            display: inline-block !important;
+            width: auto !important;
+            margin-bottom: 0px !important;
+        }
+
+        /* Jadikan teks title setelahnya inline block */
+        div.element-container:has(#breadcrumb-start) + div.element-container + div.element-container {
+            display: inline-block !important;
+            width: auto !important;
+            margin-left: 6px !important;
+            margin-bottom: 0px !important;
+        }
+
+        /* Styling font Dashboard: Biru dan Bold */
+        div.element-container:has(#breadcrumb-start) + div.element-container div[data-testid="stPageLink-NavLink"] {
+            padding: 0px !important;
+            margin: 0px !important;
+            background: transparent !important;
+        }
+        div.element-container:has(#breadcrumb-start) + div.element-container div[data-testid="stPageLink-NavLink"] p {
             font-family: "Source Sans 3", sans-serif !important;
             font-size: 14px !important;
-            font-weight: 600 !important;
-            color: #0068c9 !important;
+            font-weight: 800 !important;
+            color: #0068C9 !important;
+            margin: 0px !important;
+        }
+        
+        /* Hapus margin p bawaan Streamlit pada teks title */
+        div.element-container:has(#breadcrumb-start) + div.element-container + div.element-container div[data-testid="stMarkdownContainer"] p {
+            margin: 0px !important;
         }
         </style>
         """, unsafe_allow_html=True)
-        st.page_link("pages/0_dashboard.py", label=f"Dashboard / {title}")
         
-    st.markdown(f"<h1 style='margin-top: 0px; padding-top: 0px;'>{title}</h1>", unsafe_allow_html=True)
+        st.markdown('<div id="breadcrumb-start"></div>', unsafe_allow_html=True)
+        st.page_link("pages/0_dashboard.py", label="Dashboard")
+        st.markdown(f"<span style='color: #aaa; font-size: 14px; font-weight: 600;'>/</span> &nbsp;<span style='color: #555; font-size: 14px; font-weight: 600;'>{title}</span>", unsafe_allow_html=True)
+        
+    st.markdown(f"<h1 style='margin-top: -5px; padding-top: 0px;'>{title}</h1>", unsafe_allow_html=True)
 
 def render_footer():
     st.markdown(clean_html("""
