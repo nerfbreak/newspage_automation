@@ -265,19 +265,57 @@ def render_header(title, subtitle=""):
     if "Automation Tool" not in title:
         st.markdown("""
         <style>
-        .breadcrumb-text a {
+        /* Jadikan parent container dari st.page_link bersifat inline-block */
+        div.element-container:has(a[data-testid="stPageLink-NavLink"]),
+        div.stElementContainer:has(a[data-testid="stPageLink-NavLink"]),
+        div[data-testid="stElementContainer"]:has(a[data-testid="stPageLink-NavLink"]) {
+            display: inline-block !important;
+            width: auto !important;
+            vertical-align: middle !important;
+            margin-bottom: 0px !important;
+        }
+
+        /* Jadikan parent container dari teks title bersifat inline-block */
+        div.element-container:has(.breadcrumb-title),
+        div.stElementContainer:has(.breadcrumb-title),
+        div[data-testid="stElementContainer"]:has(.breadcrumb-title) {
+            display: inline-block !important;
+            width: auto !important;
+            vertical-align: middle !important;
+            margin-left: 6px !important;
+            margin-bottom: 0px !important;
+        }
+
+        /* Styling font Dashboard: Biru dan Bold */
+        a[data-testid="stPageLink-NavLink"] {
+            padding: 0px !important;
+            margin: 0px !important;
+            background: transparent !important;
+            border: none !important;
+            text-decoration: none !important;
+        }
+        
+        a[data-testid="stPageLink-NavLink"],
+        a[data-testid="stPageLink-NavLink"] p,
+        a[data-testid="stPageLink-NavLink"] span {
             font-family: "Source Sans 3", sans-serif !important;
             font-size: 14px !important;
             font-weight: 800 !important;
             color: #0068C9 !important;
-            text-decoration: none !important;
+            margin: 0px !important;
+            line-height: 1 !important;
+        }
+        
+        /* Hapus margin p bawaan Streamlit pada teks title */
+        .breadcrumb-title, .breadcrumb-title p {
+            margin: 0px !important;
+            line-height: 1 !important;
         }
         </style>
         """, unsafe_allow_html=True)
         
-        # Menggunakan satu baris st.markdown dengan Markdown Link murni
-        # Streamlit akan mem-parsing [Dashboard](/dashboard) menjadi link SPA
-        st.markdown(f"<span class='breadcrumb-text'>[Dashboard](/dashboard)</span> &nbsp;<span style='color: #aaa; font-size: 14px; font-weight: 600;'>/</span> &nbsp;<span style='color: #555; font-size: 14px; font-weight: 600;'>{title}</span>", unsafe_allow_html=True)
+        st.page_link("pages/0_dashboard.py", label="Dashboard")
+        st.markdown(f"<div class='breadcrumb-title'><span style='color: #aaa; font-size: 14px; font-weight: 600;'>/</span> &nbsp;<span style='color: #555; font-size: 14px; font-weight: 600;'>{title}</span></div>", unsafe_allow_html=True)
         
     st.markdown(f"<h1 style='margin-top: -5px; padding-top: 0px;'>{title}</h1>", unsafe_allow_html=True)
 
