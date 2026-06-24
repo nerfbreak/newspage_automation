@@ -79,7 +79,7 @@ import streamlit as st
 def get_system_config(_supabase):
     """Fetch system config with Streamlit thread-safe caching.
     Returns a dict with keys: REASON_CODE, WAREHOUSE, URL_LOGIN, TIMEOUT_MS, TABLE_UPDATE_INTERVAL.
-    \"\"\"
+    """
     supabase = _supabase
 
     cfg = {
