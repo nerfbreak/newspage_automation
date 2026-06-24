@@ -106,8 +106,8 @@ if adj_mode == "Auto Compare":
             with np_col2:
                 st.text_input("NP Password", value="********", type="password", disabled=True, key="np_pass_dummy")
         
-            btn_label = "Step 1: Extracting..." if st.session_state.is_bot_running else "Step 1: Extract Real-time Stock from Newspage"
-            extract_btn = st.button(btn_label, type="primary", width="stretch", disabled=st.session_state.is_bot_running)
+            btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
+            extract_btn = st.button(btn_label, type="primary", width="stretch", disabled=st.session_state.is_bot_running, icon=":material/download:")
             file1 = None
 
     with col2:
@@ -135,7 +135,7 @@ if adj_mode == "Auto Compare":
 
     if st.session_state.np_df is not None:
         st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-        if st.button("Clear extracted data", width="stretch"):
+        if st.button("Clear Data", width="stretch", icon=":material/delete:"):
             st.session_state.np_df = None
             st.rerun()
 
@@ -206,7 +206,7 @@ if adj_mode == "Auto Compare":
                 qty_col2 = st.selectbox("Qty column (Dist)", df2.columns, index=idx_qty2)
                 st.markdown("<div style='margin-bottom: 84px;'></div>", unsafe_allow_html=True)
 
-        if st.button("Step 2: Start Automated Adjustment", type="primary", width="stretch"):
+        if st.button("Start Adjustment", type="primary", width="stretch", icon=":material/play_arrow:"):
             TARGET_SKUS = database.get_target_skus(supabase)
             multipliers = database.get_multiplier_rules(supabase, st.session_state.current_np_user_id)
         

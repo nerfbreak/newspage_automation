@@ -65,7 +65,7 @@ if st.session_state.is_bot_running:
     st.markdown(make_solid_box("Extracting stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
     extract_btn = False
 else:
-    extract_btn = st.button("Step 1: Extract Real-time Stock from Newspage", type="primary", width="stretch", disabled=not bot_user)
+    extract_btn = st.button("Extract Stock", type="primary", width="stretch", disabled=not bot_user, icon=":material/download:")
 
 # Use pending flag so extraction starts AFTER rerun hides the button
 if extract_btn:
@@ -97,7 +97,7 @@ if st.session_state.get("_pending_clearance_extract", False):
 # --- REVIEW EXTRACTED DATA ---
 if st.session_state.clearance_df is not None:
     st.markdown(make_solid_box(f"Extracted — {len(st.session_state.clearance_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-    if st.button("Clear extracted data", width="stretch"):
+    if st.button("Clear Data", width="stretch", icon=":material/delete:"):
         st.session_state.clearance_df = None
         st.rerun()
 
@@ -161,7 +161,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
     st.dataframe(style_status(df_display[display_cols]), width="stretch", hide_index=True)
 
     # --- EXECUTE ---
-    if st.button("EXECUTE CLEARANCE", type="primary", width="stretch"):
+    if st.button("Execute", type="primary", width="stretch", icon=":material/play_arrow:"):
         if not bot_user or not bot_pass:
             st.error("Kredensial tidak ditemukan!")
         else:

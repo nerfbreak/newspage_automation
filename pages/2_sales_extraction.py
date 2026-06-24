@@ -67,8 +67,8 @@ with st.container(border=True):
         end_date = st.date_input("End Date", value=end_date_default)
     
     st.markdown("<div style='margin-bottom: 12px;'></div>", unsafe_allow_html=True)
-    btn_label = "Extracting…" if st.session_state.is_bot_running else "Extract Invoice Details"
-    extract_btn = st.button(btn_label, type="primary", width='stretch', disabled=st.session_state.is_bot_running)
+    btn_label = "Extracting…" if st.session_state.is_bot_running else "Extract Invoice"
+    extract_btn = st.button(btn_label, type="primary", width='stretch', disabled=st.session_state.is_bot_running, icon=":material/download:")
     
     if st.session_state.get('sales_csv_data'):
         st.markdown("<div style='margin-bottom: 8px;'></div>", unsafe_allow_html=True)

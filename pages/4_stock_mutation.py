@@ -148,7 +148,7 @@ if uploaded_file is not None:
 review_ready = st.session_state.mutasi_review_df is not None and len(st.session_state.mutasi_review_df) > 0
 can_execute = review_ready and bot_user_a and bot_pass_a and bot_user_b and bot_pass_b and not st.session_state.is_mutasi_running
 
-if st.button("EXECUTE MUTASI", type="primary", width="stretch", disabled=not can_execute):
+if st.button("Execute", type="primary", width="stretch", disabled=not can_execute, icon=":material/play_arrow:"):
     st.session_state.is_mutasi_running = True
 
     df_mutasi = st.session_state.mutasi_review_df.copy()

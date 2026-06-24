@@ -113,8 +113,8 @@ with st.container(border=True):
     st.query_params["ed"] = encode_param(end_date.strftime("%Y-%m-%d"))
 
     st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
-    btn_label = "Syncing & Comparing..." if st.session_state.is_promo_bot_running else "Start Sync & Compare (Extraction + Comparison)"
-    promo_btn = st.button(btn_label, type="primary", width="stretch", disabled=st.session_state.is_promo_bot_running)
+    btn_label = "Syncing & Comparing..." if st.session_state.is_promo_bot_running else "Start Sync"
+    promo_btn = st.button(btn_label, type="primary", width="stretch", disabled=st.session_state.is_promo_bot_running, icon=":material/sync:")
 
 # --- TERMINAL & LOGS ---
 promo_label_placeholder = st.empty()
@@ -180,7 +180,7 @@ if st.session_state.promo_zip_data:
         
     st.success("Data Newspage & Excel SharePoint siap dibandingkan!")
     
-    if st.button("Run Match Analysis Now", type="primary", width="stretch"):
+    if st.button("Run Analysis", type="primary", width="stretch", icon=":material/play_arrow:"):
         with st.spinner("Menganalisis kecocokan data..."):
             try:
                 # 1. Process Newspage ZIP
