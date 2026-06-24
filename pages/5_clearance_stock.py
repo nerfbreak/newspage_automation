@@ -50,15 +50,15 @@ with st.container(border=True):
     st.query_params["d"] = encode_param(selected_distributor)
     bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
 
-# --- STEP 1: EXTRACT ---
-ext_label_placeholder = st.empty()
-ext_log_placeholder = st.empty()
+    # --- STEP 1: EXTRACT ---
+    ext_label_placeholder = st.empty()
+    ext_log_placeholder = st.empty()
 
-if st.session_state.is_bot_running:
-    st.markdown(make_solid_box("Extracting stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-    extract_btn = False
-else:
-    extract_btn = st.button("Extract Stock", type="primary", width="stretch", disabled=not bot_user, icon=":material/download:")
+    if st.session_state.is_bot_running:
+        st.markdown(make_solid_box("Extracting stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+        extract_btn = False
+    else:
+        extract_btn = st.button("Extract Stock", type="primary", width="stretch", disabled=not bot_user, icon=":material/download:")
 
 # Use pending flag so extraction starts AFTER rerun hides the button
 if extract_btn:
