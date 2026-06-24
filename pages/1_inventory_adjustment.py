@@ -201,7 +201,7 @@ if "Auto Compare" in adj_mode:
             st.error("Gagal memuat data dari file.")
             st.stop()
         
-        st.markdown("<p style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; text-align: center; margin-bottom: 6px; margin-top: 2px;'>RESULTS</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; text-align: center; margin-bottom: 16px; margin-top: 2px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding-bottom: 8px;'>RESULTS</p>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
             with st.container(border=True):
@@ -246,7 +246,7 @@ if "Auto Compare" in adj_mode:
 
     # --- EXECUTION / INJECTION ---
     if st.session_state.reconcile_summary is not None and st.session_state.reconcile_result is not None:
-        st.markdown("<p style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; text-align: center; margin-bottom: 12px; margin-top: 24px;'>STOCK REVIEW</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; text-align: center; margin-bottom: 16px; margin-top: 32px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding-bottom: 8px;'>STOCK REVIEW</p>", unsafe_allow_html=True)
         m1, m2 = st.columns(2); match_count = st.session_state.reconcile_summary['total_match']; mismatch_count = st.session_state.reconcile_summary['total_mismatch']
         with m1: st.markdown(f'''<div class="metric-box-match"><div class="metric-label">Match</div><div class="metric-value">{match_count}</div></div>''', unsafe_allow_html=True)
         with m2: st.markdown(f'''<div class="metric-box-mismatch"><div class="metric-label">Stock difference</div><div class="metric-value">{mismatch_count}</div></div>''', unsafe_allow_html=True)
@@ -256,7 +256,7 @@ if "Auto Compare" in adj_mode:
         df_view['Status'] = df_view['Status'].apply(lambda x: 'Pending' if x == 'Mismatch' else x)
         if 'Keterangan' not in df_view.columns: df_view['Keterangan'] = 'Ready to Process'
     
-        st.markdown("<p style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; text-align: center; margin-bottom: 12px; margin-top: 24px;'>ADJUSTMENT SKU LIST</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; text-align: center; margin-bottom: 16px; margin-top: 32px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding-bottom: 8px;'>ADJUSTMENT SKU LIST</p>", unsafe_allow_html=True)
         table_placeholder = st.empty(); table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
     
         log_label_placeholder = st.empty()
