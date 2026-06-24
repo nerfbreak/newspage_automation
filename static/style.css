@@ -1,6 +1,17 @@
 /* ============================================================
    Streamlit Native Clean Theme
    ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* --- Font Smoothing & Global Font --- */
+* {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+}
+
+html, body, [class*="css"], [data-testid="stAppViewContainer"], p, label, small, div {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
 
 /* --- Clean Up Streamlit Defaults --- */
 #MainMenu {visibility: hidden;}
@@ -36,7 +47,7 @@ div[data-testid="stTextInput"] > div {
 .terminal-box {
     background-color: #0E1117;
     color: #FAFAFA;
-    font-family: monospace;
+    font-family: 'Cascadia Code', 'Consolas', monospace !important;
     font-size: 0.8rem;
     padding: 14px 18px;
     border: 1px solid #31333F;
@@ -65,7 +76,7 @@ div[data-testid="stTextInput"] > div {
 @keyframes blinker { 50% { opacity: 0; } }
 
 .log-time    { display: inline-block; width: 85px;  color: #808495; }
-.log-ms      { display: inline-block; width: 75px;  text-align: right; margin-right: 15px; color: #FF2B2B; font-size: 0.75rem; }
+.log-ms      { display: inline-block; width: 75px;  text-align: right; margin-right: 15px; color: #EF4444; font-size: 0.75rem; }
 .log-tag     { display: inline-block; width: 95px;  font-weight: 600; }
 .log-msg     { color: #FAFAFA; font-weight: 400; }
 
@@ -73,8 +84,8 @@ div[data-testid="stTextInput"] > div {
 .tag-auth    { color: #C084FC; }
 .tag-nav     { color: #60A5FA; }
 .tag-inject  { color: #FFAD4D; }
-.tag-success { color: #96D334; }
-.tag-error   { color: #FB7185; }
+.tag-success { color: #22C55E; }
+.tag-error   { color: #EF4444; }
 .tag-server  { color: #FD9BA7; }
 
 /* --- Table Styling --- */
