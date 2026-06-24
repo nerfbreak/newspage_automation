@@ -46,13 +46,11 @@ list_dist = database.get_distributor_list(supabase)
 
 with col1:
     with st.container(border=True):
-        st.subheader("Distributor Pengirim (Stock Dikurangi)")
         dist_a = st.selectbox("Pilih Distributor Pengirim", list_dist, key="mutasi_dist_a")
         bot_user_a, bot_pass_a = database.get_distributor_creds(supabase, dist_a)
 
 with col2:
     with st.container(border=True):
-        st.subheader("Distributor Penerima (Stock Ditambah)")
         # Filter out dist_a from receiver list to prevent same-distributor selection
         list_dist_b = [d for d in list_dist if d != dist_a]
         dist_b = st.selectbox("Pilih Distributor Penerima", list_dist_b, key="mutasi_dist_b")
@@ -60,8 +58,6 @@ with col2:
 
 # --- FILE UPLOAD + COLUMN MAPPING ---
 with st.container(border=True):
-    st.subheader("Transfer File (dari Distributor Pengirim)")
-
     uploaded_file = st.file_uploader("Upload file Excel berisi SKU yang akan dimutasi", type=['csv', 'xlsx'], key="mutasi_file_uploader")
 
     # Track file changes to reset state
@@ -143,7 +139,6 @@ review_ready = st.session_state.mutasi_review_df is not None and len(st.session_
 can_execute = review_ready and bot_user_a and bot_pass_a and bot_user_b and bot_pass_b and not st.session_state.is_mutasi_running
 
 with st.container(border=True):
-    st.subheader("Execution Settings")
     reason_options = {
         "SA1": "SA1 - Transformasi Kode Barang",
         "SA2": "SA2 - Selisih Barang",
