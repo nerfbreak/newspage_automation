@@ -48,15 +48,42 @@ render_header("Inventory Adjustment", st.session_state.current_user)
 
 st.markdown("""
 <style>
-/* Styling khusus untuk stSegmentedControl (Auto Compare / Manual Entry) */
+/* Styling khusus untuk stSegmentedControl (Minimalist Tab + Material Icons) */
+div[data-testid="stSegmentedControl"] {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-bottom: 2px solid rgba(0,0,0,0.06) !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    gap: 20px !important;
+}
+
+div[data-testid="stSegmentedControl"] > div {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding-bottom: 8px !important;
+}
+
+div[data-testid="stSegmentedControl"] [data-selected="true"],
+div[data-testid="stSegmentedControl"] [aria-selected="true"] {
+    background-color: transparent !important;
+    border-bottom: 2px solid #0068C9 !important;
+}
+
 div[data-testid="stSegmentedControl"] p,
 div[data-testid="stSegmentedControl"] span {
     font-family: "Source Sans 3", sans-serif !important;
-    font-size: 0.65rem !important;
+    font-size: 0.75rem !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
-    font-weight: 800 !important;
-    color: #31333F !important;
+    font-weight: 600 !important;
+    color: #808495 !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
 /* Selected state */
@@ -66,16 +93,16 @@ div[data-testid="stSegmentedControl"] [data-selected="true"] p,
 div[data-testid="stSegmentedControl"] [data-selected="true"] span,
 div[data-testid="stSegmentedControl"] input:checked + div p,
 div[data-testid="stSegmentedControl"] input:checked + div span {
-    font-weight: 700 !important;
+    font-weight: 800 !important;
     color: #0068C9 !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
-adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
-adj_mode = adj_mode_sel if adj_mode_sel else "Auto Compare"
+adj_mode_sel = st.segmented_control("Adjustment Mode", [":material/auto_awesome: Auto Compare", ":material/edit_document: Manual Entry"], default=":material/auto_awesome: Auto Compare", selection_mode="single", label_visibility="collapsed")
+adj_mode = adj_mode_sel if adj_mode_sel else ":material/auto_awesome: Auto Compare"
 
-if adj_mode == "Auto Compare":
+if "Auto Compare" in adj_mode:
     col1, col2 = st.columns(2)
     
     with col1:
