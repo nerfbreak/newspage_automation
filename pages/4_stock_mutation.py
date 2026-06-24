@@ -148,7 +148,23 @@ if uploaded_file is not None:
 review_ready = st.session_state.mutasi_review_df is not None and len(st.session_state.mutasi_review_df) > 0
 can_execute = review_ready and bot_user_a and bot_pass_a and bot_user_b and bot_pass_b and not st.session_state.is_mutasi_running
 
-if st.button("Execute", type="primary", width="stretch", disabled=not can_execute, icon=":material/play_arrow:"):
+with st.container(border=True):
+    st.subheader("Execution Settings")
+    reason_options = {
+        "SA1": "SA1 - Transformasi Kode Barang",
+        "SA2": "SA2 - Selisih Barang",
+        "SA3": "SA3 - Transfer Gudang Internal",
+        "SA4": "SA4 - Transfer Gudang External"
+    }
+    default_reason_idx = 0
+    for i, key in enumerate(reason_options.keys()):
+        if key == REASON_CODE:
+            default_reason_idx = i
+            break
+    selected_reason_label = st.selectbox("Reason Adjustment", list(reason_options.values()), index=default_reason_idx, key="mutasi_reason")
+    selected_reason_code = [k for k, v in reason_options.items() if v == selected_reason_label][0]
+
+    if st.button("Execute", type="primary", use_container_width=True, disabled=not can_execute, icon=":material/play_arrow:"):
     st.session_state.is_mutasi_running = True
 
     df_mutasi = st.session_state.mutasi_review_df.copy()
@@ -207,7 +223,7 @@ if st.button("Execute", type="primary", width="stretch", disabled=not can_execut
         bot_user_a, bot_pass_a, dist_a,
         bot_user_b, bot_pass_b, dist_b,
         URL_LOGIN, TIMEOUT_MS, WAREHOUSE, WAREHOUSE,
-        REASON_CODE, TABLE_UPDATE_INTERVAL,
+        selected_reason_code, TABLE_UPDATE_INTERVAL,
         send_telegram_alert,
         table_a_ph, table_b_ph,
         prog_a_ph, prog_b_ph,
