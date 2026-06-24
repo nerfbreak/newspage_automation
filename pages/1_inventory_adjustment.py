@@ -275,7 +275,7 @@ if "Auto Compare" in adj_mode:
         log_placeholder = st.empty()
         btn_placeholder = st.empty()
             
-        if btn_placeholder.button("EXECUTE", type="primary", width="stretch"):
+        if btn_placeholder.button("EXECUTE", type="primary", width="stretch", icon=":material/play_arrow:"):
             if not bot_user or not bot_pass: 
                 st.error("Access Denied: Kredensial tidak ditemukan di Database!")
             else:
@@ -342,7 +342,7 @@ elif "Manual Entry" in adj_mode:
     btn_placeholder = st.empty()
     table_placeholder = st.empty()
 
-    if btn_placeholder.button("EXECUTE MANUAL ADJUSTMENT", type="primary", width="stretch"):
+    if btn_placeholder.button("EXECUTE MANUAL ADJUSTMENT", type="primary", width="stretch", icon=":material/play_arrow:"):
         if not bot_user or not bot_pass: 
             st.error("Access Denied: Kredensial tidak ditemukan di Database!")
         else:
