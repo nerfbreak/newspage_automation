@@ -301,7 +301,6 @@ elif "Manual Entry" in adj_mode:
     default_index = list_dist.index(url_dist) if url_dist in list_dist else 0
     
     with st.container(border=True):
-        st.markdown(f"<div class='box-np'>Target Distributor Setup</div>", unsafe_allow_html=True)
         selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index, key="manual_dist_sel")
         st.query_params.clear()
         st.query_params["d"] = encode_param(selected_distributor)

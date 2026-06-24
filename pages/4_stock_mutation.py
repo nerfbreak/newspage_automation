@@ -49,8 +49,6 @@ with col1:
         st.subheader("Distributor Pengirim (Stock Dikurangi)")
         dist_a = st.selectbox("Pilih Distributor Pengirim", list_dist, key="mutasi_dist_a")
         bot_user_a, bot_pass_a = database.get_distributor_creds(supabase, dist_a)
-        if bot_user_a:
-            st.text_input("NP User ID", value=bot_user_a, disabled=True, key="mutasi_user_a")
 
 with col2:
     with st.container(border=True):
@@ -59,8 +57,6 @@ with col2:
         list_dist_b = [d for d in list_dist if d != dist_a]
         dist_b = st.selectbox("Pilih Distributor Penerima", list_dist_b, key="mutasi_dist_b")
         bot_user_b, bot_pass_b = database.get_distributor_creds(supabase, dist_b)
-        if bot_user_b:
-            st.text_input("NP User ID", value=bot_user_b, disabled=True, key="mutasi_user_b")
 
 # --- FILE UPLOAD + COLUMN MAPPING ---
 with st.container(border=True):

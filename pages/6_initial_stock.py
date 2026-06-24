@@ -42,7 +42,6 @@ render_header("Initial Stock", st.session_state.current_user)
 
 # --- DISTRIBUTOR SELECTION ---
 with st.container(border=True):
-    st.subheader("Target Distributor")
     list_dist = database.get_distributor_list(supabase)
     _, default_index = resolve_distributor_url(list_dist)
 
@@ -50,8 +49,6 @@ with st.container(border=True):
     st.query_params.clear()
     st.query_params["d"] = encode_param(selected_distributor)
     bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
-    if bot_user:
-        st.text_input("NP User ID", value=bot_user, disabled=True, key="init_stock_user")
 
 # --- STEP 1: UPLOAD FILE ---
 st.subheader("Upload Stock Data")
