@@ -206,7 +206,7 @@ if st.button("EXECUTE MUTASI", type="primary", width="stretch", disabled=not can
         df_mutasi,
         bot_user_a, bot_pass_a, dist_a,
         bot_user_b, bot_pass_b, dist_b,
-        URL_LOGIN, TIMEOUT_MS, WAREHOUSE,
+        URL_LOGIN, TIMEOUT_MS, WAREHOUSE, WAREHOUSE,
         REASON_CODE, TABLE_UPDATE_INTERVAL,
         send_telegram_alert,
         table_a_ph, table_b_ph,
