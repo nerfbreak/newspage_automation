@@ -163,6 +163,7 @@ with st.container(border=True):
             break
     selected_reason_label = st.selectbox("Reason Adjustment", list(reason_options.values()), index=default_reason_idx, key="mutasi_reason")
     selected_reason_code = [k for k, v in reason_options.items() if v == selected_reason_label][0]
+    remark_text = st.text_input("Remark", max_chars=50, key="mutasi_remark")
 
     if st.button("Execute", type="primary", use_container_width=True, disabled=not can_execute, icon=":material/play_arrow:"):
         st.session_state.is_mutasi_running = True
@@ -229,6 +230,7 @@ with st.container(border=True):
             prog_a_ph, prog_b_ph,
             log_a_ph, log_b_ph,
             supabase,
+            remark_text=remark_text,
         )
 
         # Clear review state after execution

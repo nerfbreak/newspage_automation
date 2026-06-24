@@ -382,7 +382,7 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
         st.error(f"System error: {e}")
         alert_callback(f"[ALERT] <b>SYSTEM ERROR (SALES EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>")
 
-def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_log):
+def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_log, remark_text=""):
     ui_log("NAV", "Navigating to Stock Adjustment module...")
     page.wait_for_timeout(3000)
     page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
@@ -400,6 +400,12 @@ def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_l
     dropdown = page.locator("id=pag_I_StkAdj_NewGeneral_drp_n_REASON_HDR_Value")
     if dropdown.is_enabled(): 
         dropdown.select_option(REASON_CODE)
+        
+    if remark_text:
+        remark_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_REMARK_Value")
+        if remark_input.is_enabled():
+            remark_input.fill(remark_text[:50])
+            
     ui_log("SYS", "Ready. Opening data stream for payload injection...")
 
 def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
@@ -800,7 +806,7 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
-def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase):
+def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text=""):
     ensure_playwright()
     try:
         global_start_time = time.time(); success_count, failed_count = 0, 0; saved_doc_no = "N/A"
@@ -815,7 +821,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             page = context.new_page()
             
             _login(page, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log)
-            _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_log)
+            _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_log, remark_text)
             
             success_count = 0
             failed_count = 0
@@ -968,7 +974,8 @@ def run_mutasi_execution(
     table_a_ph, table_b_ph,
     prog_a_ph, prog_b_ph,
     log_a_ph, log_b_ph,
-    supabase
+    supabase,
+    remark_text=""
 ):
     import utils
     ui_log_a, _ = utils.make_terminal_logger(log_a_ph)
@@ -983,7 +990,8 @@ def run_mutasi_execution(
         selected_distributor=dist_a, URL_LOGIN=URL_LOGIN, TIMEOUT_MS=TIMEOUT_MS, 
         WAREHOUSE=whs_a, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_a, alert_callback=alert_callback, 
-        table_placeholder=table_a_ph, log_label_placeholder=None, supabase=supabase
+        table_placeholder=table_a_ph, log_label_placeholder=None, supabase=supabase,
+        remark_text=remark_text
     )
     
     ui_log_b('SYS', 'Memulai Add Mutasi untuk Penerima...')
@@ -995,5 +1003,6 @@ def run_mutasi_execution(
         selected_distributor=dist_b, URL_LOGIN=URL_LOGIN, TIMEOUT_MS=TIMEOUT_MS, 
         WAREHOUSE=whs_b, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_b, alert_callback=alert_callback, 
-        table_placeholder=table_b_ph, log_label_placeholder=None, supabase=supabase
+        table_placeholder=table_b_ph, log_label_placeholder=None, supabase=supabase,
+        remark_text=remark_text
     )
