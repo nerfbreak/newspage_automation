@@ -43,7 +43,7 @@ if not st.session_state.logged_in:
     inject_css("login.css")
 
     with st.form("login_form"):
-        st.markdown("<div style='text-align: center;'><h4 style='color: #31333F; font-weight: 500; margin-bottom: 24px; font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif;'>Sign in</h4></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center;'><h4 style='color: #1C1C1E; font-weight: 700; margin-bottom: 24px; font-family: \"Inter\", -apple-system, sans-serif; letter-spacing: -0.01em;'>Sign in</h4></div>", unsafe_allow_html=True)
         username = st.text_input("Username", placeholder="")
         password = st.text_input("Password", type="password", placeholder="")
         
