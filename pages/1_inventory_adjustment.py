@@ -308,8 +308,7 @@ elif "Manual Entry" in adj_mode:
         
     st.markdown("<p style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; text-align: center; margin-bottom: 6px; margin-top: 12px;'>FIELD SKU INPUT</p>", unsafe_allow_html=True)
     with st.container(border=True):
-        st.markdown(f"<div class='box-dist'>Manual Data Entry</div>", unsafe_allow_html=True)
-        st.caption("Input SKU and its respective quantities. Rows with missing SKUs or all quantities 0 will be ignored during execution.")
+        st.caption(":material/warning: Input SKU and its respective quantities. Rows with missing SKUs or all quantities 0 will be ignored during execution.")
         
         edited_df = st.data_editor(
             st.session_state.manual_df,
