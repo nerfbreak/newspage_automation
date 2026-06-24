@@ -328,7 +328,7 @@ def render_footer():
             </span>
         </div>
         <div style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; color: #808495; margin-top: 12px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.5;'>
-            <b>DISCLAIMER:</b> Aplikasi otomasi ini tidak memiliki hubungan resmi dengan Reckitt. Aplikasi ini dikembangkan secara independen sebatas hobi dengan tujuan untuk mempermudah pekerjaan yang berulang dan mengefisiensikan waktu eksekusi.
+            <b>DISCLAIMER:</b> Aplikasi ini dikembangkan secara independen sebagai proyek hobi (unofficial) dan tidak memiliki afiliasi resmi dengan Reckitt. Tujuan utama aplikasi ini murni untuk membantu mengotomatisasi tugas-tugas repetitif agar lebih efisien dan menghemat waktu kerja.
         </div>
     </div>
     """), unsafe_allow_html=True)
