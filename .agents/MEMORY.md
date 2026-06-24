@@ -19,4 +19,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-06-24**: Initialized AI Project Memory system. Established `AGENTS.md` to force all future AI interactions to read and write to this `MEMORY.md` file.
 - **[Archived Decision]**: Implemented 5 login attempts lockout and 1-hour session timeout in `app.py`.
 - **[Archived Decision]**: Implemented AES-256 Fernet encryption for `distributor_vault` credentials.
-- **2026-06-24**: Performed a complete UI/UX overhaul. Transitioned the Streamlit application to a Premium Bento Box Design (Apple-inspired) by rewriting `style.css`, `login.css`, modifying `utils.py` UI components, and updating `config.toml`.
+- **2026-06-24**: Reverted the Bento Box UI as it broke Streamlit's layout engine. Implemented a **Streamlit-Native Premium UI** instead: set elegant colors in `config.toml`, stripped destructive CSS overrides from `style.css` and `login.css`, and updated `utils.py` to use flat, safe, inline-styled HTML components.
