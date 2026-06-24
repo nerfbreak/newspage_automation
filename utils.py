@@ -97,87 +97,89 @@ def clean_html(html_str: str) -> str:
     return " ".join(line.strip() for line in html_str.splitlines())
 
 def make_solid_box(text: str, border_color: str, text_color: str) -> str:
-    # Bento Box style
+    # Use Streamlit Light Card/Surface background (#F0F2F6) and default border (rgba(0, 0, 0, 0.08))
     return clean_html(f"""
         <div style='
-            background-color: #FFFFFF;
-            color: #1C1C1E;
-            height: 48px;
+            background-color: #F0F2F6;
+            color: {text_color};
+            height: 38.4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
-            border-left: 6px solid {border_color};
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-left: 5px solid {border_color};
             font-weight: 600;
             font-size: 0.85rem;
             margin: 12px 0;
             width: 100%;
             box-sizing: border-box;
-            font-family: "Inter", -apple-system, sans-serif;
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
         '>{text}</div>
     """)
 
 def make_success_box(text: str) -> str:
-    # Bento Box style Success
+    # Use Streamlit Brand Blue (#0068C9) background with Light text (#FAFAFA)
     return clean_html(f"""
         <div style='
-            background-color: #34C759;
-            color: #FFFFFF;
-            height: 48px;
+            background-color: #0068C9;
+            color: #FAFAFA;
+            height: 38.4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
+            border-radius: 8px;
             font-weight: 700;
             font-size: 0.85rem;
             margin-top: 12px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            font-family: "Inter", -apple-system, sans-serif;
-            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.2);
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+            border: 1px solid transparent;
             width: 100%;
             box-sizing: border-box;
         '>{text}</div>
     """)
 
 def make_error_box(text: str) -> str:
-    # Bento Box style Error
+    # Use Streamlit Brand Red (#FF2B2B) background with Light text (#FAFAFA)
     return clean_html(f"""
         <div style='
-            background-color: #FF3B30;
-            color: #FFFFFF;
-            height: 48px;
+            background-color: #FF2B2B;
+            color: #FAFAFA;
+            height: 38.4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
+            border-radius: 8px;
             font-weight: 700;
             font-size: 0.85rem;
             margin-top: 12px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            font-family: "Inter", -apple-system, sans-serif;
-            box-shadow: 0 4px 12px rgba(255, 59, 48, 0.2);
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+            border: 1px solid transparent;
             width: 100%;
             box-sizing: border-box;
         '>{text}</div>
     """)
 
 def render_metric_card(title, value, accent=False):
-    # Bento Box style
-    bg = "#007AFF" if accent else "#FFFFFF"
-    fg = "#FFFFFF" if accent else "#1C1C1E"
-    shadow = "0 8px 24px rgba(0, 122, 255, 0.25)" if accent else "0 4px 12px rgba(0, 0, 0, 0.04)"
+    # Styling variables to match Streamlit Design System theme
+    bg = "#0068C9" if accent else "#F0F2F6"
+    fg = "#FFFFFF" if accent else "#31333F"
+    border = "1px solid rgba(0, 104, 201, 0.15)" if accent else "1px solid rgba(0, 0, 0, 0.08)"
+    shadow = "0 4px 16px rgba(0, 0, 0, 0.15)" if accent else "0 4px 12px rgba(0, 0, 0, 0.03)"
     
     value_str = str(value)
     
+    # Dynamic font sizing and centering calculations
     if len(value_str) > 20:
-        font_size_px = 22
+        font_size_px = 18
     elif len(value_str) > 10:
-        font_size_px = 28
+        font_size_px = 24
     else:
-        font_size_px = 42
+        font_size_px = 38
         
     font_size = f"{font_size_px}px"
     
@@ -185,22 +187,23 @@ def render_metric_card(title, value, accent=False):
     <div style='
         background-color: {bg};
         color: {fg};
-        border-radius: 20px;
-        padding: 24px;
+        border: {border};
+        border-radius: 10px;
+        padding: 20px 24px;
         width: 100%;
-        height: 140px;
+        height: 125px;
         box-sizing: border-box;
-        font-family: "Inter", -apple-system, sans-serif;
-        margin-bottom: 8px;
+        font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+        margin-bottom: 16px;
         box-shadow: {shadow};
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        gap: 8px;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
     '>
-        <div style='font-size: 12px; font-weight: 600; color: {"rgba(255, 255, 255, 0.8)" if accent else "#8E8E93"}; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;'>{title}</div>
-        <div style='font-size: {font_size}; font-weight: 800; color: {fg}; line-height: 1; letter-spacing: -0.02em;'>{value_str}</div>
+        <div style='font-size: 11px; font-weight: 600; color: {"rgba(255, 255, 255, 0.7)" if accent else "#808495"}; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;'>{title}</div>
+        <div style='font-size: {font_size}; font-weight: 700; color: {fg}; line-height: 1;'>{value_str}</div>
     </div>
     """)
 
@@ -223,25 +226,25 @@ def check_auth():
         st.session_state.current_user = "Guest"
 
 def render_indicators(db_status, bot_status, bot_type="ENGINE"):
-    db_color = "#007AFF" if db_status == "CONNECTED" else "#FF3B30"
-    bot_color = "#1C1C1E" if "PROMO" not in bot_type else "#007AFF"
+    db_color = "#0068C9" if db_status == "CONNECTED" else "#FF2B2B"
+    bot_color = "#31333F" if "PROMO" not in bot_type else "#0068C9"
     
     user_pill = ""
     if "current_user" in st.session_state and st.session_state.current_user:
         user_pill = f"""
-            <div style='margin-left: auto; pointer-events: none; background-color: #FFFFFF; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);'>
-                <span style='font-family: "Inter", sans-serif; font-size: 0.7rem; font-weight: 600; color: #8E8E93; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
-                <span style='font-family: "Inter", sans-serif; font-size: 0.7rem; font-weight: 700; color: #1C1C1E; text-transform: uppercase; letter-spacing: 0.05em;'>{st.session_state.current_user}</span>
+            <div style='margin-left: auto; pointer-events: none; background-color: #f0f2f6; border: 1px solid #e0e2e6; padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #31333F; text-transform: uppercase; letter-spacing: 0.05em;'>{st.session_state.current_user}</span>
             </div>
         """
         
     html = clean_html(f"""
         <div style='display: flex; gap: 10px; margin-bottom: 16px; align-items: center;'>
-            <div style='display: inline-flex; align-items: center; color: #FF3B30; font-family: "Inter", sans-serif; font-weight: 700; font-size: 0.7rem; letter-spacing: 0.08em; background: rgba(255, 59, 48, 0.1); padding: 4px 12px; border-radius: 20px;' class='blink_me'>LIVE</div>
-            <div style='display: inline-flex; align-items: center; color: {db_color}; font-family: "Inter", sans-serif; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.05em; padding: 4px 12px; border-radius: 20px; background-color: {db_color}15;'>
+            <div class='live-indicator'>LIVE</div>
+            <div class='status-pill' style='color: {db_color}; border-color: {db_color}33; background-color: {db_color}1a;'>
                 DB: {db_status}
             </div>
-            <div style='display: inline-flex; align-items: center; color: {bot_color}; font-family: "Inter", sans-serif; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.05em; padding: 4px 12px; border-radius: 20px; background-color: {bot_color}15;'>
+            <div class='status-pill' style='color: {bot_color}; border-color: {bot_color}33; background-color: {bot_color}1a;'>
                 {bot_type}: {bot_status}
             </div>
             {user_pill}
@@ -278,10 +281,10 @@ def render_header(title, subtitle=""):
         }
         
         a[data-testid="stPageLink-NavLink"] p {
-            font-family: "Inter", sans-serif !important;
+            font-family: "Source Sans 3", sans-serif !important;
             font-size: 14px !important;
-            font-weight: 700 !important;
-            color: #007AFF !important;
+            font-weight: 800 !important;
+            color: #0068C9 !important;
             margin: 0px !important;
             line-height: 1 !important;
         }
