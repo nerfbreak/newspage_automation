@@ -247,9 +247,10 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
     user_pill = ""
     if "current_user" in st.session_state and st.session_state.current_user:
         user_pill = f"""
-            <div style='margin-left: auto; pointer-events: none; background-color: #f0f2f6; border: 1px solid #e0e2e6; padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'>
-                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
-                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #31333F; text-transform: uppercase; letter-spacing: 0.05em;'>{st.session_state.current_user}</span>
+            <div style='margin-left: auto; pointer-events: none; display: inline-flex; align-items: center; gap: 6px;'>
+                <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14" fill="#838C96"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 600; color: #838C96; text-transform: uppercase; letter-spacing: 0.05em;'>Session:</span>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em;'>{st.session_state.current_user}</span>
             </div>
         """
         
@@ -267,9 +268,10 @@ def render_header(title, subtitle=""):
     active_sess = ""
     # Hanya tampilkan Active Session di header jika di halaman Dashboard
     if subtitle and "Automation Tool" in title:
-        active_sess = f"""<div style='float: right; margin-top: 5px; pointer-events: none; background-color: #f0f2f6; border: 1px solid #e0e2e6; padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'>
-            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
-            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #31333F; text-transform: uppercase; letter-spacing: 0.05em;'>{subtitle}</span>
+        active_sess = f"""<div style='float: right; margin-top: 5px; pointer-events: none; display: inline-flex; align-items: center; gap: 6px;'>
+            <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14" fill="#838C96"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
+            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 600; color: #838C96; text-transform: uppercase; letter-spacing: 0.05em;'>Session:</span>
+            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em;'>{subtitle}</span>
         </div>"""
         
     if active_sess:
