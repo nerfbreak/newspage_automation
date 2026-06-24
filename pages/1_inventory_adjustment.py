@@ -161,14 +161,10 @@ if "Auto Compare" in adj_mode:
             file2 = st.session_state.get("file2_uploader")
 
     if st.session_state.np_df is not None:
-        c1, c2 = st.columns([5, 1])
-        with c1:
-            st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-        with c2:
-            st.markdown("<div style='margin-top: 12px;'></div>", unsafe_allow_html=True)
-            if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
-                st.session_state.np_df = None
-                st.rerun()
+        st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+        if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
+            st.session_state.np_df = None
+            st.rerun()
 
     ext_label_placeholder = st.empty()
     ext_log_placeholder = st.empty()

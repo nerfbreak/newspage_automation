@@ -96,14 +96,10 @@ if st.session_state.get("_pending_clearance_extract", False):
 
 # --- REVIEW EXTRACTED DATA ---
 if st.session_state.clearance_df is not None:
-    c1, c2 = st.columns([5, 1])
-    with c1:
-        st.markdown(make_solid_box(f"Extracted — {len(st.session_state.clearance_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-    with c2:
-        st.markdown("<div style='margin-top: 12px;'></div>", unsafe_allow_html=True)
-        if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
-            st.session_state.clearance_df = None
-            st.rerun()
+    st.markdown(make_solid_box(f"Extracted — {len(st.session_state.clearance_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+    if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
+        st.session_state.clearance_df = None
+        st.rerun()
 
 # After extraction, the run_extract stores data in st.session_state.np_df
 # We need to convert it to clearance format (all qty as negative)
