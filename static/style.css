@@ -257,15 +257,39 @@ button[kind="primary"]:hover {
 .live-indicator {
     display: inline-flex;
     align-items: center;
-    color: #0068C9;
+    color: #FF2B2B;
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
-    font-weight: 700;
-    font-size: 0.65rem;
+    font-weight: 800;
+    font-size: 0.7rem;
     letter-spacing: 0.08em;
-    background: rgba(0, 104, 201, 0.08);
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(0, 104, 201, 0.2);
+    text-transform: uppercase;
+}
+
+.live-indicator::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #FF2B2B;
+    border-radius: 50%;
+    margin-right: 6px;
+    box-shadow: 0 0 0 0 rgba(255, 43, 43, 0.7);
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 43, 43, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(255, 43, 43, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 43, 43, 0);
+    }
 }
 
 .status-pill {
