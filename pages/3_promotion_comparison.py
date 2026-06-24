@@ -1,4 +1,4 @@
-# v1.3.1 - Comparison Fix & Cleanup
+﻿# v1.3.1 - Comparison Fix & Cleanup
 import datetime
 import io
 import time
@@ -9,8 +9,6 @@ import streamlit as st
 
 import database
 import playwright_engine
-import importlib
-importlib.reload(playwright_engine)
 from utils import (
     make_solid_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
