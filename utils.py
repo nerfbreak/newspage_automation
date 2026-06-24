@@ -97,81 +97,83 @@ def clean_html(html_str: str) -> str:
     return " ".join(line.strip() for line in html_str.splitlines())
 
 def make_solid_box(text: str, border_color: str, text_color: str) -> str:
-    # Safe Streamlit-Native styling
+    # Use Streamlit Light Card/Surface background (#F0F2F6) and default border (rgba(0, 0, 0, 0.08))
     return clean_html(f"""
         <div style='
-            background-color: #F8FAFC;
+            background-color: #F0F2F6;
             color: {text_color};
-            height: 42px;
+            height: 38.4px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.08);
             border-left: 5px solid {border_color};
             font-weight: 600;
             font-size: 0.85rem;
             margin: 12px 0;
             width: 100%;
             box-sizing: border-box;
-            font-family: sans-serif;
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
         '>{text}</div>
     """)
 
 def make_success_box(text: str) -> str:
-    # Soft Green Success box
+    # Use Streamlit Brand Blue (#0068C9) background with Light text (#FAFAFA)
     return clean_html(f"""
         <div style='
-            background-color: rgba(34, 197, 94, 0.1);
-            color: #15803D;
-            height: 42px;
+            background-color: #0068C9;
+            color: #FAFAFA;
+            height: 38.4px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
-            border: 1px solid rgba(34, 197, 94, 0.2);
             font-weight: 700;
             font-size: 0.85rem;
             margin-top: 12px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            font-family: sans-serif;
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+            border: 1px solid transparent;
             width: 100%;
             box-sizing: border-box;
         '>{text}</div>
     """)
 
 def make_error_box(text: str) -> str:
-    # Soft Red Error box
+    # Use Streamlit Brand Red (#FF2B2B) background with Light text (#FAFAFA)
     return clean_html(f"""
         <div style='
-            background-color: rgba(239, 68, 68, 0.1);
-            color: #B91C1C;
-            height: 42px;
+            background-color: #FF2B2B;
+            color: #FAFAFA;
+            height: 38.4px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
             font-weight: 700;
             font-size: 0.85rem;
             margin-top: 12px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            font-family: sans-serif;
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+            border: 1px solid transparent;
             width: 100%;
             box-sizing: border-box;
         '>{text}</div>
     """)
 
 def render_metric_card(title, value, accent=False):
-    # Streamlit-native flat styling
-    bg = "#4F46E5" if accent else "#F8FAFC"
-    fg = "#FFFFFF" if accent else "#0F172A"
-    border = "1px solid transparent" if accent else "1px solid rgba(0, 0, 0, 0.05)"
+    # Styling variables to match Streamlit Design System theme
+    bg = "#0068C9" if accent else "#F0F2F6"
+    fg = "#FFFFFF" if accent else "#31333F"
+    border = "1px solid rgba(0, 104, 201, 0.15)" if accent else "1px solid rgba(0, 0, 0, 0.08)"
+    shadow = "0 4px 16px rgba(0, 0, 0, 0.15)" if accent else "0 4px 12px rgba(0, 0, 0, 0.03)"
     
     value_str = str(value)
     
+    # Dynamic font sizing and centering calculations
     if len(value_str) > 20:
         font_size_px = 18
     elif len(value_str) > 10:
@@ -186,20 +188,21 @@ def render_metric_card(title, value, accent=False):
         background-color: {bg};
         color: {fg};
         border: {border};
-        border-radius: 8px;
+        border-radius: 10px;
         padding: 20px 24px;
         width: 100%;
-        height: 120px;
+        height: 125px;
         box-sizing: border-box;
-        font-family: sans-serif;
+        font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
         margin-bottom: 16px;
+        box-shadow: {shadow};
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         gap: 12px;
     '>
-        <div style='font-size: 11px; font-weight: 600; color: {"rgba(255, 255, 255, 0.8)" if accent else "#64748B"}; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;'>{title}</div>
+        <div style='font-size: 11px; font-weight: 600; color: {"rgba(255, 255, 255, 0.7)" if accent else "#808495"}; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;'>{title}</div>
         <div style='font-size: {font_size}; font-weight: 700; color: {fg}; line-height: 1;'>{value_str}</div>
     </div>
     """)
@@ -223,25 +226,25 @@ def check_auth():
         st.session_state.current_user = "Guest"
 
 def render_indicators(db_status, bot_status, bot_type="ENGINE"):
-    db_color = "#4F46E5" if db_status == "CONNECTED" else "#EF4444"
-    bot_color = "#0F172A" if "PROMO" not in bot_type else "#4F46E5"
+    db_color = "#0068C9" if db_status == "CONNECTED" else "#FF2B2B"
+    bot_color = "#31333F" if "PROMO" not in bot_type else "#0068C9"
     
     user_pill = ""
     if "current_user" in st.session_state and st.session_state.current_user:
         user_pill = f"""
-            <div style='margin-left: auto; pointer-events: none; background-color: #F8FAFC; border: 1px solid rgba(0,0,0,0.05); padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center;'>
-                <span style='font-family: sans-serif; font-size: 0.65rem; font-weight: 700; color: #4F46E5; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
-                <span style='font-family: sans-serif; font-size: 0.65rem; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{st.session_state.current_user}</span>
+            <div style='margin-left: auto; pointer-events: none; background-color: #f0f2f6; border: 1px solid #e0e2e6; padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #31333F; text-transform: uppercase; letter-spacing: 0.05em;'>{st.session_state.current_user}</span>
             </div>
         """
         
     html = clean_html(f"""
         <div style='display: flex; gap: 10px; margin-bottom: 16px; align-items: center;'>
-            <div style='display: inline-flex; align-items: center; color: #EF4444; font-family: sans-serif; font-weight: 700; font-size: 0.65rem; letter-spacing: 0.08em; background: rgba(239, 68, 68, 0.1); padding: 3px 10px; border-radius: 20px;' class='blink_me'>LIVE</div>
-            <div style='display: inline-flex; align-items: center; color: {db_color}; font-family: sans-serif; font-weight: 700; font-size: 0.65rem; letter-spacing: 0.08em; padding: 3px 10px; border-radius: 20px; background-color: {db_color}1a;'>
+            <div class='live-indicator'>LIVE</div>
+            <div class='status-pill' style='color: {db_color}; border-color: {db_color}33; background-color: {db_color}1a;'>
                 DB: {db_status}
             </div>
-            <div style='display: inline-flex; align-items: center; color: {bot_color}; font-family: sans-serif; font-weight: 700; font-size: 0.65rem; letter-spacing: 0.08em; padding: 3px 10px; border-radius: 20px; background-color: {bot_color}1a;'>
+            <div class='status-pill' style='color: {bot_color}; border-color: {bot_color}33; background-color: {bot_color}1a;'>
                 {bot_type}: {bot_status}
             </div>
             {user_pill}
@@ -255,9 +258,9 @@ def render_header(title, subtitle=""):
     active_sess = ""
     # Hanya tampilkan Active Session di header jika di halaman Dashboard
     if subtitle and "Automation Tool" in title:
-        active_sess = f"""<div style='float: right; margin-top: 5px; pointer-events: none; background-color: #F8FAFC; border: 1px solid rgba(0,0,0,0.05); padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center;'>
-            <span style='font-family: sans-serif; font-size: 0.65rem; font-weight: 700; color: #4F46E5; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
-            <span style='font-family: sans-serif; font-size: 0.65rem; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{subtitle}</span>
+        active_sess = f"""<div style='float: right; margin-top: 5px; pointer-events: none; background-color: #f0f2f6; border: 1px solid #e0e2e6; padding: 4px 12px; border-radius: 16px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'>
+            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;'>Active Session:</span>
+            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #31333F; text-transform: uppercase; letter-spacing: 0.05em;'>{subtitle}</span>
         </div>"""
         
     if active_sess:
@@ -266,7 +269,7 @@ def render_header(title, subtitle=""):
     if "Automation Tool" not in title:
         st.markdown("""
         <style>
-        /* Styling font Dashboard */
+        /* Styling font Dashboard: Biru dan Bold */
         a[data-testid="stPageLink-NavLink"] {
             padding: 0px !important;
             margin: 0px !important;
@@ -278,10 +281,10 @@ def render_header(title, subtitle=""):
         }
         
         a[data-testid="stPageLink-NavLink"] p {
-            font-family: sans-serif !important;
+            font-family: "Source Sans 3", sans-serif !important;
             font-size: 14px !important;
             font-weight: 800 !important;
-            color: #4F46E5 !important;
+            color: #0068C9 !important;
             margin: 0px !important;
             line-height: 1 !important;
         }
@@ -295,10 +298,10 @@ def render_header(title, subtitle=""):
 def render_footer():
     st.markdown(clean_html("""
     <div style='text-align: center; margin-top: 80px; margin-bottom: 20px;'>
-        <span style='font-family: sans-serif; font-size: 10px; font-weight: 600; color: #4F46E5; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
+        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
             &copy; 2026 IT Support Newspage.
         </span>
-        <span style='font-family: sans-serif; font-size: 10px; font-weight: 600; color: #0F172A; text-transform: uppercase; letter-spacing: 0.1em;'>
+        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>
             by kopi mang toni.
         </span>
     </div>
