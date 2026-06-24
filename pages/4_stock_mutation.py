@@ -51,7 +51,6 @@ with col1:
         bot_user_a, bot_pass_a = database.get_distributor_creds(supabase, dist_a)
         if bot_user_a:
             st.text_input("NP User ID", value=bot_user_a, disabled=True, key="mutasi_user_a")
-            st.text_input("NP Password", value="********", type="password", disabled=True, key="mutasi_pass_a")
 
 with col2:
     with st.container(border=True):
@@ -62,7 +61,6 @@ with col2:
         bot_user_b, bot_pass_b = database.get_distributor_creds(supabase, dist_b)
         if bot_user_b:
             st.text_input("NP User ID", value=bot_user_b, disabled=True, key="mutasi_user_b")
-            st.text_input("NP Password", value="********", type="password", disabled=True, key="mutasi_pass_b")
 
 # --- FILE UPLOAD + COLUMN MAPPING ---
 with st.container(border=True):

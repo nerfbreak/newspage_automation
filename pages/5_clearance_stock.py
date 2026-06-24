@@ -51,11 +51,7 @@ with st.container(border=True):
     st.query_params["d"] = encode_param(selected_distributor)
     bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
     if bot_user:
-        c1, c2 = st.columns(2)
-        with c1:
-            st.text_input("NP User ID", value=bot_user, disabled=True, key="clearance_user")
-        with c2:
-            st.text_input("NP Password", value="********", type="password", disabled=True, key="clearance_pass")
+        st.text_input("NP User ID", value=bot_user, disabled=True, key="clearance_user")
 
 # --- STEP 1: EXTRACT ---
 ext_label_placeholder = st.empty()

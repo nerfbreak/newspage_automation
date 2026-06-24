@@ -108,8 +108,6 @@ if "Auto Compare" in adj_mode:
     with col1:
         with st.container(border=True):
             st.markdown(f"<div class='box-np'>Newspage Stock Data</div>", unsafe_allow_html=True)
-            np_col1, np_col2 = st.columns(2)
-        
             list_dist = database.get_distributor_list(supabase)
             url_d = st.query_params.get("d", None)
             url_dist = None
@@ -123,15 +121,11 @@ if "Auto Compare" in adj_mode:
                 
             default_index = list_dist.index(url_dist) if url_dist in list_dist else 0
 
-            with np_col1:
-                selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index)
-                st.query_params.clear()
-                st.query_params["d"] = encode_param(selected_distributor)
-                bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
-                if bot_user: st.session_state.current_np_user_id = bot_user
-                
-            with np_col2:
-                st.text_input("NP Password", value="********", type="password", disabled=True, key="np_pass_dummy")
+            selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index)
+            st.query_params.clear()
+            st.query_params["d"] = encode_param(selected_distributor)
+            bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
+            if bot_user: st.session_state.current_np_user_id = bot_user
         
             btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
             extract_btn = st.button(btn_label, type="primary", width="stretch", disabled=st.session_state.is_bot_running, icon=":material/download:")
@@ -307,14 +301,10 @@ elif "Manual Entry" in adj_mode:
     default_index = list_dist.index(url_dist) if url_dist in list_dist else 0
     
     st.markdown(f"<div class='box-np'>Target Distributor Setup</div>", unsafe_allow_html=True)
-    d_col1, d_col2 = st.columns(2)
-    with d_col1:
-        selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index, key="manual_dist_sel")
-        st.query_params.clear()
-        st.query_params["d"] = encode_param(selected_distributor)
-        bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
-    with d_col2:
-        st.text_input("NP Password", value="********", type="password", disabled=True, key="manual_pass_dummy")
+    selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index, key="manual_dist_sel")
+    st.query_params.clear()
+    st.query_params["d"] = encode_param(selected_distributor)
+    bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
         
     st.markdown(f"<br><div class='box-dist'>Manual Data Entry</div>", unsafe_allow_html=True)
     st.caption("Input SKU and its respective quantities. Rows with missing SKUs or all quantities 0 will be ignored during execution.")
