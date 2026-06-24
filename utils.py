@@ -31,16 +31,20 @@ def decode_param(encoded: str) -> str:
 
 
 # ── Telegram alerts (shared across all pages) ─────────────
+def _send_sync(url, payload):
+    try:
+        requests.post(url, json=payload, timeout=5)
+    except Exception as e:
+        logger.warning(f"Telegram alert failed: {e}")
+
 def send_telegram_alert(message: str):
     bot_token = st.secrets.get("TELEGRAM_BOT_TOKEN", "")
     chat_id = st.secrets.get("TELEGRAM_CHAT_ID", "")
     if bot_token and chat_id:
+        import threading
         url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
         payload = {"chat_id": chat_id, "text": message, "parse_mode": "HTML"}
-        try:
-            requests.post(url, json=payload, timeout=5)
-        except Exception as e:
-            logger.warning(f"Telegram alert failed: {e}")
+        threading.Thread(target=_send_sync, args=(url, payload), daemon=True).start()
 
 
 # ── Wake-lock script (shared across all pages) ────────────

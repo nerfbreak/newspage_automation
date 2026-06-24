@@ -73,14 +73,14 @@ def decrypt_data(encrypted_data: str) -> str:
         logging.error(f"Decryption error: {e}")
         return ""  # Return empty string instead of ciphertext to prevent silent data corruption
 
-_config_cache: dict = {}
+import streamlit as st
 
-def get_system_config(supabase):
-    """Fetch system config with in-memory caching (avoids repeated DB calls).
+@st.cache_data(ttl=300)
+def get_system_config(_supabase):
+    """Fetch system config with Streamlit thread-safe caching.
     Returns a dict with keys: REASON_CODE, WAREHOUSE, URL_LOGIN, TIMEOUT_MS, TABLE_UPDATE_INTERVAL.
-    """
-    if "system_config" in _config_cache:
-        return _config_cache["system_config"]
+    \"\"\"
+    supabase = _supabase
 
     cfg = {
         "REASON_CODE": "SA2",
@@ -107,7 +107,6 @@ def get_system_config(supabase):
         except Exception as e:
             logging.error(f"Error fetching system_config: {e}")
 
-    _config_cache["system_config"] = cfg
     return cfg
 
 def authenticate_user(supabase, username, password):
@@ -122,12 +121,10 @@ def authenticate_user(supabase, username, password):
             logging.error(f"Error authenticating user {username}: {e}")
     return False
 
-_distributor_cache: dict = {}
-
-def get_distributor_list(supabase):
-    """Fetch distributor list with in-memory caching."""
-    if "distributor_list" in _distributor_cache:
-        return _distributor_cache["distributor_list"]
+@st.cache_data(ttl=300)
+def get_distributor_list(_supabase):
+    """Fetch distributor list with thread-safe caching."""
+    supabase = _supabase
     
     list_dist = []
     if supabase:
@@ -138,7 +135,6 @@ def get_distributor_list(supabase):
             logging.error(f"Error fetching distributor list: {e}")
     if not list_dist: list_dist = ["Belum ada data di Database"]
     
-    _distributor_cache["distributor_list"] = list_dist
     return list_dist
 
 def get_distributor_creds(supabase, selected_distributor):
@@ -226,3 +222,66 @@ def get_distributor_warehouse_exceptions(supabase):
         except Exception as e:
             logging.error(f"Error fetching distributor_exceptions: {e}")
     return exceptions
+
+# ============================================================
+# Security: Brute Force Protection
+# ============================================================
+def check_login_lockout(supabase, username):
+    """Returns (is_locked: bool, remaining_seconds: int, attempts: int)"""
+    if not supabase: return False, 0, 0
+    try:
+        res = supabase.table("login_attempts").select("attempts, lockout_until").eq("username", username).execute()
+        if not res.data:
+            return False, 0, 0
+            
+        attempts = res.data[0].get('attempts', 0)
+        lockout_until_str = res.data[0].get('lockout_until')
+        
+        if lockout_until_str:
+            from datetime import datetime
+            import time
+            lockout_time = datetime.fromisoformat(lockout_until_str.replace('Z', '+00:00')).timestamp()
+            now = time.time()
+            if now < lockout_time:
+                return True, int(lockout_time - now), attempts
+            else:
+                reset_failed_login(supabase, username)
+                return False, 0, 0
+        return False, 0, attempts
+    except Exception as e:
+        logging.error(f"Error checking lockout: {e}")
+        return False, 0, 0
+
+def record_failed_login(supabase, username, max_attempts=5, lockout_minutes=5):
+    if not supabase: return
+    try:
+        from datetime import datetime, timezone, timedelta
+        res = supabase.table("login_attempts").select("attempts").eq("username", username).execute()
+        
+        attempts = 1
+        if res.data:
+            attempts = res.data[0].get('attempts', 0) + 1
+            
+        data = {"username": username, "attempts": attempts, "last_attempt": datetime.now(timezone.utc).isoformat()}
+        
+        if attempts >= max_attempts:
+            lockout_time = datetime.now(timezone.utc) + timedelta(minutes=lockout_minutes)
+            data["lockout_until"] = lockout_time.isoformat()
+            
+        supabase.table("login_attempts").upsert(data).execute()
+    except Exception as e:
+        logging.error(f"Error recording failed login: {e}")
+
+def reset_failed_login(supabase, username):
+    if not supabase: return
+    try:
+        from datetime import datetime, timezone
+        supabase.table("login_attempts").upsert({
+            "username": username,
+            "attempts": 0,
+            "lockout_until": None,
+            "last_attempt": datetime.now(timezone.utc).isoformat()
+        }).execute()
+    except Exception as e:
+        logging.error(f"Error resetting failed login: {e}")
+

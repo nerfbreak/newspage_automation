@@ -49,35 +49,37 @@ if not st.session_state.logged_in:
         
         st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
         
-        # Check lockout
-        is_locked = time.time() < st.session_state.lockout_until
-        if is_locked:
-            remaining = int(st.session_state.lockout_until - time.time())
-            st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Too many failed attempts. Locked for {remaining}s.</p>", unsafe_allow_html=True)
+        submit = st.form_submit_button("LOGIN", type="primary", width="stretch")
         
-        submit = st.form_submit_button("LOGIN", type="primary", width="stretch", disabled=is_locked)
-        
-        if submit and not is_locked:
-            if database.authenticate_user(supabase, username, password):
-                with st.spinner("Authenticating..."):
-                    st.session_state.logged_in = True
-                    st.session_state.current_user = username
-                    st.session_state.login_attempts = 0
-                    st.session_state.lockout_until = 0
-                    st.session_state.last_activity = time.time()
-                    st.toast("Authentication Successful. Welcome Back.")
-                    time.sleep(1.2)
-                    st.rerun()
+        if submit:
+            if not username:
+                st.error("Please enter a username.")
             else:
-                st.session_state.login_attempts += 1
-                attempts_left = MAX_LOGIN_ATTEMPTS - st.session_state.login_attempts
-                if st.session_state.login_attempts >= MAX_LOGIN_ATTEMPTS:
-                    st.session_state.lockout_until = time.time() + LOCKOUT_SECONDS
-                    send_telegram_alert(f"[ALERT] Account lockout triggered for user: <b>{_html.escape(username)}</b>\n{MAX_LOGIN_ATTEMPTS} failed attempts.")
-                    st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Account locked for {LOCKOUT_SECONDS // 60} minutes due to too many failed attempts.</p>", unsafe_allow_html=True)
+                is_locked, remaining, attempts = database.check_login_lockout(supabase, username)
+                
+                if is_locked:
+                    st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Account locked. Please try again in {remaining} seconds.</p>", unsafe_allow_html=True)
                 else:
-                    time.sleep(1.5)  # Slow down brute-force attempts
-                    st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Invalid credentials. {attempts_left} attempt(s) remaining.</p>", unsafe_allow_html=True)
+                    if database.authenticate_user(supabase, username, password):
+                        database.reset_failed_login(supabase, username)
+                        with st.spinner("Authenticating..."):
+                            st.session_state.logged_in = True
+                            st.session_state.current_user = username
+                            st.session_state.last_activity = time.time()
+                            st.toast("Authentication Successful. Welcome Back.")
+                            time.sleep(1.2)
+                            st.rerun()
+                    else:
+                        database.record_failed_login(supabase, username, max_attempts=MAX_LOGIN_ATTEMPTS, lockout_minutes=LOCKOUT_SECONDS // 60)
+                        _, _, new_attempts = database.check_login_lockout(supabase, username)
+                        attempts_left = max(0, MAX_LOGIN_ATTEMPTS - new_attempts)
+                        
+                        if new_attempts >= MAX_LOGIN_ATTEMPTS:
+                            send_telegram_alert(f"[ALERT] Account lockout triggered for user: <b>{_html.escape(username)}</b>\n{MAX_LOGIN_ATTEMPTS} failed attempts.")
+                            st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Account locked for {LOCKOUT_SECONDS // 60} minutes due to too many failed attempts.</p>", unsafe_allow_html=True)
+                        else:
+                            time.sleep(1.5)  # Slow down brute-force attempts
+                            st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Invalid credentials. {attempts_left} attempt(s) remaining.</p>", unsafe_allow_html=True)
 
     render_footer()
     st.stop()

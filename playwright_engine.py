@@ -3,6 +3,31 @@ import time
 import os
 import subprocess
 import asyncio
+from contextlib import contextmanager
+
+@contextmanager
+def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log):
+    ensure_playwright()
+    import sys, asyncio
+    from playwright.sync_api import sync_playwright
+    if sys.platform == "win32": asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+    try:
+        asyncio.get_event_loop()
+    except RuntimeError:
+        asyncio.set_event_loop(asyncio.new_event_loop())
+    
+    with sync_playwright() as p:
+        ui_log("SYS", "Spawning browser context with isolated session...")
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(no_viewport=True)
+        page = context.new_page()
+        try:
+            _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log)
+            yield page, browser
+        finally:
+            browser.close()
+            ui_log("SYS", "Browser closed. Releasing session memory...")
+
 import sys
 import zipfile
 import pandas as pd
@@ -173,21 +198,8 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser):
     return real_filename, file_path
 
 def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, ext_ui_log, alert_callback, supabase, current_user):
-    ensure_playwright()
     try:
-        if sys.platform == "win32": asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-        try:
-            asyncio.get_event_loop()
-        except RuntimeError:
-            asyncio.set_event_loop(asyncio.new_event_loop())
-        
-        with sync_playwright() as p:
-            ext_ui_log("SYS", "Spawning browser context with isolated session...")
-            browser = p.chromium.launch(headless=True)
-            context = browser.new_context(no_viewport=True)
-            page = context.new_page()
-            
-            _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log)
+        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
             
             # Fetch distributor exception from DB
@@ -198,8 +210,6 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
             
             real_filename, file_path = _dispatch_extraction_job(page, TIMEOUT_MS, actual_warehouse, ext_ui_log, browser)
             
-            browser.close()
-            ext_ui_log("SYS", "Browser closed. Releasing session memory...")
             ext_ui_log("SYS", f"Parsing payload file: {real_filename}...")
             
             df_ext = None
@@ -346,21 +356,8 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser)
     return real_filename, file_path
 
 def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user):
-    ensure_playwright()
     try:
-        if sys.platform == "win32": asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-        try:
-            asyncio.get_event_loop()
-        except RuntimeError:
-            asyncio.set_event_loop(asyncio.new_event_loop())
-        
-        with sync_playwright() as p:
-            ext_ui_log("SYS", "Spawning browser context with isolated session...")
-            browser = p.chromium.launch(headless=True)
-            context = browser.new_context(no_viewport=True)
-            page = context.new_page()
-            
-            _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log)
+        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
             real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser)
             
