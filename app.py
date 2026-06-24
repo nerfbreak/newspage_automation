@@ -4,7 +4,7 @@ import streamlit as st
 import database
 from utils import (
     render_footer, inject_css, send_telegram_alert,
-    init_session_state, render_wakelock,
+    init_session_state, render_wakelock, make_success_box
 )
 
 # --- 1. CONFIG & UI HELPERS ---
@@ -62,13 +62,12 @@ if not st.session_state.logged_in:
                 else:
                     if database.authenticate_user(supabase, username, password):
                         database.reset_failed_login(supabase, username)
-                        with st.spinner("Authenticating..."):
-                            st.session_state.logged_in = True
-                            st.session_state.current_user = username
-                            st.session_state.last_activity = time.time()
-                            st.toast("Authentication Successful. Welcome Back.")
-                            time.sleep(1.2)
-                            st.rerun()
+                        st.markdown(make_success_box("Authentication Successful. Welcome Back."), unsafe_allow_html=True)
+                        st.session_state.logged_in = True
+                        st.session_state.current_user = username
+                        st.session_state.last_activity = time.time()
+                        time.sleep(1.2)
+                        st.rerun()
                     else:
                         database.record_failed_login(supabase, username, max_attempts=MAX_LOGIN_ATTEMPTS, lockout_minutes=LOCKOUT_SECONDS // 60)
                         _, _, new_attempts = database.check_login_lockout(supabase, username)
