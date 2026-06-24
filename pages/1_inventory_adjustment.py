@@ -300,27 +300,29 @@ elif "Manual Entry" in adj_mode:
     url_dist = decode_param(url_d) if url_d else st.query_params.get("distributor", None)
     default_index = list_dist.index(url_dist) if url_dist in list_dist else 0
     
-    st.markdown(f"<div class='box-np'>Target Distributor Setup</div>", unsafe_allow_html=True)
-    selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index, key="manual_dist_sel")
-    st.query_params.clear()
-    st.query_params["d"] = encode_param(selected_distributor)
-    bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
+    with st.container(border=True):
+        st.markdown(f"<div class='box-np'>Target Distributor Setup</div>", unsafe_allow_html=True)
+        selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index, key="manual_dist_sel")
+        st.query_params.clear()
+        st.query_params["d"] = encode_param(selected_distributor)
+        bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
         
-    st.markdown(f"<br><div class='box-dist'>Manual Data Entry</div>", unsafe_allow_html=True)
-    st.caption("Input SKU and its respective quantities. Rows with missing SKUs or all quantities 0 will be ignored during execution.")
-    
-    edited_df = st.data_editor(
-        st.session_state.manual_df,
-        num_rows="dynamic",
-        width="stretch",
-        column_config={
-            "SKU": st.column_config.TextColumn("SKU Code", required=True),
-            "PAC": st.column_config.NumberColumn("Qty PAC", default=0),
-            "CAR": st.column_config.NumberColumn("Qty CAR", default=0),
-            "EA": st.column_config.NumberColumn("Qty EA", default=0),
-        },
-        key="manual_editor"
-    )
+    with st.container(border=True):
+        st.markdown(f"<div class='box-dist'>Manual Data Entry</div>", unsafe_allow_html=True)
+        st.caption("Input SKU and its respective quantities. Rows with missing SKUs or all quantities 0 will be ignored during execution.")
+        
+        edited_df = st.data_editor(
+            st.session_state.manual_df,
+            num_rows="dynamic",
+            width="stretch",
+            column_config={
+                "SKU": st.column_config.TextColumn("SKU Code", required=True),
+                "PAC": st.column_config.NumberColumn("Qty PAC", default=0),
+                "CAR": st.column_config.NumberColumn("Qty CAR", default=0),
+                "EA": st.column_config.NumberColumn("Qty EA", default=0),
+            },
+            key="manual_editor"
+        )
 
     st.markdown("<br>", unsafe_allow_html=True)
     log_label_placeholder = st.empty()
