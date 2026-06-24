@@ -300,7 +300,7 @@ if "Auto Compare" in adj_mode:
                     REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase
                 )
 
-elif adj_mode == "Manual Entry":
+elif "Manual Entry" in adj_mode:
     list_dist = database.get_distributor_list(supabase)
     url_d = st.query_params.get("d", None)
     url_dist = decode_param(url_d) if url_d else st.query_params.get("distributor", None)
