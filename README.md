@@ -8,6 +8,12 @@ A production-grade automation toolkit for comparing and reconciling stock data b
 
 ---
 
+## Changelog
+
+See the [CHANGELOG.md](CHANGELOG.md) for recent updates and release history.
+
+---
+
 ## Key Features
 
 - **Auto-Extraction** — Pulls real-time inventory and sales data from Newspage via headless Chromium, no manual export needed.
