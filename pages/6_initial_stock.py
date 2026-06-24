@@ -51,12 +51,12 @@ with st.container(border=True):
     bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
 
 # --- STEP 1: UPLOAD FILE ---
-st.subheader("Upload Stock Data")
-uploaded_file = st.file_uploader(
-    "Upload file with SKU and Qty columns (csv, xlsx)",
-    type=['csv', 'xlsx'],
-    key="init_stock_file"
-)
+with st.container(border=True):
+    uploaded_file = st.file_uploader(
+        "Upload file with SKU and Qty columns (csv, xlsx)",
+        type=['csv', 'xlsx'],
+        key="init_stock_file"
+    )
 
 # Parse uploaded file into raw dataframe
 if uploaded_file is not None and st.session_state.initial_stock_raw is None and st.session_state.initial_stock_df is None:
