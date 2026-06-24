@@ -319,12 +319,17 @@ def render_header(title, subtitle=""):
 def render_footer():
     st.markdown(clean_html("""
     <div style='text-align: center; margin-top: 80px; margin-bottom: 20px;'>
-        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
-            &copy; 2026 IT Support Newspage.
-        </span>
-        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>
-            by kopi mang toni.
-        </span>
+        <div>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
+                &copy; 2026 IT Support Newspage.
+            </span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>
+                by kopi mang toni.
+            </span>
+        </div>
+        <div style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; color: #808495; margin-top: 12px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.5;'>
+            <b>DISCLAIMER:</b> Aplikasi otomasi ini tidak memiliki hubungan resmi dengan Reckitt. Aplikasi ini dikembangkan secara independen sebatas hobi dengan tujuan untuk mempermudah pekerjaan yang berulang dan mengefisiensikan waktu eksekusi.
+        </div>
     </div>
     """), unsafe_allow_html=True)
 
