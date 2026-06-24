@@ -205,7 +205,7 @@ if "Auto Compare" in adj_mode:
         c1, c2 = st.columns(2)
         with c1:
             with st.container(border=True):
-                st.markdown("<div style='text-align: center; margin-bottom: 16px; margin-top: 2px;'><span style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid #0068C9; padding-bottom: 4px;'>NEWSPAGE SETUP</span></div>", unsafe_allow_html=True)
+                st.markdown("<div style='text-align: left; margin-bottom: 16px; margin-top: 2px;'><span style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid #0068C9; padding-bottom: 4px;'>NEWSPAGE SETUP</span></div>", unsafe_allow_html=True)
                 idx_sku1 = df1.columns.get_loc('Product Code') if 'Product Code' in df1.columns else 0
                 if 'Product Description' in df1.columns: idx_desc1 = df1.columns.get_loc('Product Description')
                 elif 'Product Name' in df1.columns: idx_desc1 = df1.columns.get_loc('Product Name')
@@ -216,7 +216,7 @@ if "Auto Compare" in adj_mode:
                 qty_col1  = st.selectbox("Qty column (NP)", df1.columns, index=idx_qty1)
         with c2:
             with st.container(border=True):
-                st.markdown("<div style='text-align: center; margin-bottom: 16px; margin-top: 2px;'><span style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid #0068C9; padding-bottom: 4px;'>DISTRIBUTOR SETUP</span></div>", unsafe_allow_html=True)
+                st.markdown("<div style='text-align: left; margin-bottom: 16px; margin-top: 2px;'><span style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid #0068C9; padding-bottom: 4px;'>DISTRIBUTOR SETUP</span></div>", unsafe_allow_html=True)
                 idx_sku2 = 20 if len(df2.columns) > 20 else 0
                 qty2_col_match = next((col for col in df2.columns if str(col).strip().lower().replace(" ", "") == "stokakhir"), None)
                 if qty2_col_match: idx_qty2 = df2.columns.get_loc(qty2_col_match)
