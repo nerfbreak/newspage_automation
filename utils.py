@@ -256,12 +256,6 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
     html = clean_html(f"""
         <div style='display: flex; gap: 10px; margin-bottom: 16px; align-items: center;'>
             <div class='live-indicator'>LIVE</div>
-            <div class='status-pill' style='color: {db_color}; border-color: {db_color}33; background-color: {db_color}1a;'>
-                DB: {db_status}
-            </div>
-            <div class='status-pill' style='color: {bot_color}; border-color: {bot_color}33; background-color: {bot_color}1a;'>
-                {bot_type}: {bot_status}
-            </div>
             {user_pill}
         </div>
     """)
