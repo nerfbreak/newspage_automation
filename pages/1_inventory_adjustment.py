@@ -107,7 +107,6 @@ if "Auto Compare" in adj_mode:
     
     with col1:
         with st.container(border=True):
-            st.markdown(f"<div class='box-np'>Newspage Stock Data</div>", unsafe_allow_html=True)
             list_dist = database.get_distributor_list(supabase)
             url_d = st.query_params.get("d", None)
             url_dist = None
@@ -133,7 +132,6 @@ if "Auto Compare" in adj_mode:
 
     with col2:
         with st.container(border=True):
-            st.markdown(f"<div class='box-dist'>Distributor Stock Data</div>", unsafe_allow_html=True)
             def handle_fragment_upload():
                 f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key="file2_uploader")
                 st.markdown("<div style='margin-bottom: 28px;'></div>", unsafe_allow_html=True)
