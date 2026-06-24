@@ -3,6 +3,8 @@ import streamlit as st
 import database
 import data_processor
 import playwright_engine
+import importlib
+importlib.reload(playwright_engine)
 from utils import (
     render_footer, make_solid_box, render_metric_card,
     check_auth, render_indicators, render_header,
@@ -47,11 +49,6 @@ with col1:
         st.subheader("Distributor Pengirim (Stock Dikurangi)")
         dist_a = st.selectbox("Pilih Distributor Pengirim", list_dist, key="mutasi_dist_a")
         bot_user_a, bot_pass_a = database.get_distributor_creds(supabase, dist_a)
-        
-        whs_exceptions = database.get_distributor_warehouse_exceptions(supabase)
-        default_whs_a = whs_exceptions.get(dist_a, whs_exceptions.get(bot_user_a, WAREHOUSE))
-        whs_a = st.text_input("Target Warehouse", value=default_whs_a, key="mutasi_whs_a")
-        
         if bot_user_a:
             st.text_input("NP User ID", value=bot_user_a, disabled=True, key="mutasi_user_a")
             st.text_input("NP Password", value="********", type="password", disabled=True, key="mutasi_pass_a")
@@ -63,10 +60,6 @@ with col2:
         list_dist_b = [d for d in list_dist if d != dist_a]
         dist_b = st.selectbox("Pilih Distributor Penerima", list_dist_b, key="mutasi_dist_b")
         bot_user_b, bot_pass_b = database.get_distributor_creds(supabase, dist_b)
-        
-        default_whs_b = whs_exceptions.get(dist_b, whs_exceptions.get(bot_user_b, WAREHOUSE))
-        whs_b = st.text_input("Target Warehouse", value=default_whs_b, key="mutasi_whs_b")
-        
         if bot_user_b:
             st.text_input("NP User ID", value=bot_user_b, disabled=True, key="mutasi_user_b")
             st.text_input("NP Password", value="********", type="password", disabled=True, key="mutasi_pass_b")
@@ -87,7 +80,7 @@ if uploaded_file is not None:
     df_raw = data_processor.load_data(uploaded_file)
 
     if df_raw is not None and not df_raw.empty:
-        st.markdown(make_solid_box(f"File loaded â€” {len(df_raw)} rows, {len(df_raw.columns)} columns", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+        st.markdown(make_solid_box(f"File loaded — {len(df_raw)} rows, {len(df_raw.columns)} columns", "#0068C9", "#0068C9"), unsafe_allow_html=True)
 
         # --- COLUMN MAPPING ---
         st.subheader("Column Mapping")
@@ -198,22 +191,22 @@ if st.button("EXECUTE MUTASI", type="primary", width="stretch", disabled=not can
     log_label_a_ph.markdown(f"""
         <div style='display: inline-block; margin-bottom: 4px;'>
             <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
-            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>DEDUCT LOG â€” {dist_a}</span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>DEDUCT LOG — {dist_a}</span>
         </div>
     """, unsafe_allow_html=True)
     log_label_b_ph.markdown(f"""
         <div style='display: inline-block; margin-bottom: 4px;'>
             <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
-            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>ADD LOG â€” {dist_b}</span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>ADD LOG — {dist_b}</span>
         </div>
     """, unsafe_allow_html=True)
 
-    # Execute â€” engine handles log rendering internally
+    # Execute — engine handles log rendering internally
     playwright_engine.run_mutasi_execution(
         df_mutasi,
         bot_user_a, bot_pass_a, dist_a,
         bot_user_b, bot_pass_b, dist_b,
-        URL_LOGIN, TIMEOUT_MS, whs_a, whs_b,
+        URL_LOGIN, TIMEOUT_MS, WAREHOUSE,
         REASON_CODE, TABLE_UPDATE_INTERVAL,
         send_telegram_alert,
         table_a_ph, table_b_ph,

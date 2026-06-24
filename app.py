@@ -22,7 +22,6 @@ SESSION_TIMEOUT_SECONDS = 3600  # 1 hour
 init_session_state(
     logged_in=False,
     current_user="unknown",
-    user_role="Viewer", # Default safe role
     login_attempts=0,
     lockout_until=0,
     last_activity=0,
@@ -59,16 +58,14 @@ if not st.session_state.logged_in:
         submit = st.form_submit_button("LOGIN", type="primary", width="stretch", disabled=is_locked)
         
         if submit and not is_locked:
-            auth_success, role_name = database.authenticate_user(supabase, username, password)
-            if auth_success:
+            if database.authenticate_user(supabase, username, password):
                 with st.spinner("Authenticating..."):
                     st.session_state.logged_in = True
                     st.session_state.current_user = username
-                    st.session_state.user_role = role_name
                     st.session_state.login_attempts = 0
                     st.session_state.lockout_until = 0
                     st.session_state.last_activity = time.time()
-                    st.toast(f"Welcome Back. Logged in as {role_name}")
+                    st.toast("Authentication Successful. Welcome Back.")
                     time.sleep(1.2)
                     st.rerun()
             else:
@@ -100,29 +97,15 @@ render_wakelock()
 
 
 # Define pages
-dashboard_page = st.Page("pages/0_dashboard.py", title="Dashboard", url_path="dashboard", icon="📊")
-inventory_page = st.Page("pages/1_inventory_adjustment.py", title="Inventory Adjustment", url_path="p1", icon="📦")
-sales_page = st.Page("pages/2_sales_extraction.py", title="Sales Extraction", url_path="p2", icon="🧾")
-promotion_page = st.Page("pages/3_promotion_comparison.py", title="Promotion Comparison", url_path="p3", icon="🏷️")
-mutation_page = st.Page("pages/4_stock_mutation.py", title="Stock Mutation", url_path="p4", icon="🔄")
-clearance_page = st.Page("pages/5_clearance_stock.py", title="Clearance Stock", url_path="p5", icon="🗑️")
-initial_page = st.Page("pages/6_initial_stock.py", title="Initial Stock", url_path="p6", icon="🚀")
-
-# RBAC Routing Logic
-role = st.session_state.get("user_role", "Viewer")
-
-if role == "Admin":
-    # Admin sees everything
-    pages = [dashboard_page, inventory_page, sales_page, promotion_page, mutation_page, clearance_page, initial_page]
-elif role == "Operator":
-    # Operator cannot see dashboard (as requested in PRD logic/discussions)
-    # They go straight to inventory adjustment as default
-    pages = [inventory_page, sales_page, promotion_page, mutation_page, clearance_page, initial_page]
-else: # Viewer or unknown
-    # Viewer only sees dashboard
-    pages = [dashboard_page]
+dashboard_page = st.Page("pages/0_dashboard.py", title="Dashboard", url_path="dashboard", default=True)
+inventory_page = st.Page("pages/1_inventory_adjustment.py", title="Inventory Adjustment", url_path="p1")
+sales_page = st.Page("pages/2_sales_extraction.py", title="Sales Extraction", url_path="p2")
+promotion_page = st.Page("pages/3_promotion_comparison.py", title="Promotion Comparison", url_path="p3")
+mutation_page = st.Page("pages/4_stock_mutation.py", title="Stock Mutation", url_path="p4")
+clearance_page = st.Page("pages/5_clearance_stock.py", title="Clearance Stock", url_path="p5")
+initial_page = st.Page("pages/6_initial_stock.py", title="Initial Stock", url_path="p6")
 
 # Run navigation
-pg = st.navigation(pages, position="hidden")
+pg = st.navigation([dashboard_page, inventory_page, sales_page, promotion_page, mutation_page, clearance_page, initial_page], position="hidden")
 pg.run()
 

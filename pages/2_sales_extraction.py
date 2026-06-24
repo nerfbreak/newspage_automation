@@ -1,8 +1,10 @@
-﻿import datetime
+import datetime
 import time
 import streamlit as st
 import database
 import playwright_engine
+import importlib
+importlib.reload(playwright_engine)
 from utils import (
     make_solid_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
@@ -65,7 +67,7 @@ with st.container(border=True):
         end_date = st.date_input("End Date", value=end_date_default)
     
     st.markdown("<div style='margin-bottom: 12px;'></div>", unsafe_allow_html=True)
-    btn_label = "Extractingâ€¦" if st.session_state.is_bot_running else "Extract Invoice Details"
+    btn_label = "Extracting…" if st.session_state.is_bot_running else "Extract Invoice Details"
     extract_btn = st.button(btn_label, type="primary", width='stretch', disabled=st.session_state.is_bot_running)
     
     if st.session_state.get('sales_csv_data'):

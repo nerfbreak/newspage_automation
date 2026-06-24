@@ -4,6 +4,8 @@ import database
 import data_processor
 import pandas as pd
 import playwright_engine
+import importlib
+importlib.reload(playwright_engine)
 from utils import (
     make_solid_box, make_success_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
@@ -101,11 +103,6 @@ if adj_mode == "Auto Compare":
                 bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
                 if bot_user: st.session_state.current_np_user_id = bot_user
                 
-                # Fetch warehouse exceptions
-                whs_exceptions = database.get_distributor_warehouse_exceptions(supabase)
-                default_whs = whs_exceptions.get(selected_distributor, whs_exceptions.get(bot_user, WAREHOUSE))
-                selected_warehouse = st.text_input("Target Warehouse", value=default_whs, key="auto_whs")
-                
             with np_col2:
                 st.text_input("NP Password", value="********", type="password", disabled=True, key="np_pass_dummy")
         
@@ -137,7 +134,7 @@ if adj_mode == "Auto Compare":
             file2 = st.session_state.get("file2_uploader")
 
     if st.session_state.np_df is not None:
-        st.markdown(make_solid_box(f"Extracted â€” {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+        st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
         if st.button("Clear extracted data", width="stretch"):
             st.session_state.np_df = None
             st.rerun()
@@ -272,7 +269,7 @@ if adj_mode == "Auto Compare":
                     render_terminal(log_placeholder, bot_logs_history)
 
                 playwright_engine.run_execution(
-                    df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, selected_warehouse, 
+                    df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
                     REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase
                 )
 
@@ -289,9 +286,6 @@ elif adj_mode == "Manual Entry":
         st.query_params.clear()
         st.query_params["d"] = encode_param(selected_distributor)
         bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
-        whs_exceptions = database.get_distributor_warehouse_exceptions(supabase)
-        default_whs = whs_exceptions.get(selected_distributor, whs_exceptions.get(bot_user, WAREHOUSE))
-        selected_warehouse = st.text_input("Target Warehouse", value=default_whs, key="manual_whs")
     with d_col2:
         st.text_input("NP Password", value="********", type="password", disabled=True, key="manual_pass_dummy")
         
@@ -361,7 +355,7 @@ elif adj_mode == "Manual Entry":
                     render_terminal(log_placeholder, bot_logs_history)
 
                 playwright_engine.run_execution_manual(
-                    df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, selected_warehouse, 
+                    df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
                     REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase
                 )
 

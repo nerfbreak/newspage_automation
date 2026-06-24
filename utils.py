@@ -263,33 +263,31 @@ def render_header(title, subtitle=""):
         st.markdown(active_sess, unsafe_allow_html=True)
         
     if "Automation Tool" not in title:
-        role = st.session_state.get("user_role", "Viewer")
-        if role in ["Admin", "Viewer"]:
-            st.markdown("""
-            <style>
-            /* Styling font Dashboard: Biru dan Bold */
-            a[data-testid="stPageLink-NavLink"] {
-                padding: 0px !important;
-                margin: 0px !important;
-                margin-bottom: -5px !important;
-                background: transparent !important;
-                border: none !important;
-                text-decoration: none !important;
-                width: fit-content !important;
-            }
-            
-            a[data-testid="stPageLink-NavLink"] p {
-                font-family: "Source Sans 3", sans-serif !important;
-                font-size: 14px !important;
-                font-weight: 800 !important;
-                color: #0068C9 !important;
-                margin: 0px !important;
-                line-height: 1 !important;
-            }
-            </style>
-            """, unsafe_allow_html=True)
-            
-            st.page_link("pages/0_dashboard.py", label="< Back To Dashboard")
+        st.markdown("""
+        <style>
+        /* Styling font Dashboard: Biru dan Bold */
+        a[data-testid="stPageLink-NavLink"] {
+            padding: 0px !important;
+            margin: 0px !important;
+            margin-bottom: -5px !important;
+            background: transparent !important;
+            border: none !important;
+            text-decoration: none !important;
+            width: fit-content !important;
+        }
+        
+        a[data-testid="stPageLink-NavLink"] p {
+            font-family: "Source Sans 3", sans-serif !important;
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            color: #0068C9 !important;
+            margin: 0px !important;
+            line-height: 1 !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        st.page_link("pages/0_dashboard.py", label="< Back To Dashboard")
         
     st.markdown(f"<h1 style='margin-top: -5px; margin-bottom: -15px; padding-top: 0px; padding-bottom: 0px; border-bottom: none !important;'>{title}</h1>", unsafe_allow_html=True)
 

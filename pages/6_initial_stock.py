@@ -2,6 +2,8 @@ import pandas as pd
 import streamlit as st
 import database
 import playwright_engine
+import importlib
+importlib.reload(playwright_engine)
 from utils import (
     render_footer, make_solid_box, render_metric_card,
     check_auth, render_indicators, render_header,
@@ -48,11 +50,6 @@ with st.container(border=True):
     st.query_params.clear()
     st.query_params["d"] = encode_param(selected_distributor)
     bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
-    
-    whs_exceptions = database.get_distributor_warehouse_exceptions(supabase)
-    default_whs = whs_exceptions.get(selected_distributor, whs_exceptions.get(bot_user, WAREHOUSE))
-    selected_warehouse = st.text_input("Target Warehouse", value=default_whs, key="init_stock_whs")
-    
     if bot_user:
         c1, c2 = st.columns(2)
         with c1:
@@ -143,7 +140,7 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
 if st.session_state.initial_stock_df is not None:
     df_init = st.session_state.initial_stock_df
 
-    st.markdown(make_solid_box(f"Loaded â€” {len(df_init)} items from uploaded file", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+    st.markdown(make_solid_box(f"Loaded — {len(df_init)} items from uploaded file", "#0068C9", "#0068C9"), unsafe_allow_html=True)
 
     if st.button("Clear uploaded data", width="stretch"):
         st.session_state.initial_stock_df = None
@@ -219,7 +216,7 @@ if st.session_state.is_bot_running and st.session_state.initial_stock_df is not 
     bot_ui_log, _ = make_terminal_logger(log_placeholder)
 
     playwright_engine.run_execution(
-        df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, selected_warehouse,
+        df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE,
         REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase
     )
 

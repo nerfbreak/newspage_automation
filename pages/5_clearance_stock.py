@@ -2,6 +2,8 @@ import pandas as pd
 import streamlit as st
 import database
 import playwright_engine
+import importlib
+importlib.reload(playwright_engine)
 from utils import (
     render_footer, make_solid_box, render_metric_card,
     check_auth, render_indicators, render_header,
@@ -48,11 +50,6 @@ with st.container(border=True):
     st.query_params.clear()
     st.query_params["d"] = encode_param(selected_distributor)
     bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
-    
-    whs_exceptions = database.get_distributor_warehouse_exceptions(supabase)
-    default_whs = whs_exceptions.get(selected_distributor, whs_exceptions.get(bot_user, WAREHOUSE))
-    selected_warehouse = st.text_input("Target Warehouse", value=default_whs, key="clearance_whs")
-    
     if bot_user:
         c1, c2 = st.columns(2)
         with c1:
@@ -93,13 +90,13 @@ if st.session_state.get("_pending_clearance_extract", False):
     ext_ui_log, _ = make_terminal_logger(ext_log_placeholder)
 
     playwright_engine.run_extract(
-        bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, selected_warehouse,
+        bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE,
         ext_ui_log, send_telegram_alert, supabase, st.session_state.current_user
     )
 
 # --- REVIEW EXTRACTED DATA ---
 if st.session_state.clearance_df is not None:
-    st.markdown(make_solid_box(f"Extracted â€” {len(st.session_state.clearance_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+    st.markdown(make_solid_box(f"Extracted — {len(st.session_state.clearance_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
     if st.button("Clear extracted data", width="stretch"):
         st.session_state.clearance_df = None
         st.rerun()
@@ -192,7 +189,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
             bot_ui_log, _ = make_terminal_logger(log_placeholder)
 
             playwright_engine.run_execution(
-                df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, selected_warehouse,
+                df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE,
                 REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase
             )
 
