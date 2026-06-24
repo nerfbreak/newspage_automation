@@ -81,6 +81,23 @@ if not st.session_state.logged_in:
                             time.sleep(1.5)  # Slow down brute-force attempts
                             st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Invalid credentials. {attempts_left} attempt(s) remaining.</p>", unsafe_allow_html=True)
 
+    st.markdown("<br>", unsafe_allow_html=True)
+    with st.expander("✨ What's New & Changelog", expanded=False):
+        st.markdown("""
+        **v1.2.0**
+        - Added Stock Mutation module.
+        - Added Clearance Stock module.
+        - Streamlined UI: removed unused NP Password fields.
+        - Modernized session status indicator.
+        
+        **v1.1.0**
+        - Playwright engine optimizations.
+        - Added Database syncing for promos.
+        
+        **v1.0.0**
+        - Initial Release: Inventory Adjustment Automation.
+        """)
+
     render_footer()
     st.stop()
 
