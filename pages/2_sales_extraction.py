@@ -32,7 +32,7 @@ render_header("Sales Data Extraction", st.session_state.current_user)
 
 
 with st.container(border=True):
-    st.markdown(f"<div class='box-np'>Sales Extraction Setup</div>", unsafe_allow_html=True)
+
     
     col1, col2, col3 = st.columns([2, 1, 1])
     

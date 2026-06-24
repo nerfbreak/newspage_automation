@@ -44,7 +44,7 @@ render_header("Promotion Comparison", st.session_state.current_user)
 
 # --- FILE UPLOADER SECTION ---
 with st.container(border=True):
-    st.markdown(f"<div class='box-np'>SharePoint Data Source (Manual)</div>", unsafe_allow_html=True)
+
     
     uploaded_file = st.file_uploader("Drag & Drop Newspage BDP Tracker.xlsx here", type=["xlsx"])
     
@@ -66,7 +66,7 @@ with st.container(border=True):
 
 # --- EXTRACTION CONTROLS ---
 with st.container(border=True):
-    st.markdown(f"<div class='box-np'>Newspage Extraction Settings</div>", unsafe_allow_html=True)
+
     
     col1, col2 = st.columns([1, 1])
     
