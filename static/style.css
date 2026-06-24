@@ -142,14 +142,14 @@ button[kind="primary"]:hover {
 
 /* --- Terminal & Live Log Components --- */
 .terminal-box {
-    background-color: #0E1117;
-    color: #FAFAFA;
+    background-color: #F8F9FB;
+    color: #31333F;
     font-family: "Source Code Pro", monospace;
     font-size: 0.8rem;
     padding: 14px 18px;
-    border: 1px solid #31333F;
+    border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 10px;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
     height: 320px;
     overflow-y: auto;
     line-height: 1.6;
@@ -174,18 +174,18 @@ button[kind="primary"]:hover {
 @keyframes blinker { 50% { opacity: 0; } }
 
 .log-time    { display: inline-block; width: 85px;  color: #808495; font-family: "Source Code Pro", monospace; }
-.log-ms      { display: inline-block; width: 75px;  text-align: right; margin-right: 15px; color: #FF2B2B; font-size: 0.75rem; font-family: "Source Code Pro", monospace; }
-.log-tag     { display: inline-block; width: 95px;  font-weight: 600; font-family: "Source Code Pro", monospace; }
-.log-msg     { color: #FAFAFA; font-weight: 400; font-family: "Source Code Pro", monospace; }
+.log-ms      { display: inline-block; width: 75px;  text-align: right; margin-right: 15px; color: #0068C9; font-size: 0.75rem; font-family: "Source Code Pro", monospace; font-weight: 600; }
+.log-tag     { display: inline-block; width: 95px;  font-weight: 700; font-family: "Source Code Pro", monospace; }
+.log-msg     { color: #31333F; font-weight: 500; font-family: "Source Code Pro", monospace; }
 
 /* Log tag color palette */
-.tag-sys     { color: #FB923C; }   /* System info - Orange */
-.tag-auth    { color: #C084FC; }   /* Auth - Purple */
-.tag-nav     { color: #60A5FA; }   /* Nav - Blue */
-.tag-inject  { color: #FFAD4D; }   /* Inject - Amber */
-.tag-success { color: #96D334; }   /* Success - Lime */
-.tag-error   { color: #FB7185; }   /* Error - Rose */
-.tag-server  { color: #FD9BA7; }   /* Server - Light Rose */
+.tag-sys     { color: #E85D04; }   /* System info - Dark Orange */
+.tag-auth    { color: #7C3AED; }   /* Auth - Purple */
+.tag-nav     { color: #0284C7; }   /* Nav - Light Blue */
+.tag-inject  { color: #D97706; }   /* Inject - Amber */
+.tag-success { color: #16A34A; }   /* Success - Green */
+.tag-error   { color: #DC2626; }   /* Error - Red */
+.tag-server  { color: #E11D48; }   /* Server - Rose */
 
 /* --- Box Section Headers --- */
 .box-np, .box-dist, .box-review, .box-queue, .box-results {
