@@ -147,7 +147,13 @@ st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 with st.container(border=False):
     st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>System Health</div>", unsafe_allow_html=True)
     
-    bot_running = st.session_state.get("is_bot_running", False)
+    bot_running = (
+        st.session_state.get("is_bot_running", False) or
+        st.session_state.get("is_promo_bot_running", False) or
+        st.session_state.get("is_mutasi_running", False) or
+        st.session_state.get("is_clearance_running", False) or
+        st.session_state.get("is_initial_running", False)
+    )
     bot_status = "RUNNING" if bot_running else "STANDBY"
     
     bot_color = "#10B981" if bot_running else "#808495"

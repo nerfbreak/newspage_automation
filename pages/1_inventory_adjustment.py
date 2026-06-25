@@ -4,13 +4,11 @@ import database
 import data_processor
 import pandas as pd
 import playwright_engine
-import importlib
-importlib.reload(playwright_engine)
 from utils import (
     make_solid_box, make_success_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
     encode_param, decode_param, send_telegram_alert,
-    init_session_state, render_wakelock,
+    init_session_state, render_wakelock, make_terminal_logger,
 )
 
 # --- AUTH CHECK ---
@@ -174,16 +172,7 @@ if "Auto Compare" in adj_mode:
                 <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>EXTRACT_LOG</span>
             </div>
         """, unsafe_allow_html=True)
-        ext_logs_history  = []
-        ext_last_log_time = [time.time()]
-
-        def ext_ui_log(module, msg):
-            now = time.time(); diff_ms = int((now - ext_last_log_time[0]) * 1000); ext_last_log_time[0] = now
-            from datetime import datetime, timezone, timedelta
-            timestamp = datetime.now(timezone(timedelta(hours=7))).strftime('%H:%M:%S')
-            tag_class = f"tag-{module.lower()}"
-            ext_logs_history.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>[{module}]</span><span class='log-msg'>{msg}</span>")
-            render_terminal(ext_log_placeholder, ext_logs_history)
+        ext_ui_log, _ = make_terminal_logger(ext_log_placeholder)
 
         playwright_engine.run_extract(
             bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
@@ -201,11 +190,11 @@ if "Auto Compare" in adj_mode:
             st.error("Gagal memuat data dari file.")
             st.stop()
         
-        st.markdown("<div style='text-align: center; margin-bottom: 16px; margin-top: 2px;'><span style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid #0068C9; padding-bottom: 4px;'>RESULTS</span></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center;'><span class='section-header-underline'>RESULTS</span></div>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
             with st.container(border=True):
-                st.markdown("<div style='text-align: left; margin-bottom: 16px; margin-top: 2px;'><span style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid #0068C9; padding-bottom: 4px;'>NEWSPAGE SETUP</span></div>", unsafe_allow_html=True)
+                st.markdown("<div style='text-align: left;'><span class='section-header-underline'>NEWSPAGE SETUP</span></div>", unsafe_allow_html=True)
                 idx_sku1 = df1.columns.get_loc('Product Code') if 'Product Code' in df1.columns else 0
                 if 'Product Description' in df1.columns: idx_desc1 = df1.columns.get_loc('Product Description')
                 elif 'Product Name' in df1.columns: idx_desc1 = df1.columns.get_loc('Product Name')
@@ -216,7 +205,7 @@ if "Auto Compare" in adj_mode:
                 qty_col1  = st.selectbox("Qty column (NP)", df1.columns, index=idx_qty1)
         with c2:
             with st.container(border=True):
-                st.markdown("<div style='text-align: left; margin-bottom: 16px; margin-top: 2px;'><span style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid #0068C9; padding-bottom: 4px;'>DISTRIBUTOR SETUP</span></div>", unsafe_allow_html=True)
+                st.markdown("<div style='text-align: left;'><span class='section-header-underline'>DISTRIBUTOR SETUP</span></div>", unsafe_allow_html=True)
                 idx_sku2 = 20 if len(df2.columns) > 20 else 0
                 qty2_col_match = next((col for col in df2.columns if str(col).strip().lower().replace(" ", "") == "stokakhir"), None)
                 if qty2_col_match: idx_qty2 = df2.columns.get_loc(qty2_col_match)
@@ -246,7 +235,7 @@ if "Auto Compare" in adj_mode:
 
     # --- EXECUTION / INJECTION ---
     if st.session_state.reconcile_summary is not None and st.session_state.reconcile_result is not None:
-        st.markdown("<div style='text-align: center; margin-bottom: 16px; margin-top: 32px;'><span style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid #0068C9; padding-bottom: 4px;'>STOCK REVIEW</span></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center;'><span class='section-header-underline'>STOCK REVIEW</span></div>", unsafe_allow_html=True)
         m1, m2 = st.columns(2); match_count = st.session_state.reconcile_summary['total_match']; mismatch_count = st.session_state.reconcile_summary['total_mismatch']
         with m1: st.markdown(f'''<div class="metric-box-match"><div class="metric-label">Match</div><div class="metric-value">{match_count}</div></div>''', unsafe_allow_html=True)
         with m2: st.markdown(f'''<div class="metric-box-mismatch"><div class="metric-label">Stock difference</div><div class="metric-value">{mismatch_count}</div></div>''', unsafe_allow_html=True)
@@ -256,7 +245,7 @@ if "Auto Compare" in adj_mode:
         df_view['Status'] = df_view['Status'].apply(lambda x: 'Pending' if x == 'Mismatch' else x)
         if 'Keterangan' not in df_view.columns: df_view['Keterangan'] = 'Ready to Process'
     
-        st.markdown("<div style='text-align: center; margin-bottom: 16px; margin-top: 32px;'><span style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid #0068C9; padding-bottom: 4px;'>ADJUSTMENT SKU LIST</span></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center;'><span class='section-header-underline'>ADJUSTMENT SKU LIST</span></div>", unsafe_allow_html=True)
         table_placeholder = st.empty(); table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
     
         log_label_placeholder = st.empty()
@@ -277,15 +266,7 @@ if "Auto Compare" in adj_mode:
                         <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
                     </div>
                 """, unsafe_allow_html=True)
-                bot_logs_history  = []; bot_last_log_time = [time.time()]
-            
-                def bot_ui_log(module, msg):
-                    now = time.time(); diff_ms = int((now - bot_last_log_time[0]) * 1000); bot_last_log_time[0] = now
-                    from datetime import datetime, timezone, timedelta
-                    timestamp = datetime.now(timezone(timedelta(hours=7))).strftime('%H:%M:%S')
-                    tag_class = f"tag-{module.lower()}"
-                    bot_logs_history.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>[{module}]</span><span class='log-msg'>{msg}</span>")
-                    render_terminal(log_placeholder, bot_logs_history)
+                bot_ui_log, _ = make_terminal_logger(log_placeholder)
 
                 playwright_engine.run_execution(
                     df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
@@ -305,7 +286,7 @@ elif "Manual Entry" in adj_mode:
         bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
         
     with st.container(border=True):
-        st.markdown("<p style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 0.7rem; font-weight: 700; color: #0068C9; text-transform: uppercase; letter-spacing: 0.08em; text-align: center; margin-bottom: 6px; margin-top: 2px;'>FIELD SKU INPUT</p>", unsafe_allow_html=True)
+        st.markdown("<p class='section-header' style='text-align: center;'>FIELD SKU INPUT</p>", unsafe_allow_html=True)
         st.markdown("""
         <div style="background-color: #F0F8FF; color: #005A9E; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; border: 1px solid #CDE6F7; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
@@ -365,15 +346,7 @@ elif "Manual Entry" in adj_mode:
                         <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
                     </div>
                 """, unsafe_allow_html=True)
-                bot_logs_history  = []; bot_last_log_time = [time.time()]
-                
-                def bot_ui_log(module, msg):
-                    now = time.time(); diff_ms = int((now - bot_last_log_time[0]) * 1000); bot_last_log_time[0] = now
-                    from datetime import datetime, timezone, timedelta
-                    timestamp = datetime.now(timezone(timedelta(hours=7))).strftime('%H:%M:%S')
-                    tag_class = f"tag-{module.lower()}"
-                    bot_logs_history.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>[{module}]</span><span class='log-msg'>{msg}</span>")
-                    render_terminal(log_placeholder, bot_logs_history)
+                bot_ui_log, _ = make_terminal_logger(log_placeholder)
 
                 playwright_engine.run_execution_manual(
                     df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 

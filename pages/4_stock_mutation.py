@@ -3,8 +3,7 @@ import streamlit as st
 import database
 import data_processor
 import playwright_engine
-import importlib
-importlib.reload(playwright_engine)
+from database import EXCLUDE_PREFIX
 from utils import (
     render_footer, make_solid_box, render_metric_card,
     check_auth, render_indicators, render_header,
@@ -105,7 +104,6 @@ if uploaded_file is not None:
         
         # Apply SKU mapping rule
         TARGET_SKUS = database.get_target_skus(supabase)
-        EXCLUDE_PREFIX = ['8021803', '8021804']
         df_review['SKU'] = df_review['SKU'].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
         df_review['Qty'] = df_review['Qty'].apply(safe_parse_numeric).astype(int)
         df_review = df_review[df_review['Qty'] != 0].reset_index(drop=True)

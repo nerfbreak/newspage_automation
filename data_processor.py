@@ -2,6 +2,7 @@ import pandas as pd
 import zipfile
 import streamlit as st
 from utils import safe_parse_numeric
+from database import EXCLUDE_PREFIX
 
 def load_data(file):
     if file is None: 
@@ -39,8 +40,7 @@ def process_compare(df1, df2, sku_col1, desc_col1, qty_col1, sku_col2, qty_col2,
     d1[sku_col1] = d1[sku_col1].astype(str).str.split('.').str[0].str.strip()
     d1 = d1[~d1[sku_col1].str.lower().isin(['nan', 'none', '', 'total', 'grand total'])]
     
-    # Only add '0' prefix if SKU is in TARGET_SKUS and NOT 8021803 or 8021804
-    EXCLUDE_PREFIX = ['8021803', '8021804']
+    # Only add '0' prefix if SKU is in TARGET_SKUS and NOT in EXCLUDE_PREFIX
     d1[sku_col1] = d1[sku_col1].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
     d1[qty_col1] = d1[qty_col1].apply(safe_parse_numeric)
     d1_agg = (d1.groupby(sku_col1).agg({desc_col1: 'first', qty_col1: 'sum'}).reset_index().rename(columns={sku_col1: 'SKU', desc_col1: 'Description', qty_col1: 'Newspage'}))

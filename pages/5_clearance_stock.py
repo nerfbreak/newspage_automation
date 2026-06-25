@@ -2,8 +2,7 @@ import pandas as pd
 import streamlit as st
 import database
 import playwright_engine
-import importlib
-importlib.reload(playwright_engine)
+from database import EXCLUDE_PREFIX
 from utils import (
     render_footer, make_solid_box, render_metric_card,
     check_auth, render_indicators, render_header,
@@ -27,7 +26,7 @@ TABLE_UPDATE_INTERVAL = _sys_cfg["TABLE_UPDATE_INTERVAL"]
 # --- STATE MANAGEMENT ---
 init_session_state(
     clearance_df=None,
-    is_bot_running=False,
+    is_clearance_running=False,
     prev_clearance_file=None,
 )
 
@@ -35,7 +34,7 @@ render_wakelock()
 
 # --- MAIN UI ---
 db_status = "CONNECTED" if supabase is not None else "DISCONNECTED"
-bot_status = "RUNNING" if st.session_state.is_bot_running else "STANDBY"
+bot_status = "RUNNING" if st.session_state.is_clearance_running else "STANDBY"
 
 render_indicators(db_status, bot_status, bot_type="CLEARANCE ENGINE")
 render_header("Clearance Stock", st.session_state.current_user)
@@ -54,7 +53,7 @@ with st.container(border=True):
     ext_label_placeholder = st.empty()
     ext_log_placeholder = st.empty()
 
-    if st.session_state.is_bot_running:
+    if st.session_state.is_clearance_running:
         st.markdown(make_solid_box("Extracting stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
         extract_btn = False
     else:
@@ -63,17 +62,17 @@ with st.container(border=True):
 # Use pending flag so extraction starts AFTER rerun hides the button
 if extract_btn:
     st.session_state._pending_clearance_extract = True
-    st.session_state.is_bot_running = True
+    st.session_state.is_clearance_running = True
     st.rerun()
 
 if st.session_state.get("_pending_clearance_extract", False):
     st.session_state._pending_clearance_extract = False
     if not bot_user or not bot_pass:
         st.error("Kredensial untuk distributor ini tidak ditemukan.")
-        st.session_state.is_bot_running = False
+        st.session_state.is_clearance_running = False
         st.stop()
 
-    st.session_state.is_bot_running = True
+    st.session_state.is_clearance_running = True
     ext_label_placeholder.markdown(f"""
         <div style='display: inline-block; margin-bottom: 4px;'>
             <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
@@ -120,7 +119,6 @@ if st.session_state.get("np_df") is not None and st.session_state.clearance_df i
         
         # Apply SKU mapping rule
         TARGET_SKUS = database.get_target_skus(supabase)
-        EXCLUDE_PREFIX = ['8021803', '8021804']
         df_clear['SKU'] = df_clear['SKU'].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
         df_clear['Qty'] = df_clear['Qty'].apply(safe_parse_numeric).astype(int)
 
@@ -158,7 +156,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
         if not bot_user or not bot_pass:
             st.error("Kredensial tidak ditemukan!")
         else:
-            st.session_state.is_bot_running = True
+            st.session_state.is_clearance_running = True
 
             # Build execution DataFrame (negative qty for clearance)
             df_exec = df_clear[['SKU', 'Qty']].copy()

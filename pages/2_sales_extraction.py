@@ -3,13 +3,11 @@ import time
 import streamlit as st
 import database
 import playwright_engine
-import importlib
-importlib.reload(playwright_engine)
 from utils import (
     make_solid_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
     encode_param, decode_param, send_telegram_alert,
-    init_session_state,
+    init_session_state, make_terminal_logger,
 )
 
 # --- AUTH CHECK ---
@@ -67,6 +65,11 @@ with st.container(border=True):
         end_date = st.date_input("End Date", value=end_date_default)
     
     st.markdown("<div style='margin-bottom: 12px;'></div>", unsafe_allow_html=True)
+
+    if start_date > end_date:
+        st.error("Start date must be before or equal to end date.")
+        st.stop()
+
     btn_label = "Extracting…" if st.session_state.is_bot_running else "Extract Invoice"
     extract_btn = st.button(btn_label, type="primary", width='stretch', disabled=st.session_state.is_bot_running, icon=":material/download:")
     
@@ -96,16 +99,7 @@ if extract_btn:
             <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>EXTRACT_LOG</span>
         </div>
     """, unsafe_allow_html=True)
-    ext_logs_history  = []
-    ext_last_log_time = [time.time()]
-
-    def ext_ui_log(module, msg):
-        now = time.time(); diff_ms = int((now - ext_last_log_time[0]) * 1000); ext_last_log_time[0] = now
-        from datetime import datetime, timezone, timedelta
-        timestamp = datetime.now(timezone(timedelta(hours=7))).strftime('%H:%M:%S')
-        tag_class = f"tag-{module.lower()}"
-        ext_logs_history.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>[{module}]</span><span class='log-msg'>{msg}</span>")
-        render_terminal(ext_log_placeholder, ext_logs_history)
+    ext_ui_log, _ = make_terminal_logger(ext_log_placeholder)
 
     # Convert dates to DD/MM/YYYY format
     start_date_str = start_date.strftime("%d/%m/%Y")

@@ -2,8 +2,7 @@ import pandas as pd
 import streamlit as st
 import database
 import playwright_engine
-import importlib
-importlib.reload(playwright_engine)
+from database import EXCLUDE_PREFIX
 from utils import (
     render_footer, make_solid_box, render_metric_card,
     check_auth, render_indicators, render_header,
@@ -28,14 +27,14 @@ TABLE_UPDATE_INTERVAL = _sys_cfg["TABLE_UPDATE_INTERVAL"]
 init_session_state(
     initial_stock_df=None,
     initial_stock_raw=None,
-    is_bot_running=False,
+    is_initial_running=False,
 )
 
 render_wakelock()
 
 # --- MAIN UI ---
 db_status = "CONNECTED" if supabase is not None else "DISCONNECTED"
-bot_status = "RUNNING" if st.session_state.is_bot_running else "STANDBY"
+bot_status = "RUNNING" if st.session_state.is_initial_running else "STANDBY"
 
 render_indicators(db_status, bot_status, bot_type="INITIAL STOCK ENGINE")
 render_header("Initial Stock", st.session_state.current_user)
@@ -115,7 +114,6 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
         
         # Apply SKU mapping rule
         TARGET_SKUS = database.get_target_skus(supabase)
-        EXCLUDE_PREFIX = ['8021803', '8021804']
         df_init['SKU'] = df_init['SKU'].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
         df_init['Qty'] = df_init['Qty'].apply(safe_parse_numeric).astype(int)
 
@@ -177,18 +175,18 @@ if st.session_state.initial_stock_df is not None and len(st.session_state.initia
     st.dataframe(style_status(df_display[display_cols]), width="stretch", hide_index=True)
 
     # --- EXECUTE ---
-    if st.session_state.is_bot_running:
+    if st.session_state.is_initial_running:
         st.markdown(make_solid_box("Initializing stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
     else:
         if st.button("Execute", type="primary", width="stretch", icon=":material/play_arrow:"):
             if not bot_user or not bot_pass:
                 st.error("Kredensial tidak ditemukan!")
             else:
-                st.session_state.is_bot_running = True
+                st.session_state.is_initial_running = True
                 st.rerun()
 
 # --- PENDING EXECUTION (after rerun hides button) ---
-if st.session_state.is_bot_running and st.session_state.initial_stock_df is not None:
+if st.session_state.is_initial_running and st.session_state.initial_stock_df is not None:
     df_init = st.session_state.initial_stock_df
 
     # Build execution DataFrame (mark non-positive qty as Invalid)

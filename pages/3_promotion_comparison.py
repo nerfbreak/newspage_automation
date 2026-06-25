@@ -9,12 +9,11 @@ import streamlit as st
 
 import database
 import playwright_engine
-import importlib
-importlib.reload(playwright_engine)
 from utils import (
     make_solid_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
     encode_param, decode_param, init_session_state,
+    make_terminal_logger,
 )
 
 # --- AUTH CHECK ---
@@ -113,6 +112,11 @@ with st.container(border=True):
     st.query_params["ed"] = encode_param(end_date.strftime("%Y-%m-%d"))
 
     st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+
+    if start_date > end_date:
+        st.error("Start date must be before or equal to end date.")
+        st.stop()
+
     btn_label = "Syncing & Comparing..." if st.session_state.is_promo_bot_running else "Start Sync"
     promo_btn = st.button(btn_label, type="primary", width="stretch", disabled=st.session_state.is_promo_bot_running, icon=":material/sync:")
 
@@ -142,16 +146,7 @@ if promo_btn:
         </div>
     """, unsafe_allow_html=True)
     
-    promo_logs_history = []
-    promo_last_log_time = [time.time()]
-
-    def promo_ui_log(module, msg):
-        now = time.time(); diff_ms = int((now - promo_last_log_time[0]) * 1000); promo_last_log_time[0] = now
-        from datetime import datetime, timezone, timedelta
-        timestamp = datetime.now(timezone(timedelta(hours=7))).strftime('%H:%M:%S')
-        tag_class = f"tag-{module.lower()}"
-        promo_logs_history.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>[{module}]</span><span class='log-msg'>{msg}</span>")
-        render_terminal(promo_log_placeholder, promo_logs_history)
+    promo_ui_log, _ = make_terminal_logger(promo_log_placeholder)
 
     sd_str = start_date.strftime("%d/%m/%Y")
     ed_str = end_date.strftime("%d/%m/%Y")
