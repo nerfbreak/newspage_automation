@@ -1,6 +1,7 @@
 import streamlit as st
 import time
 import os
+import re
 import subprocess
 import asyncio
 from contextlib import contextmanager
@@ -233,6 +234,12 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
                         except Exception: continue
                     if df_ext is not None and df_ext.shape[1] > 1: break
 
+            # Cleanup temp file after reading
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
+
             if df_ext is not None and not df_ext.empty and df_ext.shape[1] > 1:
                 df_ext.columns = [str(c).strip() for c in df_ext.columns]
                 ext_ui_log("SUCCESS", f"Payload Secured! {len(df_ext)} items loaded. Flushing to session...")
@@ -367,6 +374,12 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
             with open(file_path, "rb") as f:
                 st.session_state.sales_csv_data = f.read()
                 st.session_state.sales_csv_filename = real_filename
+
+            # Cleanup temp file after reading
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
                 
             st.session_state.is_bot_running = False
             st.rerun()
@@ -428,7 +441,6 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
             stock_text = stock_lbl.inner_text().strip().upper()
             
             req_qty = abs(int(qty))
-            import re
             numbers = re.findall(r'\d+', stock_text)
             is_zero = not numbers or all(int(n) == 0 for n in numbers)
             
@@ -460,7 +472,7 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
 
 def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase):
     ensure_playwright()
-    global_start_time = time.time(); success_count, failed_count = 0, 0; saved_doc_no = "N/A"
+    global_start_time = time.time(); success_count, failed_count = 0, 0
     ui_log("SYS", "Allocating memory and initializing Chromium headless core...")
     if supabase: ui_log("SYS", "Supabase client active.")
 
@@ -504,7 +516,8 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     </div>
                 </div>
                 """
-                log_label_placeholder.markdown(html, unsafe_allow_html=True)
+                if log_label_placeholder:
+                    log_label_placeholder.markdown(html, unsafe_allow_html=True)
 
             update_progress_label(0, total_rows)
             
@@ -761,6 +774,12 @@ def run_promotion_sync(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIM
             with open(file_path, "rb") as f:
                 st.session_state.promo_zip_data = f.read()
                 st.session_state.promo_zip_filename = real_filename
+
+            # Cleanup temp file after reading
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
                 
             st.session_state.is_promo_bot_running = False
             st.rerun()
@@ -809,7 +828,7 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
 def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text=""):
     ensure_playwright()
     try:
-        global_start_time = time.time(); success_count, failed_count = 0, 0; saved_doc_no = "N/A"
+        global_start_time = time.time(); success_count, failed_count = 0, 0
         import asyncio
         try: asyncio.get_event_loop()
         except RuntimeError: asyncio.set_event_loop(asyncio.new_event_loop())
@@ -840,7 +859,8 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     </div>
                 </div>
                 """
-                log_label_placeholder.markdown(html, unsafe_allow_html=True)
+                if log_label_placeholder:
+                    log_label_placeholder.markdown(html, unsafe_allow_html=True)
 
             update_progress_label(0, total_rows)
             
