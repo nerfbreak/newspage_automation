@@ -1,5 +1,5 @@
-"""Database module - framework-agnostic version for Reflex migration.
-Uses environment variables instead of st.secrets, no @st.cache_resource.
+"""Database module for Supabase operations.
+Handles auth, encryption, system config, and distributor vault.
 """
 import os
 import logging
@@ -8,6 +8,9 @@ from cryptography.fernet import Fernet
 from supabase import create_client, Client
 
 logger = logging.getLogger(__name__)
+
+# SKU prefixes to exclude from stock operations (e.g., non-inventory items)
+EXCLUDE_PREFIX = ['8021803', '8021804']
 
 # ============================================================
 # Singleton Supabase client (replaces @st.cache_resource)

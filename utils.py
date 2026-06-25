@@ -1,4 +1,5 @@
 import os
+import html
 import base64
 import logging
 import requests
@@ -119,7 +120,7 @@ def make_solid_box(text: str, border_color: str, text_color: str) -> str:
             <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor" style="margin-right: 8px;">
                 <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
             </svg>
-            {text}
+            {html.escape(str(text))}
         </div>
     """)
 
@@ -147,7 +148,7 @@ def make_success_box(text: str) -> str:
             <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor" style="margin-right: 8px;">
                 <path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
             </svg>
-            {text}
+            {html.escape(str(text))}
         </div>
     """)
 
@@ -175,7 +176,7 @@ def make_error_box(text: str) -> str:
             <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor" style="margin-right: 8px;">
                 <path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-320h-80v320Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
             </svg>
-            {text}
+            {html.escape(str(text))}
         </div>
     """)
 
@@ -186,7 +187,8 @@ def render_metric_card(title, value, accent=False):
     border = "1px solid rgba(0, 104, 201, 0.15)" if accent else "1px solid rgba(0, 0, 0, 0.08)"
     shadow = "0 4px 16px rgba(0, 0, 0, 0.15)" if accent else "0 4px 12px rgba(0, 0, 0, 0.03)"
     
-    value_str = str(value)
+    title = html.escape(str(title))
+    value_str = html.escape(str(value))
     
     # Dynamic font sizing and centering calculations
     if len(value_str) > 20:
@@ -250,7 +252,7 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
             <div style='margin-left: auto; pointer-events: none; display: inline-flex; align-items: center; gap: 6px;'>
                 <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14" fill="#838C96"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
                 <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 600; color: #838C96; text-transform: uppercase; letter-spacing: 0.05em;'>Session:</span>
-                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em;'>{st.session_state.current_user}</span>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em;'>{html.escape(str(st.session_state.current_user))}</span>
             </div>
         """
         
@@ -334,8 +336,6 @@ def render_footer():
     """), unsafe_allow_html=True)
 
 
-def style_status(df):
-    return df
 
 def make_terminal_logger(placeholder):
     import time
@@ -350,7 +350,7 @@ def make_terminal_logger(placeholder):
         last_log_time[0] = now
         timestamp = datetime.now(timezone(timedelta(hours=7))).strftime('%H:%M:%S')
         tag_class = f"tag-{module.lower()}"
-        logs_history.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>[{module}]</span><span class='log-msg'>{msg}</span>")
+        logs_history.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>[{module}]</span><span class='log-msg'>{html.escape(str(msg))}</span>")
         render_terminal(placeholder, logs_history)
 
     return ui_log, logs_history
