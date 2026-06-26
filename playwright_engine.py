@@ -825,7 +825,7 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
-def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text=""):
+def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None):
     ensure_playwright()
     try:
         global_start_time = time.time(); success_count, failed_count = 0, 0
@@ -866,6 +866,8 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             
             for i, (idx, row) in enumerate(df_view.iterrows()):
                 update_progress_label(i + 1, total_rows)
+                if progress_placeholder:
+                    progress_placeholder.progress((i + 1) / total_rows)
                 def fmt(v):
                     try:
                         if pd.isna(v): return ''
@@ -1017,7 +1019,7 @@ def run_mutasi_execution(
         WAREHOUSE=whs_a, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_a, alert_callback=alert_callback, 
         table_placeholder=table_a_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text
+        remark_text=remark_text, progress_placeholder=prog_a_ph
     )
     
     ui_log_b('SYS', 'Memulai Add Mutasi untuk Penerima...')
@@ -1032,5 +1034,5 @@ def run_mutasi_execution(
         WAREHOUSE=whs_b, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_b, alert_callback=alert_callback, 
         table_placeholder=table_b_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text
+        remark_text=remark_text, progress_placeholder=prog_b_ph
     )

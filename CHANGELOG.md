@@ -14,3 +14,4 @@ All notable changes to this project will be documented in this file.
 - Fixed positional argument error (`AttributeError`) by correctly passing dual `WAREHOUSE` arguments to `run_mutasi_execution`.
 - Restored missing `run_mutasi_execution` in `playwright_engine`.
 - Improved UI styling: Removed implicit h1 bottom border and redundant empty anchors/dividers, and updated the backlink label.
+- Fixed frozen progress bars on the Stock Mutation page during injection run by passing progress placeholders to `run_execution_manual` and updating them dynamically.
