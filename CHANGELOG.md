@@ -3,16 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 ### Fitur Baru
-- Enkripsi Otomatis Kredensial: Sandi teks biasa yang disimpan di Supabase akan otomatis dienkripsi pada penggunaan pertama.
-- Membaca Changelog Dinamis: Changelog dibaca langsung dari berkas sistem dan ditampilkan di halaman login Streamlit.
-- Kustomisasi Favicon Web: Menggunakan ikon kucing lucu di depan laptop sebagai logo tab situs web.
+- **Mutasi Stock**: Modul baru untuk memindahkan stok barang antar distributor secara otomatis dan aman.
+- **Clearance Stock**: Modul baru untuk membersihkan data stok barang secara cepat.
+- **Enkripsi Sandi Otomatis**: Sistem secara otomatis mengamankan sandi distributor baru untuk meningkatkan perlindungan data.
+- **Ikon Baru Aplikasi**: Tampilan web kini menggunakan ikon kucing lucu di depan laptop sebagai logo resmi aplikasi.
 
-### Perbaikan Bug
-- Perbaikan input kuantitas Mutasi Stock: Menambahkan pencarian cadangan pada kolom `Qty` saat kolom `PAC`, `CAR`, dan `EA` kosong, sehingga kuantitas terisi dengan benar di portal Newspage.
-- Perbaikan visual tabel eksekusi Mutasi Stock: Melakukan inisialisasi awal pada kolom Status dan Keterangan untuk menghindari tampilan kosong atau glitch visual.
-- Perbaikan `SyntaxError` pada berkas `database.py` akibat penulisan docstring tanda kutip tiga yang tidak ter-escape dengan benar.
-- Perbaikan error argumen posisi (`AttributeError`) saat mengirimkan parameter `WAREHOUSE` ganda ke fungsi `run_mutasi_execution`.
-- Pengembalian fungsi eksekusi mutasi yang hilang di dalam `playwright_engine.py`.
-- Peningkatan gaya visual antarmuka: Menghilangkan border bawah h1 bawaan Streamlit yang mengganggu, serta merapikan tautan kembali.
-- Perbaikan progress bar Mutasi Stock yang membeku selama eksekusi dengan memperbarui status secara real-time.
-- Penggabungan kotak status sukses eksekusi Mutasi Stock yang bertumpuk menjadi satu kotak ringkasan tunggal yang rapi.
+### Perbaikan Fitur
+- **Akurasi Jumlah Stok**: Memperbaiki pengisian jumlah stok barang pada modul Mutasi Stock agar tidak terjadi salah input atau nilai kosong.
+- **Tampilan Tabel Proses**: Memperbaiki visual tabel eksekusi agar status dan keterangan data tampil rapi sejak awal.
+- **Indikator Kemajuan (Progress Bar)**: Memperbaiki progress bar pada modul Mutasi Stock agar bergerak secara real-time seiring berjalannya proses eksekusi.
+- **Penyederhanaan Ringkasan**: Menggabungkan dua kotak status sukses pada proses Mutasi Stock menjadi satu ringkasan akhir yang bersih dan tidak bertumpuk.
+- **Tampilan Lebih Rapi**: Mengatur jarak antar bagian halaman agar tidak terlalu rapat dan lebih nyaman dibaca.
