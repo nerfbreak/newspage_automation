@@ -636,3 +636,16 @@ div[data-testid="stDataFrame"] {
     padding-bottom: 4px;
     display: inline-block;
 }
+
+/* ── Section Header Wrappers ─────────────────────────────── */
+.header-wrapper-center {
+    text-align: center;
+    margin-top: 32px !important;
+    margin-bottom: 16px !important;
+}
+
+.header-wrapper-left {
+    text-align: left;
+    margin-top: 2px !important;
+    margin-bottom: 16px !important;
+}

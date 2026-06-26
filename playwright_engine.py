@@ -630,13 +630,13 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             
             if failed_count > 0:
                 ui_log("ERROR", f"Aborted. Total runtime: {elapsed//60}m {elapsed%60}s")
-                box_html = utils.make_error_box(f"ABORTED — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s")
+                box_html = utils.make_error_box(f"ABORTED — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m {elapsed%60}s")
                 st.markdown(box_html, unsafe_allow_html=True)
                 alert_callback(f"[WARNING] <b>BOT ABORTED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
                 st.toast('Execution aborted due to errors!', icon="🚨")
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
-                box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s")
+                box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
                 alert_msg = f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s"
                 st.markdown(box_html, unsafe_allow_html=True)
                 alert_callback(alert_msg)
@@ -879,6 +879,10 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 pac = fmt(row.get('PAC', 0))
                 car = fmt(row.get('CAR', 0))
                 ea = fmt(row.get('EA', 0))
+                
+                # Fallback: if PAC, CAR, and EA are all empty, but Qty is present in the row, use Qty as EA
+                if not pac and not car and not ea and 'Qty' in row:
+                    ea = fmt(row['Qty'])
 
                 ui_log("INJECT", f"Processing Payload {i+1}/{total_rows} | Target SKU: [{sku}]")
                 try:
@@ -962,13 +966,13 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             
             if failed_count > 0:
                 ui_log("ERROR", f"Aborted. Total runtime: {elapsed//60}m {elapsed%60}s")
-                box_html = utils.make_error_box(f"ABORTED — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s")
+                box_html = utils.make_error_box(f"ABORTED — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m {elapsed%60}s")
                 st.markdown(box_html, unsafe_allow_html=True)
                 alert_callback(f"[WARNING] <b>BOT ABORTED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
                 st.toast('Execution aborted due to errors!', icon="🚨")
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
-                box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m&nbsp;{elapsed%60}s")
+                box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
                 alert_msg = f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s"
                 st.markdown(box_html, unsafe_allow_html=True)
                 alert_callback(alert_msg)
@@ -1004,6 +1008,8 @@ def run_mutasi_execution(
     ui_log_a('SYS', 'Memulai Deduct Mutasi untuk Pengirim...')
     df_deduct = df_mutasi.copy()
     df_deduct['Qty'] = -abs(df_deduct['Qty'].astype(float))
+    df_deduct['Status'] = 'Pending'
+    df_deduct['Keterangan'] = 'Ready'
     
     run_execution_manual(
         df_view=df_deduct, bot_user=bot_user_a, bot_pass=bot_pass_a, 
@@ -1017,6 +1023,8 @@ def run_mutasi_execution(
     ui_log_b('SYS', 'Memulai Add Mutasi untuk Penerima...')
     df_add = df_mutasi.copy()
     df_add['Qty'] = abs(df_add['Qty'].astype(float))
+    df_add['Status'] = 'Pending'
+    df_add['Keterangan'] = 'Ready'
     
     run_execution_manual(
         df_view=df_add, bot_user=bot_user_b, bot_pass=bot_pass_b, 
