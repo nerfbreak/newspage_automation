@@ -48,6 +48,7 @@ total_distributors = 0
 total_logs = 0
 audit_logs = []
 dist_nodes = []
+user_to_dist = {}
 
 if db_connected:
     # 1. Total extractions
@@ -96,10 +97,11 @@ if db_connected:
     except Exception:
         pass
 
-    # 6. Fetch nodes (for Network Graph)
+    # 6. Fetch nodes (for Network Graph) and distributor mapping
     try:
-        res_nodes = supabase.table("distributor_vault").select("nama_distributor").execute()
+        res_nodes = supabase.table("distributor_vault").select("np_user_id, nama_distributor").execute()
         dist_nodes = [r["nama_distributor"] for r in res_nodes.data] if res_nodes.data else []
+        user_to_dist = {r["np_user_id"]: r["nama_distributor"] for r in res_nodes.data if r.get("np_user_id")}
     except Exception:
         pass
 
@@ -287,31 +289,55 @@ if db_connected:
 
     st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
 
-    # 3. Trends & Charts Section
-    ch_col1, ch_col2 = st.columns(2)
+    # 3. Trends & Charts Section (Tabbed for neatness)
+    st.markdown("<h4 style='font-size: 1rem; font-weight: 700; color: #31333F; margin-bottom: 10px; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>Analytics Trends</h4>", unsafe_allow_html=True)
+    chart_tab1, chart_tab2 = st.tabs(["Activity & Distributor Trends", "Adjustment Status Distribution"])
     
-    with ch_col1:
-        st.markdown("<h4 style='font-size: 0.95rem; font-weight: 700; color: #31333F; margin-bottom: 10px; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>Sync Activity Trend</h4>", unsafe_allow_html=True)
-        # Combine adjustments and extractions counts by date
-        adj_by_date = pd.Series(dtype=int)
-        ext_by_date = pd.Series(dtype=int)
+    with chart_tab1:
+        ch_col1, ch_col2 = st.columns(2)
         
-        if not filtered_adj.empty:
-            adj_by_date = filtered_adj["created_at"].dt.date.value_counts()
-        if not filtered_ext.empty:
-            ext_by_date = filtered_ext["created_at"].dt.date.value_counts()
+        with ch_col1:
+            st.markdown("<h5 style='font-size: 0.88rem; font-weight: 700; color: #31333F; margin-bottom: 4px; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>Sync Activity Trend</h5>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 11px; color: #808495; margin-bottom: 12px; font-family: \"Source Sans 3\", sans-serif; line-height: 1.3;'>Perbandingan volume penggunaan fitur Stock Sync (SKU Adjustments) vs Data Extraction (Scraping) dari waktu ke waktu.</p>", unsafe_allow_html=True)
             
-        all_dates = sorted(list(set(adj_by_date.index) | set(ext_by_date.index)))
-        if all_dates:
-            df_chart = pd.DataFrame(index=all_dates)
-            df_chart["SKU Adjustments"] = df_chart.index.map(adj_by_date).fillna(0).astype(int)
-            df_chart["Data Extractions"] = df_chart.index.map(ext_by_date).fillna(0).astype(int)
-            st.area_chart(df_chart, height=220, use_container_width=True)
-        else:
-            st.info("No activity logs available for the selected period.")
+            # Combine adjustments and extractions counts by date
+            adj_by_date = pd.Series(dtype=int)
+            ext_by_date = pd.Series(dtype=int)
+            
+            if not filtered_adj.empty:
+                adj_by_date = filtered_adj["created_at"].dt.date.value_counts()
+            if not filtered_ext.empty:
+                ext_by_date = filtered_ext["created_at"].dt.date.value_counts()
+                
+            all_dates = sorted(list(set(adj_by_date.index) | set(ext_by_date.index)))
+            if all_dates:
+                df_chart = pd.DataFrame(index=all_dates)
+                df_chart["SKU Adjustments"] = df_chart.index.map(adj_by_date).fillna(0).astype(int)
+                df_chart["Data Extractions"] = df_chart.index.map(ext_by_date).fillna(0).astype(int)
+                st.area_chart(df_chart, height=220, use_container_width=True)
+            else:
+                st.info("No activity logs available for the selected period.")
 
-    with ch_col2:
-        st.markdown("<h4 style='font-size: 0.95rem; font-weight: 700; color: #31333F; margin-bottom: 10px; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>Adjustment Status Distribution</h4>", unsafe_allow_html=True)
+        with ch_col2:
+            st.markdown("<h5 style='font-size: 0.88rem; font-weight: 700; color: #31333F; margin-bottom: 4px; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>Top Distributors by Sync Volume</h5>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 11px; color: #808495; margin-bottom: 12px; font-family: \"Source Sans 3\", sans-serif; line-height: 1.3;'>5 distributor teratas berdasarkan total volume penyesuaian stok yang dijalankan.</p>", unsafe_allow_html=True)
+            
+            if not filtered_adj.empty:
+                filtered_adj_copy = filtered_adj.copy()
+                # Map operator/np_user to distributor name
+                filtered_adj_copy["Distributor"] = filtered_adj_copy["np_user"].map(user_to_dist).fillna(filtered_adj_copy["np_user"])
+                dist_counts = filtered_adj_copy["Distributor"].value_counts().head(5)
+                if not dist_counts.empty:
+                    st.bar_chart(dist_counts, height=220, use_container_width=True, color="#0068C9")
+                else:
+                    st.info("No distributor logs available.")
+            else:
+                st.info("No sync operations recorded in this period.")
+
+    with chart_tab2:
+        st.markdown("<h5 style='font-size: 0.88rem; font-weight: 700; color: #31333F; margin-bottom: 4px; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>Adjustment Status Distribution</h5>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 11px; color: #808495; margin-bottom: 12px; font-family: \"Source Sans 3\", sans-serif; line-height: 1.3;'>Menampilkan jumlah penyesuaian SKU yang berhasil (Success - Hijau) vs gagal (Failed - Merah) per hari.</p>", unsafe_allow_html=True)
+        
         if not filtered_adj.empty:
             filtered_adj_copy = filtered_adj.copy()
             filtered_adj_copy["date"] = filtered_adj_copy["created_at"].dt.date
@@ -336,7 +362,7 @@ if db_connected:
             recent_adj = df_adj.head(15).copy()
             recent_adj["time_local"] = recent_adj["created_at"].dt.tz_convert('Asia/Jakarta').dt.strftime("%Y-%m-%d %H:%M:%S")
             
-            table_rows = ""
+            adj_table_rows = ""
             for _, row in recent_adj.iterrows():
                 status_color = "#10B981" if row["status"] == "Success" else "#EF4444"
                 status_bg = "rgba(16, 185, 129, 0.1)" if row["status"] == "Success" else "rgba(239, 68, 68, 0.1)"
@@ -347,7 +373,7 @@ if db_connected:
                 qty_color = "#09A53C" if qty_val > 0 else ("#FF2B2B" if qty_val < 0 else "#31333F")
                 qty_badge = f"<span style='color: {qty_color}; font-weight: 600;'>{qty_str}</span>"
                 
-                table_rows += f"""
+                adj_table_rows += f"""
                 <tr>
                     <td style='white-space: nowrap;'>{row['time_local']}</td>
                     <td><code>{html.escape(str(row['sku']))}</code></td>
@@ -358,7 +384,7 @@ if db_connected:
                 </tr>
                 """
                 
-            table_html = f"""
+            adj_table_html = f"""
             <div class='table-container'>
                 <table class='custom-table'>
                     <thead>
@@ -372,12 +398,12 @@ if db_connected:
                         </tr>
                     </thead>
                     <tbody>
-                        {table_rows}
+                        {adj_table_rows}
                     </tbody>
                 </table>
             </div>
             """
-            st.markdown(table_html, unsafe_allow_html=True)
+            st.markdown(adj_table_html, unsafe_allow_html=True)
         else:
             st.info("No adjustment logs recorded yet.")
             
@@ -386,13 +412,13 @@ if db_connected:
             recent_ext = df_ext.head(15).copy()
             recent_ext["time_local"] = recent_ext["created_at"].dt.tz_convert('Asia/Jakarta').dt.strftime("%Y-%m-%d %H:%M:%S")
             
-            table_rows = ""
+            ext_table_rows = ""
             for _, row in recent_ext.iterrows():
                 status_color = "#10B981" if row["status"] == "Success" else "#EF4444"
                 status_bg = "rgba(16, 185, 129, 0.1)" if row["status"] == "Success" else "rgba(239, 68, 68, 0.1)"
                 status_badge = f"<span style='background-color: {status_bg}; color: {status_color}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; border: 1px solid {status_color}33;'>{row['status'].upper()}</span>"
                 
-                table_rows += f"""
+                ext_table_rows += f"""
                 <tr>
                     <td style='white-space: nowrap;'>{row['time_local']}</td>
                     <td>{html.escape(str(row['distributor_name']))}</td>
@@ -401,7 +427,7 @@ if db_connected:
                 </tr>
                 """
                 
-            table_html = f"""
+            ext_table_html = f"""
             <div class='table-container'>
                 <table class='custom-table'>
                     <thead>
@@ -413,12 +439,12 @@ if db_connected:
                         </tr>
                     </thead>
                     <tbody>
-                        {table_rows}
+                        {ext_table_rows}
                     </tbody>
                 </table>
             </div>
             """
-            st.markdown(table_html, unsafe_allow_html=True)
+            st.markdown(ext_table_html, unsafe_allow_html=True)
         else:
             st.info("No extraction history logs recorded yet.")
 
