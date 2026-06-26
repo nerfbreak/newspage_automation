@@ -13,3 +13,4 @@ All notable changes to this project will be documented in this file.
 - **Progress Bar Indicators**: Resolved frozen progress bars during the Stock Mutation process to show real-time progress.
 - **Merged Status Summaries**: Consolidated stacked success status boxes on the Stock Mutation page into a single, clean summary alert.
 - **Page Layout Spacing**: Improved margins and layout spacing across sections to prevent cramped text and improve readability.
+- **Dashboard HTML Tables**: Fixed a bug where recent execution logs rendered as raw HTML text instead of styled tables.

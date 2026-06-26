@@ -274,7 +274,7 @@ if db_connected:
 
     items_adjusted = 0
     if not filtered_adj.empty:
-        items_adjusted = int(filtered_adj["qty"].abs().sum())
+        items_adjusted = filtered_adj["sku"].nunique()
 
     # 2. Render Metric Cards
     m_col1, m_col2, m_col3, m_col4 = st.columns(4)
@@ -285,7 +285,7 @@ if db_connected:
     with m_col3:
         st.markdown(render_metric_card("Extractions Run", f"{extractions_run:,}"), unsafe_allow_html=True)
     with m_col4:
-        st.markdown(render_metric_card("Items Adjusted", f"{items_adjusted:,}"), unsafe_allow_html=True)
+        st.markdown(render_metric_card("SKUs Adjusted", f"{items_adjusted:,}"), unsafe_allow_html=True)
 
     st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
 
@@ -319,8 +319,8 @@ if db_connected:
                 st.info("No activity logs available for the selected period.")
 
         with ch_col2:
-            st.markdown("<h5 style='font-size: 0.88rem; font-weight: 700; color: #31333F; margin-bottom: 4px; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>Top Distributors by Sync Volume</h5>", unsafe_allow_html=True)
-            st.markdown("<p style='font-size: 11px; color: #808495; margin-bottom: 12px; font-family: \"Source Sans 3\", sans-serif; line-height: 1.3;'>5 distributor teratas berdasarkan total volume penyesuaian stok yang dijalankan.</p>", unsafe_allow_html=True)
+            st.markdown("<h5 style='font-size: 0.88rem; font-weight: 700; color: #31333F; margin-bottom: 4px; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>Top Distributors by SKU Syncs</h5>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 11px; color: #808495; margin-bottom: 12px; font-family: \"Source Sans 3\", sans-serif; line-height: 1.3;'>5 distributor teratas berdasarkan total SKU yang disinkronkan (di-adjust).</p>", unsafe_allow_html=True)
             
             if not filtered_adj.empty:
                 filtered_adj_copy = filtered_adj.copy()
@@ -403,7 +403,7 @@ if db_connected:
                 </table>
             </div>
             """
-            st.markdown(adj_table_html, unsafe_allow_html=True)
+            st.markdown(clean_html(adj_table_html), unsafe_allow_html=True)
         else:
             st.info("No adjustment logs recorded yet.")
             
@@ -444,7 +444,7 @@ if db_connected:
                 </table>
             </div>
             """
-            st.markdown(ext_table_html, unsafe_allow_html=True)
+            st.markdown(clean_html(ext_table_html), unsafe_allow_html=True)
         else:
             st.info("No extraction history logs recorded yet.")
 
