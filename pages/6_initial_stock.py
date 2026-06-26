@@ -211,7 +211,8 @@ if st.session_state.is_initial_running and st.session_state.initial_stock_df is 
 
     playwright_engine.run_execution(
         df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE,
-        REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase
+        REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase,
+        current_user=st.session_state.current_user
     )
 
     # Clear state after execution

@@ -470,7 +470,7 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
 
-def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase):
+def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, current_user=None):
     ensure_playwright()
     global_start_time = time.time(); success_count, failed_count = 0, 0
     ui_log("SYS", "Allocating memory and initializing Chromium headless core...")
@@ -529,7 +529,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     ui_log("WARN", f"SKU [{sku}] skipped: {row.get('Keterangan', 'Invalid Qty')}")
                     if supabase:
                         try:
-                            database.log_adjustment(supabase, sku, str(row.get('Qty')), "Invalid", f"Skipped: {row.get('Keterangan')}", bot_user)
+                            database.log_adjustment(supabase, sku, str(row.get('Qty')), "Invalid", f"Skipped: {row.get('Keterangan')}", bot_user, run_by=current_user)
                         except Exception:
                             pass
                     progress_bar.progress((i+1)/total_rows)
@@ -576,7 +576,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                         qty = str(row['Qty']).strip()
                         status = str(row['Status']).strip()
                         ket = str(row['Keterangan']).strip()
-                        try: database.log_adjustment(supabase, sku, qty, status, ket, bot_user)
+                        try: database.log_adjustment(supabase, sku, qty, status, ket, bot_user, run_by=current_user)
                         except Exception: pass
             else:
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
@@ -608,7 +608,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                         qty = str(row['Qty']).strip()
                         status = str(row['Status']).strip()
                         ket = str(row['Keterangan']).strip()
-                        try: database.log_adjustment(supabase, sku, qty, status, ket, bot_user)
+                        try: database.log_adjustment(supabase, sku, qty, status, ket, bot_user, run_by=current_user)
                         except Exception: pass
 
                 # Refresh the final dataframe view in the UI
@@ -825,7 +825,7 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
-def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True):
+def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None):
     ensure_playwright()
     try:
         global_start_time = time.time(); success_count, failed_count = 0, 0
@@ -914,7 +914,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                         ea = str(row.get('EA', 0)).strip()
                         status = str(row['Status']).strip()
                         ket = str(row['Keterangan']).strip()
-                        try: database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", status, ket, bot_user)
+                        try: database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", status, ket, bot_user, run_by=current_user)
                         except Exception: pass
             else:
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
@@ -946,7 +946,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                         ea = str(row.get('EA', 0)).strip()
                         status = str(row['Status']).strip()
                         ket = str(row['Keterangan']).strip()
-                        try: database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", status, ket, bot_user)
+                        try: database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", status, ket, bot_user, run_by=current_user)
                         except Exception: pass
 
                 # Refresh the final dataframe view in the UI
@@ -1007,7 +1007,8 @@ def run_mutasi_execution(
     prog_a_ph, prog_b_ph,
     log_a_ph, log_b_ph,
     supabase,
-    remark_text=""
+    remark_text="",
+    current_user=None
 ):
     import utils
     import streamlit as st
@@ -1026,7 +1027,7 @@ def run_mutasi_execution(
         WAREHOUSE=whs_a, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_a, alert_callback=alert_callback, 
         table_placeholder=table_a_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text, progress_placeholder=prog_a_ph, show_status_box=False
+        remark_text=remark_text, progress_placeholder=prog_a_ph, show_status_box=False, current_user=current_user
     )
     success_a, failed_a, elapsed_a = res_a if res_a else (0, len(df_deduct), 0)
     
@@ -1042,7 +1043,7 @@ def run_mutasi_execution(
         WAREHOUSE=whs_b, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_b, alert_callback=alert_callback, 
         table_placeholder=table_b_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text, progress_placeholder=prog_b_ph, show_status_box=False
+        remark_text=remark_text, progress_placeholder=prog_b_ph, show_status_box=False, current_user=current_user
     )
     success_b, failed_b, elapsed_b = res_b if res_b else (0, len(df_add), 0)
 

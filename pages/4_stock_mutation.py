@@ -236,6 +236,7 @@ if st.session_state.is_mutasi_running:
             log_a_ph, log_b_ph,
             supabase,
             remark_text=st.session_state.remark_text,
+            current_user=st.session_state.current_user,
         )
     finally:
         st.session_state.is_mutasi_running = False

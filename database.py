@@ -203,15 +203,18 @@ def log_extraction_history(supabase, selected_distributor, current_user):
         except Exception as e:
             logging.error(f"Error logging extraction history for {selected_distributor}: {e}")
 
-def log_adjustment(supabase, sku, qty, status, keterangan, bot_user):
+def log_adjustment(supabase, sku, qty, status, keterangan, bot_user, run_by=None):
     if supabase:
         try:
             # Cegah error integer kalau timeout dan node kosong
             safe_qty = int(qty) if str(qty).replace('-','').isdigit() else 0
-            supabase.table("adjustment_logs").insert({
-                "sku": sku, "qty": safe_qty, "status": status, 
+            payload = {
+                "sku": sku, "qty": safe_qty, "status": status,
                 "keterangan": keterangan, "np_user": bot_user
-            }).execute()
+            }
+            if run_by:
+                payload["run_by"] = run_by
+            supabase.table("adjustment_logs").insert(payload).execute()
         except Exception as e:
             logging.error(f"Error logging adjustment for SKU {sku}: {e}")
 

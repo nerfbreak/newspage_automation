@@ -12,7 +12,7 @@ def load_historical_logs(_supabase):
         return df_adj, df_ext
     
     try:
-        res_adj = _supabase.table("adjustment_logs").select("sku, qty, status, keterangan, np_user, created_at").order("created_at", desc=True).execute()
+        res_adj = _supabase.table("adjustment_logs").select("sku, qty, status, keterangan, np_user, run_by, created_at").order("created_at", desc=True).execute()
         if res_adj.data:
             df_adj = pd.DataFrame(res_adj.data)
             df_adj["created_at"] = pd.to_datetime(df_adj["created_at"])
@@ -269,12 +269,13 @@ if db_connected:
             else:
                 module_name = "Inventory Adjustment"
             distributor = user_to_dist.get(row.get("np_user", ""), row.get("np_user", "N/A"))
+            run_by_val = row.get("run_by") or row.get("np_user", "N/A")
             unified_rows.append({
                 "timestamp": row["created_at"],
                 "distributor": distributor,
                 "module": module_name,
                 "status": row.get("status", "N/A"),
-                "run_by": row.get("np_user", "N/A"),
+                "run_by": run_by_val,
             })
 
     if not df_ext.empty:

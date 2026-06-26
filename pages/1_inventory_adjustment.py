@@ -270,7 +270,8 @@ if "Auto Compare" in adj_mode:
 
                 playwright_engine.run_execution(
                     df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
-                    REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase
+                    REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase,
+                    current_user=st.session_state.current_user
                 )
 
 elif "Manual Entry" in adj_mode:
@@ -350,7 +351,8 @@ elif "Manual Entry" in adj_mode:
 
                 playwright_engine.run_execution_manual(
                     df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
-                    REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase
+                    REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase,
+                    current_user=st.session_state.current_user
                 )
 
 render_footer()
