@@ -136,7 +136,7 @@ if st.session_state.initial_stock_df is not None:
         st.markdown(make_solid_box(f"Loaded — {len(df_init)} items from uploaded file", "#0068C9", "#0068C9"), unsafe_allow_html=True)
     with c2:
         st.markdown("<div style='margin-top: 12px;'></div>", unsafe_allow_html=True)
-        if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
+        if st.button("Clear Data", width="stretch", icon=":material/delete:"):
             st.session_state.initial_stock_df = None
             st.session_state.initial_stock_raw = None
             st.rerun()

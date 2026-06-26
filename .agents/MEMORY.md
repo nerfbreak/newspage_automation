@@ -51,3 +51,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-06-27**: Updated the footer disclaimer text in `utils.py` to be more professional, and explicitly stated that the application is unofficial and has no official affiliation with Reckitt, Accenture, or the Newspage platform.
 - **2026-06-27**: Fixed HTML rendering bug in dashboard recent execution tables by wrapping them in `clean_html()`. Updated dashboard metric card and distributor chart to display count of unique SKUs adjusted instead of quantity volumes.
 - **2026-06-27**: Replaced deprecated `use_container_width=True` with `width="stretch"` on dashboard charts to resolve Streamlit deprecation warnings.
+- **2026-06-27**: Replaced deprecated `use_container_width=True` with `width="stretch"` on buttons across all locked pages (unlocked via "Dama" password verification) to resolve Streamlit deprecation warnings.
