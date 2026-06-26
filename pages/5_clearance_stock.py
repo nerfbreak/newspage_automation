@@ -7,7 +7,7 @@ from utils import (
     render_footer, make_solid_box, render_metric_card,
     check_auth, render_indicators, render_header,
     encode_param, send_telegram_alert,
-    init_session_state, render_wakelock, style_status,
+    init_session_state, render_wakelock,
     make_terminal_logger,
     resolve_distributor_url, safe_parse_numeric,
 )
@@ -149,7 +149,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
     df_display = df_clear.copy()
     df_display['Clear Qty'] = -df_display['Qty'].abs()
     display_cols = ['SKU', 'Description', 'Qty', 'Clear Qty'] if 'Description' in df_display.columns else ['SKU', 'Qty', 'Clear Qty']
-    st.dataframe(style_status(df_display[display_cols]), width="stretch", hide_index=True)
+    st.dataframe(df_display[display_cols], width="stretch", hide_index=True)
 
     # --- EXECUTE ---
     if st.button("Execute", type="primary", width="stretch", icon=":material/play_arrow:"):
@@ -166,7 +166,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
 
             st.subheader("Clearance Execution")
             table_placeholder = st.empty()
-            table_placeholder.dataframe(style_status(df_exec), width="stretch", hide_index=True)
+            table_placeholder.dataframe(df_exec, width="stretch", hide_index=True)
 
             log_label_placeholder = st.empty()
             log_placeholder = st.empty()

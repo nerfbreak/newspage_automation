@@ -7,7 +7,7 @@ from database import EXCLUDE_PREFIX
 from utils import (
     render_footer, make_solid_box, render_metric_card,
     check_auth, render_indicators, render_header,
-    send_telegram_alert, init_session_state, render_wakelock, style_status,
+    send_telegram_alert, init_session_state, render_wakelock,
     safe_parse_numeric,
 )
 
@@ -126,7 +126,7 @@ if uploaded_file is not None:
             df_display[f'Add ({dist_b})'] = df_display['Qty'].apply(lambda x: f"+{abs(x)}")
 
             st.subheader("Stock Review")
-            st.dataframe(style_status(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']]), width="stretch", hide_index=True)
+            st.dataframe(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']], width="stretch", hide_index=True)
         else:
             st.warning("Tidak ada SKU valid di file yang diupload.")
     else:
@@ -176,12 +176,12 @@ with st.container(border=True):
         df_a_display['Qty'] = '-' + df_a_display['Qty'].astype(str)
         df_a_display['Status'] = 'Pending'
         df_a_display['Keterangan'] = 'Ready'
-        table_a_ph.dataframe(style_status(df_a_display), width="stretch", hide_index=True)
+        table_a_ph.dataframe(df_a_display, width="stretch", hide_index=True)
 
         df_b_display = df_mutasi[['SKU', 'Description', 'Qty']].copy()
         df_b_display['Status'] = 'Pending'
         df_b_display['Keterangan'] = 'Ready'
-        table_b_ph.dataframe(style_status(df_b_display), width="stretch", hide_index=True)
+        table_b_ph.dataframe(df_b_display, width="stretch", hide_index=True)
 
         prog_a_ph.progress(0)
         prog_b_ph.progress(0)
