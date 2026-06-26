@@ -11,3 +11,8 @@ Whenever the user asks you to implement a new feature, fix a bug, or make archit
 - The app uses **Streamlit** for frontend and **Playwright** for headless automation.
 - Never hardcode credentials; always use **Supabase** and `.streamlit/secrets.toml`.
 - Always respect the `session_state` management logic in `app.py` (e.g., `logged_in`, `current_user`, `last_activity`).
+
+## Locked Features & Logic Protection (Freeze Rule)
+- **CRITICAL LOCK**: The core business logic and implementation of all existing features (including **Stock Mutation**, **Inventory Adjustment**, **Sales Extraction**, **Promotion Comparison**, **Clearance Stock**, **Initial Stock**, and **Credential Auto-Encryption**) are fully tested, validated, and frozen.
+- **NO TOUCH RULE**: Do NOT refactor, modify, or rewrite any existing helper function, playwright selector, or page business logic under the guise of optimization when adding new features or resolving issues. Keep existing logic intact unless explicitly requested by the user.
+

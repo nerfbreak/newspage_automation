@@ -14,6 +14,10 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **Execution UI Visual Branding**: Replace generic or boring "Execution" subheaders with themed column titles. Use vertical colored borders on the left side of column headers to group actions (e.g., `#FF2B2B` red border for Deduct/Negative flow and `#09A53C` green border for Add/Positive flow).
 - **Safe HTML & Character Rendering**: Never use raw HTML entity codes like `&nbsp;` directly in output logs that undergo `html.escape()`. Use regular space characters to prevent literal `&NBSP;` rendering bugs.
 
+## Locked Features & Code Freeze
+- **Frozen Modules**: **Stock Mutation**, **Inventory Adjustment**, **Sales Extraction**, **Promotion Comparison**, **Clearance Stock**, **Initial Stock**, and **Credential Auto-Encryption**.
+- **Rule**: All core execution flow, Playwright steps, Supabase connections, and credential handling for these features are locked. Any future development or new features must build on top of or alongside these modules without modifying their verified core logics.
+
 ---
 
 ## Changelog & Decisions
@@ -29,3 +33,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-06-26**: Implemented auto-encryption feature for plain-text passwords: if a distributor password stored in Supabase fails decryption and is detected as plain text (does not start with 'gAAAA'), it will be automatically encrypted and written back to Supabase on first fetch, enabling a seamless workflow for registering new distributors.
 - **2026-06-27**: Documented design guidelines based on the user's positive feedback. The clean layout spacing, vertical left-bordered header highlights, soft-blue disclaimer wrapper, and escaped entity handling are established as the official UI/UX standard.
 - **2026-06-27**: Resolved visual container collision on Page 4 (Stock Mutation) by extracting the execution block (dual tables, progress indicators, terminal logs, and success status indicators) outside the input `st.container(border=True)` block, letting them render naturally at the page level without cramped layout borders.
+- **2026-06-27**: Established "Locked Features & Code Freeze" rule in both `AGENTS.md` and `MEMORY.md` per user request to freeze all existing core features and prevent future AI assistants from refactoring or modifying verified logic when adding new modules.
