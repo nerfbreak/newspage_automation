@@ -314,7 +314,7 @@ if db_connected:
                 df_chart = pd.DataFrame(index=all_dates)
                 df_chart["SKU Adjustments"] = df_chart.index.map(adj_by_date).fillna(0).astype(int)
                 df_chart["Data Extractions"] = df_chart.index.map(ext_by_date).fillna(0).astype(int)
-                st.area_chart(df_chart, height=220, use_container_width=True)
+                st.area_chart(df_chart, height=220, width="stretch")
             else:
                 st.info("No activity logs available for the selected period.")
 
@@ -328,7 +328,7 @@ if db_connected:
                 filtered_adj_copy["Distributor"] = filtered_adj_copy["np_user"].map(user_to_dist).fillna(filtered_adj_copy["np_user"])
                 dist_counts = filtered_adj_copy["Distributor"].value_counts().head(5)
                 if not dist_counts.empty:
-                    st.bar_chart(dist_counts, height=220, use_container_width=True, color="#0068C9")
+                    st.bar_chart(dist_counts, height=220, width="stretch", color="#0068C9")
                 else:
                     st.info("No distributor logs available.")
             else:
@@ -346,7 +346,7 @@ if db_connected:
                 if col not in status_df.columns:
                     status_df[col] = 0
             status_df = status_df[["Success", "Failed"]]
-            st.bar_chart(status_df, height=220, use_container_width=True, color=["#10B981", "#EF4444"])
+            st.bar_chart(status_df, height=220, width="stretch", color=["#10B981", "#EF4444"])
         else:
             st.info("No sync operations recorded in this period.")
 

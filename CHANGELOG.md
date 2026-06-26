@@ -14,3 +14,4 @@ All notable changes to this project will be documented in this file.
 - **Merged Status Summaries**: Consolidated stacked success status boxes on the Stock Mutation page into a single, clean summary alert.
 - **Page Layout Spacing**: Improved margins and layout spacing across sections to prevent cramped text and improve readability.
 - **Dashboard HTML Tables**: Fixed a bug where recent execution logs rendered as raw HTML text instead of styled tables.
+- **Dashboard Deprecation Warnings**: Replaced deprecated `use_container_width` with `width='stretch'` on dashboard charts to resolve Streamlit warnings.
