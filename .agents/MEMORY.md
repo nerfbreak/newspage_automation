@@ -41,3 +41,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-06-27**: Added a Password Verification check ("Dama") to the logic freeze rules. Any request to override or modify locked modules must be verified by this password in the chat before execution.
 - **2026-06-27**: Restricted CHANGELOG.md to only track user-facing Features (Added) and Bug Fixes (Fixed) per user's request. Added this restriction to local locked rules.
 - **2026-06-27**: Fixed frozen progress bar issue in Stock Mutation by updating `run_execution_manual` to accept `progress_placeholder` and dynamically increment progress values, and passed `prog_a_ph`/`prog_b_ph` from `run_mutasi_execution` (Unlocked via password verification).
+- **2026-06-27**: Consolidated the two separate success/error status boxes into a single merged status box on the Stock Mutation page to improve visual aesthetics and reduce clutter (Unlocked via password verification).

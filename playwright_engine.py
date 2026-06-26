@@ -825,7 +825,7 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
-def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None):
+def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True):
     ensure_playwright()
     try:
         global_start_time = time.time(); success_count, failed_count = 0, 0
@@ -969,27 +969,33 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             if failed_count > 0:
                 ui_log("ERROR", f"Aborted. Total runtime: {elapsed//60}m {elapsed%60}s")
                 box_html = utils.make_error_box(f"ABORTED — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m {elapsed%60}s")
-                st.markdown(box_html, unsafe_allow_html=True)
+                if show_status_box:
+                    st.markdown(box_html, unsafe_allow_html=True)
                 alert_callback(f"[WARNING] <b>BOT ABORTED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
                 st.toast('Execution aborted due to errors!', icon="🚨")
+                st.session_state.is_bot_running = False
+                return success_count, failed_count, elapsed
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
                 box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
                 alert_msg = f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s"
-                st.markdown(box_html, unsafe_allow_html=True)
+                if show_status_box:
+                    st.markdown(box_html, unsafe_allow_html=True)
                 alert_callback(alert_msg)
                 st.toast('System override complete!')
-
-            st.session_state.is_bot_running = False
+                st.session_state.is_bot_running = False
+                return success_count, failed_count, elapsed
 
     except PlaywrightTimeoutError: 
         st.session_state.is_bot_running = False
         ui_log("ERROR", "TIMEOUT: Server tidak merespon.")
         st.error("Operation Timeout. Target element tidak ditemukan.")
+        return 0, len(df_view), 0
     except Exception as e: 
         st.session_state.is_bot_running = False
         ui_log("ERROR", f"SYSTEM FAILURE: {str(e).split(chr(10))[0]}")
         st.error(f"System error: {e}")
+        return 0, len(df_view), 0
 def run_mutasi_execution(
     df_mutasi,
     bot_user_a, bot_pass_a, dist_a,
@@ -1004,6 +1010,7 @@ def run_mutasi_execution(
     remark_text=""
 ):
     import utils
+    import streamlit as st
     ui_log_a, _ = utils.make_terminal_logger(log_a_ph)
     ui_log_b, _ = utils.make_terminal_logger(log_b_ph)
     
@@ -1013,14 +1020,15 @@ def run_mutasi_execution(
     df_deduct['Status'] = 'Pending'
     df_deduct['Keterangan'] = 'Ready'
     
-    run_execution_manual(
+    res_a = run_execution_manual(
         df_view=df_deduct, bot_user=bot_user_a, bot_pass=bot_pass_a, 
         selected_distributor=dist_a, URL_LOGIN=URL_LOGIN, TIMEOUT_MS=TIMEOUT_MS, 
         WAREHOUSE=whs_a, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_a, alert_callback=alert_callback, 
         table_placeholder=table_a_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text, progress_placeholder=prog_a_ph
+        remark_text=remark_text, progress_placeholder=prog_a_ph, show_status_box=False
     )
+    success_a, failed_a, elapsed_a = res_a if res_a else (0, len(df_deduct), 0)
     
     ui_log_b('SYS', 'Memulai Add Mutasi untuk Penerima...')
     df_add = df_mutasi.copy()
@@ -1028,11 +1036,21 @@ def run_mutasi_execution(
     df_add['Status'] = 'Pending'
     df_add['Keterangan'] = 'Ready'
     
-    run_execution_manual(
+    res_b = run_execution_manual(
         df_view=df_add, bot_user=bot_user_b, bot_pass=bot_pass_b, 
         selected_distributor=dist_b, URL_LOGIN=URL_LOGIN, TIMEOUT_MS=TIMEOUT_MS, 
         WAREHOUSE=whs_b, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_b, alert_callback=alert_callback, 
         table_placeholder=table_b_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text, progress_placeholder=prog_b_ph
+        remark_text=remark_text, progress_placeholder=prog_b_ph, show_status_box=False
     )
+    success_b, failed_b, elapsed_b = res_b if res_b else (0, len(df_add), 0)
+
+    # Render a single consolidated success/error box
+    total_elapsed = elapsed_a + elapsed_b
+    if failed_a > 0 or failed_b > 0:
+        box_html = utils.make_error_box(f"ABORTED — Deduct: {success_a} S, {failed_a} F | Add: {success_b} S, {failed_b} F | Time: {total_elapsed//60}m {total_elapsed%60}s")
+        st.markdown(box_html, unsafe_allow_html=True)
+    else:
+        box_html = utils.make_success_box(f"SUCCESS — Processed: {success_a} | Time: {total_elapsed//60}m {total_elapsed%60}s")
+        st.markdown(box_html, unsafe_allow_html=True)
