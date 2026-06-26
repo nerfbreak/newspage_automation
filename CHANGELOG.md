@@ -2,19 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+### Fitur Baru
+- Enkripsi Otomatis Kredensial: Sandi teks biasa yang disimpan di Supabase akan otomatis dienkripsi pada penggunaan pertama.
+- Membaca Changelog Dinamis: Changelog dibaca langsung dari berkas sistem dan ditampilkan di halaman login Streamlit.
+- Kustomisasi Favicon Web: Menggunakan ikon kucing lucu di depan laptop sebagai logo tab situs web.
 
-### Added
-- Added credentials auto-encryption feature: plain text passwords stored in Supabase are automatically encrypted on first use.
-- Added dynamic loading and display of CHANGELOG.md directly in the Streamlit application's changelog expander.
-- Added custom webpage favicon/icon (adorable cat with laptop logo) for the Streamlit application.
-
-### Fixed
-- Fixed Stock Mutation quantity execution bug by adding a fallback to the `Qty` column when `PAC`, `CAR`, and `EA` are missing, ensuring quantities are correctly written to the Newspage portal.
-- Fixed visual glitches in Stock Mutation execution tables by pre-initializing Status and Keterangan columns.
-- Fixed `SyntaxError` caused by escaped triple quotes in `database.py` docstrings.
-- Fixed positional argument error (`AttributeError`) by correctly passing dual `WAREHOUSE` arguments to `run_mutasi_execution`.
-- Restored missing `run_mutasi_execution` in `playwright_engine`.
-- Improved UI styling: Removed implicit h1 bottom border and redundant empty anchors/dividers, and updated the backlink label.
-- Fixed frozen progress bars on the Stock Mutation page during injection run by passing progress placeholders to `run_execution_manual` and updating them dynamically.
-- Fixed duplicate and stacked success status boxes on the Stock Mutation page by merging them into a single consolidated success/error log box.
+### Perbaikan Bug
+- Perbaikan input kuantitas Mutasi Stock: Menambahkan pencarian cadangan pada kolom `Qty` saat kolom `PAC`, `CAR`, dan `EA` kosong, sehingga kuantitas terisi dengan benar di portal Newspage.
+- Perbaikan visual tabel eksekusi Mutasi Stock: Melakukan inisialisasi awal pada kolom Status dan Keterangan untuk menghindari tampilan kosong atau glitch visual.
+- Perbaikan `SyntaxError` pada berkas `database.py` akibat penulisan docstring tanda kutip tiga yang tidak ter-escape dengan benar.
+- Perbaikan error argumen posisi (`AttributeError`) saat mengirimkan parameter `WAREHOUSE` ganda ke fungsi `run_mutasi_execution`.
+- Pengembalian fungsi eksekusi mutasi yang hilang di dalam `playwright_engine.py`.
+- Peningkatan gaya visual antarmuka: Menghilangkan border bawah h1 bawaan Streamlit yang mengganggu, serta merapikan tautan kembali.
+- Perbaikan progress bar Mutasi Stock yang membeku selama eksekusi dengan memperbarui status secara real-time.
+- Penggabungan kotak status sukses eksekusi Mutasi Stock yang bertumpuk menjadi satu kotak ringkasan tunggal yang rapi.

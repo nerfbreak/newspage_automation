@@ -87,7 +87,7 @@ if not st.session_state.logged_in:
                 lines = f.readlines()
             start_idx = 0
             for idx, line in enumerate(lines):
-                if line.strip().startswith("##"):
+                if line.strip().startswith("###"):
                     start_idx = idx
                     break
             changelog_content = "".join(lines[start_idx:])
@@ -95,10 +95,10 @@ if not st.session_state.logged_in:
         except Exception:
             st.markdown("""
             **v1.2.0**
-            - Added Stock Mutation module.
-            - Added Clearance Stock module.
-            - Streamlined UI: removed unused NP Password fields.
-            - Modernized session status indicator.
+            - Menambahkan modul Mutasi Stock.
+            - Menambahkan modul Clearance Stock.
+            - Merapikan UI: menghapus kolom NP Password yang tidak digunakan.
+            - Memperbarui indikator status sesi.
             """)
 
     render_footer()
