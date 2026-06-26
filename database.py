@@ -147,8 +147,24 @@ def get_distributor_creds(supabase, selected_distributor):
             res = supabase.table("distributor_vault").select("np_user_id, np_password").eq("nama_distributor", selected_distributor).execute()
             if res.data:
                 bot_user = res.data[0]['np_user_id']
-                # Decrypt the password for engine use
-                bot_pass = decrypt_data(res.data[0]['np_password'])
+                raw_password = res.data[0]['np_password']
+                if raw_password:
+                    # Try to decrypt
+                    bot_pass = decrypt_data(raw_password)
+                    if not bot_pass:
+                        # Decryption failed. Check if it's plain text (does not start with Fernet prefix 'gAAAA')
+                        if not raw_password.startswith("gAAAA"):
+                            try:
+                                # Auto-encrypt plain text password and update in Supabase
+                                encrypted_pw = encrypt_data(raw_password)
+                                supabase.table("distributor_vault").update({"np_password": encrypted_pw}).eq("nama_distributor", selected_distributor).execute()
+                                bot_pass = raw_password
+                                logging.info(f"Auto-encrypted plain text password for distributor: {selected_distributor}")
+                            except Exception as enc_err:
+                                logging.error(f"Failed to auto-encrypt password for {selected_distributor}: {enc_err}")
+                                bot_pass = raw_password  # Fallback to plain text for this run
+                        else:
+                            logging.error(f"Password for {selected_distributor} appears to be encrypted with a different key.")
         except Exception as e:
             logging.error(f"Error fetching distributor creds for {selected_distributor}: {e}")
     return bot_user, bot_pass
