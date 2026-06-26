@@ -27,6 +27,8 @@ init_session_state(
     is_mutasi_running=False,
     mutasi_review_df=None,
     mutasi_file_id=None,
+    selected_reason_code="",
+    remark_text=""
 )
 
 render_wakelock()
@@ -152,84 +154,93 @@ with st.container(border=True):
     selected_reason_code = [k for k, v in reason_options.items() if v == selected_reason_label][0]
     remark_text = st.text_input("Remark", max_chars=50, key="mutasi_remark")
 
-    if st.button("Execute", type="primary", use_container_width=True, disabled=not can_execute, icon=":material/play_arrow:"):
-        st.session_state.is_mutasi_running = True
+    execute_clicked = st.button("Execute", type="primary", use_container_width=True, disabled=not can_execute, icon=":material/play_arrow:")
 
-        df_mutasi = st.session_state.mutasi_review_df.copy()
+if execute_clicked:
+    st.session_state.is_mutasi_running = True
+    st.session_state.selected_reason_code = selected_reason_code
+    st.session_state.remark_text = remark_text
+    st.rerun()
 
-        # Dual layout
-        exec_col1, exec_col2 = st.columns(2)
+if st.session_state.is_mutasi_running:
+    df_mutasi = st.session_state.mutasi_review_df.copy()
 
-        with exec_col1:
-            st.markdown(f"""
-                <div style='border-left: 4px solid #FF2B2B; padding-left: 10px; margin-bottom: 14px; margin-top: 10px;'>
-                    <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.85rem; font-weight: 700; color: #FF2B2B; letter-spacing: 0.05em; text-transform: uppercase; display: block; line-height: 1.2;'>Deduct</span>
-                    <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; font-weight: 600; color: #808495; text-transform: uppercase; letter-spacing: 0.02em;'>{dist_a} ({bot_user_a})</span>
-                </div>
-            """, unsafe_allow_html=True)
-            table_a_ph = st.empty()
-            prog_a_ph = st.empty()
+    # Dual layout
+    exec_col1, exec_col2 = st.columns(2)
 
-        with exec_col2:
-            st.markdown(f"""
-                <div style='border-left: 4px solid #09A53C; padding-left: 10px; margin-bottom: 14px; margin-top: 10px;'>
-                    <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.85rem; font-weight: 700; color: #09A53C; letter-spacing: 0.05em; text-transform: uppercase; display: block; line-height: 1.2;'>Add</span>
-                    <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; font-weight: 600; color: #808495; text-transform: uppercase; letter-spacing: 0.02em;'>{dist_b} ({bot_user_b})</span>
-                </div>
-            """, unsafe_allow_html=True)
-            table_b_ph = st.empty()
-            prog_b_ph = st.empty()
-
-        # Initial table render
-        df_a_display = df_mutasi[['SKU', 'Description', 'Qty']].copy()
-        df_a_display['Qty'] = '-' + df_a_display['Qty'].astype(str)
-        df_a_display['Status'] = 'Pending'
-        df_a_display['Keterangan'] = 'Ready'
-        table_a_ph.dataframe(df_a_display, width="stretch", hide_index=True)
-
-        df_b_display = df_mutasi[['SKU', 'Description', 'Qty']].copy()
-        df_b_display['Status'] = 'Pending'
-        df_b_display['Keterangan'] = 'Ready'
-        table_b_ph.dataframe(df_b_display, width="stretch", hide_index=True)
-
-        prog_a_ph.progress(0)
-        prog_b_ph.progress(0)
-
-        # Terminal log placeholders
-        log_label_a_ph = st.empty()
-        log_a_ph = st.empty()
-        log_label_b_ph = st.empty()
-        log_b_ph = st.empty()
-
-        log_label_a_ph.markdown(f"""
-            <div style='display: inline-block; margin-bottom: 4px;'>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>DEDUCT LOG — {dist_a}</span>
+    with exec_col1:
+        st.markdown(f"""
+            <div style='border-left: 4px solid #FF2B2B; padding-left: 10px; margin-bottom: 14px; margin-top: 10px;'>
+                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.85rem; font-weight: 700; color: #FF2B2B; letter-spacing: 0.05em; text-transform: uppercase; display: block; line-height: 1.2;'>Deduct</span>
+                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; font-weight: 600; color: #808495; text-transform: uppercase; letter-spacing: 0.02em;'>{dist_a} ({bot_user_a})</span>
             </div>
         """, unsafe_allow_html=True)
-        log_label_b_ph.markdown(f"""
-            <div style='display: inline-block; margin-bottom: 4px;'>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>ADD LOG — {dist_b}</span>
+        table_a_ph = st.empty()
+        prog_a_ph = st.empty()
+
+    with exec_col2:
+        st.markdown(f"""
+            <div style='border-left: 4px solid #09A53C; padding-left: 10px; margin-bottom: 14px; margin-top: 10px;'>
+                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.85rem; font-weight: 700; color: #09A53C; letter-spacing: 0.05em; text-transform: uppercase; display: block; line-height: 1.2;'>Add</span>
+                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; font-weight: 600; color: #808495; text-transform: uppercase; letter-spacing: 0.02em;'>{dist_b} ({bot_user_b})</span>
             </div>
         """, unsafe_allow_html=True)
+        table_b_ph = st.empty()
+        prog_b_ph = st.empty()
 
-        # Execute — engine handles log rendering internally
+    # Initial table render
+    df_a_display = df_mutasi[['SKU', 'Description', 'Qty']].copy()
+    df_a_display['Qty'] = '-' + df_a_display['Qty'].astype(str)
+    df_a_display['Status'] = 'Pending'
+    df_a_display['Keterangan'] = 'Ready'
+    table_a_ph.dataframe(df_a_display, width="stretch", hide_index=True)
+
+    df_b_display = df_mutasi[['SKU', 'Description', 'Qty']].copy()
+    df_b_display['Status'] = 'Pending'
+    df_b_display['Keterangan'] = 'Ready'
+    table_b_ph.dataframe(df_b_display, width="stretch", hide_index=True)
+
+    prog_a_ph.progress(0)
+    prog_b_ph.progress(0)
+
+    # Terminal log placeholders
+    log_label_a_ph = st.empty()
+    log_a_ph = st.empty()
+    log_label_b_ph = st.empty()
+    log_b_ph = st.empty()
+
+    log_label_a_ph.markdown(f"""
+        <div style='display: inline-block; margin-bottom: 4px;'>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>DEDUCT LOG — {dist_a}</span>
+        </div>
+    """, unsafe_allow_html=True)
+    log_label_b_ph.markdown(f"""
+        <div style='display: inline-block; margin-bottom: 4px;'>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>ADD LOG — {dist_b}</span>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Execute — engine handles log rendering internally
+    try:
         playwright_engine.run_mutasi_execution(
             df_mutasi,
             bot_user_a, bot_pass_a, dist_a,
             bot_user_b, bot_pass_b, dist_b,
             URL_LOGIN, TIMEOUT_MS, WAREHOUSE, WAREHOUSE,
-            selected_reason_code, TABLE_UPDATE_INTERVAL,
+            st.session_state.selected_reason_code, TABLE_UPDATE_INTERVAL,
             send_telegram_alert,
             table_a_ph, table_b_ph,
             prog_a_ph, prog_b_ph,
             log_a_ph, log_b_ph,
             supabase,
-            remark_text=remark_text,
+            remark_text=st.session_state.remark_text,
         )
-
+    finally:
+        st.session_state.is_mutasi_running = False
         # Clear review state after execution
         st.session_state.mutasi_review_df = None
+
 
 render_footer()
