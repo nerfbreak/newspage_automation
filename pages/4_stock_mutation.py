@@ -158,16 +158,25 @@ with st.container(border=True):
         df_mutasi = st.session_state.mutasi_review_df.copy()
 
         # Dual layout
-        st.subheader("Execution")
         exec_col1, exec_col2 = st.columns(2)
 
         with exec_col1:
-            st.subheader(f"DEDUCT: {dist_a} ({bot_user_a})")
+            st.markdown(f"""
+                <div style='border-left: 4px solid #FF2B2B; padding-left: 10px; margin-bottom: 14px; margin-top: 10px;'>
+                    <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.85rem; font-weight: 700; color: #FF2B2B; letter-spacing: 0.05em; text-transform: uppercase; display: block; line-height: 1.2;'>Deduct</span>
+                    <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; font-weight: 600; color: #808495; text-transform: uppercase; letter-spacing: 0.02em;'>{dist_a} ({bot_user_a})</span>
+                </div>
+            """, unsafe_allow_html=True)
             table_a_ph = st.empty()
             prog_a_ph = st.empty()
 
         with exec_col2:
-            st.subheader(f"ADD: {dist_b} ({bot_user_b})")
+            st.markdown(f"""
+                <div style='border-left: 4px solid #09A53C; padding-left: 10px; margin-bottom: 14px; margin-top: 10px;'>
+                    <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.85rem; font-weight: 700; color: #09A53C; letter-spacing: 0.05em; text-transform: uppercase; display: block; line-height: 1.2;'>Add</span>
+                    <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; font-weight: 600; color: #808495; text-transform: uppercase; letter-spacing: 0.02em;'>{dist_b} ({bot_user_b})</span>
+                </div>
+            """, unsafe_allow_html=True)
             table_b_ph = st.empty()
             prog_b_ph = st.empty()
 
