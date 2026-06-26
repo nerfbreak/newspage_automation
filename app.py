@@ -8,7 +8,7 @@ from utils import (
 )
 
 # --- 1. CONFIG & UI HELPERS ---
-st.set_page_config(page_title="Stock Adjustment Newspage", layout="wide")
+st.set_page_config(page_title="Stock Adjustment Newspage", layout="wide", page_icon="static/favicon.png")
 inject_css()
 supabase = database.init_supabase()
 # Pre-warm the config cache so pages can access it without re-querying

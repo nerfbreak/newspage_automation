@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Added credentials auto-encryption feature: plain text passwords stored in Supabase are automatically encrypted on first use.
 - Added dynamic loading and display of CHANGELOG.md directly in the Streamlit application's changelog expander.
+- Added custom webpage favicon/icon (adorable cat with laptop logo) for the Streamlit application.
 
 ### Fixed
 - Fixed Stock Mutation quantity execution bug by adding a fallback to the `Qty` column when `PAC`, `CAR`, and `EA` are missing, ensuring quantities are correctly written to the Newspage portal.
