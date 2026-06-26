@@ -17,6 +17,8 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 ## Locked Features & Code Freeze
 - **Frozen Modules**: **Stock Mutation**, **Inventory Adjustment**, **Sales Extraction**, **Promotion Comparison**, **Clearance Stock**, **Initial Stock**, and **Credential Auto-Encryption**.
 - **Rule**: All core execution flow, Playwright steps, Supabase connections, and credential handling for these features are locked. Any future development or new features must build on top of or alongside these modules without modifying their verified core logics.
+- **Unlock Password**: If modification to the frozen logic is explicitly requested, you must verify the password `"Dama"` in the chat before doing any changes.
+
 
 ---
 
@@ -34,3 +36,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-06-27**: Documented design guidelines based on the user's positive feedback. The clean layout spacing, vertical left-bordered header highlights, soft-blue disclaimer wrapper, and escaped entity handling are established as the official UI/UX standard.
 - **2026-06-27**: Resolved visual container collision on Page 4 (Stock Mutation) by extracting the execution block (dual tables, progress indicators, terminal logs, and success status indicators) outside the input `st.container(border=True)` block, letting them render naturally at the page level without cramped layout borders.
 - **2026-06-27**: Established "Locked Features & Code Freeze" rule in both `AGENTS.md` and `MEMORY.md` per user request to freeze all existing core features and prevent future AI assistants from refactoring or modifying verified logic when adding new modules.
+- **2026-06-27**: Added a Password Verification check ("Dama") to the logic freeze rules. Any request to override or modify locked modules must be verified by this password in the chat before execution.

@@ -15,4 +15,6 @@ Whenever the user asks you to implement a new feature, fix a bug, or make archit
 ## Locked Features & Logic Protection (Freeze Rule)
 - **CRITICAL LOCK**: The core business logic and implementation of all existing features (including **Stock Mutation**, **Inventory Adjustment**, **Sales Extraction**, **Promotion Comparison**, **Clearance Stock**, **Initial Stock**, and **Credential Auto-Encryption**) are fully tested, validated, and frozen.
 - **NO TOUCH RULE**: Do NOT refactor, modify, or rewrite any existing helper function, playwright selector, or page business logic under the guise of optimization when adding new features or resolving issues. Keep existing logic intact unless explicitly requested by the user.
+- **PASSWORD VERIFICATION FOR UNLOCKING**: If the user explicitly asks to modify, override, or change any of the locked business logic, you MUST first ask the user to provide the unlock password. The password is "Dama". Do not execute any changes to the frozen logic until the user successfully provides this exact password in the chat.
+
 
