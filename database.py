@@ -218,6 +218,28 @@ def log_adjustment(supabase, sku, qty, status, keterangan, bot_user, run_by=None
         except Exception as e:
             logging.error(f"Error logging adjustment for SKU {sku}: {e}")
 
+def log_uploaded_file(supabase, file_name: str, file_content_b64: str, distributor: str, module: str, run_by: str = None) -> str | None:
+    """Store an uploaded Excel/CSV file (base64-encoded) in the uploaded_files table.
+    Returns the new record's id (UUID string) on success, or None on failure.
+    """
+    if not supabase:
+        return None
+    try:
+        payload = {
+            "file_name": file_name,
+            "file_content_b64": file_content_b64,
+            "distributor": distributor,
+            "module": module,
+        }
+        if run_by:
+            payload["run_by"] = run_by
+        res = supabase.table("uploaded_files").insert(payload).execute()
+        if res.data:
+            return res.data[0].get("id")
+    except Exception as e:
+        logging.error(f"Error storing uploaded file '{file_name}': {e}")
+    return None
+
 
 def get_secret(key: str, default: str = "") -> str:
     """Retrieve a secret from st.secrets (Streamlit) or os.environ (Reflex)."""

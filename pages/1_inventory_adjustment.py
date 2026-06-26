@@ -268,6 +268,23 @@ if "Auto Compare" in adj_mode:
                 """, unsafe_allow_html=True)
                 bot_ui_log, _ = make_terminal_logger(log_placeholder)
 
+                # --- Store uploaded file for dashboard tracking ---
+                if file2 is not None and supabase:
+                    try:
+                        import base64
+                        file2.seek(0)
+                        file_b64 = base64.b64encode(file2.read()).decode("utf-8")
+                        database.log_uploaded_file(
+                            supabase,
+                            file_name=file2.name,
+                            file_content_b64=file_b64,
+                            distributor=selected_distributor,
+                            module="Inventory Adjustment",
+                            run_by=st.session_state.current_user,
+                        )
+                    except Exception:
+                        pass  # Non-critical — don't block execution if file logging fails
+
                 playwright_engine.run_execution(
                     df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
                     REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase,
