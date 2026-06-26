@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ### Added
+- **Operational Dashboard Analytics**: Added a new interactive report section displaying sync statistics, transaction volumes, automation success rates, and recent execution details.
 - **Stock Mutation**: A new module to automatically and securely transfer stock quantities between distributors.
 - **Clearance Stock**: A new module to quickly clear/zero-out stock quantities.
 
