@@ -82,20 +82,24 @@ if not st.session_state.logged_in:
 
     st.markdown("<br>", unsafe_allow_html=True)
     with st.expander("✨ What's New & Changelog", expanded=False):
-        st.markdown("""
-        **v1.2.0**
-        - Added Stock Mutation module.
-        - Added Clearance Stock module.
-        - Streamlined UI: removed unused NP Password fields.
-        - Modernized session status indicator.
-        
-        **v1.1.0**
-        - Playwright engine optimizations.
-        - Added Database syncing for promos.
-        
-        **v1.0.0**
-        - Initial Release: Inventory Adjustment Automation.
-        """)
+        try:
+            with open("CHANGELOG.md", "r", encoding="utf-8") as f:
+                lines = f.readlines()
+            start_idx = 0
+            for idx, line in enumerate(lines):
+                if line.strip().startswith("##"):
+                    start_idx = idx
+                    break
+            changelog_content = "".join(lines[start_idx:])
+            st.markdown(changelog_content)
+        except Exception:
+            st.markdown("""
+            **v1.2.0**
+            - Added Stock Mutation module.
+            - Added Clearance Stock module.
+            - Streamlined UI: removed unused NP Password fields.
+            - Modernized session status indicator.
+            """)
 
     render_footer()
     st.stop()
