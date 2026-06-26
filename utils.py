@@ -256,13 +256,13 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
             </div>
         """
         
-    html = clean_html(f"""
+    indicator_html = clean_html(f"""
         <div style='display: flex; gap: 10px; margin-bottom: 16px; align-items: center;'>
             <div class='live-indicator'>LIVE</div>
             {user_pill}
         </div>
     """)
-    st.markdown(html, unsafe_allow_html=True)
+    st.markdown(indicator_html, unsafe_allow_html=True)
 
 def render_header(title, subtitle=""):
     inject_css()  # uses cached CSS, no repeated file I/O
