@@ -46,3 +46,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-06-27**: Set the cat-with-laptop image (`static/favicon.png`) as the official global webpage favicon/icon for the Streamlit application in `app.py` page configuration.
 - **2026-06-27**: Translated CHANGELOG.md to Indonesian (using "Fitur Baru" and "Perbaikan Bug" headers) and updated the dynamic parser in `app.py` to strip out metadata like `# Changelog` and `## [Unreleased]`, rendering only user-facing additions and fixes.
 - **2026-06-27**: Rewrote CHANGELOG.md in a simple, jargon-free Indonesian format focusing strictly on user-facing features and feature improvements, removing technical developer terms like syntax errors, attribute errors, and file compilation details.
+- **2026-06-27**: Reverted CHANGELOG.md back to English (using Added/Fixed headers), keeping it user-friendly and simple, and removed the auto-encryption and app icon entries per user request.
