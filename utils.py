@@ -329,8 +329,9 @@ def render_footer():
                 by kopi mang toni.
             </span>
         </div>
-        <div style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; color: #808495; margin-top: 12px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.5;'>
-            <b>DISCLAIMER:</b> Aplikasi ini dikembangkan secara independen sebagai proyek hobi (unofficial) dan tidak memiliki afiliasi resmi dengan Reckitt. Tujuan utama aplikasi ini murni untuk membantu mengotomatisasi tugas-tugas repetitif agar lebih efisien dan menghemat waktu kerja.
+        <div style='background-color: rgba(0, 104, 201, 0.04); border: 1px solid rgba(0, 104, 201, 0.1); border-radius: 8px; padding: 12px 16px; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; color: #5D6271; margin-top: 18px; max-width: 580px; margin-left: auto; margin-right: auto; line-height: 1.5; text-align: center;'>
+            <strong style="color: #0068C9; display: block; margin-bottom: 4px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Disclaimer</strong>
+            This application is independently developed as an unofficial hobby project and has no official affiliation with Reckitt. The primary purpose of this application is solely to automate repetitive tasks for efficiency and to save working hours.
         </div>
     </div>
     """), unsafe_allow_html=True)
