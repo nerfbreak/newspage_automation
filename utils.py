@@ -286,7 +286,8 @@ def render_header(title, subtitle=""):
             "Stock Mutation": "Lacak riwayat pergerakan stok harian (masuk/keluar)",
             "Mutasi Stock": "Lacak riwayat pergerakan stok harian (masuk/keluar)",
             "Clearance Stock": "Monitor barang clearance dan sisa stok mati",
-            "Initial Stock": "Setup baseline data stok awal untuk distributor baru"
+            "Initial Stock": "Setup baseline data stok awal untuk distributor baru",
+            "Element Crawler": "Otomatisasi ekstraksi ID & Selector elemen web untuk mempermudah coding"
         }
         
         icon_map = {
@@ -297,7 +298,8 @@ def render_header(title, subtitle=""):
             "Stock Mutation": "🔄",
             "Mutasi Stock": "🔄",
             "Clearance Stock": "❌",
-            "Initial Stock": "➕"
+            "Initial Stock": "➕",
+            "Element Crawler": "🕷️"
         }
         
         desc = desc_map.get(title, "Modul otomatisasi distributor")
@@ -320,16 +322,58 @@ def render_header(title, subtitle=""):
     st.markdown(html_out, unsafe_allow_html=True)
 
 def render_footer():
+    if 'easter_egg_clicks' not in st.session_state:
+        st.session_state.easter_egg_clicks = 0
+
+    st.markdown("""
+    <style>
+    .st-key-easter_egg {
+        display: flex;
+        justify-content: center;
+        margin-top: -10px;
+        margin-bottom: 20px;
+    }
+    .st-key-easter_egg button {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        color: #31333F !important;
+        font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+        font-size: 10px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        height: auto !important;
+        min-height: 0 !important;
+        line-height: 1 !important;
+        box-shadow: none !important;
+    }
+    .st-key-easter_egg button:hover, .st-key-easter_egg button:active, .st-key-easter_egg button:focus {
+        background: transparent !important;
+        border: none !important;
+        color: #31333F !important;
+        box-shadow: none !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     st.markdown(clean_html("""
-    <div style='text-align: center; margin-top: 80px; margin-bottom: 20px;'>
-        <div>
-            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
-                &copy; 2026 IT Support Newspage.
-            </span>
-            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>
-                by kopi mang toni.
-            </span>
-        </div>
+    <div style='text-align: center; margin-top: 80px; margin-bottom: 12px;'>
+        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em;'>
+            &copy; 2026 IT Support Newspage.
+        </span>
+    </div>
+    """), unsafe_allow_html=True)
+    
+    if st.button("by kopi mang toni.", key="easter_egg"):
+        st.session_state.easter_egg_clicks += 1
+        if st.session_state.easter_egg_clicks >= 10:
+            st.session_state.easter_egg_clicks = 0
+            st.switch_page("pages/7_element_crawler.py")
+
+    st.markdown(clean_html("""
+    <div style='text-align: center; margin-bottom: 20px;'>
         <div style='background-color: rgba(0, 104, 201, 0.04); border: 1px solid rgba(0, 104, 201, 0.1); border-radius: 8px; padding: 12px 16px; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; color: #5D6271; margin-top: 18px; max-width: 580px; margin-left: auto; margin-right: auto; line-height: 1.5; text-align: center;'>
             <strong style="color: #0068C9; display: block; margin-bottom: 4px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Disclaimer</strong>
             This application is an independently developed, unofficial utility designed solely to automate repetitive tasks, improve operational efficiency, and save working hours. It is not officially endorsed, sponsored, or affiliated with Reckitt, Accenture, or the Newspage platform.

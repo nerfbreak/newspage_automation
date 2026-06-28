@@ -1056,3 +1056,36 @@ def run_mutasi_execution(
     else:
         box_html = utils.make_success_box(f"SUCCESS — Processed: {success_a} | Time: {total_elapsed//60}m {total_elapsed%60}s")
         st.markdown(box_html, unsafe_allow_html=True)
+
+def run_element_crawler(user_id_np, pass_np, selected_distributor, URL_LOGIN, target_path, ext_ui_log):
+    TIMEOUT_MS = 60000
+    try:
+        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
+            
+            if target_path:
+                ext_ui_log("SYS", f"Navigating to {target_path}...")
+                page.goto(f"{URL_LOGIN.rstrip('/')}/{target_path.lstrip('/')}")
+                page.wait_for_load_state("networkidle")
+                
+            ext_ui_log("SYS", "Extracting interactive elements from DOM...")
+            
+            elements = page.evaluate("""() => {
+                const els = document.querySelectorAll('button, input, select, textarea, a, [role="button"], [role="link"], [role="checkbox"]');
+                return Array.from(els).map(el => {
+                    let text = el.innerText || el.value || el.placeholder || el.title || '';
+                    if (typeof text === 'string') text = text.trim();
+                    return {
+                        Tag: el.tagName.toLowerCase(),
+                        ID: el.id || '',
+                        Name: el.getAttribute('name') || '',
+                        Class: el.className || '',
+                        Text: text.substring(0, 100)
+                    };
+                });
+            }""")
+            
+            ext_ui_log("SUCCESS", f"Found {len(elements)} elements.")
+            return elements
+    except Exception as e:
+        ext_ui_log("ERROR", f"Crawler failed: {e}")
+        raise e

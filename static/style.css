@@ -908,3 +908,8 @@ a[data-testid="stPageLink-NavLink"] p {
     line-height: 1 !important;
     letter-spacing: 0.02em !important;
 }
+
+/* Hide Secret Crawler from Sidebar */
+[data-testid="stSidebarNav"] a[href$="element_crawler"] {
+    display: none !important;
+}
