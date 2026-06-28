@@ -8,9 +8,8 @@ import database
 def load_historical_logs(_supabase):
     df_adj = pd.DataFrame()
     df_ext = pd.DataFrame()
-    df_files = pd.DataFrame()
     if not _supabase:
-        return df_adj, df_ext, df_files
+        return df_adj, df_ext
     
     try:
         res_adj = _supabase.table("adjustment_logs").select("sku, qty, status, keterangan, np_user, run_by, created_at").order("created_at", desc=True).execute()
@@ -28,15 +27,7 @@ def load_historical_logs(_supabase):
     except Exception as e:
         st.error(f"Error loading extraction history: {e}")
 
-    try:
-        res_files = _supabase.table("uploaded_files").select("id, file_name, file_content_b64, distributor, module, run_by, created_at").order("created_at", desc=True).execute()
-        if res_files.data:
-            df_files = pd.DataFrame(res_files.data)
-            df_files["created_at"] = pd.to_datetime(df_files["created_at"])
-    except Exception:
-        pass  # Table may not exist yet — degrade gracefully
-        
-    return df_adj, df_ext, df_files
+    return df_adj, df_ext
 
 # --- AUTH CHECK ---
 check_auth()
@@ -243,26 +234,7 @@ if db_connected:
     st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>Activity Report</div>", unsafe_allow_html=True)
 
     # Load logs
-    df_adj, df_ext, df_files = load_historical_logs(supabase)
-
-    # Build file lookup keyed by (distributor, 5-min bucket) for timestamp-proximity matching
-    file_lookup = {}  # key: (distributor_lower, bucket_ts) -> {file_name, file_content_b64}
-    if not df_files.empty:
-        for _, frow in df_files.iterrows():
-            try:
-                fts = frow["created_at"]
-                if hasattr(fts, "tz_localize") and fts.tzinfo is None:
-                    fts = fts.tz_localize("UTC")
-                # Round to 5-minute bucket
-                bucket = fts.floor("5min")
-                key = (str(frow.get("distributor", "")).lower().strip(), bucket)
-                if key not in file_lookup:  # keep earliest file per bucket
-                    file_lookup[key] = {
-                        "file_name": frow.get("file_name", "file"),
-                        "file_content_b64": frow.get("file_content_b64", ""),
-                    }
-            except Exception:
-                pass
+    df_adj, df_ext = load_historical_logs(supabase)
 
     # Period Filter
     col_filter, _ = st.columns([1.2, 2.8])
@@ -301,24 +273,12 @@ if db_connected:
             distributor = user_to_dist.get(row.get("np_user", ""), row.get("np_user", "N/A"))
             run_by_val = row.get("run_by") or row.get("np_user", "N/A")
 
-            # File lookup: match by distributor + 5-min bucket
-            file_info = None
-            try:
-                ts_val = row["created_at"]
-                if ts_val.tzinfo is None:
-                    ts_val = ts_val.tz_localize("UTC")
-                bucket = ts_val.floor("5min")
-                file_info = file_lookup.get((distributor.lower().strip(), bucket))
-            except Exception:
-                pass
-
             unified_rows.append({
                 "timestamp": row["created_at"],
                 "distributor": distributor,
                 "module": module_name,
                 "status": row.get("status", "N/A"),
                 "run_by": run_by_val,
-                "file_info": file_info,
             })
 
     if not df_ext.empty:
@@ -332,7 +292,6 @@ if db_connected:
                 "module": "Sales Extraction",
                 "status": row.get("status", "N/A"),
                 "run_by": row.get("extracted_by", "N/A"),
-                "file_info": None,
             })
 
     # Sort by timestamp descending and limit to latest 30 entries
@@ -378,20 +337,6 @@ if db_connected:
             m_color, m_bg = mod_colors.get(mod, ("#808495", "rgba(128, 132, 149, 0.08)"))
             module_badge = f"<span style='background-color: {m_bg}; color: {m_color}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; border: 1px solid {m_color}33;'>{html.escape(mod)}</span>"
 
-            # File download cell
-            fi = entry.get("file_info")
-            if fi and fi.get("file_content_b64"):
-                fname = html.escape(fi["file_name"])
-                b64_data = fi["file_content_b64"]
-                # Detect mime type from extension
-                if fname.lower().endswith(".csv"):
-                    mime = "text/csv"
-                else:
-                    mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                file_cell = f"""<a href="data:{mime};base64,{b64_data}" download="{fname}" style="display: inline-flex; align-items: center; gap: 5px; background: rgba(0,104,201,0.08); color: #0068C9; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; border: 1px solid rgba(0,104,201,0.2); text-decoration: none; white-space: nowrap;">&#128229; {fname}</a>"""
-            else:
-                file_cell = "<span style='color: #C0C4D0; font-size: 0.75rem;'>—</span>"
-
             table_rows_html += f"""
             <tr>
                 <td style='white-space: nowrap;'>{ts_str}</td>
@@ -399,7 +344,6 @@ if db_connected:
                 <td>{module_badge}</td>
                 <td style='text-align: center;'>{status_badge}</td>
                 <td><code>{html.escape(str(entry['run_by']))}</code></td>
-                <td>{file_cell}</td>
             </tr>
             """
 
@@ -413,7 +357,6 @@ if db_connected:
                         <th>Module</th>
                         <th style='text-align: center;'>Status</th>
                         <th>Run By</th>
-                        <th>File Uploaded</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -1,18 +1,16 @@
-# Changelog
+# Apa yang Baru?
 
-All notable changes to this project will be documented in this file.
+Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 
-### Added
-- **Operational Dashboard Analytics**: Added a new interactive report section displaying sync statistics, transaction volumes, automation success rates, and recent execution details.
-- **Stock Mutation**: A new module to automatically and securely transfer stock quantities between distributors.
-- **Clearance Stock**: A new module to quickly clear/zero-out stock quantities.
+### ✨ Fitur Baru
+- **Dashboard Riwayat Aktivitas**: Tampilan dashboard baru yang lebih bersih dan rapi untuk memantau seluruh riwayat eksekusi bot secara langsung.
+- **Modul Mutasi Stok**: Fitur baru untuk memindahkan kuantitas stok antar distributor secara otomatis dan aman.
+- **Modul Clearance Stock**: Fitur baru untuk mereset atau mengosongkan stok dengan cepat.
+- **Filter Waktu Fleksibel**: Sekarang Anda bisa melihat riwayat aktivitas berdasarkan hari ini, 7 hari terakhir, atau 30 hari terakhir.
 
-### Fixed
-- **Stock Mutation Quantity Accuracy**: Fixed stock quantity entry during the mutation process to prevent empty inputs or incorrect values in the Newspage portal.
-- **Process Table Visual Layout**: Improved the execution table display to ensure status and description details render cleanly from the start.
-- **Progress Bar Indicators**: Resolved frozen progress bars during the Stock Mutation process to show real-time progress.
-- **Merged Status Summaries**: Consolidated stacked success status boxes on the Stock Mutation page into a single, clean summary alert.
-- **Page Layout Spacing**: Improved margins and layout spacing across sections to prevent cramped text and improve readability.
-- **Dashboard HTML Tables**: Fixed a bug where recent execution logs rendered as raw HTML text instead of styled tables.
-- **Dashboard Deprecation Warnings**: Replaced deprecated `use_container_width` with `width='stretch'` on dashboard charts to resolve Streamlit warnings.
-- **Button Deprecation Warnings**: Replaced deprecated `use_container_width` with `width='stretch'` on buttons across all application pages.
+### 🛠️ Perbaikan & Peningkatan
+- **Akurasi Kuantitas**: Memperbaiki sistem input angka saat proses mutasi agar tidak terjadi error atau kekosongan data di portal Newspage.
+- **Tampilan Tabel Eksekusi**: Merapikan tabel proses saat bot berjalan agar lebih enak dibaca dan rapi dari awal eksekusi.
+- **Indikator Loading**: Memperbaiki loading bar yang sering macet saat proses Mutasi Stok berjalan, sekarang progress terlihat real-time.
+- **Notifikasi Rapi**: Menggabungkan notifikasi sukses yang menumpuk menjadi satu ringkasan yang jelas dan bersih.
+- **Optimalisasi Tampilan**: Memperbaiki jarak dan spasi di berbagai halaman agar aplikasi lebih responsif dan nyaman digunakan.
