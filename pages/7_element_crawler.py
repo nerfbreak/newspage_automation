@@ -58,7 +58,7 @@ if st.button("🕷️ Start Crawling", type="primary", use_container_width=True,
 if st.session_state.is_crawling:
     st.info("Bot sedang berjalan... Mengekstrak elemen HTML...")
     term_ph = st.empty()
-    logger = make_terminal_logger(st.session_state.ext_logs, term_ph, render_terminal)
+    logger, _ = make_terminal_logger(term_ph)
     
     sel_d = next((d for d in dist_list if d["nama_distributor"] == selected_dist), None)
     if not sel_d:
