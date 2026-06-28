@@ -53,9 +53,8 @@ html, body, [data-testid="stAppViewContainer"], p, label, small {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
 html, body, [data-testid="stAppViewContainer"] {
-    background-color: #F8FAFC !important;
-    background-image: radial-gradient(#CBD5E1 1px, transparent 1px) !important;
-    background-size: 24px 24px !important;
+    background-color: #F7F5F0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E") !important;
 }
 
 /* --- Form Labels --- */
