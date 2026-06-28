@@ -212,7 +212,7 @@ with left_col:
     with r1c1:
         with st.container(border=True):
             st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
                 <div style='width: 40px; height: 40px; border-radius: 8px; background: #EFF6FF; color: #3B82F6; display: flex; align-items: center; justify-content: center;'>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                 </div>
@@ -227,7 +227,7 @@ with left_col:
     with r1c2:
         with st.container(border=True):
             st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
                 <div style='width: 40px; height: 40px; border-radius: 8px; background: #F3E8FF; color: #9333EA; display: flex; align-items: center; justify-content: center;'>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
                 </div>
@@ -245,7 +245,7 @@ with left_col:
     with r2c1:
         with st.container(border=True):
             st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
                 <div style='width: 40px; height: 40px; border-radius: 8px; background: #DCFCE7; color: #16A34A; display: flex; align-items: center; justify-content: center;'>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                 </div>
@@ -260,7 +260,7 @@ with left_col:
     with r2c2:
         with st.container(border=True):
             st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
                 <div style='width: 40px; height: 40px; border-radius: 8px; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center;'>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
                 </div>
@@ -278,7 +278,7 @@ with left_col:
     with r3c1:
         with st.container(border=True):
             st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
                 <div style='width: 40px; height: 40px; border-radius: 8px; background: #FEE2E2; color: #DC2626; display: flex; align-items: center; justify-content: center;'>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3zM15 9l-6 6M9 9l6 6"/></svg>
                 </div>
@@ -293,7 +293,7 @@ with left_col:
     with r3c2:
         with st.container(border=True):
             st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
                 <div style='width: 40px; height: 40px; border-radius: 8px; background: #E0E7FF; color: #4F46E5; display: flex; align-items: center; justify-content: center;'>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
                 </div>
@@ -309,7 +309,6 @@ with right_col:
     st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Recent Activity</h3>", unsafe_allow_html=True)
     
     with st.container(border=True):
-        st.markdown("<div style='font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 20px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px;'>Live Telemetry</div>", unsafe_allow_html=True)
         
         if db_connected:
             from datetime import timezone, timedelta
@@ -404,12 +403,12 @@ if db_connected:
             if s_val == "Success": s_col, s_bg = "#10B981", "rgba(16,185,129,0.1)"
             elif s_val in ["Failed","Invalid"]: s_col, s_bg = "#EF4444", "rgba(239,68,68,0.1)"
             else: s_col, s_bg = "#F59E0B", "rgba(245,158,11,0.1)"
-            sb = f"<span style='background: {s_bg}; color: {s_col}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; border: 1px solid {s_col}33;'>{html.escape(s_val.upper())}</span>"
+            sb = f"<span style='background: {s_bg}; color: {s_col}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; border: 1px solid {s_col}33; display: inline-block; white-space: nowrap;'>{html.escape(s_val.upper())}</span>"
             
             mod = r["mod"]
             mc = {"Inventory Adjustment": ("#0068C9", "rgba(0,104,201,0.08)"), "Sales Extraction": ("#7C3AED", "rgba(124,58,237,0.08)"), "Stock Mutation": ("#D97706", "rgba(217,119,6,0.08)"), "Promotion Comparison": ("#059669", "rgba(5,150,105,0.08)"), "Clearance Stock": ("#DC2626", "rgba(220,38,38,0.08)"), "Initial Stock": ("#6366F1", "rgba(99,102,241,0.08)")}
             m_col, m_bg = mc.get(mod, ("#808495", "rgba(128,132,149,0.08)"))
-            mb = f"<span style='background: {m_bg}; color: {m_col}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; border: 1px solid {m_col}33;'>{html.escape(mod)}</span>"
+            mb = f"<span style='background: {m_bg}; color: {m_col}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; border: 1px solid {m_col}33; display: inline-block; white-space: nowrap;'>{html.escape(mod)}</span>"
             
             tbl += f"<tr><td style='white-space:nowrap;'>{ts_str}</td><td>{html.escape(str(r['dist']))}</td><td>{mb}</td><td style='text-align:center;'>{sb}</td><td><code>{html.escape(str(r['by']))}</code></td></tr>"
             
