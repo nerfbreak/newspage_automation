@@ -194,7 +194,7 @@ div[data-testid="stTextInput"] input,
 div[data-testid="stSelectbox"] div[data-baseweb="select"],
 div[data-testid="stNumberInput"] input,
 div[data-testid="stDateInput"] input {
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease !important;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
 }
 
 div[data-testid="stTextInput"] input:focus, 
@@ -203,7 +203,6 @@ div[data-testid="stNumberInput"] input:focus,
 div[data-testid="stDateInput"] input:focus {
     border-color: #0068C9 !important;
     box-shadow: 0 0 0 4px rgba(0, 104, 201, 0.12) !important;
-    transform: scale(1.01) !important;
 }
 
 /* 5. Expander Smooth Transition */
