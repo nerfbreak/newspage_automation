@@ -161,21 +161,21 @@ st.markdown(f"""
 m1, m2, m3, m4 = st.columns(4)
 with m1:
     st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center;'>
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 16px;'>
             <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Total Extractions</div>
             <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px; line-height: 1;'>{total_extractions}</div>
         </div>
     """, unsafe_allow_html=True)
 with m2:
     st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center;'>
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 16px;'>
             <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Active Distributors</div>
             <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px; line-height: 1;'>{total_distributors}</div>
         </div>
     """, unsafe_allow_html=True)
 with m3:
     st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center;'>
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 16px;'>
             <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Synced Logs</div>
             <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px; line-height: 1;'>{total_logs}</div>
         </div>
@@ -187,7 +187,7 @@ with m4:
     db_text = "DB CONNECTED" if db_connected else "DB ERROR"
     
     st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center; gap: 12px;'>
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center; gap: 12px; margin-bottom: 16px;'>
             <div style='display: flex; align-items: center; justify-content: space-between;'>
                 <span style='font-size: 0.8rem; font-weight: 700; color: #475569;'>System</span>
                 <div style='display: flex; align-items: center; gap: 6px;'><div class='{db_class}'></div><span style='font-size: 0.7rem; font-weight: 800; color: #64748B;'>{db_text}</span></div>
