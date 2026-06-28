@@ -381,6 +381,7 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
             except OSError:
                 pass
                 
+            database.log_extraction_history(supabase, selected_distributor, current_user, status="Success (Sales)")
             st.session_state.is_bot_running = False
             st.rerun()
                 

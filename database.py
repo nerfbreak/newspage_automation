@@ -192,13 +192,13 @@ def get_multiplier_rules(supabase, current_np_user_id):
             logging.error(f"Error fetching multiplier rules for {current_np_user_id}: {e}")
     return rules
 
-def log_extraction_history(supabase, selected_distributor, current_user):
+def log_extraction_history(supabase, selected_distributor, current_user, status="Success"):
     if supabase:
         try:
             supabase.table("extraction_history").insert({
                 "distributor_name": selected_distributor,
                 "extracted_by": current_user,
-                "status": "Success"
+                "status": status
             }).execute()
         except Exception as e:
             logging.error(f"Error logging extraction history for {selected_distributor}: {e}")

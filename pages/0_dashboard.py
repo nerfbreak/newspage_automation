@@ -248,7 +248,10 @@ with right_col:
             
             if not df_ext.empty:
                 for _, row in df_ext.head(10).iterrows():
-                    unified_rows.append({"ts": row["created_at"], "dist": row.get("distributor_name", "N/A"), "mod": "Inventory", "status": row.get("status"), "by": row.get("extracted_by")})
+                    st_val = str(row.get("status", "Success"))
+                    mod = "Sales" if "(Sales)" in st_val else "Inventory"
+                    clean_status = st_val.replace(" (Sales)", "").strip()
+                    unified_rows.append({"ts": row["created_at"], "dist": row.get("distributor_name", "N/A"), "mod": mod, "status": clean_status, "by": row.get("extracted_by")})
                     
             unified_rows.sort(key=lambda x: x["ts"], reverse=True)
             unified_rows = unified_rows[:6] # Only show top 6 in timeline
