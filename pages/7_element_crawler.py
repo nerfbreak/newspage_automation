@@ -66,7 +66,7 @@ if st.session_state.is_crawling:
         st.session_state.is_crawling = False
         st.rerun()
         
-    user, pwd = sel_d["np_user_id"], sel_d["np_password"]
+    user, pwd = database.get_distributor_creds(supabase, selected_dist)
     
     try:
         results = playwright_engine.run_element_crawler(user, pwd, selected_dist, URL_LOGIN, target_path, logger)
