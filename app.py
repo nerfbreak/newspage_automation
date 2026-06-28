@@ -135,8 +135,9 @@ promotion_page = st.Page("pages/3_promotion_comparison.py", title="Promotion Com
 mutation_page = st.Page("pages/4_stock_mutation.py", title="Stock Mutation", url_path="p4")
 clearance_page = st.Page("pages/5_clearance_stock.py", title="Clearance Stock", url_path="p5")
 initial_page = st.Page("pages/6_initial_stock.py", title="Initial Stock", url_path="p6")
+crawler_page = st.Page("pages/7_element_crawler.py", title="Element Crawler", url_path="crawler")
 
 # Run navigation
-pg = st.navigation([dashboard_page, inventory_page, sales_page, promotion_page, mutation_page, clearance_page, initial_page], position="hidden")
+pg = st.navigation([dashboard_page, inventory_page, sales_page, promotion_page, mutation_page, clearance_page, initial_page, crawler_page], position="hidden")
 pg.run()
 
