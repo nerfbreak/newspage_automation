@@ -50,7 +50,16 @@ div[data-testid="stTextInput"] label p {
     padding-bottom: 4px !important;
     margin-bottom: 8px !important;
 }
+div[data-testid="stTextInput"] div[data-baseweb="input"],
+div[data-testid="stTextInput"] div[data-baseweb="base-input"] {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
 div[data-testid="stTextInput"] input {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    outline: none !important;
     background-color: #FFFFFF !important;
     border: 1px solid #CBD5E1 !important;
     border-radius: 8px !important;
@@ -64,6 +73,7 @@ div[data-testid="stTextInput"] input:focus {
     border-color: #0068C9 !important;
     box-shadow: 0 0 0 3px rgba(0, 104, 201, 0.15) !important;
     background-color: #FFFFFF !important;
+    outline: none !important;
 }
 div[data-testid="InputInstructions"] { display: none !important; }
 button[data-testid="stTextInputPasswordVisibilityToggle"],
