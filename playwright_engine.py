@@ -1065,7 +1065,9 @@ def run_element_crawler(user_id_np, pass_np, selected_distributor, URL_LOGIN, ta
             if target_path:
                 ext_ui_log("SYS", f"Navigating to {target_path}...")
                 page.goto(f"{URL_LOGIN.rstrip('/')}/{target_path.lstrip('/')}")
-                page.wait_for_load_state("networkidle")
+            
+            # Selalu tunggu networkidle untuk mencegah Execution context was destroyed
+            page.wait_for_load_state("networkidle")
                 
             ext_ui_log("SYS", "Extracting interactive elements from DOM...")
             
