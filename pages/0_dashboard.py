@@ -322,7 +322,7 @@ if db_connected:
                 s_color, s_bg = "#EF4444", "rgba(239, 68, 68, 0.1)"
             else:
                 s_color, s_bg = "#F59E0B", "rgba(245, 158, 11, 0.1)"
-            status_badge = f"<span style='background-color: {s_bg}; color: {s_color}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; border: 1px solid {s_color}33;'>{html.escape(status_val.upper())}</span>"
+            status_badge = f"<span style='display: inline-block; white-space: nowrap; background-color: {s_bg}; color: {s_color}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; border: 1px solid {s_color}33;'>{html.escape(status_val.upper())}</span>"
 
             # Module badge with color coding
             mod = entry["module"]
@@ -335,7 +335,7 @@ if db_connected:
                 "Initial Stock": ("#6366F1", "rgba(99, 102, 241, 0.08)"),
             }
             m_color, m_bg = mod_colors.get(mod, ("#808495", "rgba(128, 132, 149, 0.08)"))
-            module_badge = f"<span style='background-color: {m_bg}; color: {m_color}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; border: 1px solid {m_color}33;'>{html.escape(mod)}</span>"
+            module_badge = f"<span style='display: inline-block; white-space: nowrap; background-color: {m_bg}; color: {m_color}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; border: 1px solid {m_color}33;'>{html.escape(mod)}</span>"
 
             table_rows_html += f"""
             <tr>
