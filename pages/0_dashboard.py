@@ -232,7 +232,7 @@ with left_col:
 with right_col:
     st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Recent Activity</h3>", unsafe_allow_html=True)
     
-    with st.container(height=548, border=True):
+    with st.container(height=545, border=True):
         
         if db_connected:
             from datetime import timezone, timedelta
