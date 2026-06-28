@@ -19,7 +19,7 @@ init_session_state(
     ext_logs=[]
 )
 
-render_header("Element Crawler", active_sess="")
+render_header("Element Crawler")
 
 st.markdown("""
 <div style='background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; margin-bottom: 24px;'>
