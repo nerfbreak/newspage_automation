@@ -72,18 +72,13 @@ def init_session_state(**defaults):
             st.session_state[key] = value
 
 
-# ── CSS loader (cached) ───────────────────────────────────
-_CSS_CACHE: dict[str, str] = {}
-
 def _load_css(filename: str) -> str:
-    if filename not in _CSS_CACHE:
-        path = os.path.join("static", filename)
-        try:
-            with open(path) as f:
-                _CSS_CACHE[filename] = f.read()
-        except FileNotFoundError:
-            _CSS_CACHE[filename] = ""
-    return _CSS_CACHE[filename]
+    path = os.path.join("static", filename)
+    try:
+        with open(path, encoding='utf-8') as f:
+            return f.read()
+    except FileNotFoundError:
+        return ""
 
 def inject_css(filename: str = "style.css"):
     css = _load_css(filename)
