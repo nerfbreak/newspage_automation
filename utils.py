@@ -271,8 +271,9 @@ def render_header(title, subtitle=""):
             <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em;'>{subtitle}</span>
         </div>"""
         
+    html_out = ""
     if active_sess:
-        st.markdown(active_sess, unsafe_allow_html=True)
+        html_out += active_sess
         
     if "Automation Tool" not in title:
         st.markdown("""
@@ -311,7 +312,8 @@ def render_header(title, subtitle=""):
         
         st.page_link("pages/0_dashboard.py", label="Dashboard", icon=":material/home:")
         
-    st.markdown(f"<h1 style='margin-top: -5px; margin-bottom: -15px; padding-top: 0px; padding-bottom: 0px; border-bottom: none !important;'>{title}</h1>", unsafe_allow_html=True)
+    html_out += f"<h1 style='margin-top: -5px; margin-bottom: -15px; padding-top: 0px; padding-bottom: 0px; border-bottom: none !important;'>{title}</h1>"
+    st.markdown(html_out, unsafe_allow_html=True)
 
 def render_footer():
     st.markdown(clean_html("""
