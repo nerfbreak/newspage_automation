@@ -130,3 +130,89 @@ div[data-testid="stExpander"] {
     border-radius: 8px !important;
     box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
 }
+
+/* ============================================================
+   Micro-Animations & Smooth Transitions (Appended)
+   ============================================================ */
+
+/* 1. Enhanced Fade-In & Slide-Up for Page Load */
+[data-testid="stMainViewContainer"], .main .block-container {
+    animation: smoothFadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes smoothFadeInUp {
+    0% { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* 2. Dashboard Cards & Metrics Hover Effects */
+.card-container, 
+div[data-testid="stMetric"] {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.card-container:hover,
+div[data-testid="stMetric"]:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 3. Button Press, Hover & Pulse */
+div[data-testid="stButton"] button,
+button[kind="primary"],
+button[kind="secondary"] {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease !important;
+}
+
+div[data-testid="stButton"] button:hover,
+button[kind="primary"]:hover,
+button[kind="secondary"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08) !important;
+}
+
+div[data-testid="stButton"] button:active,
+button[kind="primary"]:active,
+button[kind="secondary"]:active {
+    transform: translateY(1px) scale(0.96) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Primary Button Pulse */
+button[kind="primary"] {
+    animation: subtlePulse 2.5s infinite !important;
+}
+
+@keyframes subtlePulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 104, 201, 0.3); }
+    70% { box-shadow: 0 0 0 8px rgba(0, 104, 201, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 104, 201, 0); }
+}
+
+/* 4. Input Field Focus Animation */
+div[data-testid="stTextInput"] input, 
+div[data-testid="stSelectbox"] div[data-baseweb="select"],
+div[data-testid="stNumberInput"] input,
+div[data-testid="stDateInput"] input {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease !important;
+}
+
+div[data-testid="stTextInput"] input:focus, 
+div[data-testid="stSelectbox"] div[data-baseweb="select"]:focus-within,
+div[data-testid="stNumberInput"] input:focus,
+div[data-testid="stDateInput"] input:focus {
+    border-color: #0068C9 !important;
+    box-shadow: 0 0 0 4px rgba(0, 104, 201, 0.12) !important;
+    transform: scale(1.01) !important;
+}
+
+/* 5. Expander Smooth Transition */
+div[data-testid="stExpander"] details {
+    transition: background-color 0.3s ease !important;
+}
+div[data-testid="stExpander"] details:hover {
+    background-color: rgba(0, 104, 201, 0.03) !important;
+}
+div[data-testid="stExpander"] summary svg {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
