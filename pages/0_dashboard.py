@@ -161,23 +161,23 @@ st.markdown(f"""
 m1, m2, m3, m4 = st.columns(4)
 with m1:
     st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);'>
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center;'>
             <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Total Extractions</div>
-            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px;'>{total_extractions}</div>
+            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px; line-height: 1;'>{total_extractions}</div>
         </div>
     """, unsafe_allow_html=True)
 with m2:
     st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border-left: 4px solid #0068C9;'>
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center;'>
             <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Active Distributors</div>
-            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px;'>{total_distributors}</div>
+            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px; line-height: 1;'>{total_distributors}</div>
         </div>
     """, unsafe_allow_html=True)
 with m3:
     st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);'>
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center;'>
             <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Synced Logs</div>
-            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px;'>{total_logs}</div>
+            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px; line-height: 1;'>{total_logs}</div>
         </div>
     """, unsafe_allow_html=True)
 with m4:
@@ -187,7 +187,7 @@ with m4:
     db_text = "DB CONNECTED" if db_connected else "DB ERROR"
     
     st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 16px 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 10px;'>
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center; gap: 12px;'>
             <div style='display: flex; align-items: center; justify-content: space-between;'>
                 <span style='font-size: 0.8rem; font-weight: 700; color: #475569;'>System</span>
                 <div style='display: flex; align-items: center; gap: 6px;'><div class='{db_class}'></div><span style='font-size: 0.7rem; font-weight: 800; color: #64748B;'>{db_text}</span></div>
@@ -344,15 +344,15 @@ with right_col:
                     st_val = str(r["status"])
                     col = "#10B981" if st_val == "Success" else ("#EF4444" if st_val in ["Failed","Invalid"] else "#F59E0B")
                     
-                    tl_html += f"""
-                    <div class='timeline-item'>
-                        <span class='timeline-date'>{ts_str}</span>
-                        <div class='timeline-title'>{html.escape(r['dist'])}</div>
-                        <div class='timeline-desc'>
-                            <span style='color: {col}; font-weight: 700;'>{html.escape(st_val)}</span> in {r['mod']} by {html.escape(str(r['by']))}
-                        </div>
-                    </div>
-                    """
+                    tl_html += (
+                        "<div class='timeline-item'>\\n"
+                        f"<span class='timeline-date'>{ts_str}</span>\\n"
+                        f"<div class='timeline-title'>{html.escape(r['dist'])}</div>\\n"
+                        "<div class='timeline-desc'>\\n"
+                        f"<span style='color: {col}; font-weight: 700;'>{html.escape(st_val)}</span> in {r['mod']} by {html.escape(str(r['by']))}\\n"
+                        "</div>\\n"
+                        "</div>\\n"
+                    )
                 tl_html += "</div>"
                 st.markdown(tl_html, unsafe_allow_html=True)
             else:
