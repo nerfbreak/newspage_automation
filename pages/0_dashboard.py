@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import datetime
 import pandas as pd
+import html
 from utils import check_auth, render_header, render_footer, clean_html, render_metric_card
 import database
 
@@ -33,81 +34,112 @@ def load_historical_logs(_supabase):
 check_auth()
 
 # --- HEADER ---
+# We keep the original render_header for session state and top border logic
 render_header("Automation Tool", st.session_state.current_user)
+
+# --- CSS INJECTION (Premium Dashboard Specific) ---
+st.markdown("""
+<style>
+/* CSS Reset for Dashboard */
+.stButton button {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+.stButton button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 104, 201, 0.2) !important;
+}
+/* Pulse Animation for Status */
+@keyframes pulse-green {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+.status-dot-green {
+    height: 10px; width: 10px; background-color: #10B981; border-radius: 50%; display: inline-block;
+    animation: pulse-green 2s infinite;
+}
+.status-dot-red {
+    height: 10px; width: 10px; background-color: #EF4444; border-radius: 50%; display: inline-block;
+    animation: pulse-red 2s infinite;
+}
+.status-dot-gray {
+    height: 10px; width: 10px; background-color: #9CA3AF; border-radius: 50%; display: inline-block;
+}
+
+/* Timeline CSS */
+.timeline-item {
+    padding-left: 20px;
+    border-left: 2px solid #E5E7EB;
+    position: relative;
+    padding-bottom: 20px;
+}
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #0068C9;
+}
+.timeline-date {
+    font-size: 0.75rem;
+    color: #6B7280;
+    font-weight: 600;
+    margin-bottom: 2px;
+    display: block;
+}
+.timeline-title {
+    font-size: 0.9rem;
+    color: #111827;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.timeline-desc {
+    font-size: 0.8rem;
+    color: #4B5563;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # --- DATABASE CONNECTION ---
 supabase = database.init_supabase()
 db_connected = supabase is not None
-db_status = "CONNECTED" if db_connected else "DISCONNECTED"
 
 # --- DATA RETRIEVAL ---
 total_extractions = 0
-last_extracted_dist = "N/A"
-last_extracted_time = "N/A"
 total_distributors = 0
 total_logs = 0
-audit_logs = []
-dist_nodes = []
 user_to_dist = {}
 
 if db_connected:
-    # 1. Total extractions
     try:
         res_ext = supabase.table("extraction_history").select("id", count="exact").execute()
         total_extractions = res_ext.count if res_ext.count is not None else 0
-    except Exception:
-        pass
-
-    # 2. Last extraction
-    try:
-        res_last = supabase.table("extraction_history").select("distributor_name, created_at").order("created_at", desc=True).limit(1).execute()
-        if res_last.data:
-            last_extracted_dist = res_last.data[0]["distributor_name"]
-            raw_time = res_last.data[0]["created_at"]
-            try:
-                from datetime import timezone, timedelta
-                t_str = raw_time.replace("Z", "+00:00")
-                dt = datetime.fromisoformat(t_str)
-                # Convert UTC to local if needed, assuming GMT+7 for ID
-                dt_local = dt + timedelta(hours=7)
-                last_extracted_time = dt_local.strftime("%Y-%m-%d %H:%M")
-            except Exception:
-                last_extracted_time = raw_time[:16].replace("T", " ")
-    except Exception:
-        pass
-
-    # 3. Total distributors
+    except: pass
     try:
         res_dist = supabase.table("distributor_vault").select("id", count="exact").execute()
         total_distributors = res_dist.count if res_dist.count is not None else 0
-    except Exception:
-        pass
-
-    # 4. Total Synced Logs
+    except: pass
     try:
         res_logs = supabase.table("adjustment_logs").select("id", count="exact").execute()
         total_logs = res_logs.count if res_logs.count is not None else 0
-    except Exception:
-        pass
-
-    # 5. Fetch audit logs (latest 5)
-    try:
-        res_audit = supabase.table("audit_logs").select("*").order("created_at", desc=True).limit(5).execute()
-        audit_logs = res_audit.data if res_audit.data else []
-    except Exception:
-        pass
-
-    # 6. Fetch nodes (for Network Graph) and distributor mapping
+    except: pass
     try:
         res_nodes = supabase.table("distributor_vault").select("np_user_id, nama_distributor").execute()
-        dist_nodes = [r["nama_distributor"] for r in res_nodes.data] if res_nodes.data else []
         user_to_dist = {r["np_user_id"]: r["nama_distributor"] for r in res_nodes.data if r.get("np_user_id")}
-    except Exception:
-        pass
-
-
-# --- HERO SECTION: SYSTEM HEALTH & METRICS ---
-st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>System Health & Overview</div>", unsafe_allow_html=True)
+    except: pass
 
 bot_running = (
     st.session_state.get("is_bot_running", False) or
@@ -116,247 +148,273 @@ bot_running = (
     st.session_state.get("is_clearance_running", False) or
     st.session_state.get("is_initial_running", False)
 )
-bot_status = "RUNNING" if bot_running else "STANDBY"
-bot_color = "#10B981" if bot_running else "#808495"
-db_color = "#10B981" if db_connected else "#EF4444"
 
-# 4 Columns for System Health
-h_col1, h_col2, h_col3, h_col4 = st.columns(4)
+# --- HERO BANNER ---
+st.markdown(f"""
+<div style='margin-bottom: 24px;'>
+    <h1 style='font-size: 2.2rem; font-weight: 800; color: #0F172A; margin: 0;'>Welcome back, {html.escape(st.session_state.current_user)}</h1>
+    <p style='font-size: 0.95rem; color: #64748B; margin-top: 4px; font-weight: 500;'>Command Center is operational. Here is what's happening today, {datetime.now().strftime('%d %b %Y')}.</p>
+</div>
+""", unsafe_allow_html=True)
 
-with h_col1:
-    st.markdown(clean_html(f"""
-        <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.01); min-height: 72px; box-sizing: border-box; font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif; margin-bottom: 16px;">
-            <span style="font-size: 0.85rem; font-weight: 600; color: #31333F;">Playwright Bots</span>
-            <div style="display: flex; align-items: center; gap: 8px; background: {bot_color}1a; border: 1px solid {bot_color}33; padding: 4px 12px; border-radius: 20px;">
-                <span style="width: 6px; height: 6px; border-radius: 50%; background-color: {bot_color}; display: inline-block;"></span>
-                <span style="font-size: 0.68rem; font-weight: 800; color: {bot_color}; letter-spacing: 0.05em;">{bot_status}</span>
-            </div>
+# --- TOP KPI METRICS ---
+m1, m2, m3, m4 = st.columns(4)
+with m1:
+    st.markdown(f"""
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);'>
+            <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Total Extractions</div>
+            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px;'>{total_extractions}</div>
         </div>
-    """), unsafe_allow_html=True)
-
-with h_col2:
-    st.markdown(clean_html(f"""
-        <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.01); min-height: 72px; box-sizing: border-box; font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif; margin-bottom: 16px;">
-            <span style="font-size: 0.85rem; font-weight: 600; color: #31333F;">DB Connection</span>
-            <div style="display: flex; align-items: center; gap: 8px; background: {db_color}1a; border: 1px solid {db_color}33; padding: 4px 12px; border-radius: 20px;">
-                <span style="width: 6px; height: 6px; border-radius: 50%; background-color: {db_color}; display: inline-block;"></span>
-                <span style="font-size: 0.68rem; font-weight: 800; color: {db_color}; letter-spacing: 0.05em;">{db_status}</span>
-            </div>
+    """, unsafe_allow_html=True)
+with m2:
+    st.markdown(f"""
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border-left: 4px solid #0068C9;'>
+            <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Active Distributors</div>
+            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px;'>{total_distributors}</div>
         </div>
-    """), unsafe_allow_html=True)
-
-with h_col3:
-    st.markdown(clean_html(f"""
-        <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.01); display: flex; flex-direction: column; justify-content: center; min-height: 72px; margin-bottom: 16px;">
-            <div style="font-size: 0.6rem; font-weight: 700; color: #808495; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;">Total Extractions</div>
-            <div style="font-size: 0.95rem; font-weight: 700; color: #31333F; margin-top: 6px; line-height: 1.2;">{total_extractions}</div>
+    """, unsafe_allow_html=True)
+with m3:
+    st.markdown(f"""
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);'>
+            <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Synced Logs</div>
+            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px;'>{total_logs}</div>
         </div>
-    """), unsafe_allow_html=True)
-
-with h_col4:
-    st.markdown(clean_html(f"""
-        <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.01); display: flex; flex-direction: column; justify-content: center; min-height: 72px; margin-bottom: 16px;">
-            <div style="font-size: 0.6rem; font-weight: 700; color: #808495; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;">Total Logs / Reg. Dist.</div>
-            <div style="font-size: 0.95rem; font-weight: 700; color: #31333F; margin-top: 6px; line-height: 1.2;">{total_logs} / {total_distributors}</div>
-        </div>
-    """), unsafe_allow_html=True)
-
-st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
-
-
-# --- NAVIGATION HUB ---
-st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>App Launcher</div>", unsafe_allow_html=True)
-
-nav_col1, nav_col2, nav_col3 = st.columns(3)
-
-with nav_col1:
-    with st.container(border=True):
-        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Inventory Adjustment</h4>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Sync real-time stock levels and reconcile inventory data with distributor files.</p>", unsafe_allow_html=True)
-        if st.button("Open", key="btn_nav_inv", width="stretch", type="primary", icon=":material/open_in_new:"):
-            st.switch_page("pages/1_inventory_adjustment.py")
-
-with nav_col2:
-    with st.container(border=True):
-        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Sales Extraction</h4>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Run Playwright automated bots to extract distributor invoices and sync sales databases.</p>", unsafe_allow_html=True)
-        if st.button("Open", key="btn_nav_sales", width="stretch", type="primary", icon=":material/open_in_new:"):
-            st.switch_page("pages/2_sales_extraction.py")
-
-with nav_col3:
-    with st.container(border=True):
-        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Promotion Comparison</h4>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Compare distributor pricing files and monitor active campaign claims.</p>", unsafe_allow_html=True)
-        if st.button("Open", key="btn_nav_promo", width="stretch", type="primary", icon=":material/open_in_new:"):
-            st.switch_page("pages/3_promotion_comparison.py")
-
-st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
-
-nav_col4, nav_col5, nav_col6 = st.columns(3)
-
-with nav_col4:
-    with st.container(border=True):
-        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Stock Mutation</h4>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Track stock movement and mutation records across distributors.</p>", unsafe_allow_html=True)
-        if st.button("Open", key="btn_nav_mutation", width="stretch", type="primary", icon=":material/open_in_new:"):
-            st.switch_page("pages/4_stock_mutation.py")
-
-with nav_col5:
-    with st.container(border=True):
-        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Clearance Stock</h4>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Monitor and reconcile clearance inventory.</p>", unsafe_allow_html=True)
-        if st.button("Open", key="btn_nav_clearance", width="stretch", type="primary", icon=":material/open_in_new:"):
-            st.switch_page("pages/5_clearance_stock.py")
-
-with nav_col6:
-    with st.container(border=True):
-        st.markdown("<h4 style='margin-top: 0px; font-weight: 700; color: #31333F; font-size: 1.1rem; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; letter-spacing: -0.01em;'>Initial Stock</h4>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 13px; color: #808495; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; line-height: 1.5; min-height: 60px; margin-bottom: 18px;'>Manage initial stock setup and baseline data.</p>", unsafe_allow_html=True)
-        if st.button("Open", key="btn_nav_initial", width="stretch", type="primary", icon=":material/open_in_new:"):
-            st.switch_page("pages/6_initial_stock.py")
-
-# --- ACTIVITY REPORT ---
-if db_connected:
-    from datetime import timezone, timedelta
-    import html
+    """, unsafe_allow_html=True)
+with m4:
+    bot_class = "status-dot-green" if bot_running else "status-dot-gray"
+    bot_text = "BOT RUNNING" if bot_running else "BOT STANDBY"
+    db_class = "status-dot-green" if db_connected else "status-dot-red"
+    db_text = "DB CONNECTED" if db_connected else "DB ERROR"
     
-    st.markdown("<div style='margin-top: 40px;'></div>", unsafe_allow_html=True)
-    st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>Activity Report</div>", unsafe_allow_html=True)
-
-    # Load logs
-    df_adj, df_ext = load_historical_logs(supabase)
-
-    # Period Filter
-    col_filter, _ = st.columns([1.2, 2.8])
-    with col_filter:
-        period_option = st.selectbox(
-            "Select Reporting Period",
-            options=["Today", "Last 7 Days", "Last 30 Days", "All Time"],
-            index=2,
-            key="dashboard_report_period"
-        )
-
-    now_utc = datetime.now(timezone.utc)
-    if period_option == "Today":
-        cutoff_date = now_utc.replace(hour=0, minute=0, second=0, microsecond=0)
-    elif period_option == "Last 7 Days":
-        cutoff_date = now_utc - timedelta(days=7)
-    elif period_option == "Last 30 Days":
-        cutoff_date = now_utc - timedelta(days=30)
-    else:
-        cutoff_date = None
-
-    # Build unified activity log from both tables
-    unified_rows = []
-
-    if not df_adj.empty:
-        filtered_adj = df_adj.copy()
-        if cutoff_date is not None:
-            filtered_adj = filtered_adj[filtered_adj["created_at"] >= cutoff_date]
-        for _, row in filtered_adj.iterrows():
-            qty_str = str(row.get("qty", ""))
-            # Distinguish module: Stock Mutation logs qty as "PAC:x CAR:x EA:x"
-            if "PAC:" in qty_str or "CAR:" in qty_str:
-                module_name = "Stock Mutation"
-            else:
-                module_name = "Inventory Adjustment"
-            distributor = user_to_dist.get(row.get("np_user", ""), row.get("np_user", "N/A"))
-            run_by_val = row.get("run_by") or row.get("np_user", "N/A")
-
-            unified_rows.append({
-                "timestamp": row["created_at"],
-                "distributor": distributor,
-                "module": module_name,
-                "status": row.get("status", "N/A"),
-                "run_by": run_by_val,
-            })
-
-    if not df_ext.empty:
-        filtered_ext = df_ext.copy()
-        if cutoff_date is not None:
-            filtered_ext = filtered_ext[filtered_ext["created_at"] >= cutoff_date]
-        for _, row in filtered_ext.iterrows():
-            unified_rows.append({
-                "timestamp": row["created_at"],
-                "distributor": row.get("distributor_name", "N/A"),
-                "module": "Sales Extraction",
-                "status": row.get("status", "N/A"),
-                "run_by": row.get("extracted_by", "N/A"),
-            })
-
-    # Sort by timestamp descending and limit to latest 30 entries
-    unified_rows.sort(key=lambda x: x["timestamp"], reverse=True)
-    unified_rows = unified_rows[:30]
-
-    # Render unified table
-    st.markdown("<h4 style='font-size: 1rem; font-weight: 700; color: #31333F; margin-bottom: 10px; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif;'>Log History</h4>", unsafe_allow_html=True)
-
-    if unified_rows:
-        table_rows_html = ""
-        for entry in unified_rows:
-            # Timestamp - convert to local
-            try:
-                ts = entry["timestamp"]
-                if ts.tzinfo is not None:
-                    ts_str = ts.tz_convert('Asia/Jakarta').strftime("%Y-%m-%d %H:%M:%S")
-                else:
-                    ts_str = (ts + timedelta(hours=7)).strftime("%Y-%m-%d %H:%M:%S")
-            except Exception:
-                ts_str = str(entry["timestamp"])[:19]
-
-            # Status badge
-            status_val = str(entry["status"])
-            if status_val == "Success":
-                s_color, s_bg = "#10B981", "rgba(16, 185, 129, 0.1)"
-            elif status_val in ("Failed", "Invalid"):
-                s_color, s_bg = "#EF4444", "rgba(239, 68, 68, 0.1)"
-            else:
-                s_color, s_bg = "#F59E0B", "rgba(245, 158, 11, 0.1)"
-            status_badge = f"<span style='display: inline-block; white-space: nowrap; background-color: {s_bg}; color: {s_color}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; border: 1px solid {s_color}33;'>{html.escape(status_val.upper())}</span>"
-
-            # Module badge with color coding
-            mod = entry["module"]
-            mod_colors = {
-                "Inventory Adjustment": ("#0068C9", "rgba(0, 104, 201, 0.08)"),
-                "Sales Extraction": ("#7C3AED", "rgba(124, 58, 237, 0.08)"),
-                "Stock Mutation": ("#D97706", "rgba(217, 119, 6, 0.08)"),
-                "Promotion Comparison": ("#059669", "rgba(5, 150, 105, 0.08)"),
-                "Clearance Stock": ("#DC2626", "rgba(220, 38, 38, 0.08)"),
-                "Initial Stock": ("#6366F1", "rgba(99, 102, 241, 0.08)"),
-            }
-            m_color, m_bg = mod_colors.get(mod, ("#808495", "rgba(128, 132, 149, 0.08)"))
-            module_badge = f"<span style='display: inline-block; white-space: nowrap; background-color: {m_bg}; color: {m_color}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; border: 1px solid {m_color}33;'>{html.escape(mod)}</span>"
-
-            table_rows_html += f"""
-            <tr>
-                <td style='white-space: nowrap;'>{ts_str}</td>
-                <td>{html.escape(str(entry['distributor']))}</td>
-                <td>{module_badge}</td>
-                <td style='text-align: center;'>{status_badge}</td>
-                <td><code>{html.escape(str(entry['run_by']))}</code></td>
-            </tr>
-            """
-
-        table_html = f"""
-        <div class='table-container'>
-            <table class='custom-table'>
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Distributor</th>
-                        <th>Module</th>
-                        <th style='text-align: center;'>Status</th>
-                        <th>Run By</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {table_rows_html}
-                </tbody>
-            </table>
+    st.markdown(f"""
+        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 16px 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 10px;'>
+            <div style='display: flex; align-items: center; justify-content: space-between;'>
+                <span style='font-size: 0.8rem; font-weight: 700; color: #475569;'>System</span>
+                <div style='display: flex; align-items: center; gap: 6px;'><div class='{db_class}'></div><span style='font-size: 0.7rem; font-weight: 800; color: #64748B;'>{db_text}</span></div>
+            </div>
+            <div style='display: flex; align-items: center; justify-content: space-between;'>
+                <span style='font-size: 0.8rem; font-weight: 700; color: #475569;'>Engine</span>
+                <div style='display: flex; align-items: center; gap: 6px;'><div class='{bot_class}'></div><span style='font-size: 0.7rem; font-weight: 800; color: #64748B;'>{bot_text}</span></div>
+            </div>
         </div>
-        """
-        st.markdown(clean_html(table_html), unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
+
+st.markdown("<div style='margin-top: 32px;'></div>", unsafe_allow_html=True)
+
+# --- ASYMMETRICAL LAYOUT (70/30) ---
+left_col, right_col = st.columns([7, 3], gap="large")
+
+with left_col:
+    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Application Modules</h3>", unsafe_allow_html=True)
+    
+    # 3x2 Grid for Modules
+    r1c1, r1c2 = st.columns(2)
+    with r1c1:
+        with st.container(border=True):
+            st.markdown("""
+            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+                <div style='width: 40px; height: 40px; border-radius: 8px; background: #EFF6FF; color: #3B82F6; display: flex; align-items: center; justify-content: center;'>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </div>
+                <div>
+                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Inventory Adj.</h4>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Stock Reconcile Sync</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Launch Module", key="btn_inv", width="stretch"): st.switch_page("pages/1_inventory_adjustment.py")
+    
+    with r1c2:
+        with st.container(border=True):
+            st.markdown("""
+            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+                <div style='width: 40px; height: 40px; border-radius: 8px; background: #F3E8FF; color: #9333EA; display: flex; align-items: center; justify-content: center;'>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                </div>
+                <div>
+                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Sales Extract</h4>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Invoice Auto-Pull</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Launch Module", key="btn_sales", width="stretch"): st.switch_page("pages/2_sales_extraction.py")
+
+    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
+    
+    r2c1, r2c2 = st.columns(2)
+    with r2c1:
+        with st.container(border=True):
+            st.markdown("""
+            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+                <div style='width: 40px; height: 40px; border-radius: 8px; background: #DCFCE7; color: #16A34A; display: flex; align-items: center; justify-content: center;'>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </div>
+                <div>
+                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Promo Compare</h4>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Campaign Audit</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Launch Module", key="btn_promo", width="stretch"): st.switch_page("pages/3_promotion_comparison.py")
+    
+    with r2c2:
+        with st.container(border=True):
+            st.markdown("""
+            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+                <div style='width: 40px; height: 40px; border-radius: 8px; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center;'>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                </div>
+                <div>
+                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Stock Mutation</h4>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Movement Tracker</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Launch Module", key="btn_mut", width="stretch"): st.switch_page("pages/4_stock_mutation.py")
+
+    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
+    
+    r3c1, r3c2 = st.columns(2)
+    with r3c1:
+        with st.container(border=True):
+            st.markdown("""
+            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+                <div style='width: 40px; height: 40px; border-radius: 8px; background: #FEE2E2; color: #DC2626; display: flex; align-items: center; justify-content: center;'>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3zM15 9l-6 6M9 9l6 6"/></svg>
+                </div>
+                <div>
+                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Clearance Stock</h4>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Disposal Monitor</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Launch Module", key="btn_clear", width="stretch"): st.switch_page("pages/5_clearance_stock.py")
+    
+    with r3c2:
+        with st.container(border=True):
+            st.markdown("""
+            <div style='display: flex; gap: 12px; margin-bottom: 12px;'>
+                <div style='width: 40px; height: 40px; border-radius: 8px; background: #E0E7FF; color: #4F46E5; display: flex; align-items: center; justify-content: center;'>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                </div>
+                <div>
+                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Initial Stock</h4>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Baseline Setup</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Launch Module", key="btn_init", width="stretch"): st.switch_page("pages/6_initial_stock.py")
+
+with right_col:
+    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Live Telemetry</h3>", unsafe_allow_html=True)
+    
+    with st.container(border=True):
+        st.markdown("<div style='font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 20px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px;'>Recent Executions</div>", unsafe_allow_html=True)
+        
+        if db_connected:
+            from datetime import timezone, timedelta
+            df_adj, df_ext = load_historical_logs(supabase)
+            unified_rows = []
+            
+            if not df_adj.empty:
+                for _, row in df_adj.head(10).iterrows():
+                    q = str(row.get("qty", ""))
+                    mod = "Mutation" if ("PAC:" in q or "CAR:" in q) else "Inventory"
+                    dist = user_to_dist.get(row.get("np_user", ""), row.get("np_user", "N/A"))
+                    unified_rows.append({"ts": row["created_at"], "dist": dist, "mod": mod, "status": row.get("status"), "by": row.get("run_by") or row.get("np_user")})
+            
+            if not df_ext.empty:
+                for _, row in df_ext.head(10).iterrows():
+                    unified_rows.append({"ts": row["created_at"], "dist": row.get("distributor_name", "N/A"), "mod": "Sales", "status": row.get("status"), "by": row.get("extracted_by")})
+                    
+            unified_rows.sort(key=lambda x: x["ts"], reverse=True)
+            unified_rows = unified_rows[:6] # Only show top 6 in timeline
+            
+            if unified_rows:
+                tl_html = "<div style='margin-left: 8px;'>"
+                for r in unified_rows:
+                    try:
+                        t = r["ts"]
+                        if t.tzinfo:
+                            ts_str = t.tz_convert('Asia/Jakarta').strftime("%H:%M - %b %d")
+                        else:
+                            ts_str = (t + timedelta(hours=7)).strftime("%H:%M - %b %d")
+                    except: ts_str = str(r["ts"])[:16]
+                    
+                    st_val = str(r["status"])
+                    col = "#10B981" if st_val == "Success" else ("#EF4444" if st_val in ["Failed","Invalid"] else "#F59E0B")
+                    
+                    tl_html += f"""
+                    <div class='timeline-item'>
+                        <span class='timeline-date'>{ts_str}</span>
+                        <div class='timeline-title'>{html.escape(r['dist'])}</div>
+                        <div class='timeline-desc'>
+                            <span style='color: {col}; font-weight: 700;'>{html.escape(st_val)}</span> in {r['mod']} by {html.escape(str(r['by']))}
+                        </div>
+                    </div>
+                    """
+                tl_html += "</div>"
+                st.markdown(tl_html, unsafe_allow_html=True)
+            else:
+                st.markdown("<p style='font-size: 0.8rem; color: #94A3B8;'>No recent activity.</p>", unsafe_allow_html=True)
+        else:
+            st.markdown("<p style='font-size: 0.8rem; color: #EF4444;'>Database disconnected.</p>", unsafe_allow_html=True)
+
+# Full Report Table still at the bottom
+if db_connected:
+    st.markdown("<div style='margin-top: 48px; border-top: 1px solid #E2E8F0; padding-top: 24px;'></div>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Full Activity Report</h3>", unsafe_allow_html=True)
+    
+    col_filter, _ = st.columns([1.5, 2.5])
+    with col_filter:
+        period_option = st.selectbox("Reporting Period", ["Today", "Last 7 Days", "Last 30 Days", "All Time"], index=2, key="dashboard_report_period")
+        
+    now_utc = datetime.now(timezone.utc)
+    if period_option == "Today": cutoff_date = now_utc.replace(hour=0, minute=0, second=0, microsecond=0)
+    elif period_option == "Last 7 Days": cutoff_date = now_utc - timedelta(days=7)
+    elif period_option == "Last 30 Days": cutoff_date = now_utc - timedelta(days=30)
+    else: cutoff_date = None
+    
+    # Process the large table exactly as before, with updated styling
+    full_rows = []
+    if not df_adj.empty:
+        f_adj = df_adj[df_adj["created_at"] >= cutoff_date] if cutoff_date else df_adj.copy()
+        for _, row in f_adj.iterrows():
+            q = str(row.get("qty", ""))
+            mod = "Stock Mutation" if ("PAC:" in q or "CAR:" in q) else "Inventory Adjustment"
+            dist = user_to_dist.get(row.get("np_user", ""), row.get("np_user", "N/A"))
+            full_rows.append({"ts": row["created_at"], "dist": dist, "mod": mod, "status": row.get("status", "N/A"), "by": row.get("run_by") or row.get("np_user", "N/A")})
+    if not df_ext.empty:
+        f_ext = df_ext[df_ext["created_at"] >= cutoff_date] if cutoff_date else df_ext.copy()
+        for _, row in f_ext.iterrows():
+            full_rows.append({"ts": row["created_at"], "dist": row.get("distributor_name", "N/A"), "mod": "Sales Extraction", "status": row.get("status", "N/A"), "by": row.get("extracted_by", "N/A")})
+            
+    full_rows.sort(key=lambda x: x["ts"], reverse=True)
+    full_rows = full_rows[:30]
+    
+    if full_rows:
+        tbl = ""
+        for r in full_rows:
+            try:
+                t = r["ts"]
+                ts_str = t.tz_convert('Asia/Jakarta').strftime("%Y-%m-%d %H:%M:%S") if t.tzinfo else (t + timedelta(hours=7)).strftime("%Y-%m-%d %H:%M:%S")
+            except: ts_str = str(r["ts"])[:19]
+            
+            s_val = str(r["status"])
+            if s_val == "Success": s_col, s_bg = "#10B981", "rgba(16,185,129,0.1)"
+            elif s_val in ["Failed","Invalid"]: s_col, s_bg = "#EF4444", "rgba(239,68,68,0.1)"
+            else: s_col, s_bg = "#F59E0B", "rgba(245,158,11,0.1)"
+            sb = f"<span style='background: {s_bg}; color: {s_col}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; border: 1px solid {s_col}33;'>{html.escape(s_val.upper())}</span>"
+            
+            mod = r["mod"]
+            mc = {"Inventory Adjustment": ("#0068C9", "rgba(0,104,201,0.08)"), "Sales Extraction": ("#7C3AED", "rgba(124,58,237,0.08)"), "Stock Mutation": ("#D97706", "rgba(217,119,6,0.08)"), "Promotion Comparison": ("#059669", "rgba(5,150,105,0.08)"), "Clearance Stock": ("#DC2626", "rgba(220,38,38,0.08)"), "Initial Stock": ("#6366F1", "rgba(99,102,241,0.08)")}
+            m_col, m_bg = mc.get(mod, ("#808495", "rgba(128,132,149,0.08)"))
+            mb = f"<span style='background: {m_bg}; color: {m_col}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; border: 1px solid {m_col}33;'>{html.escape(mod)}</span>"
+            
+            tbl += f"<tr><td style='white-space:nowrap;'>{ts_str}</td><td>{html.escape(str(r['dist']))}</td><td>{mb}</td><td style='text-align:center;'>{sb}</td><td><code>{html.escape(str(r['by']))}</code></td></tr>"
+            
+        st.markdown(clean_html(f"<div class='table-container'><table class='custom-table'><thead><tr><th>Timestamp</th><th>Distributor</th><th>Module</th><th style='text-align:center;'>Status</th><th>Run By</th></tr></thead><tbody>{tbl}</tbody></table></div>"), unsafe_allow_html=True)
     else:
-        st.info("No execution records found for the selected period.")
+        st.info("No execution records found.")
 
 render_footer()
