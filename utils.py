@@ -325,52 +325,48 @@ def render_footer():
     if 'easter_egg_clicks' not in st.session_state:
         st.session_state.easter_egg_clicks = 0
 
-    st.markdown("""
-    <style>
-    .st-key-easter_egg {
-        display: flex;
-        justify-content: center;
-        margin-top: -10px;
-        margin-bottom: 20px;
-    }
-    .st-key-easter_egg button {
-        background: transparent !important;
-        border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        color: #31333F !important;
-        font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
-        font-size: 10px !important;
-        font-weight: 600 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.1em !important;
-        height: auto !important;
-        min-height: 0 !important;
-        line-height: 1 !important;
-        box-shadow: none !important;
-    }
-    .st-key-easter_egg button:hover, .st-key-easter_egg button:active, .st-key-easter_egg button:focus {
-        background: transparent !important;
-        border: none !important;
-        color: #31333F !important;
-        box-shadow: none !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    st.markdown(clean_html("""
-    <div style='text-align: center; margin-top: 80px; margin-bottom: 12px;'>
-        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em;'>
-            &copy; 2026 IT Support Newspage.
-        </span>
-    </div>
-    """), unsafe_allow_html=True)
+    st.markdown("<div style='margin-top: 80px;'></div>", unsafe_allow_html=True)
     
-    if st.button("by kopi mang toni.", key="easter_egg"):
-        st.session_state.easter_egg_clicks += 1
-        if st.session_state.easter_egg_clicks >= 10:
-            st.session_state.easter_egg_clicks = 0
-            st.switch_page("pages/7_element_crawler.py")
+    col1, col2, col3, col4 = st.columns([1.5, 2, 2, 1.5])
+    
+    with col2:
+        st.markdown("<div style='text-align: right; padding-top: 8px; margin-right: -10px;'><span style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em;'>&copy; 2026 IT Support Newspage.</span></div>", unsafe_allow_html=True)
+        
+    with col3:
+        st.markdown("""
+        <style>
+        div.element-container:has(.easter-egg-btn-wrapper) + div.element-container div.stButton button {
+            background: transparent !important;
+            border: none !important;
+            color: #31333F !important;
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+            font-size: 10px !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.1em !important;
+            box-shadow: none !important;
+            padding: 8px 0 0 10px !important;
+            margin: 0 !important;
+            justify-content: flex-start !important;
+            height: auto !important;
+            min-height: 0 !important;
+        }
+        div.element-container:has(.easter-egg-btn-wrapper) + div.element-container div.stButton button:hover,
+        div.element-container:has(.easter-egg-btn-wrapper) + div.element-container div.stButton button:active {
+            color: #0068C9 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        </style>
+        <div class="easter-egg-btn-wrapper"></div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("by kopi mang toni.", key="easter_egg"):
+            st.session_state.easter_egg_clicks += 1
+            if st.session_state.easter_egg_clicks >= 5:
+                st.session_state.easter_egg_clicks = 0
+                st.switch_page("pages/7_element_crawler.py")
 
     st.markdown(clean_html("""
     <div style='text-align: center; margin-bottom: 20px;'>
