@@ -4,7 +4,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMainViewContaine
     width: 100vw !important;
     margin: 0 !important;
     padding: 0 !important;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e4ebf5 100%) !important;
+    background-color: #F8FAFC !important;
 }
 [data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stDecoration"] {
     display: none !important;
@@ -17,17 +17,15 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMainViewContaine
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    background: transparent !important;
+    background-color: #F8FAFC !important;
 }
 div[data-testid="stForm"] {
-    border: 1px solid rgba(255, 255, 255, 0.6) !important;
-    border-radius: 16px !important;
-    background-color: rgba(255, 255, 255, 0.75) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 12px !important;
+    background-color: #FFFFFF !important;
     padding: 40px 32px !important;
     width: 380px !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 1px 8px rgba(0, 0, 0, 0.03) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
     margin-left: auto !important;
     margin-right: auto !important;
     margin-top: 0 !important;
@@ -53,9 +51,9 @@ div[data-testid="stTextInput"] label p {
     margin-bottom: 8px !important;
 }
 div[data-testid="stTextInput"] input {
-    background-color: rgba(255, 255, 255, 0.9) !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    border-radius: 10px !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 8px !important;
     color: #31333F !important;
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     text-align: left !important;
@@ -91,17 +89,19 @@ div[data-testid="stTextInput"] > div {
 
 /* Button enhancements */
 div[data-testid="stForm"] button[kind="primary"] {
-    background: linear-gradient(135deg, #0068C9 0%, #00509E 100%) !important;
+    background-color: #0068C9 !important;
     border: none !important;
-    border-radius: 10px !important;
+    border-radius: 8px !important;
     transition: all 0.3s ease !important;
     padding: 0.5rem 1rem !important;
     font-weight: 600 !important;
     letter-spacing: 0.02em !important;
+    color: #FFFFFF !important;
 }
 div[data-testid="stForm"] button[kind="primary"]:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 12px -2px rgba(0, 104, 201, 0.4) !important;
+    background-color: #00509E !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 104, 201, 0.2) !important;
 }
 div[data-testid="stForm"] button[kind="primary"]:active {
     transform: translateY(0) !important;
@@ -111,10 +111,8 @@ div[data-testid="stForm"] button[kind="primary"]:active {
 div[data-testid="stExpander"] {
     width: 380px !important;
     margin: 0 auto !important;
-    background-color: rgba(255, 255, 255, 0.75) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.6) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
 }

@@ -13,6 +13,7 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **English-Translated Disclaimer Footer**: The footer disclaimer must remain in English, formatted with a soft blue background wrapper (`background-color: rgba(0, 104, 201, 0.04); border: 1px solid rgba(0, 104, 201, 0.1); border-radius: 8px`) for a clean, professional aesthetic.
 - **Execution UI Visual Branding**: Replace generic or boring "Execution" subheaders with themed column titles. Use vertical colored borders on the left side of column headers to group actions (e.g., `#FF2B2B` red border for Deduct/Negative flow and `#09A53C` green border for Add/Positive flow).
 - **Safe HTML & Character Rendering**: Never use raw HTML entity codes like `&nbsp;` directly in output logs that undergo `html.escape()`. Use regular space characters to prevent literal `&NBSP;` rendering bugs.
+- **Avoid Glassmorphism/Translucency**: Do NOT use CSS properties like `backdrop-filter`, `rgba` on main containers, or complex gradients (glassmorphism) for the UI (including the login screen). It breaks Streamlit's layout rendering. Stick to solid, flat, modern colors (e.g., `#FFFFFF`, `#F8FAFC`).
 
 ## Locked Features & Code Freeze
 - **Frozen Modules**: **Stock Mutation**, **Inventory Adjustment**, **Sales Extraction**, **Promotion Comparison**, **Clearance Stock**, **Initial Stock**, and **Credential Auto-Encryption**.
