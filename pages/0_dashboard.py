@@ -218,7 +218,7 @@ with left_col:
                 </div>
                 <div>
                     <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Inventory Adj.</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Stock Reconcile Sync</span>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Singkronisasi & rekonsiliasi data stok fisik vs sistem</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -233,7 +233,7 @@ with left_col:
                 </div>
                 <div>
                     <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Sales Extract</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Invoice Auto-Pull</span>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Otomatisasi penarikan faktur penjualan distributor</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -251,7 +251,7 @@ with left_col:
                 </div>
                 <div>
                     <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Promo Compare</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Campaign Audit</span>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Audit & komparasi data klaim promosi berjalan</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -266,7 +266,7 @@ with left_col:
                 </div>
                 <div>
                     <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Stock Mutation</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Movement Tracker</span>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Lacak riwayat pergerakan stok harian (masuk/keluar)</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -284,7 +284,7 @@ with left_col:
                 </div>
                 <div>
                     <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Clearance Stock</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Disposal Monitor</span>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Monitor barang clearance dan sisa stok mati</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -299,17 +299,17 @@ with left_col:
                 </div>
                 <div>
                     <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Initial Stock</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500;'>Baseline Setup</span>
+                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Setup baseline data stok awal untuk distributor baru</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)
             if st.button("Launch Module", key="btn_init", width="stretch"): st.switch_page("pages/6_initial_stock.py")
 
 with right_col:
-    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Aktivitas Terbaru</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Recent Activity</h3>", unsafe_allow_html=True)
     
     with st.container(border=True):
-        st.markdown("<div style='font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 20px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px;'>Feed Otomatisasi</div>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 20px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px;'>Live Telemetry</div>", unsafe_allow_html=True)
         
         if db_connected:
             from datetime import timezone, timedelta
