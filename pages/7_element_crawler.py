@@ -31,14 +31,14 @@ st.markdown("""
 # Fetch Distributors
 if "distributor_list" not in st.session_state:
     try:
-        res = supabase.table("distributors").select("name, np_user, np_password, is_active").eq("is_active", True).execute()
+        res = supabase.table("distributor_vault").select("nama_distributor, np_user_id, np_password").execute()
         st.session_state.distributor_list = res.data if res.data else []
     except Exception as e:
         st.session_state.distributor_list = []
         st.error(f"Gagal memuat distributor: {e}")
 
 dist_list = st.session_state.distributor_list
-dist_names = [d["name"] for d in dist_list]
+dist_names = [d["nama_distributor"] for d in dist_list]
 
 col1, col2 = st.columns([1, 1])
 with col1:
@@ -60,13 +60,13 @@ if st.session_state.is_crawling:
     term_ph = st.empty()
     logger = make_terminal_logger(st.session_state.ext_logs, term_ph, render_terminal)
     
-    sel_d = next((d for d in dist_list if d["name"] == selected_dist), None)
+    sel_d = next((d for d in dist_list if d["nama_distributor"] == selected_dist), None)
     if not sel_d:
         st.error("Distributor tidak ditemukan.")
         st.session_state.is_crawling = False
         st.rerun()
         
-    user, pwd = sel_d["np_user"], sel_d["np_password"]
+    user, pwd = sel_d["np_user_id"], sel_d["np_password"]
     
     try:
         results = playwright_engine.run_element_crawler(user, pwd, selected_dist, URL_LOGIN, target_path, logger)
