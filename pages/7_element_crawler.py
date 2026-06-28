@@ -72,9 +72,21 @@ if st.session_state.is_crawling:
         results = playwright_engine.run_element_crawler(user, pwd, selected_dist, URL_LOGIN, target_path, logger)
         st.session_state.crawler_results = results
     except Exception as e:
-        st.error(f"Crawling gagal: {e}")
+        st.session_state.crawler_error = str(e)
     finally:
         st.session_state.is_crawling = False
+        st.rerun()
+
+if st.session_state.get("crawler_error"):
+    st.error(f"Crawling gagal: {st.session_state.crawler_error}")
+    # Show logs so they can see where it failed
+    if st.session_state.ext_logs:
+        st.markdown("### Terminal Logs")
+        for log in st.session_state.ext_logs:
+            st.markdown(log, unsafe_allow_html=True)
+    if st.button("Tutup Pesan Error"):
+        st.session_state.crawler_error = None
+        st.session_state.ext_logs = []
         st.rerun()
 
 if st.session_state.crawler_results is not None:
