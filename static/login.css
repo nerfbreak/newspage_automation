@@ -202,7 +202,6 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"]:focus-within,
 div[data-testid="stNumberInput"] input:focus,
 div[data-testid="stDateInput"] input:focus {
     border-color: #0068C9 !important;
-    box-shadow: 0 0 0 4px rgba(0, 104, 201, 0.12) !important;
 }
 
 /* 5. Expander Smooth Transition */
