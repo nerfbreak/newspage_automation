@@ -281,8 +281,10 @@ def render_header(title, subtitle=""):
         desc_map = {
             "Inventory Adjustment": "Singkronisasi & rekonsiliasi data stok fisik vs sistem",
             "Sales Extraction": "Otomatisasi penarikan faktur penjualan distributor",
+            "Sales Data Extraction": "Otomatisasi penarikan faktur penjualan distributor",
             "Promotion Comparison": "Audit & komparasi data klaim promosi berjalan",
             "Stock Mutation": "Lacak riwayat pergerakan stok harian (masuk/keluar)",
+            "Mutasi Stock": "Lacak riwayat pergerakan stok harian (masuk/keluar)",
             "Clearance Stock": "Monitor barang clearance dan sisa stok mati",
             "Initial Stock": "Setup baseline data stok awal untuk distributor baru"
         }
@@ -290,8 +292,10 @@ def render_header(title, subtitle=""):
         icon_map = {
             "Inventory Adjustment": "📦",
             "Sales Extraction": "🖥️",
+            "Sales Data Extraction": "🖥️",
             "Promotion Comparison": "📄",
             "Stock Mutation": "🔄",
+            "Mutasi Stock": "🔄",
             "Clearance Stock": "❌",
             "Initial Stock": "➕"
         }
