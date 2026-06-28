@@ -316,63 +316,65 @@ def render_header(title, subtitle=""):
             </div>
         </div>
         """
+        st.markdown(html_out, unsafe_allow_html=True)
     else:
-        html_out += f"<h1 style='margin-top: -5px; margin-bottom: -15px; padding-top: 0px; padding-bottom: 0px; border-bottom: none !important;'>{title}</h1>"
+        st.markdown(html_out, unsafe_allow_html=True)
         
-    st.markdown(html_out, unsafe_allow_html=True)
-
-def render_footer():
-    if 'easter_egg_clicks' not in st.session_state:
-        st.session_state.easter_egg_clicks = 0
-
-    st.markdown("<div style='margin-top: 80px;'></div>", unsafe_allow_html=True)
-    
-    col1, col2, col3, col4 = st.columns([1.5, 2, 2, 1.5])
-    
-    with col2:
-        st.markdown("<div style='text-align: right; padding-top: 8px; margin-right: -10px;'><span style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em;'>&copy; 2026 IT Support Newspage.</span></div>", unsafe_allow_html=True)
-        
-    with col3:
         st.markdown("""
         <style>
-        div.element-container:has(.easter-egg-btn-wrapper) + div.element-container div.stButton button {
+        div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button {
             background: transparent !important;
             border: none !important;
             color: #31333F !important;
-            font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
-            font-size: 10px !important;
-            font-weight: 600 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.1em !important;
-            box-shadow: none !important;
-            outline: none !important;
-            padding: 8px 0 0 10px !important;
-            margin: 0 !important;
-            justify-content: flex-start !important;
+            font-family: "Source Sans 3", sans-serif !important;
+            font-size: calc(1.4rem + 1.8vw) !important;
+            font-weight: 700 !important;
+            margin-top: -15px !important;
+            margin-bottom: -15px !important;
+            padding: 0 !important;
             height: auto !important;
             min-height: 0 !important;
+            box-shadow: none !important;
+            outline: none !important;
+            justify-content: flex-start !important;
         }
-        div.element-container:has(.easter-egg-btn-wrapper) + div.element-container div.stButton button:hover,
-        div.element-container:has(.easter-egg-btn-wrapper) + div.element-container div.stButton button:active,
-        div.element-container:has(.easter-egg-btn-wrapper) + div.element-container div.stButton button:focus {
-            color: #0068C9 !important;
+        div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button p {
+            font-size: calc(1.4rem + 1.8vw) !important;
+            font-weight: 700 !important;
+        }
+        div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button:hover,
+        div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button:active,
+        div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button:focus {
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
             outline: none !important;
+            color: #0068C9 !important;
         }
         </style>
-        <div class="easter-egg-btn-wrapper"></div>
+        <div class="easter-egg-auto-tool"></div>
         """, unsafe_allow_html=True)
         
-        if st.button("by kopi mang toni.", key="easter_egg"):
+        if 'easter_egg_clicks' not in st.session_state:
+            st.session_state.easter_egg_clicks = 0
+            
+        if st.button(title, key="easter_egg_auto"):
             st.session_state.easter_egg_clicks += 1
             if st.session_state.easter_egg_clicks >= 3:
                 st.session_state.easter_egg_clicks = 0
                 st.switch_page("pages/7_element_crawler.py")
 
+def render_footer():
     st.markdown(clean_html("""
-    <div style='text-align: center; margin-bottom: 20px;'>
+    <div style='text-align: center; margin-top: 80px; margin-bottom: 20px;'>
+        <div>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
+                &copy; 2026 IT Support Newspage.
+            </span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>
+                by kopi mang toni.
+            </span>
+        </div>
         <div style='background-color: rgba(0, 104, 201, 0.04); border: 1px solid rgba(0, 104, 201, 0.1); border-radius: 8px; padding: 12px 16px; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; color: #5D6271; margin-top: 18px; max-width: 580px; margin-left: auto; margin-right: auto; line-height: 1.5; text-align: center;'>
             <strong style="color: #0068C9; display: block; margin-bottom: 4px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Disclaimer</strong>
             This application is an independently developed, unofficial utility designed solely to automate repetitive tasks, improve operational efficiency, and save working hours. It is not officially endorsed, sponsored, or affiliated with Reckitt, Accenture, or the Newspage platform.
