@@ -7,6 +7,8 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 - **Modul Mutasi Stok**: Fitur baru untuk memindahkan kuantitas stok antar distributor secara otomatis dan aman.
 - **Modul Clearance Stock**: Fitur baru untuk mereset atau mengosongkan stok dengan cepat.
 - **Filter Waktu Fleksibel**: Sekarang Anda bisa melihat riwayat aktivitas berdasarkan hari ini, 7 hari terakhir, atau 30 hari terakhir.
+- **Peningkatan Visual & Animasi**: Menambahkan animasi halus (transisi, efek sentuhan pada tombol, dan loading halaman) yang membuat aplikasi terasa lebih premium dan responsif.
+- **Tampilan Bebas Gangguan**: Menyembunyikan menu bawaan Streamlit (seperti bar atas dan samping) secara penuh untuk memberikan pengalaman desain yang lebih fokus, luas, dan bersih.
 
 ### 🛠️ Perbaikan & Peningkatan
 - **Akurasi Kuantitas**: Memperbaiki sistem input angka saat proses mutasi agar tidak terjadi error atau kekosongan data di portal Newspage.
@@ -14,3 +16,5 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 - **Indikator Loading**: Memperbaiki loading bar yang sering macet saat proses Mutasi Stok berjalan, sekarang progress terlihat real-time.
 - **Notifikasi Rapi**: Menggabungkan notifikasi sukses yang menumpuk menjadi satu ringkasan yang jelas dan bersih.
 - **Optimalisasi Tampilan**: Memperbaiki jarak dan spasi di berbagai halaman agar aplikasi lebih responsif dan nyaman digunakan.
+- **Responsivitas HP (Mobile)**: Memperbaiki label pada tabel riwayat di Dashboard agar teks tidak terpotong atau berantakan saat dibuka melalui layar HP yang kecil.
+- **Keselarasan Halaman Login**: Memperbaiki tata letak teks dan ikon pada halaman *Login* agar posisinya sejajar sempurna dan presisi di tengah layar.
