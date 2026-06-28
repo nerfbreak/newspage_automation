@@ -217,7 +217,7 @@ with left_col:
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                 </div>
                 <div>
-                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Inventory Adj.</h4>
+                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Inventory Adjustment</h4>
                     <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Singkronisasi & rekonsiliasi data stok fisik vs sistem</span>
                 </div>
             </div>
