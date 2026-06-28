@@ -52,6 +52,11 @@ h2, h3 {
 html, body, [data-testid="stAppViewContainer"], p, label, small {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
+html, body, [data-testid="stAppViewContainer"] {
+    background-color: #F8FAFC !important;
+    background-image: radial-gradient(#CBD5E1 1px, transparent 1px) !important;
+    background-size: 24px 24px !important;
+}
 
 /* --- Form Labels --- */
 div[data-testid="stSelectbox"] label,
@@ -392,10 +397,9 @@ div[data-testid="stTextInput"] > div {
 }
 
 /* --- Sidebar --- */
-section[data-testid="stSidebar"] {
-    background-color: #F0F2F6 !important;
-    border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.03) !important;
+section[data-testid="stSidebar"],
+button[data-testid="collapsedControl"] {
+    display: none !important;
 }
 
 section[data-testid="stSidebar"] [data-testid="stSidebarNav"] {

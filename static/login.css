@@ -5,6 +5,8 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMainViewContaine
     margin: 0 !important;
     padding: 0 !important;
     background-color: #F8FAFC !important;
+    background-image: radial-gradient(#CBD5E1 1px, transparent 1px) !important;
+    background-size: 24px 24px !important;
 }
 [data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stDecoration"] {
     display: none !important;
@@ -17,7 +19,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMainViewContaine
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    background-color: #F8FAFC !important;
+    background-color: transparent !important;
 }
 div[data-testid="stForm"] {
     border: 1px solid #E2E8F0 !important;
