@@ -276,40 +276,6 @@ def render_header(title, subtitle=""):
         html_out += active_sess
         
     if "Automation Tool" not in title:
-        st.markdown("""
-        <style>
-        /* Styling back to dashboard button */
-        a[data-testid="stPageLink-NavLink"] {
-            padding: 8px 14px !important;
-            margin: 0px !important;
-            margin-bottom: 12px !important;
-            background: #F0F2F6 !important;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
-            border-radius: 8px !important;
-            text-decoration: none !important;
-            width: fit-content !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            transition: all 0.2s ease !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
-        }
-        a[data-testid="stPageLink-NavLink"]:hover {
-            background: #E2E8F0 !important;
-            border-color: rgba(0, 104, 201, 0.2) !important;
-            transform: translateY(-1px) !important;
-        }
-        a[data-testid="stPageLink-NavLink"] p {
-            font-family: "Source Sans 3", sans-serif !important;
-            font-size: 13px !important;
-            font-weight: 700 !important;
-            color: #31333F !important;
-            margin: 0px !important;
-            line-height: 1 !important;
-            letter-spacing: 0.02em !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        
         st.page_link("pages/0_dashboard.py", label="Dashboard", icon=":material/home:")
         
     html_out += f"<h1 style='margin-top: -5px; margin-bottom: -15px; padding-top: 0px; padding-bottom: 0px; border-bottom: none !important;'>{title}</h1>"

@@ -752,3 +752,158 @@ div[data-testid="stExpander"] details:hover {
 div[data-testid="stExpander"] summary svg {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
+
+/* ============================================================
+   Premium Component Overrides (Moved from Pages)
+   ============================================================ */
+
+/* CSS Reset for Dashboard & Global Buttons */
+.stButton button {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+.stButton button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 104, 201, 0.2) !important;
+}
+
+/* Pulse Animation for Status */
+@keyframes pulse-green {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+.status-dot-green {
+    height: 10px; width: 10px; background-color: #10B981; border-radius: 50%; display: inline-block;
+    animation: pulse-green 2s infinite;
+}
+.status-dot-red {
+    height: 10px; width: 10px; background-color: #EF4444; border-radius: 50%; display: inline-block;
+    animation: pulse-red 2s infinite;
+}
+.status-dot-gray {
+    height: 10px; width: 10px; background-color: #9CA3AF; border-radius: 50%; display: inline-block;
+}
+
+/* Timeline CSS */
+.timeline-item {
+    padding-left: 20px;
+    border-left: 2px solid #E5E7EB;
+    position: relative;
+    padding-bottom: 20px;
+}
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #0068C9;
+}
+.timeline-date {
+    font-size: 0.75rem;
+    color: #6B7280;
+    font-weight: 600;
+    margin-bottom: 2px;
+    display: block;
+}
+.timeline-title {
+    font-size: 0.9rem;
+    color: #111827;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.timeline-desc {
+    font-size: 0.8rem;
+    color: #4B5563;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+/* Styling khusus untuk stSegmentedControl (Minimalist Tab + Material Icons) */
+div[data-testid="stSegmentedControl"] {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-bottom: 2px solid rgba(0,0,0,0.06) !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    gap: 20px !important;
+}
+
+div[data-testid="stSegmentedControl"] > div {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding-bottom: 8px !important;
+}
+
+div[data-testid="stSegmentedControl"] [data-selected="true"],
+div[data-testid="stSegmentedControl"] [aria-selected="true"] {
+    background-color: transparent !important;
+    border-bottom: 2px solid #0068C9 !important;
+}
+
+div[data-testid="stSegmentedControl"] p,
+div[data-testid="stSegmentedControl"] span {
+    font-family: "Source Sans 3", sans-serif !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    font-weight: 600 !important;
+    color: #808495 !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Selected state */
+div[data-testid="stSegmentedControl"] [aria-selected="true"] p,
+div[data-testid="stSegmentedControl"] [aria-selected="true"] span,
+div[data-testid="stSegmentedControl"] [data-selected="true"] p,
+div[data-testid="stSegmentedControl"] [data-selected="true"] span,
+div[data-testid="stSegmentedControl"] input:checked + div p,
+div[data-testid="stSegmentedControl"] input:checked + div span {
+    font-weight: 800 !important;
+    color: #0068C9 !important;
+}
+
+/* Styling back to dashboard button */
+a[data-testid="stPageLink-NavLink"] {
+    padding: 8px 14px !important;
+    margin: 0px !important;
+    margin-bottom: 12px !important;
+    background: #F0F2F6 !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    width: fit-content !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
+}
+a[data-testid="stPageLink-NavLink"]:hover {
+    background: #E2E8F0 !important;
+    border-color: rgba(0, 104, 201, 0.2) !important;
+    transform: translateY(-1px) !important;
+}
+a[data-testid="stPageLink-NavLink"] p {
+    font-family: "Source Sans 3", sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #31333F !important;
+    margin: 0px !important;
+    line-height: 1 !important;
+    letter-spacing: 0.02em !important;
+}
