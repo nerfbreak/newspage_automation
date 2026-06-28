@@ -326,9 +326,10 @@ def render_header(title, subtitle=""):
             background: transparent !important;
             border: none !important;
             color: #31333F !important;
-            font-family: "Source Sans 3", sans-serif !important;
-            font-size: calc(1.4rem + 1.8vw) !important;
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+            font-size: 1.75rem !important;
             font-weight: 700 !important;
+            letter-spacing: -0.02em !important;
             margin-top: -15px !important;
             margin-bottom: -15px !important;
             padding: 0 !important;
@@ -339,8 +340,10 @@ def render_header(title, subtitle=""):
             justify-content: flex-start !important;
         }
         div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button p {
-            font-size: calc(1.4rem + 1.8vw) !important;
+            font-size: 1.75rem !important;
             font-weight: 700 !important;
+            letter-spacing: -0.02em !important;
+            margin: 0 !important;
         }
         div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button:hover,
         div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button:active,
