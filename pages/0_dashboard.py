@@ -105,21 +105,67 @@ if db_connected:
     except Exception:
         pass
 
-# --- METRIC CARDS ---
-col1, col2, col3 = st.columns(3)
 
+# --- HERO SECTION: SYSTEM HEALTH & METRICS ---
+st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>System Health & Overview</div>", unsafe_allow_html=True)
 
-with col1:
-    st.markdown(render_metric_card("Total Extractions", str(total_extractions)), unsafe_allow_html=True)
-with col2:
-    st.markdown(render_metric_card("Last Extraction", last_extracted_dist, accent=True), unsafe_allow_html=True)
-with col3:
-    st.markdown(render_metric_card("Registered Distributors", str(total_distributors)), unsafe_allow_html=True)
+bot_running = (
+    st.session_state.get("is_bot_running", False) or
+    st.session_state.get("is_promo_bot_running", False) or
+    st.session_state.get("is_mutasi_running", False) or
+    st.session_state.get("is_clearance_running", False) or
+    st.session_state.get("is_initial_running", False)
+)
+bot_status = "RUNNING" if bot_running else "STANDBY"
+bot_color = "#10B981" if bot_running else "#808495"
+db_color = "#10B981" if db_connected else "#EF4444"
+
+# 4 Columns for System Health
+h_col1, h_col2, h_col3, h_col4 = st.columns(4)
+
+with h_col1:
+    st.markdown(clean_html(f"""
+        <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.01); min-height: 72px; box-sizing: border-box; font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif; margin-bottom: 16px;">
+            <span style="font-size: 0.85rem; font-weight: 600; color: #31333F;">Playwright Bots</span>
+            <div style="display: flex; align-items: center; gap: 8px; background: {bot_color}1a; border: 1px solid {bot_color}33; padding: 4px 12px; border-radius: 20px;">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background-color: {bot_color}; display: inline-block;"></span>
+                <span style="font-size: 0.68rem; font-weight: 800; color: {bot_color}; letter-spacing: 0.05em;">{bot_status}</span>
+            </div>
+        </div>
+    """), unsafe_allow_html=True)
+
+with h_col2:
+    st.markdown(clean_html(f"""
+        <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.01); min-height: 72px; box-sizing: border-box; font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif; margin-bottom: 16px;">
+            <span style="font-size: 0.85rem; font-weight: 600; color: #31333F;">DB Connection</span>
+            <div style="display: flex; align-items: center; gap: 8px; background: {db_color}1a; border: 1px solid {db_color}33; padding: 4px 12px; border-radius: 20px;">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background-color: {db_color}; display: inline-block;"></span>
+                <span style="font-size: 0.68rem; font-weight: 800; color: {db_color}; letter-spacing: 0.05em;">{db_status}</span>
+            </div>
+        </div>
+    """), unsafe_allow_html=True)
+
+with h_col3:
+    st.markdown(clean_html(f"""
+        <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.01); display: flex; flex-direction: column; justify-content: center; min-height: 72px; margin-bottom: 16px;">
+            <div style="font-size: 0.6rem; font-weight: 700; color: #808495; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;">Total Extractions</div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: #31333F; margin-top: 6px; line-height: 1.2;">{total_extractions}</div>
+        </div>
+    """), unsafe_allow_html=True)
+
+with h_col4:
+    st.markdown(clean_html(f"""
+        <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.01); display: flex; flex-direction: column; justify-content: center; min-height: 72px; margin-bottom: 16px;">
+            <div style="font-size: 0.6rem; font-weight: 700; color: #808495; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;">Total Logs / Reg. Dist.</div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: #31333F; margin-top: 6px; line-height: 1.2;">{total_logs} / {total_distributors}</div>
+        </div>
+    """), unsafe_allow_html=True)
 
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
+
 # --- NAVIGATION HUB ---
-st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>Navigation</div>", unsafe_allow_html=True)
+st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>App Launcher</div>", unsafe_allow_html=True)
 
 nav_col1, nav_col2, nav_col3 = st.columns(3)
 
@@ -144,7 +190,7 @@ with nav_col3:
         if st.button("Open", key="btn_nav_promo", width="stretch", type="primary", icon=":material/open_in_new:"):
             st.switch_page("pages/3_promotion_comparison.py")
 
-st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
 
 nav_col4, nav_col5, nav_col6 = st.columns(3)
 
@@ -169,68 +215,12 @@ with nav_col6:
         if st.button("Open", key="btn_nav_initial", width="stretch", type="primary", icon=":material/open_in_new:"):
             st.switch_page("pages/6_initial_stock.py")
 
-st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
-
-# --- SYSTEM MONITORING SECTION ---
-with st.container(border=False):
-    st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>System Health</div>", unsafe_allow_html=True)
-    
-    bot_running = (
-        st.session_state.get("is_bot_running", False) or
-        st.session_state.get("is_promo_bot_running", False) or
-        st.session_state.get("is_mutasi_running", False) or
-        st.session_state.get("is_clearance_running", False) or
-        st.session_state.get("is_initial_running", False)
-    )
-    bot_status = "RUNNING" if bot_running else "STANDBY"
-    
-    bot_color = "#10B981" if bot_running else "#808495"
-    db_color = "#10B981" if db_connected else "#EF4444"
-    
-    h_col1, h_col2, h_col3 = st.columns(3)
-    
-    with h_col1:
-        st.markdown(clean_html(f"""
-            <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.01); min-height: 72px; box-sizing: border-box; font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif; margin-bottom: 16px;">
-                <span style="font-size: 0.85rem; font-weight: 600; color: #31333F;">Playwright Bots</span>
-                <div style="display: flex; align-items: center; gap: 8px; background: {bot_color}1a; border: 1px solid {bot_color}33; padding: 4px 12px; border-radius: 20px;">
-                    <span style="width: 6px; height: 6px; border-radius: 50%; background-color: {bot_color}; display: inline-block;"></span>
-                    <span style="font-size: 0.68rem; font-weight: 800; color: {bot_color}; letter-spacing: 0.05em;">{bot_status}</span>
-                </div>
-            </div>
-        """), unsafe_allow_html=True)
-        
-    with h_col2:
-        st.markdown(clean_html(f"""
-            <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.01); min-height: 72px; box-sizing: border-box; font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif; margin-bottom: 16px;">
-                <span style="font-size: 0.85rem; font-weight: 600; color: #31333F;">Database Connection</span>
-                <div style="display: flex; align-items: center; gap: 8px; background: {db_color}1a; border: 1px solid {db_color}33; padding: 4px 12px; border-radius: 20px;">
-                    <span style="width: 6px; height: 6px; border-radius: 50%; background-color: {db_color}; display: inline-block;"></span>
-                    <span style="font-size: 0.68rem; font-weight: 800; color: {db_color}; letter-spacing: 0.05em;">{db_status}</span>
-                </div>
-            </div>
-        """), unsafe_allow_html=True)
-        
-    with h_col3:
-        st.markdown(clean_html(f"""
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-height: 72px; box-sizing: border-box; font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif; margin-bottom: 16px;">
-                <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.01); display: flex; flex-direction: column; justify-content: center;">
-                    <div style="font-size: 0.6rem; font-weight: 700; color: #808495; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;">Last Sync</div>
-                    <div style="font-size: 0.82rem; font-weight: 700; color: #31333F; margin-top: 6px; line-height: 1.2;">{last_extracted_time}</div>
-                </div>
-                <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.01); display: flex; flex-direction: column; justify-content: center; text-align: right;">
-                    <div style="font-size: 0.6rem; font-weight: 700; color: #808495; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;">Synced Logs</div>
-                    <div style="font-size: 0.95rem; font-weight: 700; color: #31333F; margin-top: 6px; line-height: 1.2;">{total_logs}</div>
-                </div>
-            </div>
-        """), unsafe_allow_html=True)
-
 # --- ACTIVITY REPORT ---
 if db_connected:
     from datetime import timezone, timedelta
     import html
     
-    st.markdown("<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top: 40px;'></div>", unsafe_allow_html=True)
     st.markdown("<div class='box-np' style='text-align: center; margin-bottom: 20px; font-size: 1.1rem;'>Activity Report</div>", unsafe_allow_html=True)
 
     # Load logs
