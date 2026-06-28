@@ -74,7 +74,10 @@ div[data-testid="stFileUploader"] label p {
     text-transform: uppercase !important;
     letter-spacing: 0.08em !important;
     text-align: center !important;
-    width: 100% !important;
+    width: auto !important;
+    display: inline-block !important;
+    border-bottom: 2px solid #0068C9 !important;
+    padding-bottom: 4px !important;
     margin-bottom: 6px !important;
 }
 
@@ -641,6 +644,12 @@ div[data-testid="stDataFrame"] {
 .header-wrapper-center {
     text-align: center;
     margin-top: 32px !important;
+    margin-bottom: 16px !important;
+}
+
+.header-wrapper-center-notop {
+    text-align: center;
+    margin-top: 4px !important;
     margin-bottom: 16px !important;
 }
 
