@@ -152,8 +152,8 @@ bot_running = (
 # --- HERO BANNER ---
 st.markdown(f"""
 <div style='margin-bottom: 24px;'>
-    <h1 style='font-size: 2.2rem; font-weight: 800; color: #0F172A; margin: 0;'>Welcome back, {html.escape(st.session_state.current_user)}</h1>
-    <p style='font-size: 0.95rem; color: #64748B; margin-top: 4px; font-weight: 500;'>Command Center is operational. Here is what's happening today, {datetime.now().strftime('%d %b %Y')}.</p>
+    <h1 style='font-size: 2.2rem; font-weight: 800; color: #0F172A; margin: 0;'>Halo, {html.escape(st.session_state.current_user)}! 👋</h1>
+    <p style='font-size: 0.95rem; color: #64748B; margin-top: 4px; font-weight: 500;'>Pantau ringkasan aktivitas otomatisasi distributor Anda hari ini, {datetime.now().strftime('%d %b %Y')}.</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -306,10 +306,10 @@ with left_col:
             if st.button("Launch Module", key="btn_init", width="stretch"): st.switch_page("pages/6_initial_stock.py")
 
 with right_col:
-    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Live Telemetry</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Aktivitas Terbaru</h3>", unsafe_allow_html=True)
     
     with st.container(border=True):
-        st.markdown("<div style='font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 20px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px;'>Recent Executions</div>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 20px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px;'>Feed Otomatisasi</div>", unsafe_allow_html=True)
         
         if db_connected:
             from datetime import timezone, timedelta
