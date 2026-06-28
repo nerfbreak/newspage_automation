@@ -278,7 +278,41 @@ def render_header(title, subtitle=""):
     if "Automation Tool" not in title:
         st.page_link("pages/0_dashboard.py", label="Dashboard", icon=":material/home:")
         
-    html_out += f"<h1 style='margin-top: -5px; margin-bottom: -15px; padding-top: 0px; padding-bottom: 0px; border-bottom: none !important;'>{title}</h1>"
+        desc_map = {
+            "Inventory Adjustment": "Singkronisasi & rekonsiliasi data stok fisik vs sistem",
+            "Sales Extraction": "Otomatisasi penarikan faktur penjualan distributor",
+            "Promotion Comparison": "Audit & komparasi data klaim promosi berjalan",
+            "Stock Mutation": "Lacak riwayat pergerakan stok harian (masuk/keluar)",
+            "Clearance Stock": "Monitor barang clearance dan sisa stok mati",
+            "Initial Stock": "Setup baseline data stok awal untuk distributor baru"
+        }
+        
+        icon_map = {
+            "Inventory Adjustment": "📦",
+            "Sales Extraction": "🖥️",
+            "Promotion Comparison": "📄",
+            "Stock Mutation": "🔄",
+            "Clearance Stock": "❌",
+            "Initial Stock": "➕"
+        }
+        
+        desc = desc_map.get(title, "Modul otomatisasi distributor")
+        icon = icon_map.get(title, "⚡")
+        
+        html_out += f"""
+        <div style='margin-top: 8px; margin-bottom: 24px; padding: 20px 24px; background: linear-gradient(to right, #F8FAFC, #FFFFFF); border: 1px solid #E2E8F0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); display: flex; align-items: center; gap: 16px;'>
+            <div style='font-size: 2rem; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; min-width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);'>
+                {icon}
+            </div>
+            <div>
+                <h1 style='margin: 0; font-size: 1.6rem; font-weight: 800; color: #0F172A; line-height: 1.2; padding: 0; border: none;'>{title}</h1>
+                <p style='margin: 4px 0 0 0; font-size: 0.9rem; color: #64748B; font-weight: 500;'>{desc}</p>
+            </div>
+        </div>
+        """
+    else:
+        html_out += f"<h1 style='margin-top: -5px; margin-bottom: -15px; padding-top: 0px; padding-bottom: 0px; border-bottom: none !important;'>{title}</h1>"
+        
     st.markdown(html_out, unsafe_allow_html=True)
 
 def render_footer():
