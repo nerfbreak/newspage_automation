@@ -647,7 +647,8 @@ div[data-testid="stDataFrame"] {
     letter-spacing: 0.08em;
     border-bottom: 2px solid #0068C9;
     padding-bottom: 4px;
-    display: inline-block;
+    display: block;
+    width: 100%;
 }
 
 /* ── Section Header Wrappers ─────────────────────────────── */
