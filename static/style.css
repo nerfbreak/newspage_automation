@@ -28,6 +28,10 @@
     to   { opacity: 1; transform: translateY(0); }
 }
 
+[data-testid="stAppViewBlockContainer"] {
+    padding-top: 2rem !important;
+}
+
 /* --- Typography --- */
 h1 {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
