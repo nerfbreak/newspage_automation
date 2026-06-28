@@ -345,13 +345,13 @@ with right_col:
                     col = "#10B981" if st_val == "Success" else ("#EF4444" if st_val in ["Failed","Invalid"] else "#F59E0B")
                     
                     tl_html += (
-                        "<div class='timeline-item'>\\n"
-                        f"<span class='timeline-date'>{ts_str}</span>\\n"
-                        f"<div class='timeline-title'>{html.escape(r['dist'])}</div>\\n"
-                        "<div class='timeline-desc'>\\n"
-                        f"<span style='color: {col}; font-weight: 700;'>{html.escape(st_val)}</span> in {r['mod']} by {html.escape(str(r['by']))}\\n"
-                        "</div>\\n"
-                        "</div>\\n"
+                        "<div class='timeline-item'>"
+                        f"<span class='timeline-date'>{ts_str}</span>"
+                        f"<div class='timeline-title'>{html.escape(r['dist'])}</div>"
+                        "<div class='timeline-desc'>"
+                        f"<span style='color: {col}; font-weight: 700;'>{html.escape(st_val)}</span> in {r['mod']} by {html.escape(str(r['by']))}"
+                        "</div>"
+                        "</div>"
                     )
                 tl_html += "</div>"
                 st.markdown(tl_html, unsafe_allow_html=True)
