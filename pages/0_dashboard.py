@@ -74,51 +74,10 @@ bot_running = (
 )
 
 # --- HERO BANNER ---
-st.markdown("""
-<style>
-div.element-container:has(.easter-egg-waving-hand),
-div.element-container:has(.easter-egg-waving-hand) + div.element-container {
-    display: inline-block;
-    vertical-align: middle;
-}
-div.element-container:has(.easter-egg-waving-hand) + div.element-container div.stButton button {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    font-size: 2.2rem !important;
-    padding: 0 0 0 6px !important;
-    margin: 0 !important;
-    line-height: 1 !important;
-    height: auto !important;
-    min-height: 0 !important;
-    color: inherit !important;
-}
-div.element-container:has(.easter-egg-waving-hand) + div.element-container div.stButton button:hover,
-div.element-container:has(.easter-egg-waving-hand) + div.element-container div.stButton button:active {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
 st.markdown(f"""
-<div class="easter-egg-waving-hand" style='display: inline-block;'>
-    <h1 style='font-size: 2.2rem; font-weight: 800; color: #0F172A; margin: 0; line-height: 1;'>Halo, {html.escape(st.session_state.current_user)}!</h1>
-</div>
-""", unsafe_allow_html=True)
-
-if 'easter_egg_clicks' not in st.session_state:
-    st.session_state.easter_egg_clicks = 0
-if st.button("👋", key="easter_egg_btn"):
-    st.session_state.easter_egg_clicks += 1
-    if st.session_state.easter_egg_clicks >= 5:
-        st.session_state.easter_egg_clicks = 0
-        st.switch_page("pages/7_element_crawler.py")
-
-st.markdown(f"""
-<div style='margin-bottom: 24px; margin-top: 4px;'>
-    <p style='font-size: 0.95rem; color: #64748B; margin: 0; font-weight: 500;'>Pantau ringkasan aktivitas otomatisasi distributor Anda hari ini, {datetime.now().strftime('%d %b %Y')}.</p>
+<div style='margin-bottom: 24px;'>
+    <h1 style='font-size: 2.2rem; font-weight: 800; color: #0F172A; margin: 0;'>Halo, {html.escape(st.session_state.current_user)}! 👋</h1>
+    <p style='font-size: 0.95rem; color: #64748B; margin-top: 4px; font-weight: 500;'>Pantau ringkasan aktivitas otomatisasi distributor Anda hari ini, {datetime.now().strftime('%d %b %Y')}.</p>
 </div>
 """, unsafe_allow_html=True)
 
