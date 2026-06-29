@@ -240,7 +240,11 @@ with right_col:
             unified_rows = []
             
             if not df_adj.empty:
-                for _, row in df_adj.head(10).iterrows():
+                # Deduplicate multiple SKUs in the same batch
+                f_adj_recent = df_adj.copy()
+                f_adj_recent['time_key'] = f_adj_recent['created_at'].dt.floor('Min')
+                f_adj_recent = f_adj_recent.drop_duplicates(subset=['np_user', 'run_by', 'time_key', 'status'])
+                for _, row in f_adj_recent.head(10).iterrows():
                     q = str(row.get("qty", ""))
                     mod = "Mutation" if ("PAC:" in q or "CAR:" in q) else "Inventory"
                     dist = user_to_dist.get(row.get("np_user", ""), row.get("np_user", "N/A"))
@@ -305,6 +309,9 @@ if db_connected:
     full_rows = []
     if not df_adj.empty:
         f_adj = df_adj[df_adj["created_at"] >= cutoff_date] if cutoff_date else df_adj.copy()
+        # Deduplicate multiple SKUs logged in the same minute for the same module
+        f_adj['time_key'] = f_adj['created_at'].dt.floor('Min')
+        f_adj = f_adj.drop_duplicates(subset=['np_user', 'run_by', 'time_key', 'status'])
         for _, row in f_adj.iterrows():
             q = str(row.get("qty", ""))
             mod = "Stock Mutation" if ("PAC:" in q or "CAR:" in q) else "Inventory Adjustment"

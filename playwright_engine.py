@@ -66,13 +66,29 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
     page.locator("id=txtUserid").fill(user_id_np)
     page.locator("id=txtPasswd").fill(pass_np)
     page.locator("id=btnLogin").click(force=True)
-    try:
-        btn = page.locator("id=SYS_ASCX_btnContinue")
-        btn.wait_for(state="visible", timeout=5_000)
-        ui_log("AUTH", "Active session interceptor detected. Bypassing...")
-        btn.click(force=True)
-    except Exception: 
-        ui_log("SYS", "No interceptor detected. Clean session acquired.")
+    
+    # Menunggu secara dinamis (hingga TIMEOUT_MS) agar Newspage memproses login.
+    # Bisa langsung masuk ke Default.aspx ATAU memunculkan popup interceptor.
+    start_time = time.time()
+    while time.time() - start_time < (TIMEOUT_MS / 1000.0):
+        if "Default.aspx" in page.url:
+            ui_log("SYS", "No interceptor detected. Clean session acquired.")
+            break
+            
+        try:
+            btn = page.locator("id=SYS_ASCX_btnContinue")
+            if btn.is_visible():
+                ui_log("AUTH", "Active session interceptor detected. Bypassing...")
+                btn.click(force=True)
+                break
+        except Exception:
+            pass
+            
+        page.wait_for_timeout(500)
+    else:
+        # Jika loop habis tapi URL belum berubah dan popup tidak ada
+        if "Default.aspx" not in page.url:
+            raise Exception("Timeout: Server tidak merespon saat verifikasi login. Kredensial mungkin salah atau server down.")
     
     page.wait_for_url("**/Default.aspx", timeout=TIMEOUT_MS, wait_until="domcontentloaded")
     ui_log("AUTH", "Login successful. Session established.")

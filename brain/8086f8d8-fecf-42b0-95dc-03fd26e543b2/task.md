@@ -1,0 +1,23 @@
+- [x] **Step 1: Setup Easter Egg in `utils.py`**
+  - [x] Modify `render_footer()` to use an `st.button` for "by Kopi Mang Toni".
+  - [x] Inject custom CSS to make this button look exactly like regular text (no background, no border, no hover effect).
+  - [x] Implement session state counter (`st.session_state.easter_egg_clicks`).
+  - [x] Redirect to `pages/7_element_crawler.py` upon reaching 10 clicks.
+  - [x] Update `desc_map` and `icon_map` with `"Element Crawler"`.
+- [x] **Step 2: Create `pages/7_element_crawler.py`**
+  - [x] Scaffold the Streamlit page with `utils.render_header`.
+  - [x] Add inputs: Distributor (for auth), Target Path (optional sub-url).
+  - [x] Add "Start Crawl" button.
+  - [x] Call the engine function and display results in `st.dataframe`.
+  - [x] Add "Download CSV" functionality.
+- [x] **Step 3: Implement `run_element_crawler` in `playwright_engine.py`**
+  - [x] Setup managed browser session (login).
+  - [x] Navigate to target path if provided.
+  - [x] Run `page.evaluate` to extract all interactive elements (ID, Class, Name, Text, Tag).
+  - [x] Return list of dictionaries to Streamlit.
+- [x] **Step 4: Hide from Sidebar**
+  - [x] Ensure the new page does not appear in the default sidebar (if `inject_css()` hasn't completely hidden it).
+- [ ] **Step 5: Verify and Document**
+  - [ ] Test the 10x click.
+  - [ ] Test the Crawler extraction.
+  - [ ] Create walkthrough artifact.
