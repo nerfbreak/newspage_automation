@@ -11,6 +11,7 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 - **Tampilan Bebas Gangguan**: Menyembunyikan menu bawaan Streamlit (seperti bar atas dan samping) secara penuh untuk memberikan pengalaman desain yang lebih fokus, luas, dan bersih.
 
 ### 🛠️ Perbaikan & Peningkatan
+- **Stabilitas Bot (Page Load Wait)**: Bot sekarang menunggu halaman benar-benar selesai dimuat 100% sebelum melanjutkan ke langkah berikutnya. Ini mencegah error seperti "elemen tidak ditemukan" yang sering terjadi saat server Newspage sedang lambat.
 - **Akurasi Kuantitas**: Memperbaiki sistem input angka saat proses mutasi agar tidak terjadi error atau kekosongan data di portal Newspage.
 - **Tampilan Tabel Eksekusi**: Merapikan tabel proses saat bot berjalan agar lebih enak dibaca dan rapi dari awal eksekusi.
 - **Indikator Loading**: Memperbaiki loading bar yang sering macet saat proses Mutasi Stok berjalan, sekarang progress terlihat real-time.
