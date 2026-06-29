@@ -90,7 +90,8 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
         if "Default.aspx" not in page.url:
             raise Exception("Timeout: Server tidak merespon saat verifikasi login. Kredensial mungkin salah atau server down.")
     
-    page.wait_for_url("**/Default.aspx", timeout=TIMEOUT_MS, wait_until="domcontentloaded")
+    # Harus menggunakan networkidle agar semua JS click handler (actionpath) terpasang sebelum _navigate_to_stock_adjustment dijalankan.
+    page.wait_for_url("**/Default.aspx", timeout=TIMEOUT_MS, wait_until="networkidle")
     ui_log("AUTH", "Login successful. Session established.")
     ui_log("SUCCESS", "Handshake verified.")
 
