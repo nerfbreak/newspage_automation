@@ -70,3 +70,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-06-28**: **Fixed `_login` Race Condition (Dama Unlocked):** Replaced static 5s wait with dynamic 60s polling loop to handle slow Newspage servers showing "Same User Already Logged On" popup late.
 - **2026-06-28**: **Fixed Dashboard Duplicate Logs:** Added `drop_duplicates` grouped by minute in `0_dashboard.py` so adjusting 50 SKUs only creates 1 row in the dashboard (per status) instead of 50.
 - **2026-06-28**: **Fixed Navigation Timeout for Heavy Distributors:** Changed `wait_until="domcontentloaded"` to `wait_until="networkidle"` at the end of `_login` to ensure all JavaScript `actionpath` event listeners are fully attached to the DOM before clicking the module menu.
+- **2026-06-28**: **Optimized Initial Login Reliability:** Changed `page.goto(URL_LOGIN)` to also use `networkidle` globally across all automation flows to guarantee stable script attachment on initial load.
