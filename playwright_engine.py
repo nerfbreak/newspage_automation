@@ -1132,6 +1132,13 @@ def run_interactive_inspector(user_id_np, pass_np, selected_distributor, URL_LOG
     
     with sync_playwright() as p:
         ext_ui_log("SYS", "Spawning browser for Interactive Inspector (Headless=False)...")
+        
+        # Check if running on Linux/Cloud which doesn't support GUI
+        if sys.platform == "linux" or sys.platform == "linux2":
+            error_msg = "Interactive Inspector tidak bisa dijalankan di server Cloud (Streamlit Cloud/Linux headless) karena tidak ada layar GUI. Fitur ini hanya bisa digunakan jika aplikasi dijalankan di komputer lokal (Windows/Mac)."
+            ext_ui_log("ERROR", error_msg)
+            raise Exception(error_msg)
+            
         # Start in headed mode
         browser = p.chromium.launch(headless=False)
         context = browser.new_context(no_viewport=True)
