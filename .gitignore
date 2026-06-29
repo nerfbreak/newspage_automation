@@ -162,3 +162,6 @@ android/*.apk
 __pycache__/
 *.db
 .states/
+
+# Local Only Features
+pages/7_element_crawler.py
