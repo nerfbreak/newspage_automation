@@ -95,6 +95,23 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
     ui_log("AUTH", "Login successful. Session established.")
     ui_log("SUCCESS", "Handshake verified.")
 
+def _wait_for_page_ready(page, timeout_ms, ui_log=None, context=""):
+    """Menunggu halaman/in-page AJAX request selesai sebelum lanjut ke step berikutnya.
+    Menggunakan networkidle (500ms tanpa aktivitas network) sebagai sinyal utama.
+    Aman dipanggil kapan saja — fallback graceful jika sudah dalam kondisi idle.
+    """
+    wait_timeout = min(timeout_ms, 30_000)
+    label = f" [{context}]" if context else ""
+    if ui_log:
+        ui_log("WAIT", f"Waiting for page to settle{label}...")
+    try:
+        page.wait_for_load_state("networkidle", timeout=wait_timeout)
+    except Exception:
+        # Jika networkidle timeout (mis. server punya background polling ringan),
+        # lanjutkan saja — error nyata akan ditangkap oleh wait_for(state=...) berikutnya.
+        if ui_log:
+            ui_log("WAIT", f"Networkidle timeout{label} — proceeding cautiously.")
+
 def _navigate_to_import_export(page, TIMEOUT_MS, ui_log):
     ui_log("NAV", "Navigating to System module...")
     page.wait_for_timeout(1000)
@@ -104,6 +121,7 @@ def _navigate_to_import_export(page, TIMEOUT_MS, ui_log):
         sys_tab = page.locator("id=pag_Sys_Root_tab_Detail_tab_Header")
         if sys_tab.is_visible():
             sys_tab.click(force=True)
+            _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "System tab")
             page.wait_for_timeout(800)
     except:
         pass
@@ -119,6 +137,7 @@ def _navigate_to_import_export(page, TIMEOUT_MS, ui_log):
         
         # JS Click bypass: ignores visibility and parent menu states
         page.evaluate(f"document.getElementById('{target_id}').click()")
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "Import/Export menu")
         page.wait_for_timeout(1500)
         
     except Exception as e:
@@ -155,6 +174,7 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser):
     
     ui_log("NAV", "Proceeding to next step...")
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "extraction Next")
     page.wait_for_timeout(1000)
     
     ui_log("SYS", "Bypassing disclaimer prompt...")
@@ -192,6 +212,7 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser):
     
     ui_log("SYS", "Committing parameters to job definition...")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_btn_Add_Value").click(force=True)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "extraction Add commit")
     page.wait_for_timeout(2000)
     
     ui_log("SERVER", "Saving job and dispatching execution to server...")
@@ -294,9 +315,11 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser)
     page.wait_for_timeout(1000)
     
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "sales Next")
     page.wait_for_timeout(2000)
     page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
     page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").click(force=True)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "sales disclaimer")
     page.wait_for_timeout(2000)
     
     ui_log("INJECT", "Binding interface target: E_28880804000000001")
@@ -309,6 +332,7 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser)
     page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
     page.wait_for_timeout(2000)
     page.locator("id=pop_Dynamic_grd_Main_ctl02_DynCol_INTF_ID_Value").click(force=True)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "sales intf select")
     page.wait_for_timeout(2000)
     
     ui_log("INJECT", f"Applying parameters: {start_date} to {end_date}")
@@ -417,6 +441,7 @@ def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_l
     ui_log("NAV", "Navigating to Stock Adjustment module...")
     page.wait_for_timeout(3000)
     page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "StockAdj menu")
     
     add_btn = page.locator("id=pag_I_StkAdj_btn_Add_Value")
     add_btn.wait_for(state="attached", timeout=TIMEOUT_MS)
@@ -690,9 +715,11 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
     page.wait_for_timeout(1000)
     
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "promo Next")
     page.wait_for_timeout(2000)
     page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
     page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").click(force=True)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "promo disclaimer")
     page.wait_for_timeout(2000)
 
     for i, target_id in enumerate(promo_ids):
@@ -706,6 +733,7 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
         page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
         page.wait_for_timeout(2000)
         page.get_by_text(target_id, exact=True).click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"promo intf select [{i+1}]")
         page.wait_for_timeout(2000)
         
         ui_log("INJECT", f"[{i+1}/{len(promo_ids)}] Setting file params and dates...")
@@ -739,6 +767,7 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
         
         ui_log("INJECT", f"[{i+1}/{len(promo_ids)}] Committing interface to queue...")
         page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_btn_Add_Value").click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"promo Add commit [{i+1}]")
         page.wait_for_timeout(2000)
         
         if i < len(promo_ids) - 1:
