@@ -1114,3 +1114,89 @@ def run_element_crawler(user_id_np, pass_np, selected_distributor, URL_LOGIN, ta
     except Exception as e:
         ext_ui_log("ERROR", f"Crawler failed: {e}")
         raise e
+
+def run_interactive_inspector(user_id_np, pass_np, selected_distributor, URL_LOGIN, target_path, ext_ui_log):
+    TIMEOUT_MS = 60000
+    ensure_playwright()
+    import sys, asyncio
+    from playwright.sync_api import sync_playwright
+    
+    if sys.platform == "win32": 
+        asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+    try:
+        asyncio.get_event_loop()
+    except RuntimeError:
+        asyncio.set_event_loop(asyncio.new_event_loop())
+
+    recorded_elements = []
+    
+    with sync_playwright() as p:
+        ext_ui_log("SYS", "Spawning browser for Interactive Inspector (Headless=False)...")
+        # Start in headed mode
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context(no_viewport=True)
+        page = context.new_page()
+        
+        # Expose binding to python
+        def handle_record(info):
+            recorded_elements.append(info)
+            ext_ui_log("SUCCESS", f"Recorded Element: &lt;{info.get('Tag', '')} id='{info.get('ID', '')}'&gt;")
+            
+        page.expose_function("recordElement", handle_record)
+        
+        # Inject script into all pages
+        page.add_init_script("""
+            document.addEventListener("click", (e) => {
+                if (e.altKey) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const el = e.target;
+                    let className = "";
+                    try {
+                        className = typeof el.className === "string" ? el.className : (el.getAttribute("class") || "");
+                    } catch(err) {}
+
+                    const info = {
+                        Tag: el.tagName ? el.tagName.toLowerCase() : "",
+                        ID: el.id || "",
+                        Name: el.name || el.getAttribute("name") || "",
+                        Class: className,
+                        Text: (el.innerText || el.value || "").substring(0, 100).trim()
+                    };
+                    
+                    let oldOutline = el.style.outline;
+                    el.style.outline = "2px solid red";
+                    setTimeout(() => el.style.outline = oldOutline, 500);
+
+                    window.recordElement(info).catch(e => console.error(e));
+                }
+            }, true);
+        """)
+
+        try:
+            _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log)
+            
+            if target_path:
+                ext_ui_log("SYS", f"Navigating to {target_path}...")
+                page.goto(f"{URL_LOGIN.rstrip('/')}/{target_path.lstrip('/')}")
+            
+            page.wait_for_load_state("networkidle")
+            
+            ext_ui_log("SUCCESS", "✅ Interactive mode ready! ALT+Click in the browser to record elements. Close the browser when done.")
+            
+            # Wait until page is closed by the user
+            try:
+                page.wait_for_event("close", timeout=0)
+            except Exception:
+                pass
+                
+        except Exception as e:
+            ext_ui_log("ERROR", f"Inspector failed: {e}")
+            raise e
+        finally:
+            try:
+                browser.close()
+            except Exception:
+                pass
+            
+    return recorded_elements

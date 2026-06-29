@@ -48,6 +48,10 @@ with col2:
 
 st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
 
+mode = st.radio("Mode Ekstraksi", ["Auto-Extract Seluruh Halaman", "Interactive Inspector (ALT+Click)"], horizontal=True)
+st.session_state.crawler_mode = mode
+
+
 btn_disabled = st.session_state.is_crawling
 if st.button("🕷️ Start Crawling", type="primary", use_container_width=True, disabled=btn_disabled):
     st.session_state.is_crawling = True
@@ -69,7 +73,11 @@ if st.session_state.is_crawling:
     user, pwd = database.get_distributor_creds(supabase, selected_dist)
     
     try:
-        results = playwright_engine.run_element_crawler(user, pwd, selected_dist, URL_LOGIN, target_path, logger)
+        if st.session_state.get("crawler_mode") == "Interactive Inspector (ALT+Click)":
+            st.info("Browser telah dibuka! Silakan buka jendela Chromium. Tahan ALT + Klik elemen untuk merekam. Tutup browser jika sudah selesai.")
+            results = playwright_engine.run_interactive_inspector(user, pwd, selected_dist, URL_LOGIN, target_path, logger)
+        else:
+            results = playwright_engine.run_element_crawler(user, pwd, selected_dist, URL_LOGIN, target_path, logger)
         st.session_state.crawler_results = results
     except Exception as e:
         st.session_state.crawler_error = str(e)
