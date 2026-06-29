@@ -319,53 +319,7 @@ def render_header(title, subtitle=""):
         st.markdown(html_out, unsafe_allow_html=True)
     else:
         st.markdown(html_out, unsafe_allow_html=True)
-        
-        st.markdown("""
-        <style>
-        div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button {
-            background: transparent !important;
-            border: none !important;
-            color: #31333F !important;
-            font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
-            font-size: 1.75rem !important;
-            font-weight: 700 !important;
-            letter-spacing: -0.02em !important;
-            margin-top: -15px !important;
-            margin-bottom: -15px !important;
-            padding: 0 !important;
-            height: auto !important;
-            min-height: 0 !important;
-            box-shadow: none !important;
-            outline: none !important;
-            justify-content: flex-start !important;
-        }
-        div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button p {
-            font-size: 1.75rem !important;
-            font-weight: 700 !important;
-            letter-spacing: -0.02em !important;
-            margin: 0 !important;
-        }
-        div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button:hover,
-        div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button:active,
-        div.element-container:has(.easter-egg-auto-tool) + div.element-container div.stButton button:focus {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            outline: none !important;
-            color: #0068C9 !important;
-        }
-        </style>
-        <div class="easter-egg-auto-tool"></div>
-        """, unsafe_allow_html=True)
-        
-        if 'easter_egg_clicks' not in st.session_state:
-            st.session_state.easter_egg_clicks = 0
-            
-        if st.button(title, key="easter_egg_auto"):
-            st.session_state.easter_egg_clicks += 1
-            if st.session_state.easter_egg_clicks >= 3:
-                st.session_state.easter_egg_clicks = 0
-                st.switch_page("pages/7_element_crawler.py")
+        st.markdown(f"<h1 style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 1.75rem; font-weight: 700; color: #31333F; letter-spacing: -0.02em; margin-top: -15px; margin-bottom: -15px; padding: 0;'>{title}</h1>", unsafe_allow_html=True)
 
 def render_footer():
     st.markdown(clean_html("""
