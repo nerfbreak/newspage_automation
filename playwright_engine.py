@@ -858,7 +858,13 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             page = context.new_page()
             
             _login(page, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log)
-            _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_log, remark_text)
+            
+            # Resolve actual warehouse from distributor_exceptions
+            exception_dict = database.get_distributor_warehouse_exceptions(supabase)
+            target_whs = exception_dict.get(bot_user)
+            actual_warehouse = target_whs if target_whs and WAREHOUSE == "GOOD_WHS" else WAREHOUSE
+            
+            _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log, remark_text)
             
             success_count = 0
             failed_count = 0
