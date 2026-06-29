@@ -61,7 +61,7 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
         is_super = False
     account_desc = "SUPERUSER" if is_super else f"[{selected_distributor}]"
     
-    page.goto(URL_LOGIN, wait_until="domcontentloaded")
+    page.goto(URL_LOGIN, wait_until="networkidle")
     ui_log("AUTH", f"DOM ready. Injecting {account_desc} credentials...")
     page.locator("id=txtUserid").fill(user_id_np)
     page.locator("id=txtPasswd").fill(pass_np)
