@@ -162,11 +162,11 @@ with right_col:
                 else:
                     resp = requests.get(url, timeout=5)
                     if resp.status_code == 200:
-                        st.toast(f"Newspage OK ({resp.elapsed.total_seconds():.2f}s)", icon="✅")
+                        st.toast(f"Newspage OK ({resp.elapsed.total_seconds():.2f}s)", icon=":material/check_circle:")
                     else:
-                        st.toast(f"HTTP {resp.status_code}", icon="⚠️")
+                        st.toast(f"HTTP {resp.status_code}", icon=":material/warning:")
             except Exception as e:
-                st.toast(f"Ping Failed: {e}", icon="❌")
+                st.toast(f"Ping Failed: {e}", icon=":material/error:")
                 
     with st.container(height=544, border=True):
         
