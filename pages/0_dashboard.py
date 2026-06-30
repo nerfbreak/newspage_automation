@@ -95,7 +95,7 @@ with m4:
     db_class = "status-dot-green" if db_connected else "status-dot-red"
     db_text = "DB CONNECTED" if db_connected else "DB ERROR"
     
-    st.markdown(utils.clean_html(f"""
+    st.markdown(clean_html(f"""
         <div style='background-color: #FFFFFF; padding: 20px 24px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 16px; width: 100%; height: 125px; box-sizing: border-box; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; gap: 12px;'>
             <div style='display: flex; align-items: center; justify-content: space-between;'>
                 <span style='font-size: 0.8rem; font-weight: 700; color: #475569;'>System</span>
