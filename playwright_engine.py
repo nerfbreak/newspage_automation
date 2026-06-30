@@ -508,6 +508,7 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     
     ui_log("INJECT", "Dispatching Add command to grid...")
     page.locator("id=pag_I_StkAdj_NewGeneral_btn_Add_Value").click(force=True)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj add")
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
@@ -625,11 +626,13 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             else:
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
                 page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
+                _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj save")
                 try: 
                     yes_btn = page.locator("id=pag_PopUp_YesNo_btn_Yes_Value")
                     yes_btn.wait_for(state="visible", timeout=5000)
                     ui_log("SERVER", "Confirming save dialog...")
                     yes_btn.click()
+                    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj save yes")
                     ui_log("SERVER", "Document physically written to database.")
                 except Exception: 
                     ui_log("SERVER", "Auto-save confirmed. Document written to database.")
@@ -653,6 +656,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             try:
                 page.once("dialog", lambda dialog: dialog.accept())
                 page.locator("id=btnLogout").click(timeout=10000)
+                _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "logout")
                 ui_log("AUTH", "Pop up confirm logout...")
                 page.wait_for_timeout(2000)
                 ui_log("SUCCESS", "Logged out successfully.")
@@ -846,6 +850,7 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
         
     ui_log("INJECT", "Dispatching Add command to grid...")
     page.locator("id=pag_I_StkAdj_NewGeneral_btn_Add_Value").click(force=True)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "manual stkadj add")
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
@@ -912,11 +917,13 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             else:
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
                 page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
+                _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "manual stkadj save")
                 try: 
                     yes_btn = page.locator("id=pag_PopUp_YesNo_btn_Yes_Value")
                     yes_btn.wait_for(state="visible", timeout=5000)
                     ui_log("SERVER", "Confirming save dialog...")
                     yes_btn.click()
+                    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "manual stkadj save yes")
                     ui_log("SERVER", "Document physically written to database.")
                 except Exception: 
                     ui_log("SERVER", "Auto-save confirmed. Document written to database.")
@@ -940,6 +947,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             try:
                 page.once("dialog", lambda dialog: dialog.accept())
                 page.locator("id=btnLogout").click(timeout=10000)
+                _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "manual logout")
                 ui_log("AUTH", "Pop up confirm logout...")
                 page.wait_for_timeout(2000)
                 ui_log("SUCCESS", "Logged out successfully.")

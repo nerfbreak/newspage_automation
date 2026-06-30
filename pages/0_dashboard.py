@@ -95,8 +95,8 @@ with m4:
     db_class = "status-dot-green" if db_connected else "status-dot-red"
     db_text = "DB CONNECTED" if db_connected else "DB ERROR"
     
-    st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center; gap: 12px; margin-bottom: 16px;'>
+    st.markdown(utils.clean_html(f"""
+        <div style='background-color: #FFFFFF; padding: 20px 24px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 16px; width: 100%; height: 125px; box-sizing: border-box; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; gap: 12px;'>
             <div style='display: flex; align-items: center; justify-content: space-between;'>
                 <span style='font-size: 0.8rem; font-weight: 700; color: #475569;'>System</span>
                 <div style='display: flex; align-items: center; gap: 6px;'><div class='{db_class}'></div><span style='font-size: 0.7rem; font-weight: 800; color: #64748B;'>{db_text}</span></div>
@@ -106,7 +106,24 @@ with m4:
                 <div style='display: flex; align-items: center; gap: 6px;'><div class='{bot_class}'></div><span style='font-size: 0.7rem; font-weight: 800; color: #64748B;'>{bot_text}</span></div>
             </div>
         </div>
-    """, unsafe_allow_html=True)
+    """), unsafe_allow_html=True)
+    
+    if st.button("Ping Newspage", use_container_width=True, key="ping_newspage"):
+        import requests
+        try:
+            cfg = database.get_system_config(supabase)
+            url = cfg.get("URL_LOGIN", "")
+            if not url:
+                st.error("No URL configured in DB")
+            else:
+                resp = requests.get(url, timeout=5)
+                if resp.status_code == 200:
+                    st.success(f"OK ({resp.elapsed.total_seconds():.2f}s)")
+                else:
+                    st.warning(f"HTTP {resp.status_code}")
+        except Exception as e:
+            st.error(f"Failed: {e}")
+
 
 st.markdown("<div style='margin-top: 32px;'></div>", unsafe_allow_html=True)
 
