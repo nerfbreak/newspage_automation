@@ -105,6 +105,7 @@ def _make_alert_box(text: str, bg_color: str, text_color: str, svg_path: str, bo
             font-weight: 700;
             font-size: 0.85rem;
             margin-top: 12px;
+            margin-bottom: 16px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             font-family: "Source Sans 3", "Source Sans Pro", sans-serif;

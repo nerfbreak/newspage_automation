@@ -89,7 +89,7 @@ if st.session_state.get("_pending_clearance_extract", False):
 # --- REVIEW EXTRACTED DATA ---
 if st.session_state.clearance_df is not None:
     st.markdown(make_solid_box(f"Extracted — {len(st.session_state.clearance_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-    if st.button("Clear Data", icon=":material/delete:"):
+    if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
         st.session_state.clearance_df = None
         st.rerun()
 
