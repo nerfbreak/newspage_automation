@@ -57,7 +57,7 @@ with st.container(border=True):
         st.markdown(make_solid_box("Extracting stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
         extract_btn = False
     else:
-        extract_btn = st.button("Extract Stock", type="primary", width="stretch", disabled=not bot_user, icon=":material/download:")
+        extract_btn = st.button("Extract Stock", type="primary", use_container_width=True, disabled=not bot_user, icon=":material/download:")
 
 # Use pending flag so extraction starts AFTER rerun hides the button
 if extract_btn:
@@ -88,10 +88,13 @@ if st.session_state.get("_pending_clearance_extract", False):
 
 # --- REVIEW EXTRACTED DATA ---
 if st.session_state.clearance_df is not None:
-    st.markdown(make_solid_box(f"Extracted — {len(st.session_state.clearance_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-    if st.button("Clear Data", width="stretch", icon=":material/delete:"):
-        st.session_state.clearance_df = None
-        st.rerun()
+    c1, c2 = st.columns([5, 1], vertical_alignment="center")
+    with c1:
+        st.markdown(make_solid_box(f"Extracted — {len(st.session_state.clearance_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+    with c2:
+        if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
+            st.session_state.clearance_df = None
+            st.rerun()
 
 # After extraction, the run_extract stores data in st.session_state.np_df
 # We need to convert it to clearance format (all qty as negative)
@@ -152,7 +155,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
     st.dataframe(df_display[display_cols], width="stretch", hide_index=True)
 
     # --- EXECUTE ---
-    if st.button("Execute", type="primary", width="stretch", icon=":material/play_arrow:"):
+    if st.button("Execute", type="primary", use_container_width=True, icon=":material/play_arrow:"):
         if not bot_user or not bot_pass:
             st.error("Kredensial tidak ditemukan!")
         else:

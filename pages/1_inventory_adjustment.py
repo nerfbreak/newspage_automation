@@ -62,7 +62,7 @@ if "Auto Compare" in adj_mode:
             if bot_user: st.session_state.current_np_user_id = bot_user
         
             btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
-            extract_btn = st.button(btn_label, type="primary", width="stretch", disabled=st.session_state.is_bot_running, icon=":material/download:")
+            extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
             file1 = None
 
     with col2:
@@ -88,10 +88,13 @@ if "Auto Compare" in adj_mode:
             file2 = st.session_state.get("file2_uploader")
 
     if st.session_state.np_df is not None:
-        st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-        if st.button("Clear Data", width="stretch", icon=":material/delete:"):
-            st.session_state.np_df = None
-            st.rerun()
+        c1, c2 = st.columns([5, 1], vertical_alignment="center")
+        with c1:
+            st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+        with c2:
+            if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
+                st.session_state.np_df = None
+                st.rerun()
 
     ext_label_placeholder = st.empty()
     ext_log_placeholder = st.empty()
@@ -151,7 +154,7 @@ if "Auto Compare" in adj_mode:
                 qty_col2 = st.selectbox("Qty column (Dist)", df2.columns, index=idx_qty2)
                 st.markdown("<div style='margin-bottom: 84px;'></div>", unsafe_allow_html=True)
 
-        if st.button("Start Adjustment", type="primary", width="stretch", icon=":material/play_arrow:"):
+        if st.button("Start Adjustment", type="primary", use_container_width=True, icon=":material/play_arrow:"):
             TARGET_SKUS = database.get_target_skus(supabase)
             multipliers = database.get_multiplier_rules(supabase, st.session_state.current_np_user_id)
         

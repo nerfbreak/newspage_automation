@@ -149,7 +149,7 @@ with st.container(border=True):
     selected_reason_code = [k for k, v in reason_options.items() if v == selected_reason_label][0]
     remark_text = st.text_input("Remark", max_chars=50, key="mutasi_remark")
 
-    execute_clicked = st.button("Execute", type="primary", width="stretch", disabled=not can_execute, icon=":material/play_arrow:")
+    execute_clicked = st.button("Execute", type="primary", use_container_width=True, disabled=not can_execute, icon=":material/play_arrow:")
 
 if execute_clicked:
     st.session_state.is_mutasi_running = True

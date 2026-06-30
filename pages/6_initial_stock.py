@@ -95,7 +95,7 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
     with st.expander("Preview raw data", expanded=False):
         st.dataframe(df_raw.head(20), width="stretch", hide_index=True)
 
-    if st.button("Load Data", type="primary", width="stretch", icon=":material/upload:"):
+    if st.button("Load Data", type="primary", use_container_width=True, icon=":material/upload:"):
         df_init = df_raw[[sel_sku, sel_qty]].copy()
         has_desc = sel_desc != '(None)' and sel_desc != sel_sku
         if has_desc:
@@ -131,12 +131,11 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
 if st.session_state.initial_stock_df is not None:
     df_init = st.session_state.initial_stock_df
 
-    c1, c2 = st.columns([5, 1])
+    c1, c2 = st.columns([5, 1], vertical_alignment="center")
     with c1:
         st.markdown(make_solid_box(f"Loaded — {len(df_init)} items from uploaded file", "#0068C9", "#0068C9"), unsafe_allow_html=True)
     with c2:
-        st.markdown("<div style='margin-top: 12px;'></div>", unsafe_allow_html=True)
-        if st.button("Clear Data", width="stretch", icon=":material/delete:"):
+        if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
             st.session_state.initial_stock_df = None
             st.session_state.initial_stock_raw = None
             st.rerun()
@@ -178,7 +177,7 @@ if st.session_state.initial_stock_df is not None and len(st.session_state.initia
     if st.session_state.is_initial_running:
         st.markdown(make_solid_box("Initializing stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
     else:
-        if st.button("Execute", type="primary", width="stretch", icon=":material/play_arrow:"):
+        if st.button("Execute", type="primary", use_container_width=True, icon=":material/play_arrow:"):
             if not bot_user or not bot_pass:
                 st.error("Kredensial tidak ditemukan!")
             else:

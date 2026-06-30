@@ -59,7 +59,7 @@ if not st.session_state.logged_in:
         
         st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
         
-        submit = st.form_submit_button("LOGIN", type="primary", width="stretch")
+        submit = st.form_submit_button("LOGIN", type="primary", use_container_width=True)
         
         if submit:
             if not username:

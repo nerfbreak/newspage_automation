@@ -143,7 +143,7 @@ with left_col:
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
-                        if st.button("Launch Module", key=mod["key"], width="stretch"): st.switch_page(mod["page"])
+                        if st.button("Launch Module", key=mod["key"], use_container_width=True): st.switch_page(mod["page"])
         if i < len(MODULES) - 2:
             st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
 

@@ -87,7 +87,7 @@ with st.container(border=True):
         st.stop()
 
     btn_label = "Syncing & Comparing..." if st.session_state.is_promo_bot_running else "Start Sync"
-    promo_btn = st.button(btn_label, type="primary", width="stretch", disabled=st.session_state.is_promo_bot_running, icon=":material/sync:")
+    promo_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_promo_bot_running, icon=":material/sync:")
 
 # --- TERMINAL & LOGS ---
 promo_label_placeholder = st.empty()
@@ -144,7 +144,7 @@ if st.session_state.promo_zip_data:
         
     st.success("Data Newspage & Excel SharePoint siap dibandingkan!")
     
-    if st.button("Run Analysis", type="primary", width="stretch", icon=":material/play_arrow:"):
+    if st.button("Run Analysis", type="primary", use_container_width=True, icon=":material/play_arrow:"):
         with st.spinner("Menganalisis kecocokan data..."):
             try:
                 # 1. Process Newspage ZIP
