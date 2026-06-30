@@ -1,0 +1,285 @@
+
+
+<!DOCTYPE HTML>
+<html id="htmAPPROOT" xmlns="http://www.w3.org/1999/xhtml" data-useragent="python-requests/2.34.2">
+<head><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><title>
+	Accenture NewsPage R5Office Application
+</title><link rel="Shortcut icon" href="Sys/Images/favicon.ico" /><link rel="apple-touch-icon" href="Sys/Images/WebClip.png" /><link id="sysCSS" rel="stylesheet" type="text/css" href="Sys/CSS/System.css" /><link id="jnotification" rel="stylesheet" type="text/css" href="Sys/CSS/ui.jquery_notification_v.1.css" />
+
+    <script type="text/javascript">
+var varIsChangePasswordMode = false;
+    </script>
+    <script type="text/javascript" language="JavaScript" src="Sys/JavaScript/aspx_Logon.js"></script>
+    <script type="text/javascript" language="JavaScript" src="Sys/JavaScript/System.debug.js"></script>
+    <script type="text/javascript" language="JavaScript" src="Sys/JavaScript/System.IO.debug.js"></script>
+    <script type="text/javascript" language="JavaScript" src="Sys/JavaScript/System.Text.debug.js"></script>
+    <script type="text/javascript" language="JavaScript" src="Sys/JavaScript/System.Convert.debug.js"></script>
+    <script type="text/javascript" language="JavaScript" src="Sys/JavaScript/System.BitConverter.debug.js"></script>
+    <script type="text/javascript" language="JavaScript" src="Sys/JavaScript/System.BigInt.debug.js"></script>
+    <script type="text/javascript" language="JavaScript" src="Sys/JavaScript/System.Security.Cryptography.SHA1.debug.js"></script>
+    <script type="text/javascript" language="JavaScript" src="Sys/JavaScript/System.Security.Cryptography.debug.js"></script>
+    <script type="text/javascript" language="JavaScript" src="Sys/JavaScript/System.Security.Cryptography.RSA.debug.js"></script>
+    <script type="text/javascript" language="javascript" src="Sys/JavaScript/jquery-3.5.0.js"></script>
+    <script type="text/javascript" language="javascript" src="Sys/JavaScript/jquery-migrate-3.3.0.js"></script>
+    <script type="text/javascript" language="javascript" src="Sys/JavaScript/jquery.caret-1.5.2.js"></script>
+    <script type="text/javascript" language="javascript" src="Sys/JavaScript/ui.jquery_notification_v.1.js"></script>
+    <script type="text/javascript" language="javascript" src="Sys/JavaScript/ui.tools.js"></script>
+
+    <style id="cssMain" type="text/css">
+html
+{
+    overflow        : auto;
+    overflow-x      : auto;
+    overflow-y      : auto;
+    text-align      : center;
+}
+body
+{
+    margin-left     : 0px;
+    margin-top      : 0px;
+    margin-right    : 0px;
+    margin-bottom   : 0px;
+    text-align      : center;
+}
+.ErrMessage
+{
+    font-family     : 'Roboto', sans-serif; 
+    font-size       : 14px; 
+    font-weight     : bold;
+    color           : #FF0000;
+}
+.VersionLabel
+{
+    font-family     : 'Roboto', sans-serif; 
+    font-size       : 12px; 
+    color           : #555555;
+}
+.AllRightsReservedLabel
+{
+    font-family     : 'Roboto', sans-serif; 
+    font-size       : 12px; 
+    font-weight     : normal;
+    color           : #777777;
+}
+.ItemName
+{
+    font-family     : 'Roboto', sans-serif; 
+    font-size       : 14px;
+    font-weight     : bold;
+}
+.ItemValue
+{
+    font-family     : 'Roboto', sans-serif; 
+    font-size       : 14px;
+}
+.LoginButton
+{
+    display         : inline-block;
+    margin          : 5px 0px 10px 0px !important;
+    padding         : 8px 0px 8px 0px !important;
+    font-family     : 'Roboto', sans-serif; 
+    font-size       : 16px;
+    font-weight     : bold;
+    color           : #ffffff !important;
+    background-color:#0096FF !important;
+    text-align      : center !important;
+    width           : 100%;
+    height          : 24px;
+    text-decoration : none;
+    white-space     : nowrap;
+}
+.LoginButton:hover
+{
+    box-shadow      : 15px 15px 15px rgba(10, 10, 10, 0.75);
+    font-size       : 20px;
+}
+.SSOLoginButton
+{
+    display         : inline-block;
+    margin          : 10px 0px 10px 0px !important;
+    font-family     : 'Roboto', sans-serif; 
+    font-size       : 16px;
+    color           : #408ECC;
+    text-align      : right;
+    text-decoration : none;
+    white-space     : nowrap;
+}
+.SSOLoginButton:hover
+{
+    font-size       : 18px;
+    font-weight     : bold;
+}
+.DemoTitle
+{
+    font-family     : 'Roboto', sans-serif; 
+    font-size       : 12px;
+    font-weight     : normal;
+    color           : #FF0000;
+}
+.RegisterLink
+{
+    font-family     : 'Roboto', sans-serif; 
+    font-size       : 12px;
+    font-weight     : bold;
+    color           : #0000FF;
+    text-align      : center;
+    text-decoration : none;
+}
+.ForgotPassword
+{
+    display         : inline-block;
+    margin          : 10px 0px 0px 0px;
+    font-family     : 'Roboto', sans-serif; 
+    font-size       : 10px;
+    color           : #0096FF;
+    text-align      : left;
+    text-decoration : none;
+    height          : 18px;
+}
+.ForgotPassword:hover
+{
+    font-size       : 12px;
+}
+.divCenter
+{
+    display             : flex;
+    justify-content     : center;
+    align-items         : center;
+    background-color    : #ffffff;
+    width               : 300px;
+    height              : 200px;
+    padding             : 38px 60px 38px 60px;
+    box-shadow          : 15px 15px 15px rgba(10, 10, 10, 0.75);
+    /* --- Rounded Style --- */
+    border-radius                           : 15px;
+    -moz-border-radius                      : 15px;
+    -webkit-border-radius                   : 15px;
+    /* --- Rounded Style --- */
+}
+    </style><link id="myNPSysEngCSS" rel="stylesheet" type="text/css" href="Sys/CSS/NPSysEng.css" /><link id="ctl18" rel="stylesheet" type="text/css" href="App/dms/CSS/evol.colorpicker.css" /><link id="ctl19" rel="stylesheet" type="text/css" href="App/dms/CSS/Map.css" /><link id="ctl20" rel="stylesheet" type="text/css" href="App/dms/CSS/NPOfficeDraw.css" /><link id="ctl21" rel="stylesheet" type="text/css" href="App/dms/CSS/Test.css" /><link id="ctl22" rel="stylesheet" type="text/css" href="App/dms/CSS/ui.dropdownchecklist.css" /></head>
+<body id="Body" style="height: 500px;">
+    <div id="divAPPROOT" style="position:absolute; top:0px; left:0px; filter:alpha(opacity=0); opacity:0.0; background-color:Gray; z-index:99001; display:none;">
+    </div>
+    <div id="divAPPROOTLoader" style="position:absolute; top:0px; left:0px; z-index:99000; display:none;">
+        <img src="Sys/Images/Ajax-Loader.gif" />
+    </div>
+    <form name="form1" method="post" action="./Logon.aspx" id="form1" autocomplete="off" onkeypress="Logon(event)">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="lEp3jTcPjN6csTmqxofdMQE9pr7FA6gNeoskTMTxqu51/J+yjhlApLuVhq7nb3W5qZLKwDWqZ0HlKgKyuVn5j1zpZak/KcZn6SvRgpmcru3agKJxgWPI1MaZrOXD5VpHcg9ZbeTL8/xwrB1E+cWidp/9jhtcu/fX1eIjBBNt0lMhHTBowlpTwfLHU1Swo1JoYAYn8hlXPBDxLuwlf2LE9P5DBnZ22L0rP3IC+yYgH/J3JJxLCmITx0Q5rLBwSqAAeklcqQTHMMU7nqIKRhbDjJfqme9+ETFQupb1pAKqHmm4uYPq9OAlT9l5NxBfMpr56xJWga9eAdd0wTr8E3BJvBNXAUeq+G8gAXDmEl+QLKp3745an9ex68s29pNybM9v2p2TgRfw6NOGlzOwGMniRSL6ysvr1qRlNCl0AFIAwEB8bJ+8yPCsEVao4OatTOiyJzQR8uGPGAaU2XVOSq/Ucgkziyv1AhsqGKXItOgvZPjfr9aSRjpt0voRTgLxPCkNEmGGzWCSlc0cuFhSP9SRQpavB2g=" />
+
+
+<script src="/RB_ID/ScriptResource.axd?d=r92eJVmoMuB36wciXjlBAKXH3WVJJNcxoojd6D7Z_sf-VxKKmgkay298lgHLyzXCClsMPLw0y_M-1VaZLscWALuKOLgSOr1fPSr1I7_Zoqkedd8FrU_tsRbtJrWwB2-t4r7CuiWaZ7ONNSST5g4bW7LEwuXbpKFC0FsdtcJvI1HKxoAs0&amp;t=32e5dfca" type="text/javascript"></script>
+<script src="Sys/JavaScript/NP.WebServiceProxy.js" type="text/javascript"></script>
+<script src="SYS/JavaScript/NP.UI.js" type="text/javascript"></script>
+<script src="SYS/JavaScript/NP.Environment.js" type="text/javascript"></script>
+<script src="SYS/JavaScript/webkit.js" type="text/javascript"></script>
+<script src="/RB_ID/ScriptResource.axd?d=c-YMrYbqr6e1M2mx37uDhnkzDpHYg9rlJt4cQFLUh1EeTfvMaT4rBHak8oRQkAJPG-KWNIJ_36DCRUXbIVcza6jmoUhnLwSxFCzQIX34ZP3Ywnq_JpWSRX7YFxiOaSFvvNDUAlp1qaQBWzYHNlv0lPrXzJ45-HVzgsQqSXjk72sWYy1N0&amp;t=3d68c9b1" type="text/javascript"></script>
+<script src="/RB_ID/ScriptResource.axd?d=CiY4NnrJ4l-raN6rASE0x-_qKC1Ci0BCXP5Yndnef2rQgZSEHVKOJIB56i408r9VIt5NTHqUC7V2p0SGURX3cfd5jRM2dNgdgNqBXz6K2JnlJ7nwsJ_7zLFcs3sK8OzW-bqhNM3v8R3WbHKGRw12awpZv7HKUqRTVoGmoPg6VojK1JoH0&amp;t=ffffffffd012fd1e" type="text/javascript"></script>
+<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="7E7B109F" />
+<input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="" />
+        <div style="display:none;">
+            <input type="hidden" name="SYS_KEY4RSA" id="SYS_KEY4RSA" value="&lt;RSAKeyValue>&lt;Modulus>96z1izjcCFGM8oR2XUj0Sb5gGj1VhClptJtwwRCfxpq6Z2tZytNugC2I4umDejmnavS3blbWHTi59/IE8hhM4KONu7RD6mIqlcVoPxrlHVVxR/EbW5x9M6t/qglwNwcCLbDL+RZ+nqBHmizJcdfIB1Cm8jQnp/TKM9rSRD8VR08=&lt;/Modulus>&lt;Exponent>AQAB&lt;/Exponent>&lt;/RSAKeyValue>" />
+            <input type="hidden" name="SYS_TokenKey" id="SYS_TokenKey" />
+            <input type="hidden" name="SYS_ScreenWidth" id="SYS_ScreenWidth" />
+            <input type="hidden" name="SYS_ScreenHeight" id="SYS_ScreenHeight" />
+            <script type="text/javascript">
+if($get('SYS_ScreenWidth').value == '')
+{
+    $get('SYS_ScreenWidth').value   = screen.width;
+    $get('SYS_ScreenHeight').value  = screen.height;
+    window.location = encodeURI('./Logon.aspx?SR=' + screen.width + 'x' + screen.height);
+}
+            </script>
+        </div>
+
+        <div id="NPR5APP_LOGON" align="center" style="position: absolute;">
+            <br />
+            <table id="htmlTable" width="870" height="570" background="App/dms/Images/App-Logon.png">
+	<tr>
+		<td style="height: 130px;">
+                    </td>
+	</tr>
+	<tr>
+		<td style="text-align: center; text-align: -webkit-center;">
+                        <div class="divCenter" align="center" style="">
+                            <table border="0" cellpadding="0" cellspacing="0" style="width: 280px; text-align: left;">
+                                <tr>
+                                    <td style="text-align: center">
+                                        <table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+                                            <tr>
+                                                <td style="TEXT-ALIGN: left; height: 28px; width: 80px;">
+                                        <span id="lblLoginID" class="ItemName">User ID</span></td>
+                                                <td style="TEXT-ALIGN: left;">
+                                        <input name="txtUserid" type="text" maxlength="20" id="txtUserid" tabindex="1" class="ItemValue" />
+                                        &nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="TEXT-ALIGN: left; height: 28px; width: 80px;">
+                                        <span id="lblPassword" class="ItemName">Password</span></td>
+                                                <td style="TEXT-ALIGN: left;">
+                                        <input name="txtPasswd" type="password" maxlength="80" id="txtPasswd" tabindex="1" class="ItemValue" autocomplete="new-password" />
+                                        &nbsp;</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="height: 58px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+                                            <tr>
+                                                <td style="TEXT-ALIGN: right">
+                                        
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="TEXT-ALIGN: center">
+                                        <a onclick="GetRSA();" id="btnLogin" tabindex="1" class="LoginButton" href="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;btnLogin&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, true))">Login</a>
+                                        </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="TEXT-ALIGN: center">
+                                        
+                                                </td>
+                                            <tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+	</tr>
+	<tr>
+		<td style="text-align: center; text-align: -webkit-center;">
+                        <span id="lblMessage" class="ErrMessage"></span>
+                    </td>
+	</tr>
+	<tr>
+		<td style="text-align: center; text-align: -webkit-center;">
+                        <span id="lblVersion" class="VersionLabel">8.1.3.3_RGB202604_20260615.SVNCOMMITREVISION<BR>5.8.0.25 R:20230503 .Net4.0</span>
+                    </td>
+	</tr>
+	<tr>
+		<td style="height:16px; text-align: center; text-align: -webkit-center;">
+                        
+                    </td>
+	</tr>
+	<tr>
+		<td style="height:16px; text-align: center; text-align: -webkit-center;">
+                        <span id="lblAllRightsReserved" class="AllRightsReservedLabel">All Rights Reserved</span>
+                    </td>
+	</tr>
+</table>
+
+        </div>
+    
+
+<script type="text/javascript">
+//<![CDATA[
+Sys.Application.add_init(function() {
+    $create(NPAjaxControls.NPTextConverterBehavior, {"id":"txtUserid_ajax_NPTextConverterExtender"}, null, null, $get("txtUserid"));
+});
+//]]>
+</script>
+</form>
+    <script type="text/javascript">Init_aspx_Logon();</script>
+</body>
+</html>

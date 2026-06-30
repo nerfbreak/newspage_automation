@@ -132,7 +132,7 @@ with left_col:
                 mod = MODULES[i + j]
                 with col:
                     with st.container(border=True):
-                        st.markdown(f"""
+                        st.markdown(clean_html(f"""
                         <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
                             <div style='width: 40px; height: 40px; border-radius: 8px; background: {mod["bg"]}; color: {mod["color"]}; display: flex; align-items: center; justify-content: center;'>
                                 {mod["icon"]}
@@ -163,7 +163,7 @@ with right_col:
                 bot_pass = st.secrets.get("NP_PASS_SUPER", "")
                 
                 if not url or not bot_user or not bot_pass:
-                    st.toast("Missing URL/Credentials", icon="❌")
+                    st.toast("Missing URL/Credentials", icon=":material/error:")
                 else:
                     start_t = time.time()
                     session = requests.Session()
@@ -172,15 +172,17 @@ with right_col:
                     vsg = re.search(r'id="__VIEWSTATEGENERATOR"\s+value="(.*?)"', r1.text)
                     ev = re.search(r'id="__EVENTVALIDATION"\s+value="(.*?)"', r1.text)
                     
-                    if vs and ev:
+                    if vs:
                         data = {
                             '__VIEWSTATE': vs.group(1),
                             '__VIEWSTATEGENERATOR': vsg.group(1) if vsg else '',
-                            '__EVENTVALIDATION': ev.group(1),
                             'txtUserid': bot_user,
                             'txtPasswd': bot_pass,
                             'btnLogin': 'Login'
                         }
+                        if ev:
+                            data['__EVENTVALIDATION'] = ev.group(1)
+                            
                         r2 = session.post(url, data=data, timeout=10)
                         elapsed = time.time() - start_t
                         if "Default.aspx" in r2.url or "Logon" not in r2.url:
@@ -188,7 +190,7 @@ with right_col:
                         else:
                             st.toast(f"Login Failed (Check Credentials)", icon=":material/warning:")
                     else:
-                        st.toast("Failed to parse ASP.NET tokens", icon=":material/warning:")
+                        st.toast("Failed to parse ASP.NET tokens", icon=":material/error:")
             except Exception as e:
                 st.toast(f"Ping Failed: {e}", icon=":material/error:")
                 
