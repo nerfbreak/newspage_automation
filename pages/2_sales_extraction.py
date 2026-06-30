@@ -7,7 +7,7 @@ from utils import (
     make_solid_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
     encode_param, decode_param, send_telegram_alert,
-    init_session_state, make_terminal_logger,
+    init_session_state, make_terminal_logger, resolve_distributor_url,
 )
 
 # --- AUTH CHECK ---
@@ -35,17 +35,7 @@ with st.container(border=True):
     col1, col2, col3 = st.columns([2, 1, 1])
     
     list_dist = database.get_distributor_list(supabase)
-    url_d = st.query_params.get("d", None)
-    url_dist = None
-    if url_d:
-        url_dist = decode_param(url_d)
-    else:
-        plain_dist = st.query_params.get("distributor", None)
-        if plain_dist:
-            url_dist = plain_dist
-            st.query_params.pop("distributor", None)
-            
-    default_index = list_dist.index(url_dist) if url_dist in list_dist else 0
+    url_dist, default_index = resolve_distributor_url(list_dist)
 
     with col1:
         selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index)

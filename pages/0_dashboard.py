@@ -84,26 +84,11 @@ st.markdown(f"""
 # --- TOP KPI METRICS ---
 m1, m2, m3, m4 = st.columns(4)
 with m1:
-    st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 16px;'>
-            <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Total Extractions</div>
-            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px; line-height: 1;'>{total_extractions}</div>
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown(render_metric_card("Total Extractions", total_extractions), unsafe_allow_html=True)
 with m2:
-    st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 16px;'>
-            <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Active Distributors</div>
-            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px; line-height: 1;'>{total_distributors}</div>
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown(render_metric_card("Active Distributors", total_distributors), unsafe_allow_html=True)
 with m3:
-    st.markdown(f"""
-        <div style='background: #FFFFFF; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); min-height: 98px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 16px;'>
-            <div style='color: #64748B; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>Synced Logs</div>
-            <div style='color: #0F172A; font-size: 1.8rem; font-weight: 800; margin-top: 4px; line-height: 1;'>{total_logs}</div>
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown(render_metric_card("Synced Logs", total_logs), unsafe_allow_html=True)
 with m4:
     bot_class = "status-dot-green" if bot_running else "status-dot-gray"
     bot_text = "BOT RUNNING" if bot_running else "BOT STANDBY"
@@ -131,103 +116,36 @@ left_col, right_col = st.columns([7, 3], gap="large")
 with left_col:
     st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Application Modules</h3>", unsafe_allow_html=True)
     
-    # 3x2 Grid for Modules
-    r1c1, r1c2 = st.columns(2)
-    with r1c1:
-        with st.container(border=True):
-            st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
-                <div style='width: 40px; height: 40px; border-radius: 8px; background: #EFF6FF; color: #3B82F6; display: flex; align-items: center; justify-content: center;'>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                </div>
-                <div>
-                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Inventory Adjustment</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Singkronisasi & rekonsiliasi data stok fisik vs sistem</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Launch Module", key="btn_inv", width="stretch"): st.switch_page("pages/1_inventory_adjustment.py")
+    MODULES = [
+        {"title": "Inventory Adjustment", "desc": "Singkronisasi & rekonsiliasi data stok fisik vs sistem", "icon": "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'></path><polyline points='3.27 6.96 12 12.01 20.73 6.96'></polyline><line x1='12' y1='22.08' x2='12' y2='12'></line></svg>", "bg": "#EFF6FF", "color": "#3B82F6", "page": "pages/1_inventory_adjustment.py", "key": "btn_inv"},
+        {"title": "Sales Extract", "desc": "Otomatisasi penarikan faktur penjualan distributor", "icon": "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='3' width='20' height='14' rx='2' ry='2'></rect><line x1='8' y1='21' x2='16' y2='21'></line><line x1='12' y1='17' x2='12' y2='21'></line></svg>", "bg": "#F3E8FF", "color": "#9333EA", "page": "pages/2_sales_extraction.py", "key": "btn_sales"},
+        {"title": "Promo Compare", "desc": "Audit & komparasi data klaim promosi berjalan", "icon": "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'></path><polyline points='14 2 14 8 20 8'></polyline><line x1='16' y1='13' x2='8' y2='13'></line><line x1='16' y1='17' x2='8' y2='17'></line><polyline points='10 9 9 9 8 9'></polyline></svg>", "bg": "#DCFCE7", "color": "#16A34A", "page": "pages/3_promotion_comparison.py", "key": "btn_promo"},
+        {"title": "Stock Mutation", "desc": "Lacak riwayat pergerakan stok harian (masuk/keluar)", "icon": "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'></circle><polyline points='12 16 16 12 12 8'></polyline><line x1='8' y1='12' x2='16' y2='12'></line></svg>", "bg": "#FEF3C7", "color": "#D97706", "page": "pages/4_stock_mutation.py", "key": "btn_mut"},
+        {"title": "Clearance Stock", "desc": "Monitor barang clearance dan sisa stok mati", "icon": "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 3h18v18H3zM15 9l-6 6M9 9l6 6'/></svg>", "bg": "#FEE2E2", "color": "#DC2626", "page": "pages/5_clearance_stock.py", "key": "btn_clear"},
+        {"title": "Initial Stock", "desc": "Setup baseline data stok awal untuk distributor baru", "icon": "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='3' width='18' height='18' rx='2' ry='2'></rect><line x1='12' y1='8' x2='12' y2='16'></line><line x1='8' y1='12' x2='16' y2='12'></line></svg>", "bg": "#E0E7FF", "color": "#4F46E5", "page": "pages/6_initial_stock.py", "key": "btn_init"},
+    ]
     
-    with r1c2:
-        with st.container(border=True):
-            st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
-                <div style='width: 40px; height: 40px; border-radius: 8px; background: #F3E8FF; color: #9333EA; display: flex; align-items: center; justify-content: center;'>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                </div>
-                <div>
-                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Sales Extract</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Otomatisasi penarikan faktur penjualan distributor</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Launch Module", key="btn_sales", width="stretch"): st.switch_page("pages/2_sales_extraction.py")
-
-    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
-    
-    r2c1, r2c2 = st.columns(2)
-    with r2c1:
-        with st.container(border=True):
-            st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
-                <div style='width: 40px; height: 40px; border-radius: 8px; background: #DCFCE7; color: #16A34A; display: flex; align-items: center; justify-content: center;'>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                </div>
-                <div>
-                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Promo Compare</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Audit & komparasi data klaim promosi berjalan</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Launch Module", key="btn_promo", width="stretch"): st.switch_page("pages/3_promotion_comparison.py")
-    
-    with r2c2:
-        with st.container(border=True):
-            st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
-                <div style='width: 40px; height: 40px; border-radius: 8px; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center;'>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                </div>
-                <div>
-                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Stock Mutation</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Lacak riwayat pergerakan stok harian (masuk/keluar)</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Launch Module", key="btn_mut", width="stretch"): st.switch_page("pages/4_stock_mutation.py")
-
-    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
-    
-    r3c1, r3c2 = st.columns(2)
-    with r3c1:
-        with st.container(border=True):
-            st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
-                <div style='width: 40px; height: 40px; border-radius: 8px; background: #FEE2E2; color: #DC2626; display: flex; align-items: center; justify-content: center;'>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3zM15 9l-6 6M9 9l6 6"/></svg>
-                </div>
-                <div>
-                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Clearance Stock</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Monitor barang clearance dan sisa stok mati</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Launch Module", key="btn_clear", width="stretch"): st.switch_page("pages/5_clearance_stock.py")
-    
-    with r3c2:
-        with st.container(border=True):
-            st.markdown("""
-            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
-                <div style='width: 40px; height: 40px; border-radius: 8px; background: #E0E7FF; color: #4F46E5; display: flex; align-items: center; justify-content: center;'>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                </div>
-                <div>
-                    <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>Initial Stock</h4>
-                    <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>Setup baseline data stok awal untuk distributor baru</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Launch Module", key="btn_init", width="stretch"): st.switch_page("pages/6_initial_stock.py")
+    for i in range(0, len(MODULES), 2):
+        cols = st.columns(2)
+        for j, col in enumerate(cols):
+            if i + j < len(MODULES):
+                mod = MODULES[i + j]
+                with col:
+                    with st.container(border=True):
+                        st.markdown(f"""
+                        <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
+                            <div style='width: 40px; height: 40px; border-radius: 8px; background: {mod["bg"]}; color: {mod["color"]}; display: flex; align-items: center; justify-content: center;'>
+                                {mod["icon"]}
+                            </div>
+                            <div>
+                                <h4 style='margin: 0; font-size: 1.05rem; color: #0F172A;'>{mod["title"]}</h4>
+                                <span style='font-size: 0.75rem; color: #64748B; font-weight: 500; display: block; line-height: 1.3;'>{mod["desc"]}</span>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        if st.button("Launch Module", key=mod["key"], width="stretch"): st.switch_page(mod["page"])
+        if i < len(MODULES) - 2:
+            st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
 
 with right_col:
     st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Recent Activity</h3>", unsafe_allow_html=True)

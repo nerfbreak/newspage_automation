@@ -2,8 +2,10 @@
 Handles auth, encryption, system config, and distributor vault.
 """
 import os
+import time
 import logging
 import bcrypt
+from datetime import datetime, timezone, timedelta
 from cryptography.fernet import Fernet
 from supabase import create_client, Client
 
@@ -18,7 +20,7 @@ EXCLUDE_PREFIX = ['8021803', '8021804']
 _supabase_client: Client | None = None
 
 def init_supabase() -> Client | None:
-    """Backwards-compatible: still tries st.secrets first, falls back to env vars."""
+    """Returns singleton Supabase client. Tries st.secrets first, falls back to env vars."""
     global _supabase_client
     if _supabase_client is not None:
         return _supabase_client
@@ -31,21 +33,11 @@ def init_supabase() -> Client | None:
             return _supabase_client
     except Exception:
         pass
-    # Fallback to env vars (for Reflex)
-    return init_supabase_direct()
-
-
-def init_supabase_direct() -> Client | None:
-    """Pure env-var version for Reflex (no Streamlit dependency)."""
-    global _supabase_client
-    if _supabase_client is not None:
-        return _supabase_client
     url = os.environ.get("SUPABASE_URL", "")
     key = os.environ.get("SUPABASE_KEY", "")
     if url and key:
         _supabase_client = create_client(url, key)
-        return _supabase_client
-    return None
+    return _supabase_client
 
 
 def get_encryption_key():
@@ -206,8 +198,8 @@ def log_extraction_history(supabase, selected_distributor, current_user, status=
 def log_adjustment(supabase, sku, qty, status, keterangan, bot_user, run_by=None):
     if supabase:
         try:
-            # Cegah error integer kalau timeout dan node kosong
-            safe_qty = int(qty) if str(qty).replace('-','').isdigit() else 0
+            try: safe_qty = int(float(qty))
+            except (ValueError, TypeError): safe_qty = 0
             payload = {
                 "sku": sku, "qty": safe_qty, "status": status,
                 "keterangan": keterangan, "np_user": bot_user
@@ -218,16 +210,6 @@ def log_adjustment(supabase, sku, qty, status, keterangan, bot_user, run_by=None
         except Exception as e:
             logging.error(f"Error logging adjustment for SKU {sku}: {e}")
 
-def get_secret(key: str, default: str = "") -> str:
-    """Retrieve a secret from st.secrets (Streamlit) or os.environ (Reflex)."""
-    try:
-        import streamlit as st
-        val = st.secrets.get(key, "")
-        if val:
-            return val
-    except Exception:
-        pass
-    return os.environ.get(key, default)
 
 def get_distributor_warehouse_exceptions(supabase):
     """
@@ -259,8 +241,6 @@ def check_login_lockout(supabase, username):
         lockout_until_str = res.data[0].get('lockout_until')
         
         if lockout_until_str:
-            from datetime import datetime
-            import time
             lockout_time = datetime.fromisoformat(lockout_until_str.replace('Z', '+00:00')).timestamp()
             now = time.time()
             if now < lockout_time:
@@ -276,7 +256,6 @@ def check_login_lockout(supabase, username):
 def record_failed_login(supabase, username, max_attempts=5, lockout_minutes=5):
     if not supabase: return
     try:
-        from datetime import datetime, timezone, timedelta
         res = supabase.table("login_attempts").select("attempts").eq("username", username).execute()
         
         attempts = 1
@@ -296,7 +275,6 @@ def record_failed_login(supabase, username, max_attempts=5, lockout_minutes=5):
 def reset_failed_login(supabase, username):
     if not supabase: return
     try:
-        from datetime import datetime, timezone
         supabase.table("login_attempts").upsert({
             "username": username,
             "attempts": 0,

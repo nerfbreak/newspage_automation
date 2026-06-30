@@ -92,88 +92,42 @@ def clean_html(html_str: str) -> str:
         return ""
     return " ".join(line.strip() for line in html_str.splitlines())
 
-def make_solid_box(text: str, border_color: str, text_color: str) -> str:
-    # Use Streamlit Light Card/Surface background (#F0F2F6) and default border (rgba(0, 0, 0, 0.08))
+def _make_alert_box(text: str, bg_color: str, text_color: str, svg_path: str, border_left: str = "1px solid transparent") -> str:
     return clean_html(f"""
         <div style='
-            background-color: #F0F2F6;
+            background-color: {bg_color};
             color: {text_color};
             height: 38.4px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            border-left: 5px solid {border_color};
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.85rem;
-            margin: 12px 0;
+            margin-top: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-left: {border_left};
             width: 100%;
             box-sizing: border-box;
-            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
         '>
             <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor" style="margin-right: 8px;">
-                <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+                <path d="{svg_path}"/>
             </svg>
             {html.escape(str(text))}
         </div>
     """)
+
+def make_solid_box(text: str, border_color: str, text_color: str) -> str:
+    return _make_alert_box(text, "#F0F2F6", text_color, "M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z", f"5px solid {border_color}")
 
 def make_success_box(text: str) -> str:
-    # Use Streamlit Brand Blue (#0068C9) background with Light text (#FAFAFA)
-    return clean_html(f"""
-        <div style='
-            background-color: #0068C9;
-            color: #FAFAFA;
-            height: 38.4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin-top: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
-            border: 1px solid transparent;
-            width: 100%;
-            box-sizing: border-box;
-        '>
-            <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor" style="margin-right: 8px;">
-                <path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
-            </svg>
-            {html.escape(str(text))}
-        </div>
-    """)
+    return _make_alert_box(text, "#0068C9", "#FAFAFA", "m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z")
 
 def make_error_box(text: str) -> str:
-    # Use Streamlit Brand Red (#FF2B2B) background with Light text (#FAFAFA)
-    return clean_html(f"""
-        <div style='
-            background-color: #FF2B2B;
-            color: #FAFAFA;
-            height: 38.4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin-top: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
-            border: 1px solid transparent;
-            width: 100%;
-            box-sizing: border-box;
-        '>
-            <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor" style="margin-right: 8px;">
-                <path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-320h-80v320Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
-            </svg>
-            {html.escape(str(text))}
-        </div>
-    """)
+    return _make_alert_box(text, "#FF2B2B", "#FAFAFA", "M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-320h-80v320Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z")
 
 def render_metric_card(title, value, accent=False):
     # Styling variables to match Streamlit Design System theme
@@ -278,32 +232,20 @@ def render_header(title, subtitle=""):
     if "Automation Tool" not in title:
         st.page_link("pages/0_dashboard.py", label="Dashboard", icon=":material/home:")
         
-        desc_map = {
-            "Inventory Adjustment": "Singkronisasi & rekonsiliasi data stok fisik vs sistem",
-            "Sales Extraction": "Otomatisasi penarikan faktur penjualan distributor",
-            "Sales Data Extraction": "Otomatisasi penarikan faktur penjualan distributor",
-            "Promotion Comparison": "Audit & komparasi data klaim promosi berjalan",
-            "Stock Mutation": "Lacak riwayat pergerakan stok harian (masuk/keluar)",
-            "Mutasi Stock": "Lacak riwayat pergerakan stok harian (masuk/keluar)",
-            "Clearance Stock": "Monitor barang clearance dan sisa stok mati",
-            "Initial Stock": "Setup baseline data stok awal untuk distributor baru",
-            "Element Crawler": "Otomatisasi ekstraksi ID & Selector elemen web untuk mempermudah coding"
+        MODULE_META = {
+            "Inventory Adjustment": {"desc": "Singkronisasi & rekonsiliasi data stok fisik vs sistem", "icon": "📦"},
+            "Sales Extraction": {"desc": "Otomatisasi penarikan faktur penjualan distributor", "icon": "🖥️"},
+            "Sales Data Extraction": {"desc": "Otomatisasi penarikan faktur penjualan distributor", "icon": "🖥️"},
+            "Promotion Comparison": {"desc": "Audit & komparasi data klaim promosi berjalan", "icon": "📄"},
+            "Stock Mutation": {"desc": "Lacak riwayat pergerakan stok harian (masuk/keluar)", "icon": "🔄"},
+            "Mutasi Stock": {"desc": "Lacak riwayat pergerakan stok harian (masuk/keluar)", "icon": "🔄"},
+            "Clearance Stock": {"desc": "Monitor barang clearance dan sisa stok mati", "icon": "❌"},
+            "Initial Stock": {"desc": "Setup baseline data stok awal untuk distributor baru", "icon": "➕"},
+            "Element Crawler": {"desc": "Otomatisasi ekstraksi ID & Selector elemen web", "icon": "🕷️"}
         }
         
-        icon_map = {
-            "Inventory Adjustment": "📦",
-            "Sales Extraction": "🖥️",
-            "Sales Data Extraction": "🖥️",
-            "Promotion Comparison": "📄",
-            "Stock Mutation": "🔄",
-            "Mutasi Stock": "🔄",
-            "Clearance Stock": "❌",
-            "Initial Stock": "➕",
-            "Element Crawler": "🕷️"
-        }
-        
-        desc = desc_map.get(title, "Modul otomatisasi distributor")
-        icon = icon_map.get(title, "⚡")
+        meta = MODULE_META.get(title, {"desc": "Modul otomatisasi distributor", "icon": "⚡"})
+        desc, icon = meta["desc"], meta["icon"]
         
         html_out += f"""
         <div style='margin-top: 8px; margin-bottom: 24px; padding: 20px 24px; background: linear-gradient(to right, #F8FAFC, #FFFFFF); border: 1px solid #E2E8F0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); display: flex; align-items: center; gap: 16px;'>
@@ -372,55 +314,39 @@ def resolve_distributor_url(list_dist):
     default_index = list_dist.index(url_dist) if url_dist in list_dist else 0
     return url_dist, default_index
 
+def resolve_date_url():
+    import datetime
+    from datetime import timezone, timedelta
+    today_jakarta = datetime.datetime.now(timezone(timedelta(hours=7))).date()
+    sd, ed = today_jakarta.replace(day=1), today_jakarta
+    
+    def parse_dt(keys):
+        for k in keys:
+            if val := st.query_params.pop(k, None) if k in ("start_date", "end_date") else st.query_params.get(k):
+                try: return datetime.datetime.strptime(decode_param(val) if k in ("sd", "ed") else val, "%Y-%m-%d").date()
+                except: pass
+        return None
+
+    return parse_dt(("sd", "start_date")) or sd, parse_dt(("ed", "end_date")) or ed
+
 
 def safe_parse_numeric(val) -> float:
-    if val is None:
-        return 0.0
+    if val is None: return 0.0
     if isinstance(val, (int, float)):
         import math
         return float(val) if not math.isnan(val) else 0.0
-    s = str(val).strip()
-    if not s or s.lower() in ('nan', 'none'):
-        return 0.0
+    s = str(val).strip().replace(' ', '')
+    if not s or s.lower() in ('nan', 'none'): return 0.0
+    if s.endswith('-'): s = '-' + s[:-1]
     
-    # Remove any spaces
-    s = s.replace(' ', '')
-    
-    # Move minus sign from end to front (e.g. 125.00-)
-    if s.endswith('-'):
-        s = '-' + s[:-1]
-        
-    # Check for both comma and dot
     if ',' in s and '.' in s:
-        if s.rfind(',') > s.rfind('.'):
-            # Indonesian format: 1.250,00 -> 1250.00
-            s = s.replace('.', '').replace(',', '.')
-        else:
-            # English format: 1,250.00 -> 1250.00
-            s = s.replace(',', '')
+        s = s.replace('.', '').replace(',', '.') if s.rfind(',') > s.rfind('.') else s.replace(',', '')
     elif ',' in s:
-        # Only comma is present: e.g. 72,00 or 1,250
-        parts = s.split(',')
-        if len(parts[-1]) == 3:
-            # Thousands separator: 1,250 -> 1250
-            s = s.replace(',', '')
-        else:
-            # Decimal point: 72,00 -> 72.00
-            s = s.replace(',', '.')
+        s = s.replace(',', '') if len(s.split(',')[-1]) == 3 else s.replace(',', '.')
     elif '.' in s:
-        # Only dot is present: e.g. 72.00 or 1.250
-        if s.count('.') > 1:
-            s = s.replace('.', '')
-        else:
-            parts = s.split('.')
-            if len(parts[-1]) == 3:
-                # Thousands separator: 1.250 -> 1250
-                s = s.replace('.', '')
-            else:
-                # Decimal point: 72.00 -> 72.00
-                pass
-    try:
-        return float(s)
-    except ValueError:
-        return 0.0
+        s = s.replace('.', '') if s.count('.') > 1 or len(s.split('.')[-1]) == 3 else s
+    
+    try: return float(s)
+    except ValueError: return 0.0
+
 

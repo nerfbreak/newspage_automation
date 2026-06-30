@@ -34,14 +34,17 @@ def load_data(file):
         return None
     return None
 
+def clean_sku_column(df, col, TARGET_SKUS=None):
+    df = df.dropna(subset=[col])
+    df[col] = df[col].astype(str).str.split('.').str[0].str.strip()
+    df = df[~df[col].str.lower().isin(['nan', 'none', '', 'total', 'grand total'])]
+    if TARGET_SKUS:
+        df[col] = df[col].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
+    return df
+
 def process_compare(df1, df2, sku_col1, desc_col1, qty_col1, sku_col2, qty_col2, TARGET_SKUS, multipliers, np_user_id=""):
     d1 = df1[[sku_col1, desc_col1, qty_col1]].copy()
-    d1 = d1.dropna(subset=[sku_col1])
-    d1[sku_col1] = d1[sku_col1].astype(str).str.split('.').str[0].str.strip()
-    d1 = d1[~d1[sku_col1].str.lower().isin(['nan', 'none', '', 'total', 'grand total'])]
-    
-    # Only add '0' prefix if SKU is in TARGET_SKUS and NOT in EXCLUDE_PREFIX
-    d1[sku_col1] = d1[sku_col1].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
+    d1 = clean_sku_column(d1, sku_col1, TARGET_SKUS)
     d1[qty_col1] = d1[qty_col1].apply(safe_parse_numeric)
     d1_agg = (d1.groupby(sku_col1).agg({desc_col1: 'first', qty_col1: 'sum'}).reset_index().rename(columns={sku_col1: 'SKU', desc_col1: 'Description', qty_col1: 'Newspage'}))
     
@@ -51,11 +54,7 @@ def process_compare(df1, df2, sku_col1, desc_col1, qty_col1, sku_col2, qty_col2,
         df2 = df2[df2['Nama Gudang'].astype(str).str.strip().str.upper() == 'GUDANG UTAMA']
         
     d2 = df2[[sku_col2, qty_col2]].copy()
-    d2 = d2.dropna(subset=[sku_col2])
-    d2[sku_col2] = d2[sku_col2].astype(str).str.split('.').str[0].str.strip()
-    d2 = d2[~d2[sku_col2].str.lower().isin(['nan', 'none', '', 'total', 'grand total'])]
-    
-    d2[sku_col2] = d2[sku_col2].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
+    d2 = clean_sku_column(d2, sku_col2, TARGET_SKUS)
     d2[qty_col2] = d2[qty_col2].apply(safe_parse_numeric)
     
     for rule in multipliers:

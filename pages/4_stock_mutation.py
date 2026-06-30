@@ -100,13 +100,8 @@ if uploaded_file is not None:
         df_review.columns = ['SKU', 'Description', 'Qty']
 
         # Clean data
-        df_review = df_review.dropna(subset=['SKU'])
-        df_review['SKU'] = df_review['SKU'].astype(str).str.split('.').str[0].str.strip()
-        df_review = df_review[~df_review['SKU'].str.lower().isin(['nan', 'none', '', 'total', 'grand total'])]
-        
-        # Apply SKU mapping rule
         TARGET_SKUS = database.get_target_skus(supabase)
-        df_review['SKU'] = df_review['SKU'].apply(lambda x: '0' + str(x) if (str(x) in TARGET_SKUS and str(x) not in EXCLUDE_PREFIX) else x)
+        df_review = data_processor.clean_sku_column(df_review, 'SKU', TARGET_SKUS)
         df_review['Qty'] = df_review['Qty'].apply(safe_parse_numeric).astype(int)
         df_review = df_review[df_review['Qty'] != 0].reset_index(drop=True)
 

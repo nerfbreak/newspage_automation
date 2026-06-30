@@ -1,22 +1,28 @@
-import streamlit as st
-import time
+import sys
 import os
 import re
-import subprocess
+import time
 import asyncio
+import zipfile
+import subprocess
 from contextlib import contextmanager
+import pandas as pd
+import streamlit as st
+import database
+import utils
+from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
+
+def _setup_event_loop():
+    try: asyncio.get_event_loop()
+    except RuntimeError: asyncio.set_event_loop(asyncio.new_event_loop())
+
 
 @contextmanager
 def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log):
     ensure_playwright()
-    import sys, asyncio
+    _setup_event_loop()
     from playwright.sync_api import sync_playwright
-    if sys.platform == "win32": asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-    try:
-        asyncio.get_event_loop()
-    except RuntimeError:
-        asyncio.set_event_loop(asyncio.new_event_loop())
-    
+
     with sync_playwright() as p:
         ui_log("SYS", "Spawning browser context with isolated session...")
         browser = p.chromium.launch(headless=True)
@@ -29,12 +35,6 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
             browser.close()
             ui_log("SYS", "Browser closed. Releasing session memory...")
 
-import sys
-import zipfile
-import pandas as pd
-from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
-import database
-import utils
 def ensure_playwright():
     try:
         with sync_playwright() as p:
@@ -409,7 +409,6 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
             real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser)
             
-            browser.close()
             ext_ui_log("SYS", "Browser closed. Ready for download.")
             
             with open(file_path, "rb") as f:
@@ -513,6 +512,48 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
 
+def _render_progress_label(placeholder, dist, user, current, total):
+    """Render the Active Account / Processed progress label above the terminal."""
+    if not placeholder:
+        return
+    html = f"""
+    <div style='display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; margin-bottom: 8px;'>
+        <div>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{dist} ({user})</span>
+        </div>
+        <div>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Processed</span>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{current}/{total}</span>
+        </div>
+    </div>
+    """
+    placeholder.markdown(html, unsafe_allow_html=True)
+
+
+def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):
+    """Log all non-Invalid rows from df_view to the adjustment_logs table."""
+    if not supabase:
+        return
+    for _, row in df_view.iterrows():
+        if row.get('Status') == 'Invalid':
+            continue
+        sku = str(row['SKU']).strip()
+        status = str(row['Status']).strip()
+        ket = str(row.get('Keterangan', '')).strip()
+        if pack_mode:
+            pac = str(row.get('PAC', 0)).strip()
+            car = str(row.get('CAR', 0)).strip()
+            ea = str(row.get('EA', 0)).strip()
+            qty = f"PAC:{pac} CAR:{car} EA:{ea}"
+        else:
+            qty = str(row.get(qty_col, '')).strip()
+        try:
+            database.log_adjustment(supabase, sku, qty, status, ket, bot_user, run_by=current_user)
+        except Exception:
+            pass
+
+
 def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, current_user=None):
     ensure_playwright()
     global_start_time = time.time(); success_count, failed_count = 0, 0
@@ -522,47 +563,17 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
     alert_callback(f"<b>BOT STARTED</b>\nTask: Reconcile Stock\nDist: {selected_distributor}\nTotal SKU: {len(df_view)}")
 
     try:
-        if sys.platform == "win32": asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-        try:
-            asyncio.get_event_loop()
-        except RuntimeError:
-            asyncio.set_event_loop(asyncio.new_event_loop())
-        with sync_playwright() as p:
-            ui_log("SYS", "Spawning browser context...")
-            browser = p.chromium.launch(headless=True)
-            context = browser.new_context(no_viewport=True)
-            page = context.new_page()
-            
-            _login(page, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log)
-            
+        with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
             # Fetch distributor exception from DB
             exception_dict = database.get_distributor_warehouse_exceptions(supabase)
             target_whs = exception_dict.get(bot_user)
-            
             actual_warehouse = target_whs if target_whs and WAREHOUSE == "GOOD_WHS" else WAREHOUSE
             
             _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log)
 
             progress_bar = st.progress(0)
             total_rows = len(df_view)
-            
-            def update_progress_label(current, total):
-                html = f"""
-                <div style='display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; margin-bottom: 8px;'>
-                    <div>
-                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
-                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
-                    </div>
-                    <div>
-                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Processed</span>
-                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{current}/{total}</span>
-                    </div>
-                </div>
-                """
-                if log_label_placeholder:
-                    log_label_placeholder.markdown(html, unsafe_allow_html=True)
-
-            update_progress_label(0, total_rows)
+            _render_progress_label(log_label_placeholder, selected_distributor, bot_user, 0, total_rows)
             
             for i, (idx, row) in enumerate(df_view.iterrows()):
                 update_progress_label(i + 1, total_rows)
@@ -610,17 +621,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     
             if failed_count > 0:
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
-                # Log all non-invalid entries as failed/pending to database
-                if supabase:
-                    for idx, row in df_view.iterrows():
-                        if row.get('Status') == 'Invalid':
-                            continue
-                        sku = str(row['SKU']).strip()
-                        qty = str(row['Qty']).strip()
-                        status = str(row['Status']).strip()
-                        ket = str(row['Keterangan']).strip()
-                        try: database.log_adjustment(supabase, sku, qty, status, ket, bot_user, run_by=current_user)
-                        except Exception: pass
+                _log_df_to_supabase(supabase, df_view, bot_user, current_user)
             else:
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
                 page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
@@ -643,16 +644,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     if row.get('Status') == 'Success':
                         df_view.at[idx, 'Keterangan'] = f"Input {row['Qty']} EA"
 
-                if supabase:
-                    for idx, row in df_view.iterrows():
-                        if row.get('Status') == 'Invalid':
-                            continue
-                        sku = str(row['SKU']).strip()
-                        qty = str(row['Qty']).strip()
-                        status = str(row['Status']).strip()
-                        ket = str(row['Keterangan']).strip()
-                        try: database.log_adjustment(supabase, sku, qty, status, ket, bot_user, run_by=current_user)
-                        except Exception: pass
+                _log_df_to_supabase(supabase, df_view, bot_user, current_user)
 
                 # Refresh the final dataframe view in the UI
                 table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
@@ -800,29 +792,14 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
 def run_promotion_sync(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user):
     ensure_playwright()
     try:
-        if sys.platform == "win32": asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-        try:
-            asyncio.get_event_loop()
-        except RuntimeError:
-            asyncio.set_event_loop(asyncio.new_event_loop())
-        
-        with sync_playwright() as p:
-            ext_ui_log("SYS", "Spawning browser context...")
-            browser = p.chromium.launch(headless=True)
-            context = browser.new_context(no_viewport=True)
-            page = context.new_page()
-            
-            _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log)
+        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
             real_filename, file_path = _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser)
-            
-            browser.close()
             
             with open(file_path, "rb") as f:
                 st.session_state.promo_zip_data = f.read()
                 st.session_state.promo_zip_filename = real_filename
 
-            # Cleanup temp file after reading
             try:
                 os.remove(file_path)
             except OSError:
@@ -875,19 +852,10 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
 def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None):
     ensure_playwright()
     try:
-        global_start_time = time.time(); success_count, failed_count = 0, 0
-        import asyncio
-        try: asyncio.get_event_loop()
-        except RuntimeError: asyncio.set_event_loop(asyncio.new_event_loop())
+        global_start_time = time.time()
+        success_count, failed_count = 0, 0
         
-        with sync_playwright() as p:
-            ui_log("SYS", "Spawning browser context...")
-            browser = p.chromium.launch(headless=True)
-            context = browser.new_context(no_viewport=True)
-            page = context.new_page()
-            
-            _login(page, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log)
-            
+        with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
             # Resolve actual warehouse from distributor_exceptions
             exception_dict = database.get_distributor_warehouse_exceptions(supabase)
             target_whs = exception_dict.get(bot_user)
@@ -895,30 +863,11 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             
             _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log, remark_text)
             
-            success_count = 0
-            failed_count = 0
             total_rows = len(df_view)
-            
-            def update_progress_label(current, total):
-                html = f"""
-                <div style='display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; margin-bottom: 8px;'>
-                    <div>
-                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Active Account</span>
-                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{selected_distributor} ({bot_user})</span>
-                    </div>
-                    <div>
-                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>Processed</span>
-                        <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>{current}/{total}</span>
-                    </div>
-                </div>
-                """
-                if log_label_placeholder:
-                    log_label_placeholder.markdown(html, unsafe_allow_html=True)
-
-            update_progress_label(0, total_rows)
+            _render_progress_label(log_label_placeholder, selected_distributor, bot_user, 0, total_rows)
             
             for i, (idx, row) in enumerate(df_view.iterrows()):
-                update_progress_label(i + 1, total_rows)
+                _render_progress_label(log_label_placeholder, selected_distributor, bot_user, i + 1, total_rows)
                 if progress_placeholder:
                     progress_placeholder.progress((i + 1) / total_rows)
                 def fmt(v):
@@ -959,16 +908,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     
             if failed_count > 0:
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
-                if supabase:
-                    for idx, row in df_view.iterrows():
-                        sku = str(row['SKU']).strip()
-                        pac = str(row.get('PAC', 0)).strip()
-                        car = str(row.get('CAR', 0)).strip()
-                        ea = str(row.get('EA', 0)).strip()
-                        status = str(row['Status']).strip()
-                        ket = str(row['Keterangan']).strip()
-                        try: database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", status, ket, bot_user, run_by=current_user)
-                        except Exception: pass
+                _log_df_to_supabase(supabase, df_view, bot_user, current_user, pack_mode=True)
             else:
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
                 page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
@@ -991,16 +931,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     if row.get('Status') == 'Success':
                         df_view.at[idx, 'Keterangan'] = "Input successfully"
 
-                if supabase:
-                    for idx, row in df_view.iterrows():
-                        sku = str(row['SKU']).strip()
-                        pac = str(row.get('PAC', 0)).strip()
-                        car = str(row.get('CAR', 0)).strip()
-                        ea = str(row.get('EA', 0)).strip()
-                        status = str(row['Status']).strip()
-                        ket = str(row['Keterangan']).strip()
-                        try: database.log_adjustment(supabase, sku, f"PAC:{pac} CAR:{car} EA:{ea}", status, ket, bot_user, run_by=current_user)
-                        except Exception: pass
+                _log_df_to_supabase(supabase, df_view, bot_user, current_user, pack_mode=True)
 
                 # Refresh the final dataframe view in the UI
                 table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
@@ -1063,8 +994,6 @@ def run_mutasi_execution(
     remark_text="",
     current_user=None
 ):
-    import utils
-    import streamlit as st
     ui_log_a, _ = utils.make_terminal_logger(log_a_ph)
     ui_log_b, _ = utils.make_terminal_logger(log_b_ph)
     

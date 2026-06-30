@@ -13,7 +13,7 @@ from utils import (
     make_solid_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
     encode_param, decode_param, init_session_state,
-    make_terminal_logger,
+    make_terminal_logger, resolve_date_url,
 )
 
 # --- AUTH CHECK ---
@@ -69,38 +69,7 @@ with st.container(border=True):
     
     col1, col2 = st.columns([1, 1])
     
-    url_sd_encoded = st.query_params.get("sd", None)
-    url_ed_encoded = st.query_params.get("ed", None)
-    from datetime import timezone, timedelta
-    today_jakarta = datetime.datetime.now(timezone(timedelta(hours=7))).date()
-    default_sd = today_jakarta.replace(day=1)
-    default_ed = today_jakarta
-    
-    if url_sd_encoded:
-        try:
-            decoded_sd = decode_param(url_sd_encoded)
-            default_sd = datetime.datetime.strptime(decoded_sd, "%Y-%m-%d").date()
-        except: pass
-    else:
-        plain_sd = st.query_params.get("start_date", None)
-        if plain_sd:
-            try:
-                default_sd = datetime.datetime.strptime(plain_sd, "%Y-%m-%d").date()
-                st.query_params.pop("start_date", None)
-            except: pass
-
-    if url_ed_encoded:
-        try:
-            decoded_ed = decode_param(url_ed_encoded)
-            default_ed = datetime.datetime.strptime(decoded_ed, "%Y-%m-%d").date()
-        except: pass
-    else:
-        plain_ed = st.query_params.get("end_date", None)
-        if plain_ed:
-            try:
-                default_ed = datetime.datetime.strptime(plain_ed, "%Y-%m-%d").date()
-                st.query_params.pop("end_date", None)
-            except: pass
+    default_sd, default_ed = resolve_date_url()
 
     with col1:
         start_date = st.date_input("Extraction Start Date", value=default_sd)

@@ -8,7 +8,7 @@ from utils import (
     make_solid_box, make_success_box, render_terminal, render_footer,
     check_auth, render_indicators, render_header,
     encode_param, decode_param, send_telegram_alert,
-    init_session_state, render_wakelock, make_terminal_logger,
+    init_session_state, render_wakelock, make_terminal_logger, resolve_distributor_url,
 )
 
 # --- AUTH CHECK ---
@@ -53,17 +53,7 @@ if "Auto Compare" in adj_mode:
     with col1:
         with st.container(border=True):
             list_dist = database.get_distributor_list(supabase)
-            url_d = st.query_params.get("d", None)
-            url_dist = None
-            if url_d:
-                url_dist = decode_param(url_d)
-            else:
-                plain_dist = st.query_params.get("distributor", None)
-                if plain_dist:
-                    url_dist = plain_dist
-                    st.query_params.pop("distributor", None)
-                
-            default_index = list_dist.index(url_dist) if url_dist in list_dist else 0
+            url_dist, default_index = resolve_distributor_url(list_dist)
 
             selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index)
             st.query_params.clear()
@@ -223,9 +213,7 @@ if "Auto Compare" in adj_mode:
 
 elif "Manual Entry" in adj_mode:
     list_dist = database.get_distributor_list(supabase)
-    url_d = st.query_params.get("d", None)
-    url_dist = decode_param(url_d) if url_d else st.query_params.get("distributor", None)
-    default_index = list_dist.index(url_dist) if url_dist in list_dist else 0
+    url_dist, default_index = resolve_distributor_url(list_dist)
     
     with st.container(border=True):
         selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index, key="manual_dist_sel")
