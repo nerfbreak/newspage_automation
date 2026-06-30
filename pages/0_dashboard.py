@@ -154,17 +154,41 @@ with right_col:
     with rc2:
         if st.button("Ping", use_container_width=True, key="ping_newspage"):
             import requests
+            import re
+            import time
             try:
                 cfg = database.get_system_config(supabase)
                 url = cfg.get("URL_LOGIN", "")
-                if not url:
-                    st.toast("No URL configured in DB", icon="❌")
+                bot_user = st.secrets.get("NP_USER_SUPER", "")
+                bot_pass = st.secrets.get("NP_PASS_SUPER", "")
+                
+                if not url or not bot_user or not bot_pass:
+                    st.toast("Missing URL/Credentials", icon="❌")
                 else:
-                    resp = requests.get(url, timeout=5)
-                    if resp.status_code == 200:
-                        st.toast(f"Newspage OK ({resp.elapsed.total_seconds():.2f}s)", icon=":material/check_circle:")
+                    start_t = time.time()
+                    session = requests.Session()
+                    r1 = session.get(url, timeout=5)
+                    vs = re.search(r'id="__VIEWSTATE"\s+value="(.*?)"', r1.text)
+                    vsg = re.search(r'id="__VIEWSTATEGENERATOR"\s+value="(.*?)"', r1.text)
+                    ev = re.search(r'id="__EVENTVALIDATION"\s+value="(.*?)"', r1.text)
+                    
+                    if vs and ev:
+                        data = {
+                            '__VIEWSTATE': vs.group(1),
+                            '__VIEWSTATEGENERATOR': vsg.group(1) if vsg else '',
+                            '__EVENTVALIDATION': ev.group(1),
+                            'txtUserid': bot_user,
+                            'txtPasswd': bot_pass,
+                            'btnLogin': 'Login'
+                        }
+                        r2 = session.post(url, data=data, timeout=10)
+                        elapsed = time.time() - start_t
+                        if "Default.aspx" in r2.url or "Logon" not in r2.url:
+                            st.toast(f"Superuser Login OK ({elapsed:.2f}s)", icon=":material/check_circle:")
+                        else:
+                            st.toast(f"Login Failed (Check Credentials)", icon=":material/warning:")
                     else:
-                        st.toast(f"HTTP {resp.status_code}", icon=":material/warning:")
+                        st.toast("Failed to parse ASP.NET tokens", icon=":material/warning:")
             except Exception as e:
                 st.toast(f"Ping Failed: {e}", icon=":material/error:")
                 
