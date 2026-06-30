@@ -81,4 +81,50 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-06-30**: **Ponytail Structural Refactor (Dama Unlocked):** Deleted orphaned `test_openviking.py`. Removed unused `python-dotenv` from `requirements.txt`. Moved stray `import os` in `app.py` to top; replaced stale hardcoded v1.2.0 changelog fallback with `st.warning()`. In `database.py`: added `datetime`/`time` to top-level imports (removed 3 inline copies), inlined `init_supabase_direct()` into `init_supabase()` and deleted the standalone function. In `playwright_engine.py` (1,239→1,172 lines, −67): consolidated split imports to module top; extracted `_setup_event_loop()` helper replacing 3 manual asyncio blocks; fixed double `browser.close()` bug in `run_sales_extract`; extracted `_render_progress_label()` module-level helper replacing 2 identical 18-line inner closures; extracted `_log_df_to_supabase()` helper replacing 4 near-identical for-loops; replaced 3 manual `sync_playwright()`/browser-launch blocks in `run_execution`, `run_promotion_sync`, and `run_execution_manual` with `managed_browser_session`; removed local `asyncio` import inside `run_execution_manual`; removed local `utils`/`st` imports inside `run_mutasi_execution`. All business logic (selectors, page flow, timeout values) unchanged.
 - **2026-06-30**: **Ponytail Audits & Final Touches:** Consolidated 3 alert box functions in `utils.py` into `_make_alert_box`. Merged `desc_map` and `icon_map` into a unified `MODULE_META` dictionary in `utils.render_header`. Refactored `safe_parse_numeric` string replacement chains into simpler, compact formatting. Replaced inline datetime and distributor query params parsing in `pages/1`, `pages/2`, and `pages/3` with modular `utils.resolve_distributor_url()` and `utils.resolve_date_url()`. Extracted repeated SKU string cleaning logic to `data_processor.clean_sku_column()`. Refactored `0_dashboard.py` to use a dynamic loop for rendering the 6 application module cards and migrated hardcoded HTML metrics to the standard `render_metric_card` component.
 - **2026-06-30**: **Ponytail Lazy Fix:** Added a simple "Ping Newspage" UI button to `0_dashboard.py` using `requests.get()` to quickly verify if the Newspage URL is online, without creating extra abstractions or files.
-- **2026-07-01**: **Ponytail Lazy Fix:** Upgraded the "Ping" button in `0_dashboard.py` to perform a real authentication test using the Superuser Account (`NP_USER_SUPER` from secrets). Uses lightweight `requests.Session()` with Regex to parse ASP.NET `__VIEWSTATE` and post the login form, validating the actual server auth status without the overhead of Playwright.
+- **2026-07-01**: **Ponytail Lazy Fix:** Upgraded the "Ping" button in `0_dashboard.py` to perform a real authentication test using the Superuser Account (`NP_USER_SUPER` from secrets). Uses lightweight `requests.Session()` with Regex to parse ASP.NET `__VIEWSTATE` and post the login form, validating the actual server auth status without the overhead of Playwright.-  
+ * * 2 0 2 6 - 0 6 - 3 0 * * :  
+ F i x e d  
+ U I  
+ l a y o u t  
+ r e g r e s s i o n  
+ w h e r e  
+ t h e  
+ w i d t h = s t r e t c h   a t t r i b u t e  
+ m i s t a k e n l y  
+ a p p l i e d  
+ t o  
+ s t . b u t t o n   c a u s e d  
+ t h e  
+ C l e a r  
+ D a t a   a c t i o n  
+ b u t t o n s  
+ t o  
+ s t a c k  
+ v e r t i c a l l y  
+ i n  
+ a n  
+ o v e r s i z e d  
+ m a n n e r  
+ b e l o w  
+ t h e  
+ d a t a  
+ e x t r a c t i o n  
+ a l e r t  
+ b o x e s  
+ o n  
+ m u l t i p l e  
+ p a g e s .  
+ R e v e r t e d  
+ t o  
+ u s e _ c o n t a i n e r _ w i d t h = T r u e   a n d  
+ i m p l e m e n t e d  
+ a  
+ 2 - c o l u m n  
+ l a y o u t  
+ w i t h  
+  e r t i c a l _ a l i g n m e n t = c e n t e r   f o r  
+ p e r f e c t l y  
+ i n l i n e  
+ a c t i o n  
+ b u t t o n s .  
+ 

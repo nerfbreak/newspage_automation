@@ -165,7 +165,7 @@ with right_col:
                 if not url or not bot_user or not bot_pass:
                     st.toast("Missing URL/Credentials", icon=":material/error:")
                 else:
-                    st.info("Initiating ping test...", icon="⏳")
+                    st.toast("Initiating ping test...", icon="⏳")
                     start_t = time.time()
                     
                     import subprocess
