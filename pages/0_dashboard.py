@@ -220,6 +220,8 @@ asyncio.run(main())
                         st.toast("Ping timeout", icon=":material/error:")
                     except Exception as e:
                         st.toast(f"Ping error: {e}", icon=":material/error:")
+            except Exception as e:
+                st.toast(f"Ping Failed: {e}", icon=":material/error:")
                 
     with st.container(height=544, border=True):
         
