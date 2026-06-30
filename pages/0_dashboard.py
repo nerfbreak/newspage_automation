@@ -107,23 +107,6 @@ with m4:
             </div>
         </div>
     """), unsafe_allow_html=True)
-    
-    if st.button("Ping Newspage", use_container_width=True, key="ping_newspage"):
-        import requests
-        try:
-            cfg = database.get_system_config(supabase)
-            url = cfg.get("URL_LOGIN", "")
-            if not url:
-                st.error("No URL configured in DB")
-            else:
-                resp = requests.get(url, timeout=5)
-                if resp.status_code == 200:
-                    st.success(f"OK ({resp.elapsed.total_seconds():.2f}s)")
-                else:
-                    st.warning(f"HTTP {resp.status_code}")
-        except Exception as e:
-            st.error(f"Failed: {e}")
-
 
 st.markdown("<div style='margin-top: 32px;'></div>", unsafe_allow_html=True)
 
@@ -165,8 +148,26 @@ with left_col:
             st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
 
 with right_col:
-    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Recent Activity</h3>", unsafe_allow_html=True)
-    
+    rc1, rc2 = st.columns([6, 4])
+    with rc1:
+        st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Recent Activity</h3>", unsafe_allow_html=True)
+    with rc2:
+        if st.button("Ping", use_container_width=True, key="ping_newspage"):
+            import requests
+            try:
+                cfg = database.get_system_config(supabase)
+                url = cfg.get("URL_LOGIN", "")
+                if not url:
+                    st.toast("No URL configured in DB", icon="❌")
+                else:
+                    resp = requests.get(url, timeout=5)
+                    if resp.status_code == 200:
+                        st.toast(f"Newspage OK ({resp.elapsed.total_seconds():.2f}s)", icon="✅")
+                    else:
+                        st.toast(f"HTTP {resp.status_code}", icon="⚠️")
+            except Exception as e:
+                st.toast(f"Ping Failed: {e}", icon="❌")
+                
     with st.container(height=544, border=True):
         
         if db_connected:
