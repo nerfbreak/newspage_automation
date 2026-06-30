@@ -165,34 +165,61 @@ with right_col:
                 if not url or not bot_user or not bot_pass:
                     st.toast("Missing URL/Credentials", icon=":material/error:")
                 else:
+                    st.info("Initiating ping test...", icon="⏳")
                     start_t = time.time()
-                    session = requests.Session()
-                    r1 = session.get(url, timeout=5)
-                    vs = re.search(r'id="__VIEWSTATE"\s+value="(.*?)"', r1.text)
-                    vsg = re.search(r'id="__VIEWSTATEGENERATOR"\s+value="(.*?)"', r1.text)
-                    ev = re.search(r'id="__EVENTVALIDATION"\s+value="(.*?)"', r1.text)
                     
-                    if vs:
-                        data = {
-                            '__VIEWSTATE': vs.group(1),
-                            '__VIEWSTATEGENERATOR': vsg.group(1) if vsg else '',
-                            'txtUserid': bot_user,
-                            'txtPasswd': bot_pass,
-                            'btnLogin': 'Login'
-                        }
-                        if ev:
-                            data['__EVENTVALIDATION'] = ev.group(1)
-                            
-                        r2 = session.post(url, data=data, timeout=10)
+                    import subprocess
+                    script = f"""
+import asyncio, time
+from playwright.async_api import async_playwright
+async def main():
+    try:
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            page = await browser.new_page()
+            await page.goto('{url}', wait_until='domcontentloaded')
+            await page.fill('id=txtUserid', '{bot_user}')
+            await page.fill('id=txtPasswd', '{bot_pass}')
+            await page.click('id=btnLogin', force=True)
+            
+            start_wait = time.time()
+            while time.time() - start_wait < 15.0:
+                if 'Default.aspx' in page.url:
+                    break
+                try:
+                    btn = page.locator('id=SYS_ASCX_btnContinue')
+                    if await btn.is_visible():
+                        await btn.click(force=True)
+                        # Wait a little for navigation to start
+                        await page.wait_for_timeout(2000)
+                except:
+                    pass
+                await page.wait_for_timeout(500)
+                
+            final_url = page.url
+            await browser.close()
+            if 'Default.aspx' in final_url or 'Logon' not in final_url:
+                print('OK')
+            else:
+                print('FAIL')
+    except Exception as e:
+        print('ERR')
+asyncio.run(main())
+"""
+                    try:
+                        res = subprocess.run(["python", "-c", script], capture_output=True, text=True, timeout=25)
                         elapsed = time.time() - start_t
-                        if "Default.aspx" in r2.url or "Logon" not in r2.url:
-                            st.toast(f"Superuser Login OK ({elapsed:.2f}s)", icon=":material/check_circle:")
-                        else:
+                        out = res.stdout.strip()
+                        if out == 'OK':
+                            st.toast(f"Superuser Login OK ({elapsed:.1f}s)", icon=":material/check_circle:")
+                        elif out == 'FAIL':
                             st.toast(f"Login Failed (Check Credentials)", icon=":material/warning:")
-                    else:
-                        st.toast("Failed to parse ASP.NET tokens", icon=":material/error:")
-            except Exception as e:
-                st.toast(f"Ping Failed: {e}", icon=":material/error:")
+                        else:
+                            st.toast("Failed to reach server or timeout", icon=":material/error:")
+                    except subprocess.TimeoutExpired:
+                        st.toast("Ping timeout", icon=":material/error:")
+                    except Exception as e:
+                        st.toast(f"Ping error: {e}", icon=":material/error:")
                 
     with st.container(height=544, border=True):
         
