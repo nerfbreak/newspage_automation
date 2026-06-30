@@ -132,7 +132,7 @@ with left_col:
                 mod = MODULES[i + j]
                 with col:
                     with st.container(border=True):
-                        st.markdown(clean_html(f"""
+                        st.markdown(f"""
                         <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
                             <div style='width: 40px; height: 40px; border-radius: 8px; background: {mod["bg"]}; color: {mod["color"]}; display: flex; align-items: center; justify-content: center;'>
                                 {mod["icon"]}
