@@ -968,8 +968,11 @@ div[data-testid="stExpander"] summary:hover {
 /* ============================================================
    FOOLPROOF MODULE CARD TARGETING via :has()
    ============================================================ */
-div[data-testid="stVerticalBlock"]:has(> div > div > div > .neo-module-card-marker),
-div[data-testid="stVerticalBlock"]:has(.neo-module-card-marker) {
+/* ============================================================
+   FOOLPROOF MODULE CARD TARGETING via STRICT :has()
+   ============================================================ */
+/* Only match the IMMEDIATE stVerticalBlock that contains the marker, not the columns or main page */
+div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] span.neo-module-card-marker) {
     border: 2px solid #0F172A !important;
     border-radius: 0px !important;
     box-shadow: 4px 4px 0px 0px #0F172A !important;
@@ -979,12 +982,11 @@ div[data-testid="stVerticalBlock"]:has(.neo-module-card-marker) {
     margin-bottom: 16px !important;
 }
 
-div[data-testid="stVerticalBlock"]:has(.neo-module-card-marker):hover {
+div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] span.neo-module-card-marker):hover {
     transform: translate(-2px, -2px) !important;
     box-shadow: 6px 6px 0px 0px #0068C9 !important;
 }
 
-/* Ensure inner st.button has some padding if we stripped it from container */
-div[data-testid="stVerticalBlock"]:has(.neo-module-card-marker) div[data-testid="stButton"] {
+div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] span.neo-module-card-marker) div[data-testid="stButton"] {
     padding: 0px 16px 16px 16px !important;
 }
