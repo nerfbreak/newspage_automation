@@ -548,7 +548,14 @@ def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty'
             ea = str(row.get('EA', 0)).strip()
             qty = f"PAC:{pac} CAR:{car} EA:{ea}"
         else:
-            qty = str(row.get(qty_col, '')).strip()
+            try:
+                q_raw = row.get(qty_col, 0)
+                if pd.isna(q_raw): qty = ''
+                else:
+                    f = float(q_raw)
+                    qty = str(int(f)) if f.is_integer() else str(f)
+            except:
+                qty = str(row.get(qty_col, '')).strip()
         try:
             database.log_adjustment(supabase, sku, qty, status, ket, bot_user, run_by=current_user)
         except Exception:
@@ -645,7 +652,15 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 # Update descriptions in df_view
                 for idx, row in df_view.iterrows():
                     if row.get('Status') == 'Success':
-                        df_view.at[idx, 'Keterangan'] = f"Input {row['Qty']} EA"
+                        try:
+                            q_raw = row.get('Qty', 0)
+                            if pd.isna(q_raw): q = ''
+                            else:
+                                f = float(q_raw)
+                                q = str(int(f)) if f.is_integer() else str(f)
+                        except:
+                            q = str(row.get('Qty', '')).strip()
+                        df_view.at[idx, 'Keterangan'] = f"Input {q} EA"
 
                 _log_df_to_supabase(supabase, df_view, bot_user, current_user)
 
