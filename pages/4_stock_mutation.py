@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import utils
 import database
 import data_processor
 import playwright_engine

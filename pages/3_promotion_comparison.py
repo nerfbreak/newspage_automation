@@ -6,6 +6,7 @@ import zipfile
 
 import pandas as pd
 import streamlit as st
+import utils
 
 import database
 import playwright_engine

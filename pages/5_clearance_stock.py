@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import utils
 import database
 import playwright_engine
 from database import EXCLUDE_PREFIX
