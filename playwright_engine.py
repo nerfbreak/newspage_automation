@@ -360,9 +360,17 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser)
         page.wait_for_timeout(1500)
         
         if status_val:
-            drp = page.locator("select[id$='_dyn_Field_drp_Value']")
-            if drp.count() > 0:
-                drp.first.select_option(status_val)
+            drps = page.locator("select[id$='_dyn_Field_drp_Value']")
+            drps.first.wait_for(state="attached", timeout=5000)
+            success = False
+            for i in range(drps.count()):
+                try:
+                    drps.nth(i).select_option(status_val, timeout=2000)
+                    success = True
+                    break
+                except:
+                    pass
+            if success:
                 ui_log("SYS", f"Waiting for server to apply {status_val} filter (PostBack)...")
                 page.wait_for_timeout(3500)
         
