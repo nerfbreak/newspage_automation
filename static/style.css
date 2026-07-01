@@ -192,14 +192,15 @@ button[kind="primary"]:hover {
 .log-tag     { display: inline-block; width: 95px;  font-weight: 700; font-family: "Source Code Pro", monospace; }
 .log-msg     { color: #31333F; font-weight: 500; font-family: "Source Code Pro", monospace; }
 
-/* Log tag color palette */
-.tag-sys     { color: #E85D04; }   /* System info - Dark Orange */
-.tag-auth    { color: #7C3AED; }   /* Auth - Purple */
-.tag-nav     { color: #0284C7; }   /* Nav - Light Blue */
-.tag-inject  { color: #D97706; }   /* Inject - Amber */
-.tag-success { color: #16A34A; }   /* Success - Green */
-.tag-error   { color: #DC2626; }   /* Error - Red */
-.tag-server  { color: #E11D48; }   /* Server - Rose */
+/* Log tag color palette (Streamlit Theme) */
+.tag-sys     { color: #808495; }   /* System - Gray */
+.tag-wait    { color: #808495; }   /* Wait - Gray */
+.tag-server  { color: #505364; }   /* Server - Dark Gray */
+.tag-auth    { color: #0068C9; }   /* Auth - Primary Blue */
+.tag-nav     { color: #0068C9; }   /* Nav - Primary Blue */
+.tag-inject  { color: #0068C9; }   /* Inject - Primary Blue */
+.tag-success { color: #09AB3B; }   /* Success - Green */
+.tag-error   { color: #FF2B2B; }   /* Error - Red */
 
 /* --- Box Section Headers --- */
 .box-np, .box-dist, .box-review, .box-queue, .box-results {
