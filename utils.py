@@ -277,40 +277,63 @@ def render_header(title, subtitle=""):
         
         flat_toggle_css = """
         <style>
-        /* Robust Flat Premium Design using Sibling Anchor */
+        /* THE ULTIMATE FLAT PREMIUM TOGGLE CARD (Neo-Brutalism / Modern Enterprise) */
         div.element-container:has(.dry-run-anchor) + div.element-container {
             background-color: #FFFFFF;
-            border: 1.5px solid #E2E8F0;
-            border-left: 6px solid #0068C9;
-            border-radius: 4px;
-            padding: 12px 18px 12px 24px;
-            margin-top: 12px;
-            margin-bottom: 24px;
-            width: fit-content;
-            transition: all 0.2s ease-in-out;
+            border: 2px solid #CBD5E1;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-top: 16px;
+            margin-bottom: 36px;
+            width: 100%;
+            box-shadow: 5px 5px 0px 0px #0068C9; /* Solid flat shadow, NO blur */
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
         
         div.element-container:has(.dry-run-anchor) + div.element-container:hover {
-            background-color: #F8FAFC;
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px 0px #0068C9;
             border-color: #0068C9;
         }
         
+        /* Make the label take full width and flip order (toggle on right, text on left) */
         div.element-container:has(.dry-run-anchor) + div.element-container label {
+            display: flex !important;
+            flex-direction: row-reverse !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            width: 100% !important;
             cursor: pointer;
         }
 
         div.element-container:has(.dry-run-anchor) + div.element-container label p {
-            font-size: 1.05rem !important;
-            font-weight: 700 !important;
+            font-size: 1.15rem !important;
+            font-weight: 800 !important;
             color: #0F172A !important;
-            margin-left: 8px !important;
-            letter-spacing: -0.02em;
+            margin: 0 !important;
+            letter-spacing: -0.01em;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Inject a beautiful subtitle directly into the UI without needing tooltips */
+        div.element-container:has(.dry-run-anchor) + div.element-container label p::after {
+            content: "Execution simulator is active. Bots will run normally but final Save/Download actions to the database will be explicitly bypassed for safety.";
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #64748B;
+            margin-top: 6px;
+            line-height: 1.4;
+            max-width: 85%;
+            white-space: normal;
         }
         </style>
         <div class="dry-run-anchor" style="display: none;"></div>
         """
         st.markdown(html_out + flat_toggle_css, unsafe_allow_html=True)
-        st.toggle(":material/science: Dry Run (Simulate Only)", key="dry_run_enabled", help="Run bots without clicking Save/Download, preventing actual database changes in Newspage.")
+        st.toggle(":material/science: SECURITY MODE: DRY RUN (SIMULATE ONLY)", key="dry_run_enabled")
     else:
         st.markdown(html_out, unsafe_allow_html=True)
         st.markdown(f"<h1 style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 1.75rem; font-weight: 700; color: #31333F; letter-spacing: -0.02em; margin-top: -15px; margin-bottom: -15px; padding: 0;'>{title}</h1>", unsafe_allow_html=True)
