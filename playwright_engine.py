@@ -1108,7 +1108,6 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         st.error(f"System error: {e}")
         return 0, len(df_view), 0
 def run_mutasi_execution(
-    dry_run=None,
     df_mutasi,
     bot_user_a, bot_pass_a, dist_a,
     bot_user_b, bot_pass_b, dist_b,
@@ -1121,7 +1120,8 @@ def run_mutasi_execution(
     log_a_ph, log_b_ph,
     supabase,
     remark_text="",
-    current_user=None
+    current_user=None,
+    dry_run=None
 ):
     ui_log_a, _ = utils.make_terminal_logger(log_a_ph)
     ui_log_b, _ = utils.make_terminal_logger(log_b_ph)
