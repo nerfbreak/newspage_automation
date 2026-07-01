@@ -121,19 +121,19 @@ div[data-testid="stButton"] button {
     color: #0F172A !important;
     border: 2px solid #0F172A !important;
     border-radius: 0px !important;
-    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 div[data-testid="stButton"] button:hover {
     transform: translate(2px, 2px) !important;
-    box-shadow: 2px 2px 0px 0px #0F172A !important;
+    box-shadow: 8px 8px 0px 0px #0F172A !important;
     border-color: #0F172A !important;
 }
 
 div[data-testid="stButton"] button:active {
     transform: translate(4px, 4px) !important;
-    box-shadow: 0px 0px 0px 0px #0F172A !important;
+    box-shadow: 2px 2px 0px 0px #0F172A !important;
 }
 
 div[data-testid="stButton"] button,
@@ -153,7 +153,7 @@ button[kind="primary"] {
     letter-spacing: 0.04em !important;
     transition: all 0.15s ease !important;
     border-radius: 0px !important;
-    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
 
@@ -161,7 +161,7 @@ button[kind="primary"]:hover {
     background-color: #0054A3 !important;
     color: #FFFFFF !important;
     transform: translate(2px, 2px) !important;
-    box-shadow: 2px 2px 0px 0px #0F172A !important;
+    box-shadow: 8px 8px 0px 0px #0F172A !important;
 }
 
 /* --- Terminal & Live Log Components --- */
@@ -224,7 +224,7 @@ button[kind="primary"]:hover {
     border: 2px solid #0F172A;
     margin-bottom: 16px;
     letter-spacing: 0.02em;
-    box-shadow: 4px 4px 0px 0px #0F172A;
+    box-shadow: 6px 6px 0px 0px #0F172A;
     transition: all 0.2s ease;
 }
 
@@ -241,7 +241,7 @@ button[kind="primary"]:hover {
     border-radius: 4px;
     padding: 16px 20px;
     margin-bottom: 16px;
-    box-shadow: 4px 4px 0px 0px #0F172A;
+    box-shadow: 6px 6px 0px 0px #0F172A;
     transition: all 0.2s ease;
 }
 
@@ -334,14 +334,14 @@ div[data-testid="stTextInput"] input {
     letter-spacing: 0.01em !important;
     border-radius: 0px !important;
     border: 2px solid #0F172A !important;
-    box-shadow: 3px 3px 0px 0px #CBD5E1 !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
     transition: all 0.15s ease !important;
 }
 
 div[data-testid="stSelectbox"] div[data-baseweb="select"]:focus-within > div,
 div[data-testid="stTextInput"] input:focus {
     border-color: #0F172A !important;
-    box-shadow: 3px 3px 0px 0px #0F172A !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
 }
 
 div[data-testid="stSelectbox"] div[data-baseweb="select"] {
@@ -436,14 +436,14 @@ section[data-testid="stSidebar"] [data-testid="stSidebarNav"] {
 [data-testid="stSidebarNav"] ul li a:hover,
 [data-testid="stSidebarNavItems"] ul li a:hover,
 [data-testid="stSidebarNavLink"]:hover {
-    background-color: #0F172A !important; color: #FFFFFF !important; transform: translate(2px, 2px) !important; box-shadow: 2px 2px 0px 0px #0F172A !important;
+    background-color: #0F172A !important; color: #FFFFFF !important; transform: translate(2px, 2px) !important; box-shadow: 8px 8px 0px 0px #0F172A !important;
     transform: translateX(2px) !important;
 }
 
 [data-testid="stSidebarNav"] a[aria-current="page"],
 [data-testid="stSidebarNavItems"] a[aria-current="page"] {
     background-color: #0068C9 !important;
-    border-color: #0F172A !important; border: 2px solid #0F172A !important; box-shadow: 4px 4px 0px 0px #0F172A !important;
+    border-color: #0F172A !important; border: 2px solid #0F172A !important; box-shadow: 6px 6px 0px 0px #0F172A !important;
 }
 
 [data-testid="stSidebarNav"] ul li a span,
@@ -505,7 +505,7 @@ div[data-testid="stNotification"][aria-label="Success"],
 div[role="alert"][aria-label="Success"],
 div[data-testid="stNotification"]:has(svg[aria-label="Success"]) {
     border-left: 8px solid #2E7D32 !important;
-    box-shadow: 4px 4px 0px 0px #2E7D32 !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
 }
 div[data-testid="stNotification"][aria-label="Success"] p,
 div[role="alert"][aria-label="Success"] p,
@@ -519,7 +519,7 @@ div[data-testid="stNotification"][aria-label="Error"],
 div[role="alert"][aria-label="Error"],
 div[data-testid="stNotification"]:has(svg[aria-label="Error"]) {
     border-left: 8px solid #D32F2F !important;
-    box-shadow: 4px 4px 0px 0px #D32F2F !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
 }
 div[data-testid="stNotification"][aria-label="Error"] p,
 div[role="alert"][aria-label="Error"] p,
@@ -533,7 +533,7 @@ div[data-testid="stNotification"][aria-label="Warning"],
 div[role="alert"][aria-label="Warning"],
 div[data-testid="stNotification"]:has(svg[aria-label="Warning"]) {
     border-left: 8px solid #D97706 !important;
-    box-shadow: 4px 4px 0px 0px #D97706 !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
 }
 div[data-testid="stNotification"][aria-label="Warning"] p,
 div[role="alert"][aria-label="Warning"] p,
@@ -547,7 +547,7 @@ div[data-testid="stNotification"][aria-label="Info"],
 div[role="alert"][aria-label="Info"],
 div[data-testid="stNotification"]:has(svg[aria-label="Info"]) {
     border-left: 8px solid #0068C9 !important;
-    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
 }
 div[data-testid="stNotification"][aria-label="Info"] p,
 div[role="alert"][aria-label="Info"] p,
@@ -699,7 +699,7 @@ div[data-testid="stMetric"] {
 .card-container:hover,
 div[data-testid="stMetric"]:hover {
     transform: translate(-2px, -2px) !important;
-    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    box-shadow: 8px 8px 0px 0px #0F172A !important;
 }
 
 /* 3. Button Press, Hover & Pulse */
@@ -711,9 +711,9 @@ button[kind="primary"] {
 }
 
 @keyframes hardPulse {
-    0% { box-shadow: 4px 4px 0px 0px #0F172A; }
+    0% { box-shadow: 6px 6px 0px 0px #0F172A; }
     50% { box-shadow: 6px 6px 0px 0px #0F172A; transform: translate(-2px, -2px); }
-    100% { box-shadow: 4px 4px 0px 0px #0F172A; }
+    100% { box-shadow: 6px 6px 0px 0px #0F172A; }
 }
 
 /* 4. Input Field Focus Animation */
@@ -736,13 +736,13 @@ div[data-testid="stExpander"] details {
     border: 2px solid #0F172A !important;
     border-radius: 0px !important;
     background-color: #FFFFFF !important;
-    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
     transition: transform 0.15s ease !important;
     margin-bottom: 16px !important;
 }
 div[data-testid="stExpander"] details:hover {
     transform: translate(-2px, -2px) !important;
-    box-shadow: 6px 6px 0px 0px #0F172A !important;
+    box-shadow: 8px 8px 0px 0px #0F172A !important;
 }
 div[data-testid="stExpander"] summary {
     font-weight: 800 !important;
@@ -796,7 +796,7 @@ div[data-testid="stExpander"] summary {
     border-radius: 0px;
     background: #0068C9;
     border: 2px solid #0F172A;
-    box-shadow: 2px 2px 0px 0px #0F172A;
+    box-shadow: 6px 6px 0px 0px #0F172A;
 }
 .timeline-date {
     font-size: 0.75rem;
@@ -887,7 +887,7 @@ a[data-testid="stPageLink-NavLink"] {
 a[data-testid="stPageLink-NavLink"]:hover {
     background: #FFFFFF !important;
     transform: translate(2px, 2px) !important;
-    box-shadow: 2px 2px 0px 0px #0F172A !important;
+    box-shadow: 8px 8px 0px 0px #0F172A !important;
 }
 a[data-testid="stPageLink-NavLink"] p {
     font-family: "Source Sans 3", sans-serif !important;
@@ -968,7 +968,7 @@ div[data-testid="stExpander"] summary:hover {
 div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] span.neo-module-card-marker) {
     border: 2px solid #0F172A !important;
     border-radius: 0px !important;
-    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
     background-color: #FFFFFF !important;
     transition: transform 0.15s ease !important;
     padding: 0px !important;
@@ -977,7 +977,7 @@ div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] s
 
 div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] span.neo-module-card-marker):hover {
     transform: translate(-2px, -2px) !important;
-    box-shadow: 6px 6px 0px 0px #0F172A !important;
+    box-shadow: 8px 8px 0px 0px #0F172A !important;
 }
 
 div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] span.neo-module-card-marker) div[data-testid="stButton"] {

@@ -128,7 +128,7 @@ def _make_alert_box(text: str, bg_color: str, text_color: str, svg_path: str, bo
             border-left: {border_left};
             width: 100%;
             box-sizing: border-box;
-            box-shadow: 4px 4px 0px 0px #0F172A;
+            box-shadow: 6px 6px 0px 0px #0F172A;
         '>
             <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor" style="margin-right: 8px;">
                 <path d="{svg_path}"/>
@@ -151,7 +151,7 @@ def render_metric_card(title, value, accent=False):
     bg = "#0068C9" if accent else "#FFFFFF"
     fg = "#FFFFFF" if accent else "#0F172A"
     border = "2px solid #0F172A"
-    shadow = "4px 4px 0px 0px #0F172A"
+    shadow = "6px 6px 0px 0px #0F172A"
     
     title = html.escape(str(title))
     value_str = html.escape(str(value))
@@ -266,7 +266,7 @@ def render_header(title, subtitle=""):
         
         html_out += f"""
         <div style='margin-top: 8px; margin-bottom: 24px; padding: 24px 28px; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; align-items: center; gap: 20px;'>
-            <div style='font-size: 2.2rem; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0px 0px #0F172A;'>
+            <div style='font-size: 2.2rem; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; box-shadow: 6px 6px 0px 0px #0F172A;'>
                 {icon}
             </div>
             <div>
@@ -350,7 +350,7 @@ def render_footer():
                 by kopi mang toni.
             </span>
         </div>
-        <div style='background-color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; border-radius: 0px; padding: 12px 16px; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; color: #5D6271; margin-top: 18px; max-width: 580px; margin-left: auto; margin-right: auto; line-height: 1.5; text-align: center;'>
+        <div style='background-color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; border-radius: 0px; padding: 12px 16px; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; color: #5D6271; margin-top: 18px; max-width: 580px; margin-left: auto; margin-right: auto; line-height: 1.5; text-align: center;'>
             <strong style="color: #0F172A; display: block; margin-bottom: 4px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Disclaimer</strong>
             This application is an independently developed, unofficial utility designed solely to automate repetitive tasks, improve operational efficiency, and save working hours. It is not officially endorsed, sponsored, or affiliated with Reckitt, Accenture, or the Newspage platform.
         </div>
