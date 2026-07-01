@@ -151,7 +151,7 @@ def render_metric_card(title, value, accent=False):
     bg = "#0068C9" if accent else "#FFFFFF"
     fg = "#FFFFFF" if accent else "#0F172A"
     border = "2px solid #0F172A"
-    shadow = "5px 5px 0px 0px #0F172A" if accent else "5px 5px 0px 0px #0068C9"
+    shadow = "4px 4px 0px 0px #0F172A"
     
     title = html.escape(str(title))
     value_str = html.escape(str(value))
