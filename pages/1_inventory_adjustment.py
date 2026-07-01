@@ -180,14 +180,14 @@ if "Auto Compare" in adj_mode:
         m1, m2 = st.columns(2); match_count = st.session_state.reconcile_summary['total_match']; mismatch_count = st.session_state.reconcile_summary['total_mismatch']
         with m1: st.markdown(f'''<div class="metric-box-match"><div class="metric-label">Match</div><div class="metric-value">{match_count}</div></div>''', unsafe_allow_html=True)
         with m2: st.markdown(f'''<div class="metric-box-mismatch"><div class="metric-label">Stock difference</div><div class="metric-value">{mismatch_count}</div></div>''', unsafe_allow_html=True)
-        st.dataframe(st.session_state.reconcile_summary['df_view'], width="stretch", hide_index=True, column_config={"SKU": st.column_config.TextColumn("SKU", width="medium"), "Description": st.column_config.TextColumn("Description", width="large")})
+        utils.render_neo_table(st.session_state.reconcile_summary['df_view'])
     
         df_view = st.session_state.reconcile_result.copy()
         df_view['Status'] = df_view['Status'].apply(lambda x: 'Pending' if x == 'Mismatch' else x)
         if 'Keterangan' not in df_view.columns: df_view['Keterangan'] = 'Ready to Process'
     
         st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>ADJUSTMENT SKU LIST</span></div>", unsafe_allow_html=True)
-        table_placeholder = st.empty(); table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
+        table_placeholder = st.empty(); utils.render_neo_table(table_placeholder, df_view)
     
         log_label_placeholder = st.empty()
         log_placeholder = st.empty()
@@ -277,7 +277,7 @@ elif "Manual Entry" in adj_mode:
                 df_exec['Keterangan'] = 'Ready to Process'
                 df_exec = df_exec.reset_index(drop=True)
                 
-                table_placeholder.dataframe(df_exec, width="stretch", hide_index=True)
+                utils.render_neo_table(table_placeholder, df_exec)
                 st.session_state.is_bot_running = True
                 st.session_state.execute_done = False
                 btn_placeholder.empty()

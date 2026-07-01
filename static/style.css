@@ -1027,3 +1027,32 @@ div.element-container:has(.neo-container-marker) + div > div[data-testid="stVert
     box-shadow: none !important;
     background: transparent !important;
 }
+
+/* --- True Neo-Brutalist HTML Tables (st.markdown fallback) --- */
+.neo-table-wrapper {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 3px solid #0F172A;
+    box-shadow: 6px 6px 0px 0px #0F172A;
+    background-color: #FFFFFF;
+    margin-bottom: 24px;
+}
+table.neo-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table.neo-table th, table.neo-table td {
+    border: 2px solid #0F172A;
+    padding: 10px 14px;
+    color: #0F172A;
+    font-size: 0.85rem;
+    font-family: "Source Sans 3", sans-serif;
+}
+table.neo-table th {
+    background-color: #f1f5f9;
+    font-weight: 800;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}

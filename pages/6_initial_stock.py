@@ -95,7 +95,7 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
 
     # Preview raw data
     with st.expander("Preview raw data", expanded=False):
-        st.dataframe(df_raw.head(20), width="stretch", hide_index=True)
+        utils.render_neo_table(df_raw.head(20))
 
     if st.button("Load Data", type="primary", use_container_width=True, icon=":material/upload:"):
         df_init = df_raw[[sel_sku, sel_qty]].copy()
@@ -170,7 +170,7 @@ if st.session_state.initial_stock_df is not None and len(st.session_state.initia
     # Show review table
     df_display = df_init.copy()
     display_cols = ['SKU', 'Description', 'Qty'] if 'Description' in df_display.columns else ['SKU', 'Qty']
-    st.dataframe(df_display[display_cols], width="stretch", hide_index=True)
+    utils.render_neo_table(df_display[display_cols])
 
     # --- EXECUTE ---
     if st.session_state.is_initial_running:
@@ -194,7 +194,7 @@ if st.session_state.is_initial_running and st.session_state.initial_stock_df is 
 
     st.subheader("Initial Stock Execution")
     table_placeholder = st.empty()
-    table_placeholder.dataframe(df_exec, width="stretch", hide_index=True)
+    utils.render_neo_table(table_placeholder, df_exec)
 
     log_label_placeholder = st.empty()
     log_placeholder = st.empty()

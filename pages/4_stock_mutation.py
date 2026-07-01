@@ -126,7 +126,7 @@ if uploaded_file is not None:
             df_display[f'Add ({dist_b})'] = df_display['Qty'].apply(lambda x: f"+{abs(x)}")
 
             st.subheader("Stock Review")
-            st.dataframe(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']], width="stretch", hide_index=True)
+            utils.render_neo_table(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']])
         else:
             st.warning("Tidak ada SKU valid di file yang diupload.")
     else:
