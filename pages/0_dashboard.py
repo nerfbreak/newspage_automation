@@ -131,9 +131,10 @@ with left_col:
             if i + j < len(MODULES):
                 mod = MODULES[i + j]
                 with col:
-                    with st.container(border=True):
+                    with st.container():
                         st.markdown(f"""
-                        <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px;'>
+                        <span class='neo-module-card-marker' style='display:none;'></span>
+                            <div style='display: flex; gap: 12px; margin-bottom: 12px; min-height: 76px; padding: 16px 16px 0px 16px;'>
                             <div style='width: 40px; height: 40px; border-radius: 8px; background: {mod["bg"]}; color: {mod["color"]}; display: flex; align-items: center; justify-content: center;'>
                                 {mod["icon"]}
                             </div>
