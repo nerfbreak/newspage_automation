@@ -443,6 +443,11 @@ def render_neo_table(df_or_placeholder, df=None):
     if not isinstance(target_df, pd.DataFrame):
         target_df = pd.DataFrame(target_df)
         
-    html = target_df.to_html(index=False, classes="neo-table", escape=True)
+    html = target_df.to_html(
+        index=False, 
+        classes="neo-table", 
+        escape=True,
+        float_format=lambda x: str(int(x)) if x.is_integer() else str(x)
+    )
     html_str = f'<div class="neo-table-wrapper">{html}</div>'
     target.markdown(html_str, unsafe_allow_html=True)
