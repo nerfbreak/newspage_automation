@@ -577,7 +577,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             _render_progress_label(log_label_placeholder, selected_distributor, bot_user, 0, total_rows)
             
             for i, (idx, row) in enumerate(df_view.iterrows()):
-                update_progress_label(i + 1, total_rows)
+                _render_progress_label(log_label_placeholder, selected_distributor, bot_user, i + 1, total_rows)
                 sku = str(row['SKU']).strip()
 
                 if row.get('Status') == 'Invalid':
