@@ -732,7 +732,7 @@ div[data-testid="stDateInput"] input:focus {
 /* 5. Expander Smooth Transition */
 div[data-testid="stExpander"] details {
     border: 2px solid #0F172A !important;
-    border-radius: 4px !important;
+    border-radius: 0px !important;
     background-color: #FFFFFF !important;
     box-shadow: 4px 4px 0px 0px #0F172A !important;
     transition: transform 0.15s ease !important;
@@ -740,7 +740,7 @@ div[data-testid="stExpander"] details {
 }
 div[data-testid="stExpander"] details:hover {
     transform: translate(-2px, -2px) !important;
-    box-shadow: 6px 6px 0px 0px #0068C9 !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
 }
 div[data-testid="stExpander"] summary {
     font-weight: 800 !important;
@@ -779,40 +779,49 @@ div[data-testid="stExpander"] summary {
 
 /* Timeline CSS */
 .timeline-item {
-    padding-left: 20px;
-    border-left: 2px solid #E5E7EB;
+    padding-left: 24px;
+    border-left: 3px solid #0F172A;
     position: relative;
-    padding-bottom: 20px;
+    padding-bottom: 24px;
 }
 .timeline-item::before {
     content: '';
     position: absolute;
-    left: -7px;
+    left: -9px;
     top: 4px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #FFFFFF;
-    border: 2px solid #0068C9;
+    width: 14px;
+    height: 14px;
+    border-radius: 0px;
+    background: #0068C9;
+    border: 2px solid #0F172A;
+    box-shadow: 2px 2px 0px 0px #0F172A;
 }
 .timeline-date {
     font-size: 0.75rem;
     color: #6B7280;
-    font-weight: 600;
-    margin-bottom: 2px;
+    font-weight: 700;
+    font-family: "Source Code Pro", monospace;
     display: block;
+    margin-bottom: 4px;
 }
 .timeline-title {
-    font-size: 0.9rem;
-    color: #111827;
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0F172A;
+    margin-bottom: 4px;
 }
 .timeline-desc {
     font-size: 0.8rem;
-    color: #4B5563;
-    margin-top: 4px;
-    line-height: 1.4;
+    color: #475569;
+    font-weight: 500;
+}
+
+/* Scrollable Container Border Fix */
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    border: 2px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    background-color: #FFFFFF !important;
 }
 
 /* Styling khusus untuk stSegmentedControl (Minimalist Tab + Material Icons) */
