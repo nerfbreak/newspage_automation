@@ -322,66 +322,87 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "sales disclaimer")
     page.wait_for_timeout(2000)
     
-    ui_log("INJECT", "Binding interface target: E_28880804000000001")
-    page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
-    page.wait_for_timeout(2000)
+    interfaces = [
+        {"id": "E_28880804000000001", "status": "Invoiced"},
+        {"id": "E_28880804000000000", "status": "Invoiced"},
+        {"id": "E_28880804000000002", "status": "I"},
+        {"id": "E_28880804000000003", "status": "I"},
+        {"id": "E_28880804000000006", "status": None}
+    ]
     
-    # Target elements in the interface selection popup - slow loading popups on laggy server
-    page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
-    page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").fill("E_28880804000000001")
-    page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
-    page.wait_for_timeout(2000)
-    page.locator("id=pop_Dynamic_grd_Main_ctl02_DynCol_INTF_ID_Value").click(force=True)
-    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "sales intf select")
-    page.wait_for_timeout(2000)
-    
-    ui_log("INJECT", f"Applying parameters: {start_date} to {end_date}")
-    page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
-    page.wait_for_timeout(1500)
-    page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0").check()
-    page.wait_for_timeout(1500)
-    page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_grd_DynamicFilter_ctl13_dyn_Field_drp_Value").select_option("Invoiced")
-    ui_log("SYS", "Waiting for server to apply Invoiced filter (PostBack)...")
-    page.wait_for_timeout(3500)
-    
-    # Use JavaScript to directly set dates via CalendarExtender API
-    # This bypasses all calendar UI issues (month navigation, strict mode, etc.)
-    ui_log("INJECT", f"Setting date range: {start_date} to {end_date}")
-    sd_d, sd_m, sd_y = start_date.split('/')
-    ed_d, ed_m, ed_y = end_date.split('/')
-    
-    page.evaluate(f"""() => {{
-        function setCalDate(inputId, extenderId, day, month, year, dateStr) {{
-            var el = document.getElementById(inputId);
-            if (el) {{
-                el.value = dateStr;
-                el.dispatchEvent(new Event('change', {{bubbles: true}}));
-            }}
-            try {{
-                var ce = $find(extenderId);
-                if (ce) {{
-                    ce._selectedDate = new Date(year, month - 1, day);
-                    ce._textbox.set_Value(dateStr);
+    for idx, intf in enumerate(interfaces):
+        intf_id = intf["id"]
+        status_val = intf["status"]
+        
+        ui_log("INJECT", f"Binding interface target {idx+1}/{len(interfaces)}: {intf_id}")
+        
+        if idx > 0:
+            ui_log("SYS", "Triggering NEW interface formulation...")
+            page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_btn_New_Value").click(force=True)
+            page.wait_for_timeout(2000)
+            
+        page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
+        page.wait_for_timeout(2000)
+        
+        # Target elements in the interface selection popup - slow loading popups on laggy server
+        page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
+        page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").fill(intf_id)
+        page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
+        page.wait_for_timeout(2000)
+        page.locator("id=pop_Dynamic_grd_Main_ctl02_DynCol_INTF_ID_Value").click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"sales intf select {intf_id}")
+        page.wait_for_timeout(2000)
+        
+        ui_log("INJECT", f"Applying parameters for {intf_id}")
+        page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
+        page.wait_for_timeout(1500)
+        page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0").check()
+        page.wait_for_timeout(1500)
+        
+        if status_val:
+            drp = page.locator("select[id$='_dyn_Field_drp_Value']")
+            if drp.count() > 0:
+                drp.first.select_option(status_val)
+                ui_log("SYS", f"Waiting for server to apply {status_val} filter (PostBack)...")
+                page.wait_for_timeout(3500)
+        
+        # Use JavaScript to directly set dates via CalendarExtender API
+        # By querying suffix '_dyn_Field_dat_Value', we don't need to hardcode ctl15/ctl16
+        ui_log("INJECT", f"Setting date range: {start_date} to {end_date}")
+        sd_d, sd_m, sd_y = start_date.split('/')
+        ed_d, ed_m, ed_y = end_date.split('/')
+        
+        page.evaluate(f"""() => {{
+            function setCalDate(el, dateStr, day, month, year) {{
+                if (el) {{
+                    el.value = dateStr;
+                    el.dispatchEvent(new Event('change', {{bubbles: true}}));
                 }}
-            }} catch(e) {{}}
-        }}
-        setCalDate(
-            'pag_FW_SYS_INTF_JOB_DTL_PopupNew_grd_DynamicFilter_ctl15_dyn_Field_dat_Value',
-            'pag_FW_SYS_INTF_JOB_DTL_PopupNew_grd_DynamicFilter_ctl15_dyn_Field_dat_ajax_CalendarExtender',
-            {int(sd_d)}, {int(sd_m)}, {int(sd_y)}, '{start_date}'
-        );
-        setCalDate(
-            'pag_FW_SYS_INTF_JOB_DTL_PopupNew_grd_DynamicFilter_ctl16_dyn_Field_dat_Value',
-            'pag_FW_SYS_INTF_JOB_DTL_PopupNew_grd_DynamicFilter_ctl16_dyn_Field_dat_ajax_CalendarExtender',
-            {int(ed_d)}, {int(ed_m)}, {int(ed_y)}, '{end_date}'
-        );
-    }}""")
-    page.wait_for_timeout(1500)
-    
-    page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_btn_Add_Value").click(force=True)
-    page.wait_for_timeout(2000)
-    
-    ui_log("SERVER", "Executing job sequence...")
+                try {{
+                    var extId = el.id + "_ajax_CalendarExtender";
+                    var ce = $find(extId);
+                    if (ce) {{
+                        ce._selectedDate = new Date(year, month - 1, day);
+                        ce._textbox.set_Value(dateStr);
+                    }}
+                }} catch(e) {{}}
+            }}
+            
+            var dateInputs = document.querySelectorAll('input[id$="_dyn_Field_dat_Value"]');
+            if(dateInputs.length >= 2) {{
+                setCalDate(dateInputs[0], '{start_date}', {int(sd_d)}, {int(sd_m)}, {int(sd_y)});
+                setCalDate(dateInputs[1], '{end_date}', {int(ed_d)}, {int(ed_m)}, {int(ed_y)});
+            }} else if(dateInputs.length === 1) {{
+                // fallback if only 1 date field exists
+                setCalDate(dateInputs[0], '{start_date}', {int(sd_d)}, {int(sd_m)}, {int(sd_y)});
+            }}
+        }}""")
+        page.wait_for_timeout(1500)
+        
+        page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_btn_Add_Value").click(force=True)
+        page.wait_for_timeout(2000)
+        
+    ui_log("SERVER", "Executing multi-interface job sequence...")
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Save_Value").click(force=True)
     page.wait_for_timeout(2000)
     

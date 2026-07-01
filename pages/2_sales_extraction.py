@@ -66,11 +66,11 @@ with st.container(border=True):
     if st.session_state.get('sales_csv_data'):
         st.markdown("<div style='margin-bottom: 8px;'></div>", unsafe_allow_html=True)
         st.download_button(
-            label="Download Data Sales CSV",
+            label="Download Extracted Data (ZIP)",
             data=st.session_state.sales_csv_data,
             file_name=st.session_state.sales_csv_filename,
-            mime="text/csv",
-            width="stretch"
+            mime="application/zip",
+            use_container_width=True
         )
  
 ext_label_placeholder = st.empty()
