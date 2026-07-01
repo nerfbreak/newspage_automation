@@ -69,35 +69,6 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-06-28**: Fixed a bug where Sales Extraction executions were not being logged to the `extraction_history` table and Dashboard Recent Activity. Updated `database.py` to support an optional `status` parameter, and modified `run_sales_extract` in `playwright_engine.py` to log it. Also updated `0_dashboard.py` to differentiate Sales vs Inventory based on this status suffix.
 - **2026-06-28**: Locked the height of the Dashboard's "Recent Activity" container to exactly `544px` to perfectly align with the 3x2 Application Modules grid on the left.
 - **2026-06-28**: Implemented a secret "Element Crawler" module (`pages/7_element_crawler.py`) for scraping DOM elements from the Accenture portal. Hidden from the standard sidebar via CSS (`static/style.css`). Accessed via a 3-click Easter Egg on the "Automation Tool" header text on the dashboard (`utils.py`). Added `run_element_crawler` logic to `playwright_engine.py`.
-# AI Project Memory (Optimize Newspage)
-
-This file acts as the "Distributed Project Memory" for AI agents. It tracks architectural decisions, recent changes, and known states to prevent hallucinations and maintain a single source of truth across all AI sessions.
-
-## Current State Summary
-- **Frontend**: Streamlit (Pages: Dashboard, Inventory Adjustment, Sales Extraction, Promotion Comparison, Stock Mutation, Clearance Stock, Initial Stock).
-- **Backend/DB**: Supabase (PostgreSQL) for user auth, vault, and system config. `cryptography` for AES-256 encryption.
-- **Automation Engine**: Playwright (`playwright_engine.py`) handling interactions with the Newspage portal.
-- **Selectors**: UI automation selectors are documented in `elements_yang_dipakai_dinewspage_sebagai_otomasi.md`.
-
-## Preferred UI/UX & Design Guidelines
-- **Clean Layout Spacing**: Always wrap section headers in `pages/` inside `.header-wrapper-center` or `.header-wrapper-left` container classes defined in `static/style.css` to prevent text sticking/cramping.
-- **English-Translated Disclaimer Footer**: The footer disclaimer must remain in English, formatted with a soft blue background wrapper (`background-color: rgba(0, 104, 201, 0.04); border: 1px solid rgba(0, 104, 201, 0.1); border-radius: 8px`) for a clean, professional aesthetic.
-- **Execution UI Visual Branding**: Replace generic or boring "Execution" subheaders with themed column titles. Use vertical colored borders on the left side of column headers to group actions (e.g., `#FF2B2B` red border for Deduct/Negative flow and `#09A53C` green border for Add/Positive flow).
-- **Safe HTML & Character Rendering**: Never use raw HTML entity codes like `&nbsp;` directly in output logs that undergo `html.escape()`. Use regular space characters to prevent literal `&NBSP;` rendering bugs.
-- **Avoid Glassmorphism/Translucency**: Do NOT use CSS properties like `backdrop-filter`, `rgba` on main containers, or complex gradients (glassmorphism) for the UI (including the login screen). It breaks Streamlit's layout rendering. Stick to solid, flat, modern colors (e.g., `#FFFFFF`, `#F8FAFC`).
-- **Strict Background & Native UI Overrides**: The application background must remain a solid clean `#FFFFFF` (white) without any image textures or noise effects. The Streamlit header (`[data-testid="stHeader"]`) and sidebar (`[data-testid="stSidebar"]`) must be completely hidden using `display: none !important;` to prevent them from overlapping custom UI elements. The main app container (`[data-testid="stAppViewContainer"]`) is styled with a blue top border (`border-top: 4px solid #0068C9`).
-- **Use Material Icons**: Do NOT use default native emojis (e.g. ❌, ✅, ⚠️). Always use Streamlit's built-in Material Icons syntax (`:material/icon_name:`) for components like `st.toast`, `st.button`, etc., to maintain a premium and consistent aesthetic.
-
-## Locked Features & Code Freeze
-- **Frozen Modules**: **Stock Mutation**, **Inventory Adjustment**, **Sales Extraction**, **Promotion Comparison**, **Clearance Stock**, **Initial Stock**, and **Credential Auto-Encryption**.
-- **Rule**: All core execution flow, Playwright steps, Supabase connections, and credential handling for these features are locked. Any future development or new features must build on top of or alongside these modules without modifying their verified core logics.
-- **Unlock Password**: If modification to the frozen logic is explicitly requested, you must verify the password `"Dama"` in the chat before doing any changes.
-- **Changelog Restriction**: When updating `CHANGELOG.md`, only user-facing Features (`### Added`) and Bug Fixes (`### Fixed`) must be recorded.
-
-
-
----
-
 ## Changelog & Decisions
 
 - **2026-06-24**: Initialized AI Project Memory system. Established `AGENTS.md` to force all future AI interactions to read and write to this `MEMORY.md` file.
@@ -150,3 +121,6 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-07-01**: Implemented Global Dry Run Mode: Added a global toggle switch in `app.py` sidebar mapped to `st.session_state.dry_run_enabled`. Updated all execution and extraction functions in `playwright_engine.py` to natively read this state. When enabled, it executes all form interactions normally but explicitly bypasses the final "Save" button click and Supabase database logging to safely test workflows.
 - **2026-07-01**: **UI Enhancement:** Redesigned the "Dry Run (Simulate Only)" toggle using an ultimate Neo-Brutalist flat premium design (solid flat `#0068C9` shadow, full width `row-reverse` layout pushing the toggle to the right, and an injected CSS subtitle) to create a jaw-dropping Enterprise layout while remaining 100% compliant with the non-glassmorphism Memory UI/UX guidelines.
 - **2026-07-01**: **Global Architecture:** Executed a massive global UI overhaul replacing the default Streamlit soft styling with a cohesive Neo-Brutalist Premium Execution design. Containers, buttons, alerts, text inputs, metric cards, and dashboard headers now exclusively use stark white backgrounds, thick solid `#0F172A` borders, high-contrast solid drop shadows (no blur), and physical mechanical hover transitions.
+- **2026-07-02**: **UI Enhancement:** Fixed styling on Dashboard Recent Activity Timeline. Converted thin gray borders to thick `#0F172A` lines, and converted default circular icons to Neo-Brutalist solid squares with `#0068C9` block backgrounds and `#0F172A` box-shadows.
+- **2026-07-02**: **New Feature:** Added `pages/7_ai_assistant.py` module to integrate DeepSeek-V4-Pro via NVIDIA API. Configured `openai` client to fetch `NVIDIA_API_KEY` from Streamlit secrets, providing a Neo-Brutalist styled Chatbot interface for data analytics. Added access module launcher to Dashboard grid.- **2026-07-02**: **UI Enhancement:** Finalized Neo-Brutalism Global CSS. Replaced thin gray container borders with 2px solid #0F172A, changed all blue Streamlit shadows to pure black #0F172A, removed order-radius from headers/buttons/containers, and thickened table grid borders to create a cohesive, flat, high-contrast structural aesthetic.
+- **2026-07-02**: **UI Enhancement:** Removed the AI Assistant module from the dashboard and sidebar per user request.

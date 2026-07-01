@@ -13,6 +13,7 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 - **Tampilan Bebas Gangguan**: Menyembunyikan menu bawaan Streamlit (seperti bar atas dan samping) secara penuh untuk memberikan pengalaman desain yang lebih fokus, luas, dan bersih.
 
 ### 🛠️ Perbaikan & Peningkatan
+- **Desain UI Neo-Brutalism**: Mengubah total tampilan dan estetika aplikasi menjadi gaya *Neo-Brutalism* berkelas premium dengan kotak bersudut siku 90 derajat, garis tepi (*border*) hitam tebal yang tegas, dan efek bayangan (*drop shadow*) blok hitam pekat bertegangan tinggi di semua tombol, metrik, dan tabel log.
 - **Penyempurnaan Tampilan UI**: Merapikan garis bawah pada judul tiap sesi agar pas sesuai panjang teks, memperbaiki ukuran tombol aksi yang terlalu lebar, dan mengubah warna teks log terminal (SYS, NAV, AUTH) agar senada dan serasi dengan tema Streamlit Biru-Abu.
 - **Perbaikan Dropdown Otomasi**: Menambal *bug* yang menyebabkan sistem macet (*Timeout* 30 detik) saat opsi "Confirmed" pada kolom *Dynamic Filter* tidak ditemukan di *interface* tertentu pada saat proses ekstraksi data.
 - **Stabilitas Bot (Page Load Wait)**: Bot sekarang menunggu halaman benar-benar selesai dimuat 100% sebelum melanjutkan ke langkah berikutnya. Ini mencegah error seperti "elemen tidak ditemukan" yang sering terjadi saat server Newspage sedang lambat.
