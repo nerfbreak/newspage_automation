@@ -55,6 +55,11 @@ def process_compare(df1, df2, sku_col1, desc_col1, qty_col1, sku_col2, qty_col2,
         
     d2 = df2[[sku_col2, qty_col2]].copy()
     d2 = clean_sku_column(d2, sku_col2, TARGET_SKUS)
+    
+    # Auto-align SKUs missing leading zeros (Excel drops zeros)
+    d1_skus = set(d1_agg['SKU'].unique())
+    d2[sku_col2] = d2[sku_col2].apply(lambda x: '0' + str(x) if str(x) not in d1_skus and ('0' + str(x)) in d1_skus else str(x))
+    
     d2[qty_col2] = d2[qty_col2].apply(safe_parse_numeric)
     
     for rule in multipliers:
