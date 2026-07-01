@@ -265,8 +265,8 @@ def render_header(title, subtitle=""):
         desc, icon = meta["desc"], meta["icon"]
         
         html_out += f"""
-        <div style='margin-top: 8px; margin-bottom: 24px; padding: 24px 28px; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 8px; box-shadow: 6px 6px 0px 0px #0068C9; display: flex; align-items: center; gap: 20px;'>
-            <div style='font-size: 2.2rem; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 8px; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0px 0px #0068C9;'>
+        <div style='margin-top: 8px; margin-bottom: 24px; padding: 24px 28px; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; align-items: center; gap: 20px;'>
+            <div style='font-size: 2.2rem; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0px 0px #0F172A;'>
                 {icon}
             </div>
             <div>
