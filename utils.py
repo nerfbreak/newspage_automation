@@ -279,19 +279,32 @@ def render_header(title, subtitle=""):
         <style>
         /* Flat Premium Design per Memory Guidelines */
         div[data-testid="stCheckbox"] {
-            background-color: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            border-left: 4px solid #0068C9;
-            border-radius: 6px;
-            padding: 10px 16px;
+            background-color: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-left: 6px solid #0068C9;
+            border-radius: 4px;
+            padding: 14px 24px;
+            margin-top: 12px;
             margin-bottom: 24px;
             width: fit-content;
+            transition: all 0.2s ease-in-out;
         }
         
+        div[data-testid="stCheckbox"]:hover {
+            background-color: #F8FAFC;
+            border-color: #0068C9;
+        }
+        
+        div[data-testid="stCheckbox"] label {
+            cursor: pointer;
+        }
+
         div[data-testid="stCheckbox"] label p {
-            font-size: 0.95rem !important;
-            font-weight: 600 !important;
+            font-size: 1.05rem !important;
+            font-weight: 700 !important;
             color: #0F172A !important;
+            margin-left: 8px !important;
+            letter-spacing: -0.02em;
         }
         </style>
         """
