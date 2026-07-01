@@ -281,21 +281,21 @@ def render_header(title, subtitle=""):
         /* THE ULTIMATE FLAT PREMIUM TOGGLE CARD (Neo-Brutalism / Modern Enterprise) */
         div.element-container:has(.dry-run-anchor) + div.element-container {
             background-color: #FFFFFF;
-            border: 2px solid #CBD5E1;
-            border-radius: 12px;
+            border: 3px solid #0F172A;
+            border-radius: 0px;
             padding: 20px 24px;
             margin-top: 16px;
             margin-bottom: 36px;
             width: 100%;
-            box-shadow: 5px 5px 0px 0px #0068C9; /* Solid flat shadow, NO blur */
+            box-shadow: 6px 6px 0px 0px #0F172A; /* Solid flat shadow, NO blur */
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
         
         div.element-container:has(.dry-run-anchor) + div.element-container:hover {
             transform: translate(-2px, -2px);
-            box-shadow: 7px 7px 0px 0px #0068C9;
-            border-color: #0068C9;
+            box-shadow: 8px 8px 0px 0px #0F172A;
+            border-color: #0F172A;
         }
         
         /* Make the label take full width and flip order (toggle on right, text on left) */
