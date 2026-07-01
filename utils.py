@@ -125,7 +125,7 @@ def _make_alert_box(text: str, bg_color: str, text_color: str, svg_path: str, bo
             letter-spacing: 0.05em;
             font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
             border: 2px solid #0F172A;
-            border-left: {border_left};
+            border: 3px solid #0F172A; border-radius: 0px;
             width: 100%;
             box-sizing: border-box;
             box-shadow: 6px 6px 0px 0px #0F172A;
