@@ -908,3 +908,31 @@ a[data-testid="stPageLink-NavLink"] p {
 [data-testid="stSidebarNav"] a[href$="element_crawler"] {
     display: none !important;
 }
+
+/* ============================================================
+   GLOBAL NEO-BRUTALIST OVERRIDE: 90 DEGREE CORNERS
+   ============================================================ */
+* {
+    border-radius: 0px !important;
+}
+
+/* Fix Streamlit's native radio and checkboxes if they get messed up by * rule */
+div[data-testid="stCheckbox"] * {
+    border-radius: 0px !important;
+}
+div[data-testid="stRadio"] * {
+    border-radius: 0px !important;
+}
+
+/* Explicit overrides for all major containers to ensure 90 degree edges */
+div[data-testid="stDataFrame"] *,
+div[data-testid="stFileUploader"] *,
+div[data-testid="stTabs"] *,
+div[data-testid="stMetric"] *,
+div[data-testid="stNumberInput"] *,
+div[data-testid="stDateInput"] *,
+div[data-testid="stToast"] *,
+div[data-testid="stModal"] *,
+div[data-testid="stExpander"] * {
+    border-radius: 0px !important;
+}

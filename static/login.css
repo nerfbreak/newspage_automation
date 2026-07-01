@@ -8,7 +8,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMainViewContaine
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
-    border-top: 4px solid #0068C9 !important;
+    border-top: 4px solid #0F172A !important;
 }
 [data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stDecoration"] {
     display: none !important;
@@ -23,13 +23,18 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMainViewContaine
     justify-content: center !important;
     background-color: #FFFFFF !important;
 }
+
+/* Global 0px Border Radius Override */
+* {
+    border-radius: 0px !important;
+}
+
 div[data-testid="stForm"] {
-    border: 1px solid #E2E8F0 !important;
-    border-radius: 12px !important;
+    border: 2px solid #0F172A !important;
     background-color: #FFFFFF !important;
     padding: 40px 32px !important;
     width: 380px !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
     margin-left: auto !important;
     margin-right: auto !important;
     margin-top: 0 !important;
@@ -42,15 +47,15 @@ div[data-testid="stTextInput"] label {
 }
 div[data-testid="stTextInput"] label p {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
-    font-size: 0.7rem !important;
-    font-weight: 700 !important;
-    color: #0068C9 !important;
+    font-size: 0.75rem !important;
+    font-weight: 800 !important;
+    color: #0F172A !important;
     text-transform: uppercase !important;
     letter-spacing: 0.08em !important;
     text-align: center !important;
     width: auto !important;
     display: inline-block !important;
-    border-bottom: 2px solid #0068C9 !important;
+    border-bottom: 2px solid #0F172A !important;
     padding-bottom: 4px !important;
     margin-bottom: 8px !important;
 }
@@ -65,17 +70,18 @@ div[data-testid="stTextInput"] input {
     appearance: none !important;
     outline: none !important;
     background-color: #FFFFFF !important;
-    border: 1px solid #CBD5E1 !important;
-    border-radius: 8px !important;
-    color: #31333F !important;
+    border: 2px solid #0F172A !important;
+    color: #0F172A !important;
+    font-weight: 600 !important;
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     text-align: left !important;
     padding-left: 15px !important;
-    transition: all 0.25s ease !important;
+    box-shadow: 3px 3px 0px 0px #CBD5E1 !important;
+    transition: all 0.15s ease !important;
 }
 div[data-testid="stTextInput"] input:focus {
     border-color: #0068C9 !important;
-    box-shadow: 0 0 0 3px rgba(0, 104, 201, 0.15) !important;
+    box-shadow: 3px 3px 0px 0px #0068C9 !important;
     background-color: #FFFFFF !important;
     outline: none !important;
 }
@@ -104,21 +110,23 @@ div[data-testid="stTextInput"] > div {
 /* Button enhancements */
 div[data-testid="stForm"] button[kind="primary"] {
     background-color: #0068C9 !important;
-    border: none !important;
-    border-radius: 8px !important;
-    transition: all 0.3s ease !important;
+    border: 2px solid #0F172A !important;
     padding: 0.5rem 1rem !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.02em !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
     color: #FFFFFF !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 div[data-testid="stForm"] button[kind="primary"]:hover {
-    background-color: #00509E !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 104, 201, 0.2) !important;
+    background-color: #0054A3 !important;
+    transform: translate(2px, 2px) !important;
+    box-shadow: 2px 2px 0px 0px #0F172A !important;
 }
 div[data-testid="stForm"] button[kind="primary"]:active {
-    transform: translateY(0) !important;
+    transform: translate(4px, 4px) !important;
+    box-shadow: 0px 0px 0px 0px #0F172A !important;
 }
 
 /* Expander alignment */
@@ -126,91 +134,10 @@ div[data-testid="stExpander"] {
     width: 380px !important;
     margin: 0 auto !important;
     background-color: #FFFFFF !important;
-    border: 1px solid #E2E8F0 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
-}
-
-/* ============================================================
-   Micro-Animations & Smooth Transitions (Appended)
-   ============================================================ */
-
-/* 1. Enhanced Fade-In & Slide-Up for Page Load */
-[data-testid="stMainViewContainer"], .main .block-container {
-    animation: smoothFadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-}
-
-@keyframes smoothFadeInUp {
-    0% { opacity: 0; transform: translateY(12px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-
-/* 2. Dashboard Cards & Metrics Hover Effects */
-.card-container, 
-div[data-testid="stMetric"] {
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.card-container:hover,
-div[data-testid="stMetric"]:hover {
-    transform: translateY(-4px) !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
-}
-
-/* 3. Button Press, Hover & Pulse */
-div[data-testid="stButton"] button,
-button[kind="primary"],
-button[kind="secondary"] {
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease !important;
-}
-
-div[data-testid="stButton"] button:hover,
-button[kind="primary"]:hover,
-button[kind="secondary"]:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08) !important;
-}
-
-div[data-testid="stButton"] button:active,
-button[kind="primary"]:active,
-button[kind="secondary"]:active {
-    transform: translateY(1px) scale(0.96) !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
-}
-
-/* Primary Button Pulse */
-button[kind="primary"] {
-    animation: subtlePulse 2.5s infinite !important;
-}
-
-@keyframes subtlePulse {
-    0% { box-shadow: 0 0 0 0 rgba(0, 104, 201, 0.3); }
-    70% { box-shadow: 0 0 0 8px rgba(0, 104, 201, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(0, 104, 201, 0); }
-}
-
-/* 4. Input Field Focus Animation */
-div[data-testid="stTextInput"] input, 
-div[data-testid="stSelectbox"] div[data-baseweb="select"],
-div[data-testid="stNumberInput"] input,
-div[data-testid="stDateInput"] input {
-    transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
-}
-
-div[data-testid="stTextInput"] input:focus, 
-div[data-testid="stSelectbox"] div[data-baseweb="select"]:focus-within,
-div[data-testid="stNumberInput"] input:focus,
-div[data-testid="stDateInput"] input:focus {
-    border-color: #0068C9 !important;
-}
-
-/* 5. Expander Smooth Transition */
-div[data-testid="stExpander"] details {
-    transition: background-color 0.3s ease !important;
+    border: 2px solid #0F172A !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
 }
 div[data-testid="stExpander"] details:hover {
-    background-color: rgba(0, 104, 201, 0.03) !important;
-}
-div[data-testid="stExpander"] summary svg {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transform: translate(-2px, -2px) !important;
+    box-shadow: 6px 6px 0px 0px #0068C9 !important;
 }
