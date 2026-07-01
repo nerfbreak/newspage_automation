@@ -69,49 +69,83 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-06-28**: Fixed a bug where Sales Extraction executions were not being logged to the `extraction_history` table and Dashboard Recent Activity. Updated `database.py` to support an optional `status` parameter, and modified `run_sales_extract` in `playwright_engine.py` to log it. Also updated `0_dashboard.py` to differentiate Sales vs Inventory based on this status suffix.
 - **2026-06-28**: Locked the height of the Dashboard's "Recent Activity" container to exactly `544px` to perfectly align with the 3x2 Application Modules grid on the left.
 - **2026-06-28**: Implemented a secret "Element Crawler" module (`pages/7_element_crawler.py`) for scraping DOM elements from the Accenture portal. Hidden from the standard sidebar via CSS (`static/style.css`). Accessed via a 3-click Easter Egg on the "Automation Tool" header text on the dashboard (`utils.py`). Added `run_element_crawler` logic to `playwright_engine.py`.
+# AI Project Memory (Optimize Newspage)
+
+This file acts as the "Distributed Project Memory" for AI agents. It tracks architectural decisions, recent changes, and known states to prevent hallucinations and maintain a single source of truth across all AI sessions.
+
+## Current State Summary
+- **Frontend**: Streamlit (Pages: Dashboard, Inventory Adjustment, Sales Extraction, Promotion Comparison, Stock Mutation, Clearance Stock, Initial Stock).
+- **Backend/DB**: Supabase (PostgreSQL) for user auth, vault, and system config. `cryptography` for AES-256 encryption.
+- **Automation Engine**: Playwright (`playwright_engine.py`) handling interactions with the Newspage portal.
+- **Selectors**: UI automation selectors are documented in `elements_yang_dipakai_dinewspage_sebagai_otomasi.md`.
+
+## Preferred UI/UX & Design Guidelines
+- **Clean Layout Spacing**: Always wrap section headers in `pages/` inside `.header-wrapper-center` or `.header-wrapper-left` container classes defined in `static/style.css` to prevent text sticking/cramping.
+- **English-Translated Disclaimer Footer**: The footer disclaimer must remain in English, formatted with a soft blue background wrapper (`background-color: rgba(0, 104, 201, 0.04); border: 1px solid rgba(0, 104, 201, 0.1); border-radius: 8px`) for a clean, professional aesthetic.
+- **Execution UI Visual Branding**: Replace generic or boring "Execution" subheaders with themed column titles. Use vertical colored borders on the left side of column headers to group actions (e.g., `#FF2B2B` red border for Deduct/Negative flow and `#09A53C` green border for Add/Positive flow).
+- **Safe HTML & Character Rendering**: Never use raw HTML entity codes like `&nbsp;` directly in output logs that undergo `html.escape()`. Use regular space characters to prevent literal `&NBSP;` rendering bugs.
+- **Avoid Glassmorphism/Translucency**: Do NOT use CSS properties like `backdrop-filter`, `rgba` on main containers, or complex gradients (glassmorphism) for the UI (including the login screen). It breaks Streamlit's layout rendering. Stick to solid, flat, modern colors (e.g., `#FFFFFF`, `#F8FAFC`).
+- **Strict Background & Native UI Overrides**: The application background must remain a solid clean `#FFFFFF` (white) without any image textures or noise effects. The Streamlit header (`[data-testid="stHeader"]`) and sidebar (`[data-testid="stSidebar"]`) must be completely hidden using `display: none !important;` to prevent them from overlapping custom UI elements. The main app container (`[data-testid="stAppViewContainer"]`) is styled with a blue top border (`border-top: 4px solid #0068C9`).
+- **Use Material Icons**: Do NOT use default native emojis (e.g. ❌, ✅, ⚠️). Always use Streamlit's built-in Material Icons syntax (`:material/icon_name:`) for components like `st.toast`, `st.button`, etc., to maintain a premium and consistent aesthetic.
+
+## Locked Features & Code Freeze
+- **Frozen Modules**: **Stock Mutation**, **Inventory Adjustment**, **Sales Extraction**, **Promotion Comparison**, **Clearance Stock**, **Initial Stock**, and **Credential Auto-Encryption**.
+- **Rule**: All core execution flow, Playwright steps, Supabase connections, and credential handling for these features are locked. Any future development or new features must build on top of or alongside these modules without modifying their verified core logics.
+- **Unlock Password**: If modification to the frozen logic is explicitly requested, you must verify the password `"Dama"` in the chat before doing any changes.
+- **Changelog Restriction**: When updating `CHANGELOG.md`, only user-facing Features (`### Added`) and Bug Fixes (`### Fixed`) must be recorded.
+
+
+
+---
+
+## Changelog & Decisions
+
+- **2026-06-24**: Initialized AI Project Memory system. Established `AGENTS.md` to force all future AI interactions to read and write to this `MEMORY.md` file.
+- **[Archived Decision]**: Implemented 5 login attempts lockout and 1-hour session timeout in `app.py`.
+- **[Archived Decision]**: Implemented AES-256 Fernet encryption for `distributor_vault` credentials.
+- **2026-06-24**: Reverted the Bento Box UI as it broke Streamlit's layout engine. Implemented a **Streamlit-Native Premium UI** instead: set elegant colors in `config.toml`, stripped destructive CSS overrides from `style.css` and `login.css`, and updated `utils.py` to use flat, safe, inline-styled HTML components.
+- **2026-06-24**: Rolled back UI to original state per user request. Enabled global font antialiasing.
+- **2026-06-25**: Critical security fixes — added `html.escape()` to all HTML injection points in `utils.py` (XSS prevention), enabled CORS in `config.toml`, pinned all dependency versions in `requirements.txt`, moved orphaned `refactor.py` to `scripts/`, added `EXCLUDE_PREFIX` constant to `database.py`, fixed misleading docstring in `database.py`, removed dead `style_status()` function from `utils.py`.
+- **2026-06-26**: Fixed Stock Mutation quantity execution bug: added a fallback to the `Qty` column when `PAC`, `CAR`, and `EA` columns are missing, ensuring quantities are correctly written to the EA input in the Newspage portal instead of injecting empty/zero values. Pre-initialized Status and Keterangan columns in dataframes to avoid visual glitches.
+- **2026-06-26**: Resolved "Decryption error" issue: restored missing local `.streamlit/secrets.toml` from backup to enable decryption of distributor passwords locally, and identified that `MASTER_KEY` needs to be set to `7Cm4lTUOm1-DPgwHRE28ZCZ28b33KDMVV_8Ug_AxiWM=` in the deployment env/secrets.
+- **2026-06-26**: Implemented auto-encryption feature for plain-text passwords: if a distributor password stored in Supabase fails decryption and is detected as plain text (does not start with 'gAAAA'), it will be automatically encrypted and written back to Supabase on first fetch, enabling a seamless workflow for registering new distributors.
+- **2026-06-27**: Documented design guidelines based on the user's positive feedback. The clean layout spacing, vertical left-bordered header highlights, soft-blue disclaimer wrapper, and escaped entity handling are established as the official UI/UX standard.
+- **2026-06-27**: Resolved visual container collision on Page 4 (Stock Mutation) by extracting the execution block (dual tables, progress indicators, terminal logs, and success status indicators) outside the input `st.container(border=True)` block, letting them render naturally at the page level without cramped layout borders.
+- **2026-06-27**: Established "Locked Features & Code Freeze" rule in both `AGENTS.md` and `MEMORY.md` per user request to freeze all existing core features and prevent future AI assistants from refactoring or modifying verified logic when adding new modules.
+- **2026-06-27**: Added a Password Verification check ("Dama") to the logic freeze rules. Any request to override or modify locked modules must be verified by this password in the chat before execution.
+- **2026-06-27**: Restricted CHANGELOG.md to only track user-facing Features (Added) and Bug Fixes (Fixed) per user's request. Added this restriction to local locked rules.
+- **2026-06-27**: Fixed frozen progress bar issue in Stock Mutation by updating `run_execution_manual` to accept `progress_placeholder` and dynamically increment progress values, and passed `prog_a_ph`/`prog_b_ph` from `run_mutasi_execution` (Unlocked via password verification).
+- **2026-06-27**: Consolidated the two separate success/error status boxes into a single merged status box on the Stock Mutation page to improve visual aesthetics and reduce clutter (Unlocked via password verification).
+- **2026-06-27**: Updated the Streamlit login UI expander in `app.py` to dynamically load and display the contents of `CHANGELOG.md` instead of using a hardcoded text list, ensuring any future updates to `CHANGELOG.md` are instantly rendered in the app.
+- **2026-06-27**: Set the cat-with-laptop image (`static/favicon.png`) as the official global webpage favicon/icon for the Streamlit application in `app.py` page configuration.
+- **2026-06-27**: Translated CHANGELOG.md to Indonesian (using "Fitur Baru" and "Perbaikan Bug" headers) and updated the dynamic parser in `app.py` to strip out metadata like `# Changelog` and `## [Unreleased]`, rendering only user-facing additions and fixes.
+- **2026-06-27**: Rewrote CHANGELOG.md in a simple, jargon-free Indonesian format focusing strictly on user-facing features and feature improvements, removing technical developer terms like syntax errors, attribute errors, and file compilation details.
+- **2026-06-27**: Reverted CHANGELOG.md back to English (using Added/Fixed headers), keeping it user-friendly and simple, and removed the auto-encryption and app icon entries per user request.
+- **2026-06-27**: Implemented a comprehensive Operational Report & Analytics section on the main Dashboard page (0_dashboard.py). Added cached log fetching from Supabase, a period filter selector, KPI cards, interactive sync/extraction trend charts, and custom styled HTML tables showing recent execution logs under tabs.
+- **2026-06-27**: Updated the footer disclaimer text in `utils.py` to be more professional, and explicitly stated that the application is unofficial and has no official affiliation with Reckitt, Accenture, or the Newspage platform.
+- **2026-06-27**: Fixed HTML rendering bug in dashboard recent execution tables by wrapping them in `clean_html()`. Updated dashboard metric card and distributor chart to display count of unique SKUs adjusted instead of quantity volumes.
+- **2026-06-27**: Replaced deprecated `use_container_width=True` with `width="stretch"` on dashboard charts to resolve Streamlit deprecation warnings.
+- **2026-06-27**: Replaced deprecated `use_container_width=True` with `width="stretch"` on buttons across all locked pages (unlocked via "Dama" password verification) to resolve Streamlit deprecation warnings.
+- **2026-06-27**: Simplified the Dashboard Activity Report: removed all charts (area chart, bar chart, status distribution) and separate tabbed tables. Replaced with a single unified "Execution History" table showing 5 columns: Timestamp, Distributor, Module (color-coded badges), Status, and Run By. Merges data from `adjustment_logs` and `extraction_history` tables. Module detection uses qty format to distinguish Inventory Adjustment vs Stock Mutation.
+- **2026-06-27**: Fixed "Run By" column on Dashboard to show Streamlit login username instead of NP bot account code. Added optional `run_by` parameter to `log_adjustment()` in `database.py`. Updated `run_execution`, `run_execution_manual`, `run_mutasi_execution` in `playwright_engine.py` and all call sites in pages (1, 4, 5, 6) to pass `st.session_state.current_user`. Old log records without `run_by` fall back to showing `np_user`. Also requires adding a `run_by TEXT` column to the `adjustment_logs` table in Supabase (user action required).
+- **2026-06-27**: Added "Today" option to dashboard period filter. Renamed "Execution History" header to "Log History".
+- **2026-06-30**: Fixed Dashboard connection ping test for Superuser credentials: replaced raw `requests` HTTP implementation with a headless Playwright subprocess polling loop to natively handle the ASP.NET client-side RSA encryption and `SYS_ASCX_btnContinue` session interceptor, ensuring accurate connection verification.
+- **2026-06-27**: Implemented File Upload Tracking on Dashboard. Added `log_uploaded_file()` to `database.py` storing base64-encoded Excel/CSV files in `uploaded_files` Supabase table. Updated `1_inventory_adjustment.py` to store the uploaded distributor file before execution (Auto Compare mode only). Dashboard `load_historical_logs()` now fetches `uploaded_files` and builds a 5-minute bucket lookup to match files to log rows. Log History table now has a 6th "File Uploaded" column rendering an inline base64 download anchor link. Requires user to create `uploaded_files` table in Supabase.
+- **2026-06-28**: Restructured the Dashboard layout (`0_dashboard.py`) into a more hierarchical "Home Screen" style since the sidebar is hidden. Moved System Health and KPI Metrics to the top (Hero Section), placed the Navigation Hub (App Launcher) in the middle, and anchored the Activity Report logs at the bottom.
+- **2026-06-28**: Executed a "Command Center" UI Overhaul for `0_dashboard.py`. Replaced the standard Streamlit grid with an asymmetrical 70/30 split. The left side (70%) contains a 3x2 grid of modern App Launcher cards with colored SVG icons. The right side (30%) contains live pulse indicators and a Vertical Timeline Activity Feed. The design strictly adheres to the solid-color/no-glassmorphism constraints.
+- **2026-06-28**: Refactored CSS styling to ensure consistent premium design across all pages. Extracted inline `<style>` blocks (buttons, segmented controls, pulse animations) from `0_dashboard.py`, `1_inventory_adjustment.py`, and `utils.py`, moving them into the global `static/style.css`. This upgraded the visual aesthetic of all internal modules without modifying any core Playwright logic.
+- **2026-06-28**: Upgraded the inner module headers in `utils.py` (`render_header`) to use a modern, gradient Hero Banner with custom SVG icons and subtitles that match the Command Center design language.
+- **2026-06-28**: Fixed a bug in `0_dashboard.py` where the Recent Activity timeline incorrectly labeled Inventory Extraction logs as "Sales". Corrected the hardcoded module label to "Inventory" to match the actual source of the `extraction_history` data.
+- **2026-06-28**: Restored the original full-width underline aesthetic for inner module section headers by modifying `.section-header-underline` in `style.css` to use `display: block; width: 100%;` per user request.
+- **2026-06-28**: Fixed a bug where Sales Extraction executions were not being logged to the `extraction_history` table and Dashboard Recent Activity. Updated `database.py` to support an optional `status` parameter, and modified `run_sales_extract` in `playwright_engine.py` to log it. Also updated `0_dashboard.py` to differentiate Sales vs Inventory based on this status suffix.
+- **2026-06-28**: Locked the height of the Dashboard's "Recent Activity" container to exactly `544px` to perfectly align with the 3x2 Application Modules grid on the left.
+- **2026-06-28**: Implemented a secret "Element Crawler" module (`pages/7_element_crawler.py`) for scraping DOM elements from the Accenture portal. Hidden from the standard sidebar via CSS (`static/style.css`). Accessed via a 3-click Easter Egg on the "Automation Tool" header text on the dashboard (`utils.py`). Added `run_element_crawler` logic to `playwright_engine.py`.
 - **2026-06-28**: **Fixed `_login` Race Condition (Dama Unlocked):** Replaced static 5s wait with dynamic 60s polling loop to handle slow Newspage servers showing "Same User Already Logged On" popup late.
 - **2026-06-28**: **Fixed Dashboard Duplicate Logs:** Added `drop_duplicates` grouped by minute in `0_dashboard.py` so adjusting 50 SKUs only creates 1 row in the dashboard (per status) instead of 50.
 - **2026-06-28**: **Fixed Navigation Timeout for Heavy Distributors:** Changed `wait_until="domcontentloaded"` to `wait_until="networkidle"` at the end of `_login` to ensure all JavaScript `actionpath` event listeners are fully attached to the DOM before clicking the module menu.
 - **2026-06-28**: **Optimized Initial Login Reliability:** Changed `page.goto(URL_LOGIN)` to also use `networkidle` globally across all automation flows to guarantee stable script attachment on initial load.
 - **2026-06-28**: **Fixed Streamlit Cloud OS Error:** Disabled Streamlit's `fileWatcherType` in `config.toml` to prevent `[Errno 24] inotify instance limit reached` crashes caused by the large number of temporary browser files Playwright creates.
 - **2026-06-28**: **Fixed Warehouse Exception Mapping:** Added `database.get_distributor_warehouse_exceptions()` lookup to `run_execution_manual` to ensure distributors like PT. Panjunan properly use `00GOOD_WHS` instead of the hardcoded `GOOD_WHS` fallback.
- t h e  
- w i d t h = s t r e t c h   a t t r i b u t e  
- m i s t a k e n l y  
- a p p l i e d  
- t o  
- s t . b u t t o n   c a u s e d  
- t h e  
- C l e a r  
- D a t a   a c t i o n  
- b u t t o n s  
- t o  
- s t a c k  
- v e r t i c a l l y  
- i n  
- a n  
- o v e r s i z e d  
- m a n n e r  
- b e l o w  
- t h e  
- d a t a  
- e x t r a c t i o n  
- a l e r t  
- b o x e s  
- o n  
- m u l t i p l e  
- p a g e s .  
- R e v e r t e d  
- t o  
- u s e _ c o n t a i n e r _ w i d t h = T r u e   a n d  
- i m p l e m e n t e d  
- a  
- 2 - c o l u m n  
- l a y o u t  
- w i t h  
-  e r t i c a l _ a l i g n m e n t = c e n t e r   f o r  
- p e r f e c t l y  
- i n l i n e  
- a c t i o n  
- b u t t o n s .  
- 
+- **2026-07-01**: Implemented Error Screenshots: Automation engine now captures a screenshot upon fatal error within the active browser session (`managed_browser_session`), storing it in `screenshots/` and appending the path to the exception.
+- **2026-07-01**: Enhanced Telegram Notifications: `utils.py/send_telegram_alert` upgraded to support `photo_path` (using `sendPhoto` multipart/form-data upload) to send error screenshots. Modified `playwright_engine.py` exception handlers to attach the screenshot. Modified `playwright_engine.py` abort notifications to dynamically append a comma-separated list of failed SKUs.
+- **2026-07-01**: Implemented Global Dry Run Mode: Added a global toggle switch in `app.py` sidebar mapped to `st.session_state.dry_run_enabled`. Updated all execution and extraction functions in `playwright_engine.py` to natively read this state. When enabled, it executes all form interactions normally but explicitly bypasses the final "Save" button click and Supabase database logging to safely test workflows.

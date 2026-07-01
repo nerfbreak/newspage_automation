@@ -138,6 +138,8 @@ if os.path.exists("pages/7_element_crawler.py"):
     nav_pages.append(crawler_page)
 
 # Run navigation
+st.sidebar.title("Automation Controls")
+st.sidebar.toggle("Dry Run (Simulate Only)", key="dry_run_enabled", value=False, help="Run bots without clicking Save/Download, preventing actual database changes in Newspage.")
 pg = st.navigation(nav_pages, position="hidden")
 pg.run()
 

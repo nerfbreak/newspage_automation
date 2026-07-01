@@ -31,6 +31,15 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
         try:
             _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log)
             yield page, browser
+        except Exception as e:
+            try:
+                os.makedirs("screenshots", exist_ok=True)
+                sp = f"screenshots/error_{int(time.time())}.png"
+                page.screenshot(path=sp, timeout=2000)
+                e.screenshot_path = sp
+            except Exception:
+                pass
+            raise
         finally:
             browser.close()
             ui_log("SYS", "Browser closed. Releasing session memory...")
@@ -163,7 +172,7 @@ def _navigate_to_import_export(page, TIMEOUT_MS, ui_log):
     btn_add.click(force=True)
     page.wait_for_timeout(500)
 
-def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser):
+def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_run=False):
     ui_log("INJECT", "Setting job type: Export [E], desc: Text Inventory Master...")
     page.locator("id=pag_FW_SYS_INTF_JOB_NewGeneral_JOB_TYPE_Value").select_option("E")
     page.wait_for_timeout(1000)
@@ -216,6 +225,9 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser):
     page.wait_for_timeout(2000)
     
     ui_log("SERVER", "Saving job and dispatching execution to server...")
+    if dry_run:
+        ui_log("DRY_RUN", "Dry run active - bypassed save click")
+        return None, None
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Save_Value").click(force=True)
     
     ui_log("SERVER", "Awaiting server confirmation prompt...")
@@ -236,7 +248,8 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser):
     
     return real_filename, file_path
 
-def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, ext_ui_log, alert_callback, supabase, current_user):
+def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, ext_ui_log, alert_callback, supabase, current_user, dry_run=None):
+    if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
@@ -247,8 +260,12 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
             
             actual_warehouse = target_whs if target_whs and WAREHOUSE == "GOOD_WHS" else WAREHOUSE
             
-            real_filename, file_path = _dispatch_extraction_job(page, TIMEOUT_MS, actual_warehouse, ext_ui_log, browser)
+            real_filename, file_path = _dispatch_extraction_job(page, TIMEOUT_MS, actual_warehouse, ext_ui_log, browser, dry_run)
             
+            if dry_run:
+                ext_ui_log("DRY_RUN", "Dry run complete - extraction skipped.")
+                return pd.DataFrame(), ""
+                
             ext_ui_log("SYS", f"Parsing payload file: {real_filename}...")
             
             df_ext = None
@@ -300,9 +317,9 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
         st.session_state.is_bot_running = False
         ext_ui_log("ERROR", f"SYSTEM FAILURE: {str(e).split(chr(10))[0]}")
         st.error(f"System error: {e}")
-        alert_callback(f"[ALERT] <b>SYSTEM ERROR (EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>")
+        alert_callback(f"[ALERT] <b>SYSTEM ERROR (EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
 
-def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser):
+def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser, dry_run=False):
     ui_log("NAV", "Initiating sales export job sequence...")
     # The _navigate_to_import_export function already clicked Add Job, so we are now on the New General page.
     page.locator("id=pag_FW_SYS_INTF_JOB_NewGeneral_JOB_TYPE_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
@@ -411,6 +428,9 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser)
         page.wait_for_timeout(2000)
         
     ui_log("SERVER", "Executing multi-interface job sequence...")
+    if dry_run:
+        ui_log("DRY_RUN", "Dry run active - bypassed save click")
+        return None, None
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Save_Value").click(force=True)
     page.wait_for_timeout(2000)
     
@@ -432,11 +452,17 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser)
     
     return real_filename, file_path
 
-def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user):
+def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user, dry_run=None):
+    if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
-            real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser)
+            real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run)
+            if dry_run:
+                ext_ui_log("DRY_RUN", "Dry run complete - extraction skipped.")
+                st.session_state.sales_csv_data = None
+                st.session_state.sales_csv_name = ""
+                return True
             
             ext_ui_log("SYS", "Browser closed. Ready for download.")
             
@@ -463,7 +489,7 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
         st.session_state.is_bot_running = False
         ext_ui_log("ERROR", f"SYSTEM FAILURE: {str(e).split(chr(10))[0]}")
         st.error(f"System error: {e}")
-        alert_callback(f"[ALERT] <b>SYSTEM ERROR (SALES EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>")
+        alert_callback(f"[ALERT] <b>SYSTEM ERROR (SALES EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
 
 def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_log, remark_text=""):
     ui_log("NAV", "Navigating to Stock Adjustment module...")
@@ -591,7 +617,8 @@ def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty'
             pass
 
 
-def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, current_user=None):
+def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, current_user=None, dry_run=None):
+    if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     global_start_time = time.time(); success_count, failed_count = 0, 0
     ui_log("SYS", "Allocating memory and initializing Chromium headless core...")
@@ -661,6 +688,23 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 _log_df_to_supabase(supabase, df_view, bot_user, current_user)
             else:
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
+                if dry_run:
+                    ui_log("DRY_RUN", "Dry run active - bypassed save click")
+                    # Fallback to update statuses directly
+                    for idx, row in df_view.iterrows():
+                        if row.get('Status') == 'Success':
+                            df_view.at[idx, 'Keterangan'] = "Input successfully (Dry Run)"
+                    table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
+                    ui_log("AUTH", "Initiating system logout sequence...")
+                    page.once("dialog", lambda dialog: dialog.accept())
+                    page.locator("id=btnLogout").click(timeout=10000)
+                    browser.close()
+                    elapsed = int(time.time() - global_start_time)
+                    box_html = utils.make_success_box(f"DRY RUN SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
+                    st.markdown(box_html, unsafe_allow_html=True)
+                    alert_callback(f"[OK] <b>DRY RUN FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
+                    st.session_state.is_bot_running = False
+                    return success_count, failed_count, elapsed
                 page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
                 _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj save")
                 try: 
@@ -715,7 +759,9 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 ui_log("ERROR", f"Aborted. Total runtime: {elapsed//60}m {elapsed%60}s")
                 box_html = utils.make_error_box(f"ABORTED — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m {elapsed%60}s")
                 st.markdown(box_html, unsafe_allow_html=True)
-                alert_callback(f"[WARNING] <b>BOT ABORTED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
+                failed_skus = df_view[df_view["Status"] == "Failed"]["SKU"].tolist()
+                sku_str = ("\nFailed SKUs: " + ", ".join(failed_skus[:5]) + ("..." if len(failed_skus) > 5 else "")) if failed_skus else ""
+                alert_callback(f"[WARNING] <b>BOT ABORTED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s{sku_str}")
                 st.toast('Execution aborted due to errors!', icon="🚨")
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
@@ -732,11 +778,11 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
         st.session_state.is_bot_running = False
         st.error("System halted.")
         ui_log("ERROR", f"FAILURE: {e}")
-        alert_callback(f"[ALERT] <b>FATAL ERROR (EXECUTE)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>")
+        alert_callback(f"[ALERT] <b>FATAL ERROR (EXECUTE)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
 
 # --- PROMOTION SYNC ENGINE ---
 
-def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser):
+def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser, dry_run=False):
     promo_ids = [
         "E_20150417000000043", "E_20150417000000044", 
         "E_20150417000000050", "E_20150417000000048", 
@@ -816,6 +862,9 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
             page.wait_for_timeout(2000)
 
     ui_log("SERVER", "Executing multi-interface job...")
+    if dry_run:
+        ui_log("DRY_RUN", "Dry run active - bypassed save click")
+        return None, None
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Save_Value").click(force=True)
     page.wait_for_timeout(2000)
     
@@ -837,12 +886,18 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
     
     return real_filename, file_path
 
-def run_promotion_sync(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user):
+def run_promotion_sync(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user, dry_run=None):
+    if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     try:
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
-            real_filename, file_path = _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser)
+            real_filename, file_path = _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run)
+            if dry_run:
+                ext_ui_log("DRY_RUN", "Dry run complete - sync skipped.")
+                st.session_state.promo_csv_data = None
+                st.session_state.promo_csv_name = ""
+                return True
             
             with open(file_path, "rb") as f:
                 st.session_state.promo_zip_data = f.read()
@@ -898,7 +953,8 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
-def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None):
+def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None, dry_run=None):
+    if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     try:
         global_start_time = time.time()
@@ -960,6 +1016,23 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 _log_df_to_supabase(supabase, df_view, bot_user, current_user, pack_mode=True)
             else:
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
+                if dry_run:
+                    ui_log("DRY_RUN", "Dry run active - bypassed save click")
+                    # Fallback to update statuses directly
+                    for idx, row in df_view.iterrows():
+                        if row.get('Status') == 'Success':
+                            df_view.at[idx, 'Keterangan'] = "Input successfully (Dry Run)"
+                    table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
+                    ui_log("AUTH", "Initiating system logout sequence...")
+                    page.once("dialog", lambda dialog: dialog.accept())
+                    page.locator("id=btnLogout").click(timeout=10000)
+                    browser.close()
+                    elapsed = int(time.time() - global_start_time)
+                    box_html = utils.make_success_box(f"DRY RUN SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
+                    st.markdown(box_html, unsafe_allow_html=True)
+                    alert_callback(f"[OK] <b>DRY RUN FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
+                    st.session_state.is_bot_running = False
+                    return success_count, failed_count, elapsed
                 page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
                 _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "manual stkadj save")
                 try: 
@@ -1007,7 +1080,9 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 box_html = utils.make_error_box(f"ABORTED — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m {elapsed%60}s")
                 if show_status_box:
                     st.markdown(box_html, unsafe_allow_html=True)
-                alert_callback(f"[WARNING] <b>BOT ABORTED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
+                failed_skus = df_view[df_view["Status"] == "Failed"]["SKU"].tolist()
+                sku_str = ("\nFailed SKUs: " + ", ".join(failed_skus[:5]) + ("..." if len(failed_skus) > 5 else "")) if failed_skus else ""
+                alert_callback(f"[WARNING] <b>BOT ABORTED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s{sku_str}")
                 st.toast('Execution aborted due to errors!', icon="🚨")
                 st.session_state.is_bot_running = False
                 return success_count, failed_count, elapsed
@@ -1033,9 +1108,11 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         st.error(f"System error: {e}")
         return 0, len(df_view), 0
 def run_mutasi_execution(
+    dry_run=None,
     df_mutasi,
     bot_user_a, bot_pass_a, dist_a,
     bot_user_b, bot_pass_b, dist_b,
+
     URL_LOGIN, TIMEOUT_MS, whs_a, whs_b,
     REASON_CODE, TABLE_UPDATE_INTERVAL,
     alert_callback,
@@ -1061,7 +1138,7 @@ def run_mutasi_execution(
         WAREHOUSE=whs_a, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_a, alert_callback=alert_callback, 
         table_placeholder=table_a_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text, progress_placeholder=prog_a_ph, show_status_box=False, current_user=current_user
+        remark_text=remark_text, progress_placeholder=prog_a_ph, show_status_box=False, current_user=current_user, dry_run=dry_run
     )
     success_a, failed_a, elapsed_a = res_a if res_a else (0, len(df_deduct), 0)
     
@@ -1077,7 +1154,7 @@ def run_mutasi_execution(
         WAREHOUSE=whs_b, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_b, alert_callback=alert_callback, 
         table_placeholder=table_b_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text, progress_placeholder=prog_b_ph, show_status_box=False, current_user=current_user
+        remark_text=remark_text, progress_placeholder=prog_b_ph, show_status_box=False, current_user=current_user, dry_run=dry_run
     )
     success_b, failed_b, elapsed_b = res_b if res_b else (0, len(df_add), 0)
 
@@ -1127,6 +1204,7 @@ def run_element_crawler(user_id_np, pass_np, selected_distributor, URL_LOGIN, ta
 
 def run_interactive_inspector(user_id_np, pass_np, selected_distributor, URL_LOGIN, target_path, ext_ui_log):
     TIMEOUT_MS = 60000
+    if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     import sys, asyncio
     from playwright.sync_api import sync_playwright
