@@ -107,7 +107,7 @@ def clean_html(html_str: str) -> str:
         return ""
     return " ".join(line.strip() for line in html_str.splitlines())
 
-def _make_alert_box(text: str, bg_color: str, text_color: str, svg_path: str, border_left: str = "1px solid transparent") -> str:
+def _make_alert_box(text: str, bg_color: str, text_color: str, svg_path: str, border_left: str = "2px solid transparent") -> str:
     return clean_html(f"""
         <div style='
             background-color: {bg_color};
@@ -116,18 +116,19 @@ def _make_alert_box(text: str, bg_color: str, text_color: str, svg_path: str, bo
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
-            font-weight: 700;
+            border-radius: 4px;
+            font-weight: 800;
             font-size: 0.85rem;
-            margin-top: 12px;
-            margin-bottom: 16px;
+            margin-top: 16px;
+            margin-bottom: 24px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            border: 2px solid #0F172A;
             border-left: {border_left};
             width: 100%;
             box-sizing: border-box;
+            box-shadow: 4px 4px 0px 0px #0F172A;
         '>
             <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor" style="margin-right: 8px;">
                 <path d="{svg_path}"/>
@@ -137,20 +138,20 @@ def _make_alert_box(text: str, bg_color: str, text_color: str, svg_path: str, bo
     """)
 
 def make_solid_box(text: str, border_color: str, text_color: str) -> str:
-    return _make_alert_box(text, "#F0F2F6", text_color, "M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z", f"5px solid {border_color}")
+    return _make_alert_box(text, "#FFFFFF", text_color, "M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z", f"8px solid {border_color}")
 
 def make_success_box(text: str) -> str:
-    return _make_alert_box(text, "#0068C9", "#FAFAFA", "m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z")
+    return _make_alert_box(text, "#FFFFFF", "#2E7D32", "m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z", "8px solid #2E7D32")
 
 def make_error_box(text: str) -> str:
-    return _make_alert_box(text, "#FF2B2B", "#FAFAFA", "M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-320h-80v320Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z")
+    return _make_alert_box(text, "#FFFFFF", "#D32F2F", "M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-320h-80v320Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z", "8px solid #D32F2F")
 
 def render_metric_card(title, value, accent=False):
-    # Styling variables to match Streamlit Design System theme
-    bg = "#0068C9" if accent else "#F0F2F6"
-    fg = "#FFFFFF" if accent else "#31333F"
-    border = "1px solid rgba(0, 104, 201, 0.15)" if accent else "1px solid rgba(0, 0, 0, 0.08)"
-    shadow = "0 4px 16px rgba(0, 0, 0, 0.15)" if accent else "0 4px 12px rgba(0, 0, 0, 0.03)"
+    # Neo-Brutalist Premium Execution style for metric cards
+    bg = "#0068C9" if accent else "#FFFFFF"
+    fg = "#FFFFFF" if accent else "#0F172A"
+    border = "2px solid #0F172A"
+    shadow = "5px 5px 0px 0px #0F172A" if accent else "5px 5px 0px 0px #0068C9"
     
     title = html.escape(str(title))
     value_str = html.escape(str(value))
@@ -264,13 +265,13 @@ def render_header(title, subtitle=""):
         desc, icon = meta["desc"], meta["icon"]
         
         html_out += f"""
-        <div style='margin-top: 8px; margin-bottom: 16px; padding: 20px 24px; background: linear-gradient(to right, #F8FAFC, #FFFFFF); border: 1px solid #E2E8F0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); display: flex; align-items: center; gap: 16px;'>
-            <div style='font-size: 2rem; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; min-width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);'>
+        <div style='margin-top: 8px; margin-bottom: 24px; padding: 24px 28px; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 8px; box-shadow: 6px 6px 0px 0px #0068C9; display: flex; align-items: center; gap: 20px;'>
+            <div style='font-size: 2.2rem; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 8px; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0px 0px #0068C9;'>
                 {icon}
             </div>
             <div>
-                <h1 style='margin: 0; font-size: 1.6rem; font-weight: 800; color: #0F172A; line-height: 1.2; padding: 0; border: none;'>{title}</h1>
-                <p style='margin: 4px 0 0 0; font-size: 0.9rem; color: #64748B; font-weight: 500;'>{desc}</p>
+                <h1 style='margin: 0; font-size: 1.8rem; font-weight: 800; color: #0F172A; line-height: 1.1; padding: 0; border: none; letter-spacing: -0.02em;'>{title}</h1>
+                <p style='margin: 6px 0 0 0; font-size: 0.95rem; color: #334155; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>{desc}</p>
             </div>
         </div>
         """
