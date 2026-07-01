@@ -927,3 +927,32 @@ div[data-testid="stModal"] *,
 div[data-testid="stExpander"] * {
     border-radius: 0px !important;
 }
+
+/* ============================================================
+   NEO-BRUTALIST CONTAINER (st.container with border=True)
+   ============================================================ */
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    border: 2px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    background-color: #FFFFFF !important;
+    transition: transform 0.15s ease !important;
+    padding: 0 !important;
+}
+div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+    transform: translate(-2px, -2px) !important;
+    box-shadow: 6px 6px 0px 0px #0068C9 !important;
+}
+
+/* Ensure inner container has no conflicting border */
+div[data-testid="stVerticalBlockBorderWrapper"] > div {
+    border: none !important;
+    border-radius: 0px !important;
+}
+
+/* Fix Expander double borders */
+div[data-testid="stExpander"] {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
