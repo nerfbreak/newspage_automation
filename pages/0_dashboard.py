@@ -203,7 +203,7 @@ async def main():
             else:
                 print('FAIL')
     except Exception as e:
-        print(f'ERR: {e}')
+        print('ERR: ' + str(e))
 asyncio.run(main())
 """
                     try:
