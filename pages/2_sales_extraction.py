@@ -29,6 +29,7 @@ render_indicators(db_status, bot_status)
 render_header("Sales Data Extraction", st.session_state.current_user)
 
 
+st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
 
     

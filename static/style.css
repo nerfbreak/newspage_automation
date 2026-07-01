@@ -985,10 +985,9 @@ div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] s
 }
 
 /* --- BULLETPROOF NEO-BRUTALIST CONTAINERS --- */
-div[data-testid="stVerticalBlockBorderWrapper"],
-/* Fallbacks for Streamlit 1.35 containers */
-div.st-emotion-cache-1jicfl2,
-div[data-testid="stVerticalBlock"] > div.st-emotion-cache-1wmy9hl {
+/* Marker-based targeting is 100% reliable across all Streamlit versions */
+div.element-container:has(.neo-container-marker) + div,
+div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBlock"] {
     border-radius: 0px !important;
     border: 3px solid #0F172A !important;
     box-shadow: 6px 6px 0px 0px #0F172A !important;
@@ -997,14 +996,14 @@ div[data-testid="stVerticalBlock"] > div.st-emotion-cache-1wmy9hl {
     transition: transform 0.15s ease, box-shadow 0.15s ease !important;
 }
 
-div[data-testid="stVerticalBlockBorderWrapper"]:hover,
-div.st-emotion-cache-1jicfl2:hover {
+div.element-container:has(.neo-container-marker) + div:hover,
+div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBlock"]:hover {
     transform: translate(-2px, -2px) !important;
     box-shadow: 8px 8px 0px 0px #0F172A !important;
 }
 
 /* Strip inner borders to avoid double borders */
-div[data-testid="stVerticalBlockBorderWrapper"] > div[data-testid="stVerticalBlock"] {
+div.element-container:has(.neo-container-marker) + div > div[data-testid="stVerticalBlock"] {
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;

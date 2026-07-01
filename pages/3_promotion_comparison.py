@@ -42,6 +42,7 @@ render_header("Promotion Comparison", st.session_state.current_user)
 
 
 # --- FILE UPLOADER SECTION ---
+st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
 
     
@@ -64,6 +65,7 @@ with st.container(border=True):
             st.error(f"Error reading file: {e}")
 
 # --- EXTRACTION CONTROLS ---
+st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
 
     

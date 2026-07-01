@@ -51,6 +51,7 @@ if "Auto Compare" in adj_mode:
     col1, col2 = st.columns(2)
     
     with col1:
+        st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
         with st.container(border=True):
             list_dist = database.get_distributor_list(supabase)
             url_dist, default_index = resolve_distributor_url(list_dist)
@@ -66,6 +67,7 @@ if "Auto Compare" in adj_mode:
             file1 = None
 
     with col2:
+        st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
         with st.container(border=True):
             def handle_fragment_upload():
                 f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key="file2_uploader")
@@ -130,6 +132,7 @@ if "Auto Compare" in adj_mode:
         st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>RESULTS</span></div>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
+            st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
             with st.container(border=True):
                 st.markdown("<div class='header-wrapper-left'><span class='section-header-underline'>NEWSPAGE SETUP</span></div>", unsafe_allow_html=True)
                 idx_sku1 = df1.columns.get_loc('Product Code') if 'Product Code' in df1.columns else 0
@@ -141,6 +144,7 @@ if "Auto Compare" in adj_mode:
                 desc_col1 = st.selectbox("Description column (NP)", df1.columns, index=idx_desc1)
                 qty_col1  = st.selectbox("Qty column (NP)", df1.columns, index=idx_qty1)
         with c2:
+            st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
             with st.container(border=True):
                 st.markdown("<div class='header-wrapper-left'><span class='section-header-underline'>DISTRIBUTOR SETUP</span></div>", unsafe_allow_html=True)
                 idx_sku2 = 20 if len(df2.columns) > 20 else 0
@@ -215,12 +219,14 @@ elif "Manual Entry" in adj_mode:
     list_dist = database.get_distributor_list(supabase)
     url_dist, default_index = resolve_distributor_url(list_dist)
     
+    st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
     with st.container(border=True):
         selected_distributor = st.selectbox("Nama Distributor", list_dist, index=default_index, key="manual_dist_sel")
         st.query_params.clear()
         st.query_params["d"] = encode_param(selected_distributor)
         bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
         
+    st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
     with st.container(border=True):
         st.markdown("<div class='header-wrapper-center-notop'><span class='section-header-underline'>FIELD SKU INPUT</span></div>", unsafe_allow_html=True)
         st.markdown("""

@@ -46,11 +46,13 @@ col1, col2 = st.columns(2)
 list_dist = database.get_distributor_list(supabase)
 
 with col1:
+    st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
     with st.container(border=True):
         dist_a = st.selectbox("Pilih Distributor Pengirim", list_dist, key="mutasi_dist_a")
         bot_user_a, bot_pass_a = database.get_distributor_creds(supabase, dist_a)
 
 with col2:
+    st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
     with st.container(border=True):
         # Filter out dist_a from receiver list to prevent same-distributor selection
         list_dist_b = [d for d in list_dist if d != dist_a]
@@ -58,6 +60,7 @@ with col2:
         bot_user_b, bot_pass_b = database.get_distributor_creds(supabase, dist_b)
 
 # --- FILE UPLOAD + COLUMN MAPPING ---
+st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
     uploaded_file = st.file_uploader("Upload file Excel berisi SKU yang akan dimutasi", type=['csv', 'xlsx'], key="mutasi_file_uploader")
 
@@ -133,6 +136,7 @@ if uploaded_file is not None:
 review_ready = st.session_state.mutasi_review_df is not None and len(st.session_state.mutasi_review_df) > 0
 can_execute = review_ready and bot_user_a and bot_pass_a and bot_user_b and bot_pass_b and not st.session_state.is_mutasi_running
 
+st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
     reason_options = {
         "SA1": "SA1 - Transformasi Kode Barang",

@@ -116,7 +116,7 @@ def _make_alert_box(text: str, bg_color: str, text_color: str, svg_path: str, bo
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 4px;
+            border-radius: 0px;
             font-weight: 800;
             font-size: 0.85rem;
             margin-top: 16px;
@@ -171,7 +171,7 @@ def render_metric_card(title, value, accent=False):
         background-color: {bg};
         color: {fg};
         border: {border};
-        border-radius: 10px;
+        border-radius: 0px;
         padding: 20px 24px;
         width: 100%;
         height: 125px;
@@ -218,7 +218,7 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
             <div style='margin-left: auto; pointer-events: none; display: inline-flex; align-items: center; gap: 6px;'>
                 <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14" fill="#838C96"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
                 <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 600; color: #838C96; text-transform: uppercase; letter-spacing: 0.05em;'>Session:</span>
-                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em;'>{html.escape(str(st.session_state.current_user))}</span>
+                <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{html.escape(str(st.session_state.current_user))}</span>
             </div>
         """
         
@@ -239,7 +239,7 @@ def render_header(title, subtitle=""):
         active_sess = f"""<div style='float: right; margin-top: 5px; pointer-events: none; display: inline-flex; align-items: center; gap: 6px;'>
             <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14" fill="#838C96"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
             <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 600; color: #838C96; text-transform: uppercase; letter-spacing: 0.05em;'>Session:</span>
-            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em;'>{subtitle}</span>
+            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.65rem; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{subtitle}</span>
         </div>"""
         
     html_out = ""
@@ -343,15 +343,15 @@ def render_footer():
     st.markdown(clean_html("""
     <div style='text-align: center; margin-top: 80px; margin-bottom: 20px;'>
         <div>
-            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
+            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0F172A; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
                 &copy; 2026 IT Support Newspage.
             </span>
             <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>
                 by kopi mang toni.
             </span>
         </div>
-        <div style='background-color: rgba(0, 104, 201, 0.04); border: 1px solid rgba(0, 104, 201, 0.1); border-radius: 8px; padding: 12px 16px; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; color: #5D6271; margin-top: 18px; max-width: 580px; margin-left: auto; margin-right: auto; line-height: 1.5; text-align: center;'>
-            <strong style="color: #0068C9; display: block; margin-bottom: 4px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Disclaimer</strong>
+        <div style='background-color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; border-radius: 0px; padding: 12px 16px; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; color: #5D6271; margin-top: 18px; max-width: 580px; margin-left: auto; margin-right: auto; line-height: 1.5; text-align: center;'>
+            <strong style="color: #0F172A; display: block; margin-bottom: 4px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Disclaimer</strong>
             This application is an independently developed, unofficial utility designed solely to automate repetitive tasks, improve operational efficiency, and save working hours. It is not officially endorsed, sponsored, or affiliated with Reckitt, Accenture, or the Newspage platform.
         </div>
     </div>

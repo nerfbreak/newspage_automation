@@ -40,6 +40,7 @@ render_indicators(db_status, bot_status, bot_type="CLEARANCE ENGINE")
 render_header("Clearance Stock", st.session_state.current_user)
 
 # --- DISTRIBUTOR SELECTION ---
+st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
     list_dist = database.get_distributor_list(supabase)
     _, default_index = resolve_distributor_url(list_dist)
