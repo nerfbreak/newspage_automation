@@ -169,6 +169,11 @@ with right_col:
                     start_t = time.time()
                     
                     import subprocess
+                    from playwright_engine import ensure_playwright
+                    try:
+                        ensure_playwright()
+                    except Exception as e:
+                        st.toast(f"Failed to install browser dependencies: {e}", icon=":material/error:")
                     script = f"""
 import asyncio, time
 from playwright.async_api import async_playwright
