@@ -277,29 +277,29 @@ def render_header(title, subtitle=""):
         
         flat_toggle_css = """
         <style>
-        /* Flat Premium Design per Memory Guidelines */
-        div[data-testid="stCheckbox"] {
+        /* Robust Flat Premium Design using Sibling Anchor */
+        div.element-container:has(.dry-run-anchor) + div.element-container {
             background-color: #FFFFFF;
             border: 1.5px solid #E2E8F0;
             border-left: 6px solid #0068C9;
             border-radius: 4px;
-            padding: 14px 24px;
+            padding: 12px 18px 12px 24px;
             margin-top: 12px;
             margin-bottom: 24px;
             width: fit-content;
             transition: all 0.2s ease-in-out;
         }
         
-        div[data-testid="stCheckbox"]:hover {
+        div.element-container:has(.dry-run-anchor) + div.element-container:hover {
             background-color: #F8FAFC;
             border-color: #0068C9;
         }
         
-        div[data-testid="stCheckbox"] label {
+        div.element-container:has(.dry-run-anchor) + div.element-container label {
             cursor: pointer;
         }
 
-        div[data-testid="stCheckbox"] label p {
+        div.element-container:has(.dry-run-anchor) + div.element-container label p {
             font-size: 1.05rem !important;
             font-weight: 700 !important;
             color: #0F172A !important;
@@ -307,6 +307,7 @@ def render_header(title, subtitle=""):
             letter-spacing: -0.02em;
         }
         </style>
+        <div class="dry-run-anchor" style="display: none;"></div>
         """
         st.markdown(html_out + flat_toggle_css, unsafe_allow_html=True)
         st.toggle(":material/science: Dry Run (Simulate Only)", key="dry_run_enabled", help="Run bots without clicking Save/Download, preventing actual database changes in Newspage.")
