@@ -264,7 +264,7 @@ def render_header(title, subtitle=""):
         desc, icon = meta["desc"], meta["icon"]
         
         html_out += f"""
-        <div style='margin-top: 8px; margin-bottom: 24px; padding: 20px 24px; background: linear-gradient(to right, #F8FAFC, #FFFFFF); border: 1px solid #E2E8F0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); display: flex; align-items: center; gap: 16px;'>
+        <div style='margin-top: 8px; margin-bottom: 16px; padding: 20px 24px; background: linear-gradient(to right, #F8FAFC, #FFFFFF); border: 1px solid #E2E8F0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); display: flex; align-items: center; gap: 16px;'>
             <div style='font-size: 2rem; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; min-width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);'>
                 {icon}
             </div>
@@ -274,8 +274,29 @@ def render_header(title, subtitle=""):
             </div>
         </div>
         """
-        st.markdown(html_out, unsafe_allow_html=True)
-        st.toggle("Dry Run (Simulate Only)", key="dry_run_enabled", help="Run bots without clicking Save/Download, preventing actual database changes in Newspage.")
+        
+        flat_toggle_css = """
+        <style>
+        /* Flat Premium Design per Memory Guidelines */
+        div[data-testid="stCheckbox"] {
+            background-color: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-left: 4px solid #0068C9;
+            border-radius: 6px;
+            padding: 10px 16px;
+            margin-bottom: 24px;
+            width: fit-content;
+        }
+        
+        div[data-testid="stCheckbox"] label p {
+            font-size: 0.95rem !important;
+            font-weight: 600 !important;
+            color: #0F172A !important;
+        }
+        </style>
+        """
+        st.markdown(html_out + flat_toggle_css, unsafe_allow_html=True)
+        st.toggle(":material/science: Dry Run (Simulate Only)", key="dry_run_enabled", help="Run bots without clicking Save/Download, preventing actual database changes in Newspage.")
     else:
         st.markdown(html_out, unsafe_allow_html=True)
         st.markdown(f"<h1 style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 1.75rem; font-weight: 700; color: #31333F; letter-spacing: -0.02em; margin-top: -15px; margin-bottom: -15px; padding: 0;'>{title}</h1>", unsafe_allow_html=True)
