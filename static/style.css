@@ -931,23 +931,22 @@ div[data-testid="stExpander"] * {
 /* ============================================================
    NEO-BRUTALIST CONTAINER (st.container with border=True)
    ============================================================ */
-div[data-testid="stVerticalBlockBorderWrapper"] {
-    border: 2px solid #0F172A !important;
+div[data-testid="stVerticalBlockBorderWrapper"],
+div[data-testid="stVerticalBlockBorderWrapper"] > div,
+div[data-testid="stVerticalBlockBorderWrapper"] div[data-testid="stVerticalBlock"] {
     border-radius: 0px !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] > div {
+    border: 2px solid #0F172A !important;
     box-shadow: 4px 4px 0px 0px #0F172A !important;
     background-color: #FFFFFF !important;
     transition: transform 0.15s ease !important;
-    padding: 0 !important;
-}
-div[data-testid="stVerticalBlockBorderWrapper"]:hover {
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 6px 6px 0px 0px #0068C9 !important;
 }
 
-/* Ensure inner container has no conflicting border */
-div[data-testid="stVerticalBlockBorderWrapper"] > div {
-    border: none !important;
-    border-radius: 0px !important;
+div[data-testid="stVerticalBlockBorderWrapper"] > div:hover {
+    transform: translate(-2px, -2px) !important;
+    box-shadow: 6px 6px 0px 0px #0068C9 !important;
 }
 
 /* Fix Expander double borders */
