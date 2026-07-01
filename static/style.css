@@ -127,7 +127,7 @@ div[data-testid="stButton"] button {
 
 div[data-testid="stButton"] button:hover {
     transform: translate(2px, 2px) !important;
-    box-shadow: 8px 8px 0px 0px #0F172A !important;
+    
     border-color: #0F172A !important;
 }
 
@@ -161,7 +161,7 @@ button[kind="primary"]:hover {
     background-color: #0054A3 !important;
     color: #FFFFFF !important;
     transform: translate(2px, 2px) !important;
-    box-shadow: 8px 8px 0px 0px #0F172A !important;
+    
 }
 
 /* --- Terminal & Live Log Components --- */
@@ -245,8 +245,8 @@ button[kind="primary"]:hover {
     transition: transform 0.15s ease, box-shadow 0.15s ease !important;
 }
 .metric-box-match:hover, .metric-box-mismatch:hover {
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 8px 8px 0px 0px #0F172A !important;
+    
+    
 }
 
 
@@ -384,8 +384,8 @@ div[data-testid="stContainer"] {
 }
 
 div[data-testid="stContainer"]:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0px 0px #0F172A;
+    
+    
 }
 
 /* --- Password Input Fix --- */
@@ -440,7 +440,7 @@ section[data-testid="stSidebar"] [data-testid="stSidebarNav"] {
 [data-testid="stSidebarNav"] ul li a:hover,
 [data-testid="stSidebarNavItems"] ul li a:hover,
 [data-testid="stSidebarNavLink"]:hover {
-    background-color: #0F172A !important; color: #FFFFFF !important; transform: translate(2px, 2px) !important; box-shadow: 8px 8px 0px 0px #0F172A !important;
+    background-color: #0F172A !important; color: #FFFFFF !important; transform: translate(2px, 2px) !important; 
     transform: translateX(2px) !important;
 }
 
@@ -633,8 +633,8 @@ div[data-testid="stDataFrame"] {
     transition: transform 0.15s ease, box-shadow 0.15s ease !important;
 }
 div[data-testid="stDataFrame"]:hover {
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 8px 8px 0px 0px #0F172A !important;
+    
+    
 }
 
 /* --- Native st.dataframe Scrollbar Hide --- */
@@ -717,8 +717,8 @@ div[data-testid="stMetric"] {
 
 .card-container:hover,
 div[data-testid="stMetric"]:hover {
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 8px 8px 0px 0px #0F172A !important;
+    
+    
 }
 
 /* 3. Button Press, Hover & Pulse */
@@ -731,7 +731,7 @@ button[kind="primary"] {
 
 @keyframes hardPulse {
     0% { box-shadow: 6px 6px 0px 0px #0F172A; }
-    50% { box-shadow: 6px 6px 0px 0px #0F172A; transform: translate(-2px, -2px); }
+    50% { box-shadow: 6px 6px 0px 0px #0F172A;  }
     100% { box-shadow: 6px 6px 0px 0px #0F172A; }
 }
 
@@ -760,8 +760,8 @@ div[data-testid="stExpander"] details {
     margin-bottom: 16px !important;
 }
 div[data-testid="stExpander"] details:hover {
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 8px 8px 0px 0px #0F172A !important;
+    
+    
 }
 div[data-testid="stExpander"] summary {
     font-weight: 800 !important;
@@ -906,7 +906,7 @@ a[data-testid="stPageLink-NavLink"] {
 a[data-testid="stPageLink-NavLink"]:hover {
     background: #FFFFFF !important;
     transform: translate(2px, 2px) !important;
-    box-shadow: 8px 8px 0px 0px #0F172A !important;
+    
 }
 a[data-testid="stPageLink-NavLink"] p {
     font-family: "Source Sans 3", sans-serif !important;
@@ -995,8 +995,8 @@ div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] s
 }
 
 div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] span.neo-module-card-marker):hover {
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 8px 8px 0px 0px #0F172A !important;
+    
+    
 }
 
 div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] span.neo-module-card-marker) div[data-testid="stButton"] {
@@ -1017,8 +1017,8 @@ div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBl
 
 div.element-container:has(.neo-container-marker) + div:hover,
 div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBlock"]:hover {
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 8px 8px 0px 0px #0F172A !important;
+    
+    
 }
 
 /* Strip inner borders to avoid double borders */

@@ -293,8 +293,8 @@ def render_header(title, subtitle=""):
         }
         
         div.element-container:has(.dry-run-anchor) + div.element-container:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 8px 8px 0px 0px #0F172A;
+            
+            
             border-color: #0F172A;
         }
         
