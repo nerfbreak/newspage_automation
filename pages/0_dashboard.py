@@ -203,19 +203,21 @@ async def main():
             else:
                 print('FAIL')
     except Exception as e:
-        print('ERR')
+        print(f'ERR: {e}')
 asyncio.run(main())
 """
                     try:
-                        res = subprocess.run(["python", "-c", script], capture_output=True, text=True, timeout=25)
+                        import sys
+                        res = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True, timeout=25)
                         elapsed = time.time() - start_t
                         out = res.stdout.strip()
+                        err = res.stderr.strip()
                         if out == 'OK':
                             st.toast(f"Superuser Login OK ({elapsed:.1f}s)", icon=":material/check_circle:")
                         elif out == 'FAIL':
                             st.toast(f"Login Failed (Check Credentials)", icon=":material/warning:")
                         else:
-                            st.toast("Failed to reach server or timeout", icon=":material/error:")
+                            st.toast(f"Ping err: {out} {err}", icon=":material/error:")
                     except subprocess.TimeoutExpired:
                         st.toast("Ping timeout", icon=":material/error:")
                     except Exception as e:
