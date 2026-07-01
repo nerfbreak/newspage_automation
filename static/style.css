@@ -956,3 +956,12 @@ div[data-testid="stExpander"] {
     background: transparent !important;
     box-shadow: none !important;
 }
+
+/* Force expander summary to be neo-brutalist and white */
+div[data-testid="stExpander"] summary {
+    background-color: #FFFFFF !important;
+    border-bottom: 2px solid #0F172A !important;
+}
+div[data-testid="stExpander"] summary:hover {
+    background-color: #F8FAFC !important;
+}

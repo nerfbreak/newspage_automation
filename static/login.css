@@ -133,11 +133,8 @@ div[data-testid="stForm"] button[kind="primary"]:active {
 div[data-testid="stExpander"] {
     width: 380px !important;
     margin: 0 auto !important;
-    background-color: #FFFFFF !important;
-    border: 2px solid #0F172A !important;
-    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
 }
-div[data-testid="stExpander"] details:hover {
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 6px 6px 0px 0px #0068C9 !important;
-}
+
