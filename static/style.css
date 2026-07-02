@@ -1180,6 +1180,10 @@ table.neo-table th {
 }
 
 /* NEO-BRUTALISM FILE UPLOADER */
+div[data-testid="stFileUploader"] {
+    touch-action: pan-y !important;
+    overflow: hidden !important;
+}
 section[data-testid="stFileUploaderDropzone"] {
     background-color: #FFFFFF !important;
     border: 3px solid #0F172A !important;
@@ -1187,6 +1191,7 @@ section[data-testid="stFileUploaderDropzone"] {
     box-shadow: 6px 6px 0px 0px #0F172A !important;
     padding: 24px !important;
     overflow: hidden !important;
+    touch-action: pan-y !important;
 }
 section[data-testid="stFileUploaderDropzone"] button[kind="secondary"] {
     background-color: #FFFFFF !important;
