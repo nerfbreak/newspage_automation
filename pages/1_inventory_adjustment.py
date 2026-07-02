@@ -107,10 +107,10 @@ if "Auto Compare" in adj_mode:
 
         st.session_state.is_bot_running = True
         ext_label_placeholder.markdown(f"""
-            <div style='display: inline-block; margin-bottom: 4px;'>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>EXTRACT_LOG</span>
-            </div>
+            <div style='display: inline-flex; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; margin-bottom: 8px; background-color: #FFFFFF; align-items: center;'>
+            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #FFFFFF; background-color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px; border-right: 2px solid #0F172A;'>System Activity</span>
+            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #0F172A; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px;'>EXTRACT_LOG</span>
+        </div>
         """, unsafe_allow_html=True)
         ext_ui_log, _ = make_terminal_logger(ext_log_placeholder)
 
@@ -134,7 +134,7 @@ if "Auto Compare" in adj_mode:
         c1, c2 = st.columns(2)
         with c1:
             st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-            with st.container(border=True):
+            with st.container(border=True, height=360):
                 st.markdown("<div class='header-wrapper-left'><span class='section-header-underline'>NEWSPAGE SETUP</span></div>", unsafe_allow_html=True)
                 idx_sku1 = df1.columns.get_loc('Product Code') if 'Product Code' in df1.columns else 0
                 if 'Product Description' in df1.columns: idx_desc1 = df1.columns.get_loc('Product Description')
@@ -146,7 +146,7 @@ if "Auto Compare" in adj_mode:
                 qty_col1  = st.selectbox("Qty column (NP)", df1.columns, index=idx_qty1)
         with c2:
             st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-            with st.container(border=True):
+            with st.container(border=True, height=360):
                 st.markdown("<div class='header-wrapper-left'><span class='section-header-underline'>DISTRIBUTOR SETUP</span></div>", unsafe_allow_html=True)
                 idx_sku2 = 20 if len(df2.columns) > 20 else 0
                 qty2_col_match = next((col for col in df2.columns if str(col).strip().lower().replace(" ", "") == "stokakhir"), None)
@@ -154,7 +154,6 @@ if "Auto Compare" in adj_mode:
                 else: idx_qty2 = 71 if len(df2.columns) > 71 else (1 if len(df2.columns) > 1 else 0)
                 sku_col2 = st.selectbox("SKU column (Dist)", df2.columns, index=idx_sku2)
                 qty_col2 = st.selectbox("Qty column (Dist)", df2.columns, index=idx_qty2)
-                st.markdown("<div style='margin-bottom: 84px;'></div>", unsafe_allow_html=True)
 
         if st.button("Start Adjustment", type="primary", use_container_width=True, icon=":material/play_arrow:"):
             TARGET_SKUS = database.get_target_skus(supabase)
