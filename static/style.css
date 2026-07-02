@@ -1186,6 +1186,7 @@ section[data-testid="stFileUploaderDropzone"] {
     border-radius: 0px !important;
     box-shadow: 6px 6px 0px 0px #0F172A !important;
     padding: 24px !important;
+    overflow: hidden !important;
 }
 section[data-testid="stFileUploaderDropzone"] button[kind="secondary"] {
     background-color: #FFFFFF !important;
