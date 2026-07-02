@@ -134,7 +134,7 @@ if "Auto Compare" in adj_mode:
         c1, c2 = st.columns(2)
         with c1:
             st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-            with st.container(border=True, height=360):
+            with st.container(border=True, height=420):
                 st.markdown("<div class='header-wrapper-left'><span class='section-header-underline'>NEWSPAGE SETUP</span></div>", unsafe_allow_html=True)
                 idx_sku1 = df1.columns.get_loc('Product Code') if 'Product Code' in df1.columns else 0
                 if 'Product Description' in df1.columns: idx_desc1 = df1.columns.get_loc('Product Description')
@@ -146,7 +146,7 @@ if "Auto Compare" in adj_mode:
                 qty_col1  = st.selectbox("Qty column (NP)", df1.columns, index=idx_qty1)
         with c2:
             st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-            with st.container(border=True, height=360):
+            with st.container(border=True, height=420):
                 st.markdown("<div class='header-wrapper-left'><span class='section-header-underline'>DISTRIBUTOR SETUP</span></div>", unsafe_allow_html=True)
                 idx_sku2 = 20 if len(df2.columns) > 20 else 0
                 qty2_col_match = next((col for col in df2.columns if str(col).strip().lower().replace(" ", "") == "stokakhir"), None)

@@ -138,6 +138,28 @@ div[data-testid="stLinkButton"] button:active {
     box-shadow: 2px 2px 0px 0px #0F172A !important;
 }
 
+div[data-testid="stButton"] button:hover,
+div[data-testid="stFormSubmitButton"] button:hover,
+div[data-testid="stDownloadButton"] button:hover,
+div[data-testid="stLinkButton"] button:hover,
+button[kind="primary"]:hover,
+button[kind="primaryFormSubmit"]:hover,
+button[data-testid="stBaseButton-primary"]:hover,
+button[data-testid="stBaseButton-primaryFormSubmit"]:hover {
+    transform: translate(2px, 2px) !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    background-color: #0068C9 !important;
+    color: #FFFFFF !important;
+    border-color: #0F172A !important;
+}
+
+div[data-testid="stButton"] button:hover p,
+div[data-testid="stFormSubmitButton"] button:hover p,
+div[data-testid="stDownloadButton"] button:hover p,
+div[data-testid="stLinkButton"] button:hover p {
+    color: #FFFFFF !important;
+}
+
 div[data-testid="stButton"] button,
 div[data-testid="stButton"] button p,
 div[data-testid="stFormSubmitButton"] button,
