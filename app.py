@@ -80,7 +80,7 @@ if not st.session_state.logged_in:
                 "<path d='M7 11V7a5 5 0 0 1 10 0v4'></path>"
                 "</svg>"
                 "</div>"
-                "<div style='color: #0F172A; font-weight: 800; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 1.4rem; margin: 0; padding: 0; letter-spacing: -0.02em;'>Sign In</div>"
+                "<div style='color: #0F172A; font-weight: 800; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 1.4rem; margin: 0; padding: 0; letter-spacing: -0.02em;'>Sign In</div>"
                 "</div>", 
                 unsafe_allow_html=True
             )
