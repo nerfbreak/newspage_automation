@@ -576,33 +576,6 @@ def _render_progress_label(placeholder, dist, user, current, total):
         c1, c2, c3 = st.columns([5, 2, 3], vertical_alignment="center")
         with c1:
             st.markdown(f"""
-                <style>
-                    #root div.stButton > button[kind="primary"],
-                    #root div.stButton > button[data-testid="stBaseButton-primary"],
-                    html body div.stButton > button[data-testid="stBaseButton-primary"] {
-                        background-color: #E63946 !important;
-                        border-color: #0F172A !important;
-                    }
-                    #root div.stButton > button[kind="primary"] p,
-                    #root div.stButton > button[data-testid="stBaseButton-primary"] p,
-                    html body div.stButton > button[data-testid="stBaseButton-primary"] p {
-                        color: #FFFFFF !important;
-                        font-weight: 800 !important;
-                    }
-                    #root div.stButton > button[kind="primary"]:hover,
-                    #root div.stButton > button[data-testid="stBaseButton-primary"]:hover,
-                    html body div.stButton > button[data-testid="stBaseButton-primary"]:hover {
-                        background-color: #D62828 !important;
-                    }
-                    @media (max-width: 768px) {
-                        #root div.stButton > button[kind="primary"],
-                        #root div.stButton > button[data-testid="stBaseButton-primary"],
-                        html body div.stButton > button[data-testid="stBaseButton-primary"] {
-                            margin-top: 16px !important;
-                            margin-bottom: 16px !important;
-                        }
-                    }
-                </style>
                 <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap;'>
                     <div style='background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
                     <div style='background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
