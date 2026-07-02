@@ -114,7 +114,7 @@ st.markdown("<div style='margin-top: 32px;'></div>", unsafe_allow_html=True)
 left_col, right_col = st.columns([7, 3], gap="large")
 
 with left_col:
-    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Application Modules</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A; background-color: #F1F5F9; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; padding: 6px 14px; display: inline-block; font-weight: 900; text-transform: uppercase;'>Application Modules</h3>", unsafe_allow_html=True)
     
     MODULES = [
         {"title": "Inventory Adjustment", "desc": "Singkronisasi & rekonsiliasi data stok fisik vs sistem", "icon": "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'></path><polyline points='3.27 6.96 12 12.01 20.73 6.96'></polyline><line x1='12' y1='22.08' x2='12' y2='12'></line></svg>", "bg": "#EFF6FF", "color": "#3B82F6", "page": "pages/1_inventory_adjustment.py", "key": "btn_inv"},
@@ -151,7 +151,7 @@ with left_col:
 with right_col:
     rc1, rc2 = st.columns([6, 4])
     with rc1:
-        st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Recent Activity</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A; background-color: #F1F5F9; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; padding: 6px 14px; display: inline-block; font-weight: 900; text-transform: uppercase;'>Recent Activity</h3>", unsafe_allow_html=True)
     with rc2:
         if st.button("Ping", use_container_width=True, key="ping_newspage"):
             import requests
@@ -293,7 +293,7 @@ asyncio.run(main())
 # Full Report Table still at the bottom
 if db_connected:
     st.markdown("<div style='margin-top: 48px; border-top: 1px solid #E2E8F0; padding-top: 24px;'></div>", unsafe_allow_html=True)
-    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A;'>Full Activity Report</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin: 0 0 16px 0; font-size: 1.2rem; color: #0F172A; background-color: #F1F5F9; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; padding: 6px 14px; display: inline-block; font-weight: 900; text-transform: uppercase;'>Full Activity Report</h3>", unsafe_allow_html=True)
     
     col_filter, _ = st.columns([1.5, 2.5])
     with col_filter:
