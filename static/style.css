@@ -652,11 +652,11 @@ div[data-testid="stDataFrame"] {
 /* ── Section Headers ─────────────────────────────────────── */
 .section-header {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #0068C9;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: #0F172A;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     padding-bottom: 4px;
     margin-top: 2px;
     margin-bottom: 16px;
@@ -664,12 +664,12 @@ div[data-testid="stDataFrame"] {
 
 .section-header-underline {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #0068C9;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: #0F172A;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    border-bottom: 2px solid #0068C9;
+    letter-spacing: 0.05em;
+    border-bottom: 4px solid #0F172A;
     padding-bottom: 4px;
     display: inline-block;
 }
