@@ -8,4 +8,4 @@ supabase==2.30.0
 bcrypt==5.0.0
 streamlit-option-menu==0.4.0
 openai>=1.0.0
-extra-streamlit-components>=1.1.71
+extra-streamlit-components>=0.1.81
