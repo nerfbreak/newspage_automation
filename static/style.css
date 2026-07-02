@@ -839,16 +839,7 @@ div[data-testid="stExpander"] summary {
 
 
 /* Styling khusus untuk stSegmentedControl (Neo-Brutalism) */
-div[data-testid="stSegmentedControl"] {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    width: fit-content !important;
-}
-
-div[data-testid="stSegmentedControl"] > div {
+div[data-testid="stButtonGroup"] > div[role="radiogroup"] {
     background-color: #FFFFFF !important;
     border: 3px solid #0F172A !important;
     box-shadow: 4px 4px 0px 0px #0F172A !important;
@@ -857,29 +848,30 @@ div[data-testid="stSegmentedControl"] > div {
     gap: 0 !important;
     overflow: hidden !important;
     display: flex !important;
+    width: fit-content !important;
 }
 
-div[data-testid="stSegmentedControl"] label {
+div[data-testid="stButtonGroup"] > div[role="radiogroup"] button {
     padding: 10px 24px !important;
+    border: none !important;
     border-right: 3px solid #0F172A !important;
     border-radius: 0 !important;
     margin: 0 !important;
     background-color: transparent !important;
     transition: all 0.2s ease !important;
+    flex: 1 !important;
 }
 
-div[data-testid="stSegmentedControl"] label:last-child {
+div[data-testid="stButtonGroup"] > div[role="radiogroup"] button:last-child {
     border-right: none !important;
 }
 
-div[data-testid="stSegmentedControl"] [data-selected="true"],
-div[data-testid="stSegmentedControl"] [aria-selected="true"] {
+div[data-testid="stButtonGroup"] > div[role="radiogroup"] button[kind="segmented_controlActive"] {
     background-color: #0068C9 !important;
-    border-bottom: none !important;
 }
 
-div[data-testid="stSegmentedControl"] p,
-div[data-testid="stSegmentedControl"] span {
+div[data-testid="stButtonGroup"] > div[role="radiogroup"] button p,
+div[data-testid="stButtonGroup"] > div[role="radiogroup"] button span {
     font-family: "Source Sans 3", sans-serif !important;
     font-size: 0.8rem !important;
     text-transform: uppercase !important;
@@ -892,12 +884,8 @@ div[data-testid="stSegmentedControl"] span {
 }
 
 /* Selected state */
-div[data-testid="stSegmentedControl"] [aria-selected="true"] p,
-div[data-testid="stSegmentedControl"] [aria-selected="true"] span,
-div[data-testid="stSegmentedControl"] [data-selected="true"] p,
-div[data-testid="stSegmentedControl"] [data-selected="true"] span,
-div[data-testid="stSegmentedControl"] input:checked + div p,
-div[data-testid="stSegmentedControl"] input:checked + div span {
+div[data-testid="stButtonGroup"] > div[role="radiogroup"] button[kind="segmented_controlActive"] p,
+div[data-testid="stButtonGroup"] > div[role="radiogroup"] button[kind="segmented_controlActive"] span {
     color: #FFFFFF !important;
 }
 
