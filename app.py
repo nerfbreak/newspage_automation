@@ -29,6 +29,7 @@ if cookies is None:
 if st.session_state.get("logout_requested"):
     if "auth_user" in cookies:
         cookie_manager.delete("auth_user")
+        cookies.pop("auth_user", None)
     st.session_state.logout_requested = False
 
 MAX_LOGIN_ATTEMPTS = 5
