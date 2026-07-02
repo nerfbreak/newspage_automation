@@ -61,6 +61,7 @@ html, body, [data-testid="stAppViewContainer"] {
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
+    overflow-x: hidden !important;
 }
 header[data-testid="stHeader"] { display: none !important; }
 
