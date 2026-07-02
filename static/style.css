@@ -1057,3 +1057,54 @@ table.neo-table th {
     top: 0;
     z-index: 1;
 }
+
+/* NEO-BRUTALISM FILE UPLOADER */
+section[data-testid="stFileUploaderDropzone"] {
+    background-color: #FFFFFF !important;
+    border: 3px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
+    padding: 24px !important;
+}
+section[data-testid="stFileUploaderDropzone"] button[kind="secondary"] {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    border: 3px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    text-transform: uppercase !important;
+    font-weight: 800 !important;
+    transition: all 0.2s ease !important;
+}
+section[data-testid="stFileUploaderDropzone"] button[kind="secondary"]:hover {
+    transform: translate(2px, 2px) !important;
+    box-shadow: 2px 2px 0px 0px #0F172A !important;
+}
+div[data-testid="stFileUploaderDropzoneInstructions"] {
+    color: #0F172A !important;
+    font-weight: 700 !important;
+    opacity: 0.8 !important;
+}
+
+/* NEO-BRUTALISM ALERTS (st.info, st.warning, st.error, st.success) */
+div[data-testid="stAlert"] {
+    background-color: #FFFFFF !important;
+    border: 3px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
+    margin-bottom: 24px !important;
+}
+div[data-testid="stAlertContainer"] {
+    background: transparent !important;
+    padding: 16px 20px !important;
+}
+div[data-testid="stAlert"] p {
+    color: #0F172A !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+}
+/* Ensure the alert icon matches the dark theme */
+div[data-testid="stAlert"] svg {
+    color: #0F172A !important;
+    fill: #0F172A !important;
+}
