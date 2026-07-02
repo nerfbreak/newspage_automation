@@ -329,10 +329,10 @@ def render_footer():
     st.markdown(clean_html("""
     <div style='text-align: center; margin-top: 80px; margin-bottom: 20px;'>
         <div>
-            <span style='font-size: 0.85rem; font-weight: 700; color: #0F172A; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
+            <span style='font-size: 0.85rem; font-weight: 600; color: #0F172A; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
                 &copy; 2026 IT Support Newspage.
             </span>
-            <span style='font-size: 0.85rem; font-weight: 700; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>
+            <span style='font-size: 0.85rem; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>
                 by kopi mang toni.
             </span>
         </div>
