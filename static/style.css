@@ -1105,10 +1105,12 @@ table.neo-table th, table.neo-table td {
     border: 2px solid #0F172A;
     padding: 10px 14px;
     color: #0F172A;
-    font-size: 0.85rem;
-    font-family: "Source Sans 3", sans-serif;
+}
+table.neo-table td {
+    font-size: 1rem;
 }
 table.neo-table th {
+    font-size: 0.85rem;
     background-color: #f1f5f9;
     font-weight: 800;
     text-transform: uppercase;
