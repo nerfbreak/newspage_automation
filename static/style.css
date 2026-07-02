@@ -235,6 +235,7 @@ div.element-container:has(#terminate-btn-anchor) + div.element-container button 
     border-color: #0F172A !important;
     /* Reset margins for perfect alignment */
     margin: 0 !important;
+    transform: translateY(-5px) !important;
 }
 div.element-container:has(#terminate-btn-anchor) + div.element-container button p {
     color: #FFFFFF !important;
