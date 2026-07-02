@@ -193,12 +193,12 @@ if st.session_state.is_mutasi_running:
     df_a_display['Qty'] = '-' + df_a_display['Qty'].astype(str)
     df_a_display['Status'] = 'Pending'
     df_a_display['Keterangan'] = 'Ready'
-    table_a_ph.dataframe(df_a_display, width="stretch", hide_index=True)
+    utils.render_neo_table(table_a_ph, df_a_display)
 
     df_b_display = df_mutasi[['SKU', 'Description', 'Qty']].copy()
     df_b_display['Status'] = 'Pending'
     df_b_display['Keterangan'] = 'Ready'
-    table_b_ph.dataframe(df_b_display, width="stretch", hide_index=True)
+    utils.render_neo_table(table_b_ph, df_b_display)
 
     prog_a_ph.progress(0)
     prog_b_ph.progress(0)

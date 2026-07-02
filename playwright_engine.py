@@ -652,7 +652,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                             pass
                     progress_bar.progress((i+1)/total_rows)
                     if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1:
-                        table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
+                        utils.render_neo_table(table_placeholder, df_view)
                     continue
 
                 try: qty = str(int(float(row['Qty'])))
@@ -681,7 +681,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     
                 progress_bar.progress((i+1)/total_rows)
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
-                    table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
+                    utils.render_neo_table(table_placeholder, df_view)
                     
             if failed_count > 0:
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
@@ -694,7 +694,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     for idx, row in df_view.iterrows():
                         if row.get('Status') == 'Success':
                             df_view.at[idx, 'Keterangan'] = "Input successfully (Dry Run)"
-                    table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
+                    utils.render_neo_table(table_placeholder, df_view)
                     ui_log("AUTH", "Initiating system logout sequence...")
                     page.once("dialog", lambda dialog: dialog.accept())
                     page.locator("id=btnLogout").click(timeout=10000)
@@ -738,7 +738,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 _log_df_to_supabase(supabase, df_view, bot_user, current_user)
 
                 # Refresh the final dataframe view in the UI
-                table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
+                utils.render_neo_table(table_placeholder, df_view)
             
             ui_log("AUTH", "Initiating system logout sequence...")
             try:
@@ -1009,7 +1009,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     ui_log("ERROR", f"Timeout on SKU [{sku}]. Node unresponsive. Skipping.")
                     
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
-                    table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
+                    utils.render_neo_table(table_placeholder, df_view)
                     
             if failed_count > 0:
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
@@ -1022,7 +1022,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     for idx, row in df_view.iterrows():
                         if row.get('Status') == 'Success':
                             df_view.at[idx, 'Keterangan'] = "Input successfully (Dry Run)"
-                    table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
+                    utils.render_neo_table(table_placeholder, df_view)
                     ui_log("AUTH", "Initiating system logout sequence...")
                     page.once("dialog", lambda dialog: dialog.accept())
                     page.locator("id=btnLogout").click(timeout=10000)
@@ -1058,7 +1058,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 _log_df_to_supabase(supabase, df_view, bot_user, current_user, pack_mode=True)
 
                 # Refresh the final dataframe view in the UI
-                table_placeholder.dataframe(df_view, width="stretch", hide_index=True)
+                utils.render_neo_table(table_placeholder, df_view)
             
             ui_log("AUTH", "Initiating system logout sequence...")
             try:
