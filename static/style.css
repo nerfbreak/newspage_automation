@@ -225,23 +225,20 @@ div[role="dialog"] button[aria-label="Close"] svg {
     stroke-width: 3px !important;
 }
 
-/* Specifically target the TERMINATE button layout which is the only primary button in the 2nd column of a horizontal block */
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button[data-testid="stBaseButton-primary"],
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button[kind="primary"] {
+/* Specifically target the TERMINATE button layout which is the next column after the one containing #terminate-target-col */
+div[data-testid="column"]:has(#terminate-target-col) + div[data-testid="column"] button {
     background-color: #E63946 !important;
     border-color: #0F172A !important;
 }
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button[data-testid="stBaseButton-primary"] p,
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button[kind="primary"] p {
+div[data-testid="column"]:has(#terminate-target-col) + div[data-testid="column"] button p {
     color: #FFFFFF !important;
 }
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button[data-testid="stBaseButton-primary"]:hover,
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button[kind="primary"]:hover {
+div[data-testid="column"]:has(#terminate-target-col) + div[data-testid="column"] button:hover {
     background-color: #D62828 !important;
+    border-color: #0F172A !important;
 }
 @media (max-width: 768px) {
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button[data-testid="stBaseButton-primary"],
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button[kind="primary"] {
+    div[data-testid="column"]:has(#terminate-target-col) + div[data-testid="column"] button {
         margin-top: 16px !important;
         margin-bottom: 16px !important;
     }
