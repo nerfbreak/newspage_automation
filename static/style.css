@@ -1181,39 +1181,20 @@ div[data-testid="stToast"] {
     border: 3px solid #0F172A !important;
     box-shadow: 6px 6px 0px 0px #0F172A !important;
     border-radius: 0px !important;
-    padding: 16px 20px !important;
+}
+
+div[data-testid="stToast"] * {
     color: #0F172A !important;
     font-family: "Source Sans 3", sans-serif !important;
-    font-weight: 700 !important;
-    transition: all 0.2s ease-in-out !important;
-    margin-bottom: 12px !important;
 }
 
-div[data-testid="stToast"]:hover {
-    transform: translate(2px, 2px) !important;
-    box-shadow: 4px 4px 0px 0px #0F172A !important;
-}
-
-/* Toast message text */
-div[data-testid="stToast"] [data-testid="stMarkdownContainer"] p {
-    color: #0F172A !important;
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    margin: 0 !important;
-}
-
-/* Close button inside toast */
 div[data-testid="stToast"] button {
-    border: 2px solid #0F172A !important;
     background-color: #FFDE59 !important;
-    color: #0F172A !important;
+    border: 2px solid #0F172A !important;
     border-radius: 0px !important;
     box-shadow: 2px 2px 0px 0px #0F172A !important;
     transition: all 0.1s ease !important;
-    opacity: 1 !important;
-    padding: 2px !important;
-    right: 12px !important;
-    top: 12px !important;
+    margin-right: 8px !important;
 }
 
 div[data-testid="stToast"] button:hover {
@@ -1224,15 +1205,14 @@ div[data-testid="stToast"] button:hover {
 
 div[data-testid="stToast"] button svg {
     stroke: #0F172A !important;
-    stroke-width: 3px !important;
-    width: 14px !important;
-    height: 14px !important;
+    stroke-width: 2.5px !important;
 }
 
 /* ============================================================
    NEO-BRUTALISM PROGRESS BAR
    ============================================================ */
-div[role="progressbar"] {
+div[data-testid="stProgressBar"] > div,
+div[data-testid="stProgress"] > div {
     background-color: #FFFFFF !important;
     border: 3px solid #0F172A !important;
     border-radius: 0px !important;
@@ -1241,14 +1221,15 @@ div[role="progressbar"] {
     overflow: hidden !important;
 }
 
-div[role="progressbar"] > div {
+div[data-testid="stProgressBar"] > div > div,
+div[data-testid="stProgress"] > div > div {
     background-color: #FFDE59 !important;
     border-radius: 0px !important;
     height: 100% !important;
     border-right: 3px solid #0F172A !important;
 }
 
-/* Fix right border overlap when 100% */
-div[role="progressbar"] > div[style*="width: 100%"] {
+div[data-testid="stProgressBar"] > div > div[style*="width: 100%"],
+div[data-testid="stProgress"] > div > div[style*="width: 100%"] {
     border-right: none !important;
 }
