@@ -231,6 +231,7 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
 
 def render_header(title, subtitle=""):
     inject_css()  # uses cached CSS, no repeated file I/O
+    html_out = ""
 
     if "Automation Tool" not in title:
         st.page_link("pages/0_dashboard.py", label="Dashboard", icon=":material/home:")
