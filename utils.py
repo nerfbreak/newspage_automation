@@ -328,15 +328,15 @@ def render_footer():
     st.markdown(clean_html("""
     <div style='text-align: center; margin-top: 80px; margin-bottom: 20px;'>
         <div>
-            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0F172A; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
+            <span style='font-size: 0.85rem; font-weight: 700; color: #0F172A; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>
                 &copy; 2026 IT Support Newspage.
             </span>
-            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>
+            <span style='font-size: 0.85rem; font-weight: 700; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>
                 by kopi mang toni.
             </span>
         </div>
-        <div style='background-color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; border-radius: 0px; padding: 12px 16px; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; color: #5D6271; margin-top: 18px; max-width: 580px; margin-left: auto; margin-right: auto; line-height: 1.5; text-align: center;'>
-            <strong style="color: #0F172A; display: block; margin-bottom: 4px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Disclaimer</strong>
+        <div style='background-color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; border-radius: 0px; padding: 16px 24px; font-size: 0.9rem; color: #5D6271; margin-top: 18px; max-width: 680px; margin-left: auto; margin-right: auto; line-height: 1.6; text-align: center;'>
+            <strong style="color: #0F172A; display: block; margin-bottom: 8px; text-transform: uppercase; font-size: 1rem; letter-spacing: 0.05em;">Disclaimer</strong>
             This application is an independently developed by Muhammad Rizki Firdaus (Contractor), unofficial utility designed solely to automate repetitive tasks, improve operational efficiency, and save working hours. It is not officially endorsed, sponsored, or affiliated with Reckitt, Accenture, or the Newspage platform.
         </div>
     </div>
