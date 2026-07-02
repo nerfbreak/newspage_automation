@@ -265,13 +265,13 @@ def render_header(title, subtitle=""):
         desc, icon, bg_color = meta["desc"], meta["icon"], meta.get("color", "#FFDE59")
         
         html_out += f"""
-        <div style='margin-top: 8px; margin-bottom: 24px; padding: 24px 28px; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; align-items: center; gap: 20px;'>
+        <div style='margin-top: 8px; margin-bottom: 24px; padding: clamp(16px, 3vw, 24px); background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; flex-wrap: wrap; align-items: center; gap: 20px;'>
             <div style='font-size: 2.2rem; background: {bg_color}; border: 3px solid #0F172A; border-radius: 0px; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0px 0px #0F172A; color: #0F172A;'>
                 {icon}
             </div>
-            <div>
-                <h1 style='margin: 0; font-size: 1.8rem; font-weight: 800; color: #0F172A; line-height: 1.1; padding: 0; border: none; letter-spacing: -0.02em;'>{title}</h1>
-                <p style='margin: 6px 0 0 0; font-size: 0.95rem; color: #334155; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>{desc}</p>
+            <div style='flex: 1; min-width: 200px;'>
+                <h1 style='margin: 0; font-size: clamp(1.4rem, 4vw, 1.8rem); font-weight: 800; color: #0F172A; line-height: 1.1; padding: 0; border: none; letter-spacing: -0.02em; word-wrap: break-word;'>{title}</h1>
+                <p style='margin: 6px 0 0 0; font-size: clamp(0.75rem, 2vw, 0.95rem); color: #334155; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>{desc}</p>
             </div>
         </div>
         """

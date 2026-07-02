@@ -75,10 +75,10 @@ bot_running = (
 
 # --- HERO BANNER ---
 st.markdown(f"""
-<div style='background: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 32px 32px 24px 32px; margin-bottom: 32px; position: relative; margin-top: -16px;'>
-    <div style='position: absolute; top: 24px; right: 24px; background: #0068C9; color: #FFFFFF; padding: 6px 16px; font-weight: 800; font-size: 0.85rem; border: 2px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; letter-spacing: 0.05em;'>AUTOMATION TOOL</div>
-    <h1 style='font-size: 2.8rem; font-weight: 900; color: #0F172A; margin: 0; line-height: 1.1; letter-spacing: -0.02em;'>HALO, {html.escape(st.session_state.current_user).upper()}! 👋</h1>
-    <p style='font-size: 1.05rem; color: #0F172A; margin-top: 16px; margin-bottom: 0; font-weight: 700; border-top: 3px solid #0F172A; padding-top: 12px; display: inline-block; text-transform: uppercase;'>PANTAU RINGKASAN AKTIVITAS OTOMATISASI DISTRIBUTOR ANDA HARI INI, {datetime.now().strftime('%d %b %Y').upper()}.</p>
+<div style='background: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: clamp(16px, 4vw, 32px); margin-bottom: 32px; margin-top: -16px;'>
+    <div style='display: inline-block; margin-bottom: 16px; background: #0068C9; color: #FFFFFF; padding: 6px 16px; font-weight: 800; font-size: 0.85rem; border: 2px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; letter-spacing: 0.05em;'>AUTOMATION TOOL</div>
+    <h1 style='font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 900; color: #0F172A; margin: 0; line-height: 1.1; letter-spacing: -0.02em; word-wrap: break-word;'>HALO, {html.escape(st.session_state.current_user).upper()}! 👋</h1>
+    <p style='font-size: clamp(0.85rem, 2vw, 1.05rem); color: #0F172A; margin-top: 16px; margin-bottom: 0; font-weight: 700; border-top: 3px solid #0F172A; padding-top: 12px; display: inline-block; text-transform: uppercase;'>PANTAU RINGKASAN AKTIVITAS OTOMATISASI DISTRIBUTOR ANDA HARI INI, {datetime.now().strftime('%d %b %Y').upper()}.</p>
 </div>
 """, unsafe_allow_html=True)
 
