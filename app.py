@@ -93,7 +93,7 @@ if not st.session_state.logged_in:
                             st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Invalid credentials. {attempts_left} attempt(s) remaining.</p>", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-    with st.expander("✨ What's New & Changelog", expanded=False):
+    with st.expander("What's New & Changelog", expanded=False):
         try:
             with open("CHANGELOG.md", "r", encoding="utf-8") as f:
                 lines = f.readlines()
