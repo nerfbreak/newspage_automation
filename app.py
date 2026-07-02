@@ -2,6 +2,7 @@ import os
 import time
 import html as _html
 import streamlit as st
+import extra_streamlit_components as stx
 import database
 from utils import (
     render_footer, inject_css, send_telegram_alert,
@@ -16,9 +17,20 @@ supabase = database.init_supabase()
 _config = database.get_system_config(supabase)
 
 # --- 2. AUTHENTICATION GATEKEEPER ---
+
+@st.cache_resource
+def get_cookie_manager():
+    return stx.CookieManager()
+
+cookie_manager = get_cookie_manager()
+# Let the cookie manager initialize
+# It needs a run to fetch cookies from the client
+if cookie_manager.get_all() is None:
+    st.stop()
+
 MAX_LOGIN_ATTEMPTS = 5
 LOCKOUT_SECONDS = 300  # 5 minutes
-SESSION_TIMEOUT_SECONDS = 3600  # 1 hour
+SESSION_TIMEOUT_SECONDS = 86400 * 7  # 7 days
 
 init_session_state(
     logged_in=False,
@@ -39,6 +51,14 @@ if st.session_state.logged_in and st.session_state.last_activity > 0:
         st.rerun()
     else:
         st.session_state.last_activity = time.time()
+
+if not st.session_state.logged_in:
+    auth_cookie = cookie_manager.get(cookie="auth_user")
+    if auth_cookie:
+        st.session_state.logged_in = True
+        st.session_state.current_user = auth_cookie
+        st.session_state.last_activity = time.time()
+        st.rerun()
 
 if not st.session_state.logged_in:
     inject_css("login.css")
@@ -81,6 +101,7 @@ if not st.session_state.logged_in:
                         st.session_state.logged_in = True
                         st.session_state.current_user = username
                         st.session_state.last_activity = time.time()
+                        cookie_manager.set("auth_user", username, max_age=86400 * 7) # 7 days
                         time.sleep(1.2)
                         st.rerun()
                     else:
@@ -106,7 +127,17 @@ if not st.session_state.logged_in:
                     start_idx = idx
                     break
             changelog_content = "".join(lines[start_idx:])
-            st.markdown(changelog_content)
+            
+            # Neo-Brutalist Changelog Headers
+            changelog_content = changelog_content.replace(
+                "### ✨ Fitur Baru", 
+                "<h3><span style='background: #A3E635; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; padding: 4px 12px; font-weight: 900; font-family: "Courier New", Courier, monospace; letter-spacing: 0.05em; text-transform: uppercase;'>★ NEW FEATURES</span></h3><br>"
+            )
+            changelog_content = changelog_content.replace(
+                "### 🛠️ Perbaikan & Peningkatan", 
+                "<h3><span style='background: #FBBF24; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; padding: 4px 12px; font-weight: 900; font-family: "Courier New", Courier, monospace; letter-spacing: 0.05em; text-transform: uppercase;'>⚡ IMPROVEMENTS</span></h3><br>"
+            )
+            st.markdown(changelog_content, unsafe_allow_html=True)
         except Exception:
             pass
 
