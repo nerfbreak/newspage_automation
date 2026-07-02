@@ -360,14 +360,7 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] {
     background: transparent !important;
 }
 
-div[data-testid="stSelectbox"] label p {
-    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
-    font-size: 0.7rem !important;
-    font-weight: 700 !important;
-    color: #0068C9 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.08em !important;
-}
+
 
 /* --- Divider --- */
 hr {
