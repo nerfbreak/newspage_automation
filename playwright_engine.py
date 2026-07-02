@@ -597,7 +597,11 @@ def _render_progress_label(placeholder, dist, user, current, total):
                     }
                 </style>
             """, unsafe_allow_html=True)
-            st.button("TERMINATE", key=f"term_bot_{current}_{total}", use_container_width=True, type="primary")
+            def terminate_callback():
+                st.session_state.is_bot_running = False
+                st.session_state.execute_done = False
+                
+            st.button("TERMINATE", key=f"term_bot_{current}_{total}", use_container_width=True, type="primary", on_click=terminate_callback)
         with c3:
             st.markdown(f"""
                 <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end;'>
