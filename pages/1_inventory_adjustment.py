@@ -45,8 +45,8 @@ bot_status = "RUNNING" if st.session_state.is_bot_running else "STANDBY"
 render_indicators(db_status, bot_status)
 render_header("Inventory Adjustment", st.session_state.current_user)
 
-adj_mode_sel = st.segmented_control("Adjustment Mode", [":material/auto_awesome: Auto Compare", ":material/edit_document: Manual Entry"], default=":material/auto_awesome: Auto Compare", selection_mode="single", label_visibility="collapsed")
-adj_mode = adj_mode_sel if adj_mode_sel else ":material/auto_awesome: Auto Compare"
+adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
+adj_mode = adj_mode_sel if adj_mode_sel else "Auto Compare"
 
 if "Auto Compare" in adj_mode:
     col1, col2 = st.columns(2)
