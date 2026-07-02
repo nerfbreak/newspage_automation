@@ -256,8 +256,8 @@ def render_header(title, subtitle=""):
                 {icon}
             </div>
             <div style='flex: 1; min-width: 200px;'>
-                <h1 style='margin: 0; font-size: clamp(1.4rem, 4vw, 1.8rem); font-weight: 800; color: #0F172A; line-height: 1.1; padding: 0; border: none; letter-spacing: -0.02em; word-wrap: break-word;'>{title}</h1>
-                <p style='margin: 6px 0 0 0; font-size: clamp(0.75rem, 2vw, 0.95rem); color: #334155; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>{desc}</p>
+                <div style='margin: 0; font-size: clamp(1.4rem, 4vw, 1.8rem); font-weight: 800; color: #0F172A; line-height: 1.1; padding: 0; letter-spacing: -0.02em; word-wrap: break-word;'>{title}</div>
+                <div style='margin: 6px 0 0 0; font-size: clamp(0.75rem, 2vw, 0.95rem); color: #334155; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>{desc}</div>
             </div>
         </div>
         """
