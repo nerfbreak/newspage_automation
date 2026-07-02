@@ -193,56 +193,7 @@ button[data-testid="stBaseButton-primaryFormSubmit"] {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
 
-/* --- Neo-Brutalist Breadcrumb --- */
-.neo-breadcrumb-link {
-    text-decoration: none !important;
-    color: #0F172A !important;
-    font-weight: 800 !important;
-    font-size: 0.85rem !important;
-    padding: 6px 14px !important;
-    border: 2px solid #0F172A !important;
-    background-color: #FFFFFF !important;
-    box-shadow: 3px 3px 0px 0px #0F172A !important;
-    transition: all 0.15s ease !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
-    display: inline-block;
-}
-.neo-breadcrumb-link:hover {
-    transform: translate(3px, 3px) !important;
-    box-shadow: 0px 0px 0px 0px #0F172A !important;
-    background-color: #0F172A !important;
-    color: #FFFFFF !important;
-    text-decoration: none !important;
-}
-.neo-breadcrumb-page {
-    color: #0F172A !important;
-    font-weight: 800 !important;
-    font-size: 0.85rem !important;
-    padding: 6px 14px !important;
-    border: 2px solid #0F172A !important;
-    box-shadow: 3px 3px 0px 0px #0F172A !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
-    display: inline-block;
-}
-
 /* --- Dialog / Modal Components --- */
-/* Hide the injected Streamlit dashboard page link used for JS hack */
-div.element-container:has(#hidden-dash-anchor),
-div.element-container:has(#hidden-dash-anchor) + div.element-container {
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0, 0, 0, 0) !important;
-    white-space: nowrap !important;
-    border: 0 !important;
-}
 
 div[role="dialog"] {
     background-color: #FFFFFF !important;
