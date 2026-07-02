@@ -251,16 +251,16 @@ def render_header(title, subtitle=""):
         
         html_out += f"""
         <nav aria-label="breadcrumb">
-            <ol style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-family: 'Source Sans 3', sans-serif; list-style: none; padding: 0; margin: 0; margin-bottom: 16px;">
-                <li style="display: inline-flex; align-items: center;">
+            <ol style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-family: 'Source Sans 3', sans-serif; list-style: none; padding: 0; margin: 0; margin-bottom: 12px;">
+                <li style="display: flex; align-items: center;">
                     <a href="dashboard" target="_self" class="neo-breadcrumb-link">
                         Dashboard
                     </a>
                 </li>
-                <li role="presentation" aria-hidden="true" style="display: inline-flex; align-items: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+                <li role="presentation" aria-hidden="true" style="display: flex; align-items: center; justify-content: center; height: 100%; margin-top: 2px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
                 </li>
-                <li style="display: inline-flex; align-items: center;">
+                <li style="display: flex; align-items: center;">
                     <span class="neo-breadcrumb-page" style="background-color: {bg_color};">
                         {title}
                     </span>

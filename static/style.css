@@ -195,33 +195,38 @@ button[data-testid="stBaseButton-primaryFormSubmit"] {
 
 /* --- Neo-Brutalist Breadcrumb --- */
 .neo-breadcrumb-link {
-    text-decoration: none;
-    color: #0F172A;
-    font-weight: 800;
-    font-size: 0.85rem;
-    padding: 6px 14px;
-    border: 2px solid #0F172A;
-    background-color: #FFFFFF;
-    box-shadow: 3px 3px 0px 0px #0F172A;
-    transition: all 0.15s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    text-decoration: none !important;
+    color: #0F172A !important;
+    font-weight: 800 !important;
+    font-size: 0.85rem !important;
+    padding: 6px 14px !important;
+    border: 2px solid #0F172A !important;
+    background-color: #FFFFFF !important;
+    box-shadow: 3px 3px 0px 0px #0F172A !important;
+    transition: all 0.15s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    display: inline-block;
 }
 .neo-breadcrumb-link:hover {
-    transform: translate(3px, 3px);
-    box-shadow: 0px 0px 0px 0px #0F172A;
-    background-color: #0F172A;
-    color: #FFFFFF;
+    transform: translate(3px, 3px) !important;
+    box-shadow: 0px 0px 0px 0px #0F172A !important;
+    background-color: #0F172A !important;
+    color: #FFFFFF !important;
+    text-decoration: none !important;
 }
 .neo-breadcrumb-page {
-    color: #0F172A;
-    font-weight: 800;
-    font-size: 0.85rem;
-    padding: 6px 14px;
-    border: 2px solid #0F172A;
-    box-shadow: 3px 3px 0px 0px #0F172A;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    color: #0F172A !important;
+    font-weight: 800 !important;
+    font-size: 0.85rem !important;
+    padding: 6px 14px !important;
+    border: 2px solid #0F172A !important;
+    box-shadow: 3px 3px 0px 0px #0F172A !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    display: inline-block;
 }
 
 /* --- Dialog / Modal Components --- */
