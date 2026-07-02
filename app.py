@@ -46,11 +46,13 @@ if not st.session_state.logged_in:
     with st.form("login_form"):
         st.markdown(
             "<div style='text-align: center; margin-bottom: 24px;'>"
-            "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#31333F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='margin-bottom: 12px; display: inline-block;'>"
+            "<div style='display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; background-color: #FFDE59; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px;'>"
+            "<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='#0F172A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'>"
             "<rect x='3' y='11' width='18' height='11' rx='2' ry='2'></rect>"
             "<path d='M7 11V7a5 5 0 0 1 10 0v4'></path>"
             "</svg>"
-            "<div style='color: #31333F; font-weight: 600; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 1.15rem; margin: 0; padding: 0;'>Sign In</div>"
+            "</div>"
+            "<div style='color: #0F172A; font-weight: 800; font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 1.4rem; margin: 0; padding: 0; letter-spacing: -0.02em;'>Sign In</div>"
             "</div>", 
             unsafe_allow_html=True
         )
