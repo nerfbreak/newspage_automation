@@ -63,16 +63,16 @@ if not st.session_state.logged_in:
         
         if submit:
             if not username:
-                st.markdown("<div style='color: #FF2B2B; background: #FFFFFF; font-size: 0.85rem; text-align: center; font-weight: 700; margin-top: 12px; border: 2px solid #0F172A; padding: 10px; box-shadow: 4px 4px 0px 0px #0F172A; text-transform: uppercase;'>⚠️ Please enter a username.</div>", unsafe_allow_html=True)
+                st.markdown("<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>Please enter a username.</p></div>", unsafe_allow_html=True)
             else:
                 is_locked, remaining, attempts = database.check_login_lockout(supabase, username)
                 
                 if is_locked:
-                    st.markdown(f"<div style='color: #FF2B2B; background: #FFFFFF; font-size: 0.85rem; text-align: center; font-weight: 700; margin-top: 12px; border: 2px solid #0F172A; padding: 10px; box-shadow: 4px 4px 0px 0px #0F172A; text-transform: uppercase;'>🔒 Account locked. Try again in {remaining}s.</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>Account locked. Please try again in {remaining} seconds.</p></div>", unsafe_allow_html=True)
                 else:
                     if database.authenticate_user(supabase, username, password):
                         database.reset_failed_login(supabase, username)
-                        st.markdown("<div style='color: #09AB3B; background: #FFFFFF; font-size: 0.85rem; text-align: center; font-weight: 800; margin-top: 12px; border: 2px solid #0F172A; padding: 10px; box-shadow: 4px 4px 0px 0px #0F172A; text-transform: uppercase;'>✅ Auth Success. Welcome.</div>", unsafe_allow_html=True)
+                        st.markdown("<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>Authentication Successful. Welcome Back.</p></div>", unsafe_allow_html=True)
                         st.session_state.logged_in = True
                         st.session_state.current_user = username
                         st.session_state.last_activity = time.time()
