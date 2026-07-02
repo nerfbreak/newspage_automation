@@ -634,7 +634,8 @@ div[data-testid="stNotification"][aria-label="Info"] div {
 .custom-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 1rem;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+    font-size: 0.875rem;
     color: #31333F;
     text-align: left;
 }
