@@ -1185,7 +1185,11 @@ div[data-testid="stToast"] {
 
 div[data-testid="stToast"] * {
     color: #0F172A !important;
+}
+
+div[data-testid="stToast"] div[data-testid="stMarkdownContainer"] p {
     font-family: "Source Sans 3", sans-serif !important;
+    font-weight: 700 !important;
 }
 
 div[data-testid="stToast"] button {
