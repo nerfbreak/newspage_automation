@@ -172,17 +172,18 @@ button[data-testid="stBaseButton-primaryFormSubmit"] {
 
 /* --- Terminal & Live Log Components --- */
 .terminal-box {
-    background-color: #F8F9FB;
-    color: #31333F;
+    background-color: #FFFFFF;
+    color: #0F172A;
     font-family: "Source Code Pro", monospace;
-    font-size: 0.8rem;
-    padding: 14px 18px;
-    border: 2px solid #0F172A !important;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 16px 20px;
+    border: 4px solid #0F172A !important;
     border-radius: 0px !important;
-    box-shadow: 4px 4px 0px 0px #0F172A !important;
-    height: 320px;
+    box-shadow: 8px 8px 0px 0px #0F172A !important;
+    height: 350px;
     overflow-y: auto;
-    line-height: 1.6;
+    line-height: 1.8;
     -ms-overflow-style: none;
     scrollbar-width: none;
     margin-top: 6px;
@@ -203,20 +204,34 @@ button[data-testid="stBaseButton-primaryFormSubmit"] {
 .blink_me { animation: blinker 1s linear infinite; font-weight: bold; color: #0068C9; }
 @keyframes blinker { 50% { opacity: 0; } }
 
-.log-time    { display: inline-block; width: 85px;  color: #808495; font-family: "Source Code Pro", monospace; }
-.log-ms      { display: inline-block; width: 75px;  text-align: right; margin-right: 15px; color: #0068C9; font-size: 0.75rem; font-family: "Source Code Pro", monospace; font-weight: 600; }
-.log-tag     { display: inline-block; width: 95px;  font-weight: 700; font-family: "Source Code Pro", monospace; }
-.log-msg     { color: #31333F; font-weight: 500; font-family: "Source Code Pro", monospace; }
+.log-time    { display: inline-block; width: 85px;  color: #0F172A; font-weight: 800; font-family: "Source Code Pro", monospace; }
+.log-ms      { display: inline-block; width: 75px;  text-align: right; margin-right: 15px; color: #0068C9; font-size: 0.75rem; font-family: "Source Code Pro", monospace; font-weight: 800; }
+.log-tag     { 
+    display: inline-block; 
+    width: 90px; 
+    text-align: center;
+    font-weight: 900; 
+    font-family: "Source Code Pro", monospace; 
+    border: 2px solid #0F172A; 
+    padding: 2px 4px;
+    margin-right: 12px;
+    box-shadow: 2px 2px 0px 0px #0F172A;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+}
+.log-msg     { color: #0F172A; font-weight: 700; font-family: "Source Code Pro", monospace; }
 
-/* Log tag color palette (Streamlit Theme) */
-.tag-sys     { color: #808495; }   /* System - Gray */
-.tag-wait    { color: #808495; }   /* Wait - Gray */
-.tag-server  { color: #505364; }   /* Server - Dark Gray */
-.tag-auth    { color: #0068C9; }   /* Auth - Primary Blue */
-.tag-nav     { color: #0068C9; }   /* Nav - Primary Blue */
-.tag-inject  { color: #0068C9; }   /* Inject - Primary Blue */
-.tag-success { color: #09AB3B; }   /* Success - Green */
-.tag-error   { color: #FF2B2B; }   /* Error - Red */
+/* Log tag color palette (Neo-Brutalist) */
+.tag-sys     { background-color: #E2E8F0; color: #0F172A; }
+.tag-wait    { background-color: #F8FAFC; color: #0F172A; }
+.tag-server  { background-color: #94A3B8; color: #0F172A; }
+.tag-auth    { background-color: #0068C9; color: #FFFFFF; }
+.tag-nav     { background-color: #4CC9F0; color: #0F172A; }
+.tag-inject  { background-color: #FF90E8; color: #0F172A; }
+.tag-success { background-color: #4ADE80; color: #0F172A; }
+.tag-error   { background-color: #F87171; color: #0F172A; }
+.tag-warn    { background-color: #FFDE59; color: #0F172A; }
+.tag-dry_run { background-color: #8B5CF6; color: #FFFFFF; }
 
 /* --- Box Section Headers --- */
 .box-np, .box-dist, .box-review, .box-queue, .box-results {

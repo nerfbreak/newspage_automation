@@ -371,7 +371,7 @@ def make_terminal_logger(placeholder):
         last_log_time[0] = now
         timestamp = datetime.now(timezone(timedelta(hours=7))).strftime('%H:%M:%S')
         tag_class = f"tag-{module.lower()}"
-        logs_history.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>[{module}]</span><span class='log-msg'>{html.escape(str(msg))}</span>")
+        logs_history.append(f"<span class='log-time'>[{timestamp}]</span><span class='log-ms'>[+{diff_ms}ms]</span><span class='log-tag {tag_class}'>{module}</span><span class='log-msg'>{html.escape(str(msg))}</span>")
         render_terminal(placeholder, logs_history)
 
     return ui_log, logs_history
