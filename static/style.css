@@ -122,8 +122,8 @@ div[data-testid="stButton"] button,
 div[data-testid="stFormSubmitButton"] button,
 div[data-testid="stDownloadButton"] button,
 div[data-testid="stLinkButton"] button {
-    background-color: #FFFFFF !important;
-    color: #0F172A !important;
+    background-color: #0068C9 !important;
+    color: #FFFFFF !important;
     border: 2px solid #0F172A !important;
     border-radius: 0px !important;
     box-shadow: 6px 6px 0px 0px #0F172A !important;
@@ -151,6 +151,7 @@ div[data-testid="stLinkButton"] button p {
     font-weight: 800 !important;
     letter-spacing: 0.04em !important;
     text-transform: uppercase !important;
+    color: #FFFFFF !important;
 }
 
 /* Capture all possible primary button variants in Streamlit */
