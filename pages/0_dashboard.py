@@ -134,7 +134,7 @@ with left_col:
                     with st.container():
                         st.markdown(f"""
                         <span class='neo-module-card-marker' style='display:none;'></span>
-                            <div style='display: flex; gap: 16px; margin-bottom: 16px; align-items: center; padding: 24px 24px 0px 24px;'>
+                            <div style='display: flex; gap: 16px; margin-bottom: 16px; align-items: center; padding: 12px 16px 0px 16px;'>
                             <div style='width: 44px; height: 44px; border-radius: 0px; background: {mod["color"]}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; border: 3px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; flex-shrink: 0;'>
                                 {mod["icon"]}
                             </div>
