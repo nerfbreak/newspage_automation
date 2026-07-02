@@ -1232,15 +1232,16 @@ div[data-testid="stToast"] button svg {
 /* ============================================================
    NEO-BRUTALISM PROGRESS BAR
    ============================================================ */
-div[data-testid="stProgressBar"] > div {
+div[role="progressbar"] {
     background-color: #FFFFFF !important;
     border: 3px solid #0F172A !important;
     border-radius: 0px !important;
     height: 24px !important;
     box-shadow: 4px 4px 0px 0px #0F172A !important;
+    overflow: hidden !important;
 }
 
-div[data-testid="stProgressBar"] > div > div {
+div[role="progressbar"] > div {
     background-color: #FFDE59 !important;
     border-radius: 0px !important;
     height: 100% !important;
@@ -1248,6 +1249,6 @@ div[data-testid="stProgressBar"] > div > div {
 }
 
 /* Fix right border overlap when 100% */
-div[data-testid="stProgressBar"] > div > div[style*="width: 100%"] {
+div[role="progressbar"] > div[style*="width: 100%"] {
     border-right: none !important;
 }
