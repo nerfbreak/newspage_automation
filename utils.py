@@ -293,29 +293,39 @@ def render_header(title, subtitle=""):
             align-items: center !important;
             width: 100% !important;
             cursor: pointer;
+            min-height: max-content !important;
+            height: auto !important;
+            padding-bottom: 4px !important;
         }
 
         div.element-container:has(.dry-run-anchor) + div.element-container label p {
             font-size: 1.15rem !important;
-            font-weight: 800 !important;
+            font-weight: 900 !important;
             color: #0F172A !important;
             margin: 0 !important;
             letter-spacing: -0.01em;
             display: flex;
             flex-direction: column;
+            text-transform: uppercase;
         }
         
         /* Inject a beautiful subtitle directly into the UI without needing tooltips */
         div.element-container:has(.dry-run-anchor) + div.element-container label p::after {
             content: "Execution simulator is active. Bots will run normally but final Save/Download actions to the database will be explicitly bypassed for safety.";
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #64748B;
-            margin-top: 6px;
+            display: inline-block;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #0F172A;
+            background: #F1F5F9;
+            padding: 6px 10px;
+            border: 2px solid #0F172A;
+            margin-top: 10px;
             line-height: 1.4;
-            max-width: 85%;
+            max-width: 90%;
             white-space: normal;
+            box-shadow: 3px 3px 0px 0px #0F172A;
+            text-transform: none;
         }
         </style>
         <div class="dry-run-anchor" style="display: none;"></div>
