@@ -63,16 +63,16 @@ if not st.session_state.logged_in:
         
         if submit:
             if not username:
-                st.error("Please enter a username.")
+                st.markdown("<div style='color: #FF2B2B; background: #FFFFFF; font-size: 0.85rem; text-align: center; font-weight: 700; margin-top: 12px; border: 2px solid #0F172A; padding: 10px; box-shadow: 4px 4px 0px 0px #0F172A; text-transform: uppercase;'>⚠️ Please enter a username.</div>", unsafe_allow_html=True)
             else:
                 is_locked, remaining, attempts = database.check_login_lockout(supabase, username)
                 
                 if is_locked:
-                    st.markdown(f"<p style='color: #FF2B2B; font-size: 0.8rem; text-align: center; margin-top: 10px;'>Account locked. Please try again in {remaining} seconds.</p>", unsafe_allow_html=True)
+                    st.markdown(f"<div style='color: #FF2B2B; background: #FFFFFF; font-size: 0.85rem; text-align: center; font-weight: 700; margin-top: 12px; border: 2px solid #0F172A; padding: 10px; box-shadow: 4px 4px 0px 0px #0F172A; text-transform: uppercase;'>🔒 Account locked. Try again in {remaining}s.</div>", unsafe_allow_html=True)
                 else:
                     if database.authenticate_user(supabase, username, password):
                         database.reset_failed_login(supabase, username)
-                        st.markdown("<p style='color: #0068C9; font-size: 0.8rem; text-align: center; margin-top: 10px; font-weight: 600;'>Authentication Successful. Welcome Back.</p>", unsafe_allow_html=True)
+                        st.markdown("<div style='color: #09AB3B; background: #FFFFFF; font-size: 0.85rem; text-align: center; font-weight: 800; margin-top: 12px; border: 2px solid #0F172A; padding: 10px; box-shadow: 4px 4px 0px 0px #0F172A; text-transform: uppercase;'>✅ Auth Success. Welcome.</div>", unsafe_allow_html=True)
                         st.session_state.logged_in = True
                         st.session_state.current_user = username
                         st.session_state.last_activity = time.time()

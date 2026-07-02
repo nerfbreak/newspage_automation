@@ -118,7 +118,8 @@ div[data-testid="InputInstructions"] {
 /* =========================================
    2. BUTTONS (Launch Module, Ping, dll)
    ========================================= */
-div[data-testid="stButton"] button {
+div[data-testid="stButton"] button,
+div[data-testid="stFormSubmitButton"] button {
     background-color: #FFFFFF !important;
     color: #0F172A !important;
     border: 2px solid #0F172A !important;
@@ -127,23 +128,28 @@ div[data-testid="stButton"] button {
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-div[data-testid="stButton"] button:hover {
+div[data-testid="stButton"] button:hover,
+div[data-testid="stFormSubmitButton"] button:hover {
     background-color: #0068C9 !important;
     color: #FFFFFF !important;
     border-color: #0F172A !important;
 }
 
-div[data-testid="stButton"] button:hover p {
+div[data-testid="stButton"] button:hover p,
+div[data-testid="stFormSubmitButton"] button:hover p {
     color: #FFFFFF !important;
 }
 
-div[data-testid="stButton"] button:active {
+div[data-testid="stButton"] button:active,
+div[data-testid="stFormSubmitButton"] button:active {
     transform: translate(4px, 4px) !important;
     box-shadow: 2px 2px 0px 0px #0F172A !important;
 }
 
 div[data-testid="stButton"] button,
-div[data-testid="stButton"] button p {
+div[data-testid="stButton"] button p,
+div[data-testid="stFormSubmitButton"] button,
+div[data-testid="stFormSubmitButton"] button p {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     font-size: 0.85rem !important;
     font-weight: 800 !important;
@@ -151,7 +157,8 @@ div[data-testid="stButton"] button p {
     text-transform: uppercase !important;
 }
 
-button[kind="primary"] {
+button[kind="primary"],
+button[kind="primaryFormSubmit"] {
     background-color: #0068C9 !important;
     color: #FFFFFF !important;
     border: 2px solid #0F172A !important;
@@ -163,7 +170,8 @@ button[kind="primary"] {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
 
-button[kind="primary"]:hover {
+button[kind="primary"]:hover,
+button[kind="primaryFormSubmit"]:hover {
     background-color: #0054A3 !important;
     color: #FFFFFF !important;
     transform: translate(2px, 2px) !important;
