@@ -250,23 +250,23 @@ def render_header(title, subtitle=""):
         st.page_link("pages/0_dashboard.py", label="Dashboard", icon=":material/home:")
         
         MODULE_META = {
-            "Inventory Adjustment": {"desc": "Singkronisasi & rekonsiliasi data stok fisik vs sistem", "icon": "📦"},
-            "Sales Extraction": {"desc": "Otomatisasi penarikan faktur penjualan distributor", "icon": "🖥️"},
-            "Sales Data Extraction": {"desc": "Otomatisasi penarikan faktur penjualan distributor", "icon": "🖥️"},
-            "Promotion Comparison": {"desc": "Audit & komparasi data klaim promosi berjalan", "icon": "📄"},
-            "Stock Mutation": {"desc": "Lacak riwayat pergerakan stok harian (masuk/keluar)", "icon": "🔄"},
-            "Mutasi Stock": {"desc": "Lacak riwayat pergerakan stok harian (masuk/keluar)", "icon": "🔄"},
-            "Clearance Stock": {"desc": "Monitor barang clearance dan sisa stok mati", "icon": "❌"},
-            "Initial Stock": {"desc": "Setup baseline data stok awal untuk distributor baru", "icon": "➕"},
-            "Element Crawler": {"desc": "Otomatisasi ekstraksi ID & Selector elemen web", "icon": "🕷️"}
+            "Inventory Adjustment": {"desc": "Singkronisasi & rekonsiliasi data stok fisik vs sistem", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'></path><polyline points='3.27 6.96 12 12.01 20.73 6.96'></polyline><line x1='12' y1='22.08' x2='12' y2='12'></line></svg>"},
+            "Sales Extraction": {"desc": "Otomatisasi penarikan faktur penjualan distributor", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='3' width='20' height='14' rx='2' ry='2'></rect><line x1='8' y1='21' x2='16' y2='21'></line><line x1='12' y1='17' x2='12' y2='21'></line></svg>"},
+            "Sales Data Extraction": {"desc": "Otomatisasi penarikan faktur penjualan distributor", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='3' width='20' height='14' rx='2' ry='2'></rect><line x1='8' y1='21' x2='16' y2='21'></line><line x1='12' y1='17' x2='12' y2='21'></line></svg>"},
+            "Promotion Comparison": {"desc": "Audit & komparasi data klaim promosi berjalan", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'></path><polyline points='14 2 14 8 20 8'></polyline><line x1='16' y1='13' x2='8' y2='13'></line><line x1='16' y1='17' x2='8' y2='17'></line><polyline points='10 9 9 9 8 9'></polyline></svg>"},
+            "Stock Mutation": {"desc": "Lacak riwayat pergerakan stok harian (masuk/keluar)", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'></circle><polyline points='12 16 16 12 12 8'></polyline><line x1='8' y1='12' x2='16' y2='12'></line></svg>"},
+            "Mutasi Stock": {"desc": "Lacak riwayat pergerakan stok harian (masuk/keluar)", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'></circle><polyline points='12 16 16 12 12 8'></polyline><line x1='8' y1='12' x2='16' y2='12'></line></svg>"},
+            "Clearance Stock": {"desc": "Monitor barang clearance dan sisa stok mati", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'></circle><line x1='15' y1='9' x2='9' y2='15'></line><line x1='9' y1='9' x2='15' y2='15'></line></svg>"},
+            "Initial Stock": {"desc": "Setup baseline data stok awal untuk distributor baru", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='3' width='18' height='18' rx='2' ry='2'></rect><line x1='12' y1='8' x2='12' y2='16'></line><line x1='8' y1='12' x2='16' y2='12'></line></svg>"},
+            "Element Crawler": {"desc": "Otomatisasi ekstraksi ID & Selector elemen web", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3'></circle><path d='M3 12h5'></path><path d='M16 12h5'></path><path d='M12 3v5'></path><path d='M12 16v5'></path><path d='M5.636 5.636l3.536 3.536'></path><path d='M14.828 14.828l3.536 3.536'></path><path d='M5.636 18.364l3.536-3.536'></path><path d='M14.828 9.172l3.536-3.536'></path></svg>"}
         }
         
-        meta = MODULE_META.get(title, {"desc": "Modul otomatisasi distributor", "icon": "⚡"})
+        meta = MODULE_META.get(title, {"desc": "Modul otomatisasi distributor", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'></polygon></svg>"})
         desc, icon = meta["desc"], meta["icon"]
         
         html_out += f"""
         <div style='margin-top: 8px; margin-bottom: 24px; padding: 24px 28px; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; align-items: center; gap: 20px;'>
-            <div style='font-size: 2.2rem; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; box-shadow: 6px 6px 0px 0px #0F172A;'>
+            <div style='font-size: 2.2rem; background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; box-shadow: 6px 6px 0px 0px #0F172A; color: #0F172A;'>
                 {icon}
             </div>
             <div>
