@@ -119,7 +119,9 @@ div[data-testid="InputInstructions"] {
    2. BUTTONS (Launch Module, Ping, dll)
    ========================================= */
 div[data-testid="stButton"] button,
-div[data-testid="stFormSubmitButton"] button {
+div[data-testid="stFormSubmitButton"] button,
+div[data-testid="stDownloadButton"] button,
+div[data-testid="stLinkButton"] button {
     background-color: #FFFFFF !important;
     color: #0F172A !important;
     border: 2px solid #0F172A !important;
@@ -129,7 +131,9 @@ div[data-testid="stFormSubmitButton"] button {
 }
 
 div[data-testid="stButton"] button:active,
-div[data-testid="stFormSubmitButton"] button:active {
+div[data-testid="stFormSubmitButton"] button:active,
+div[data-testid="stDownloadButton"] button:active,
+div[data-testid="stLinkButton"] button:active {
     transform: translate(4px, 4px) !important;
     box-shadow: 2px 2px 0px 0px #0F172A !important;
 }
@@ -137,7 +141,11 @@ div[data-testid="stFormSubmitButton"] button:active {
 div[data-testid="stButton"] button,
 div[data-testid="stButton"] button p,
 div[data-testid="stFormSubmitButton"] button,
-div[data-testid="stFormSubmitButton"] button p {
+div[data-testid="stFormSubmitButton"] button p,
+div[data-testid="stDownloadButton"] button,
+div[data-testid="stDownloadButton"] button p,
+div[data-testid="stLinkButton"] button,
+div[data-testid="stLinkButton"] button p {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     font-size: 0.85rem !important;
     font-weight: 800 !important;
@@ -145,8 +153,11 @@ div[data-testid="stFormSubmitButton"] button p {
     text-transform: uppercase !important;
 }
 
+/* Capture all possible primary button variants in Streamlit */
 button[kind="primary"],
-button[kind="primaryFormSubmit"] {
+button[kind="primaryFormSubmit"],
+button[data-testid="stBaseButton-primary"],
+button[data-testid="stBaseButton-primaryFormSubmit"] {
     background-color: #0068C9 !important;
     color: #FFFFFF !important;
     border: 2px solid #0F172A !important;
