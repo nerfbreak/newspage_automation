@@ -341,17 +341,18 @@ if db_connected:
             except: ts_str = str(r["ts"])[:19]
             
             s_val = str(r["status"])
-            if s_val == "Success": s_col, s_bg = "#10B981", "rgba(16,185,129,0.1)"
-            elif s_val in ["Failed","Invalid"]: s_col, s_bg = "#EF4444", "rgba(239,68,68,0.1)"
-            else: s_col, s_bg = "#F59E0B", "rgba(245,158,11,0.1)"
-            sb = f"<span style='background: {s_bg}; color: {s_col}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; border: 1px solid {s_col}33; display: inline-block; white-space: nowrap;'>{html.escape(s_val.upper())}</span>"
+            if s_val == "Success": s_bg = "#4ADE80"
+            elif s_val in ["Failed","Invalid"]: s_bg = "#F87171"
+            else: s_bg = "#FBBF24"
+            sb = f"<span style='background: {s_bg}; color: #0F172A; padding: 4px 10px; border-radius: 0px; font-size: 0.75rem; font-weight: 800; border: 2px solid #0F172A; display: inline-block; white-space: nowrap; box-shadow: 2px 2px 0px 0px #0F172A; letter-spacing: 0.05em;'>{html.escape(s_val.upper())}</span>"
             
             mod = r["mod"]
-            mc = {"Inventory Adjustment": ("#0068C9", "rgba(0,104,201,0.08)"), "Sales Extraction": ("#7C3AED", "rgba(124,58,237,0.08)"), "Stock Mutation": ("#D97706", "rgba(217,119,6,0.08)"), "Promotion Comparison": ("#059669", "rgba(5,150,105,0.08)"), "Clearance Stock": ("#DC2626", "rgba(220,38,38,0.08)"), "Initial Stock": ("#6366F1", "rgba(99,102,241,0.08)")}
-            m_col, m_bg = mc.get(mod, ("#808495", "rgba(128,132,149,0.08)"))
-            mb = f"<span style='background: {m_bg}; color: {m_col}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; border: 1px solid {m_col}33; display: inline-block; white-space: nowrap;'>{html.escape(mod)}</span>"
+            mc = {"Inventory Adjustment": "#4CC9F0", "Sales Extraction": "#FFDE59", "Stock Mutation": "#4ADE80", "Promotion Comparison": "#FF90E8", "Clearance Stock": "#FF9F1C", "Initial Stock": "#A78BFA"}
+            m_bg = mc.get(mod, "#E2E8F0")
+            mb = f"<span style='background: {m_bg}; color: #0F172A; padding: 4px 10px; border-radius: 0px; font-size: 0.75rem; font-weight: 800; border: 2px solid #0F172A; display: inline-block; white-space: nowrap; box-shadow: 2px 2px 0px 0px #0F172A;'>{html.escape(mod.upper())}</span>"
             
-            tbl += f"<tr><td style='white-space:nowrap;'>{ts_str}</td><td>{html.escape(str(r['dist']))}</td><td>{mb}</td><td style='text-align:center;'>{sb}</td><td><code>{html.escape(str(r['by']))}</code></td></tr>"
+            rb = f"<span style='background: #FFFFFF; color: #0F172A; font-family: monospace; padding: 4px 8px; border: 2px solid #0F172A; font-size: 0.75rem; font-weight: 700; box-shadow: 2px 2px 0px 0px #0F172A;'>{html.escape(str(r['by']).upper())}</span>"
+            tbl += f"<tr><td style='white-space:nowrap; font-weight: 600;'>{ts_str}</td><td>{html.escape(str(r['dist']))}</td><td>{mb}</td><td style='text-align:center;'>{sb}</td><td>{rb}</td></tr>"
             
         st.markdown(clean_html(f"<div class='table-container'><table class='custom-table'><thead><tr><th>Timestamp</th><th>Distributor</th><th>Module</th><th style='text-align:center;'>Status</th><th>Run By</th></tr></thead><tbody>{tbl}</tbody></table></div>"), unsafe_allow_html=True)
     else:
