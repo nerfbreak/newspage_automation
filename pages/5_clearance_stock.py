@@ -76,9 +76,9 @@ if st.session_state.get("_pending_clearance_extract", False):
 
     st.session_state.is_clearance_running = True
     ext_label_placeholder.markdown(f"""
-        <div style='display: inline-block; margin-bottom: 4px;'>
-            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #0068C9; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px;'>System Activity</span>
-            <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 10px; font-weight: 600; color: #31333F; text-transform: uppercase; letter-spacing: 0.1em;'>EXTRACT_LOG</span>
+        <div style='display: inline-flex; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; margin-bottom: 8px; background-color: #FFFFFF; align-items: center;'>
+            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #FFFFFF; background-color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px; border-right: 2px solid #0F172A;'>System Activity</span>
+            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #0F172A; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px;'>EXTRACT_LOG</span>
         </div>
     """, unsafe_allow_html=True)
     ext_ui_log, _ = make_terminal_logger(ext_log_placeholder)
