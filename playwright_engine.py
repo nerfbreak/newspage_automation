@@ -577,8 +577,8 @@ def _render_progress_label(placeholder, dist, user, current, total):
         with c1:
             st.markdown(f"""
                 <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap;'>
-                    <div style='background: #4CC9F0; color: #0F172A; font-family: "Courier New", Courier, monospace; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
-                    <div style='background: #FFFFFF; color: #0F172A; font-family: "Courier New", Courier, monospace; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
+                    <div style='background: #4CC9F0; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
+                    <div style='background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
                 </div>
             """, unsafe_allow_html=True)
         with c2:
@@ -597,12 +597,12 @@ def _render_progress_label(placeholder, dist, user, current, total):
                     }
                 </style>
             """, unsafe_allow_html=True)
-            st.button("TERMINATE BOT", key=f"term_bot_{current}_{total}", use_container_width=True, type="primary")
+            st.button("TERMINATE", key=f"term_bot_{current}_{total}", use_container_width=True, type="primary")
         with c3:
             st.markdown(f"""
                 <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end;'>
-                    <div style='background: #FFDE59; color: #0F172A; font-family: "Courier New", Courier, monospace; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>PROCESSED</div>
-                    <div style='background: #FFFFFF; color: #0F172A; font-family: "Courier New", Courier, monospace; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{current}/{total}</div>
+                    <div style='background: #FFDE59; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>PROCESSED</div>
+                    <div style='background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{current}/{total}</div>
                 </div>
             """, unsafe_allow_html=True)
 
