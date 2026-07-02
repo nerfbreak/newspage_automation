@@ -202,7 +202,7 @@ if st.session_state.is_initial_running and st.session_state.initial_stock_df is 
 
     log_label_placeholder.markdown(f"""
         <div style='display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;'>
-                        <div style='background: #4CC9F0; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
+                        <div style='background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
                         <div style='background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{selected_distributor} ({bot_user})</div>
                     </div>
     """, unsafe_allow_html=True)
