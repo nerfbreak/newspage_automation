@@ -232,18 +232,6 @@ def render_indicators(db_status, bot_status, bot_type="ENGINE"):
 def render_header(title, subtitle=""):
     inject_css()  # uses cached CSS, no repeated file I/O
 
-    active_sess = ""
-    # Hanya tampilkan Active Session di header jika di halaman Dashboard
-    if subtitle and "Automation Tool" in title:
-        active_sess = f"""<div style='float: right; margin-top: 5px; pointer-events: none; display: inline-flex; align-items: center; background: #FFFFFF; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; padding: 4px 12px; gap: 6px;'>
-            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>SESSION:</span>
-            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em;'>{subtitle}</span>
-        </div>"""
-        
-    html_out = ""
-    if active_sess:
-        html_out += active_sess
-        
     if "Automation Tool" not in title:
         st.page_link("pages/0_dashboard.py", label="Dashboard", icon=":material/home:")
         

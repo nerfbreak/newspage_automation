@@ -75,8 +75,14 @@ bot_running = (
 
 # --- HERO BANNER ---
 st.markdown(f"""
-<div style='background: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: clamp(16px, 4vw, 32px); margin-bottom: 32px; margin-top: -16px;'>
-    <div style='display: inline-block; margin-bottom: 16px; background: #0068C9; color: #FFFFFF; padding: 6px 16px; font-weight: 800; font-size: 0.85rem; border: 2px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; letter-spacing: 0.05em;'>AUTOMATION TOOL</div>
+<div style='background: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: clamp(16px, 4vw, 32px); margin-bottom: 32px; margin-top: 16px;'>
+    <div style='display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;'>
+        <div style='background: #0068C9; color: #FFFFFF; padding: 6px 16px; font-weight: 800; font-size: 0.85rem; border: 2px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; letter-spacing: 0.05em;'>AUTOMATION TOOL</div>
+        <div style='pointer-events: none; display: inline-flex; align-items: center; background: #FFFFFF; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; padding: 4px 12px; gap: 6px;'>
+            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>SESSION:</span>
+            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em;'>{html.escape(st.session_state.current_user).upper()}</span>
+        </div>
+    </div>
     <h1 style='font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 900; color: #0F172A; margin: 0; line-height: 1.1; letter-spacing: -0.02em; word-wrap: break-word;'>HALO, {html.escape(st.session_state.current_user).upper()}! 👋</h1>
     <p style='font-size: clamp(0.85rem, 2vw, 1.05rem); color: #0F172A; margin-top: 16px; margin-bottom: 0; font-weight: 700; border-top: 3px solid #0F172A; padding-top: 12px; display: inline-block; text-transform: uppercase;'>PANTAU RINGKASAN AKTIVITAS OTOMATISASI DISTRIBUTOR ANDA HARI INI, {datetime.now().strftime('%d %b %Y').upper()}.</p>
 </div>
