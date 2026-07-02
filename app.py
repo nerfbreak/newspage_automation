@@ -64,7 +64,7 @@ if not st.session_state.logged_in:
     inject_css("login.css")
 
     if st.session_state.get("login_success"):
-        st.markdown("<div style='max-width: 400px; margin: 0 auto; background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 16px 20px; margin-top: 16px;'><p style='color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 1.1rem; font-weight: 800; margin: 0; text-align: center;'>Authentication Successful.<br>Welcome Back!</p></div>", unsafe_allow_html=True)
+        st.markdown("<div style='max-width: 400px; margin: 0 auto; background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 16px 20px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 1.1rem; font-weight: 800; margin: 0; text-align: center;'>Authentication Successful.<br>Welcome Back!</p></div>", unsafe_allow_html=True)
         cookie_manager.set("auth_user", st.session_state.current_user, max_age=86400 * 7) # 7 days
         time.sleep(1.2)
         st.session_state.logged_in = True
