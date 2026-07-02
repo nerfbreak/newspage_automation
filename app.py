@@ -43,6 +43,7 @@ init_session_state(
     lockout_until=0,
     last_activity=0,
     logout_requested=False,
+    ignore_cookie=False,
 )
 
 # --- SESSION TIMEOUT ---
@@ -52,6 +53,7 @@ if st.session_state.logged_in and st.session_state.last_activity > 0:
         st.session_state.logged_in = False
         st.session_state.current_user = "unknown"
         st.session_state.login_attempts = 0
+        st.session_state.ignore_cookie = True
         st.toast("Session expired. Please sign in again.")
         st.rerun()
     else:
@@ -59,7 +61,7 @@ if st.session_state.logged_in and st.session_state.last_activity > 0:
 
 if not st.session_state.logged_in:
     auth_cookie = cookies.get("auth_user") if cookies else None
-    if auth_cookie:
+    if auth_cookie and not st.session_state.get("ignore_cookie"):
         st.session_state.logged_in = True
         st.session_state.current_user = auth_cookie
         st.session_state.last_activity = time.time()
@@ -73,6 +75,7 @@ if not st.session_state.logged_in:
         cookie_manager.set("auth_user", st.session_state.current_user, max_age=86400 * 7) # 7 days
         time.sleep(1.2)
         st.session_state.logged_in = True
+        st.session_state.ignore_cookie = False
         del st.session_state["login_success"]
         st.rerun()
     else:

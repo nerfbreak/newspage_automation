@@ -43,6 +43,7 @@ with col2:
         st.session_state.logged_in = False
         st.session_state.current_user = "unknown"
         st.session_state.logout_requested = True
+        st.session_state.ignore_cookie = True
         st.rerun()
 
 # --- DATABASE CONNECTION ---
