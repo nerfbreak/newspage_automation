@@ -185,8 +185,8 @@ def render_metric_card(title, value, accent=False):
         align-items: center;
         gap: 12px;
     '>
-        <div style='font-size: 11px; font-weight: 600; color: {"rgba(255, 255, 255, 0.7)" if accent else "#808495"}; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;'>{title}</div>
-        <div style='font-size: {font_size}; font-weight: 700; color: {fg}; line-height: 1;'>{value_str}</div>
+        <div style='font-size: 10px; font-weight: 800; color: #0F172A; background-color: {"#FFDE59" if accent else "#FFFFFF"}; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; padding: 4px 10px; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1; display: inline-block;'>{title}</div>
+        <div style='font-size: {font_size}; font-weight: 900; color: {fg}; line-height: 1;'>{value_str}</div>
     </div>
     """)
 
