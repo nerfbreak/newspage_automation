@@ -337,7 +337,6 @@ def render_header(title, subtitle=""):
         st.toggle("SECURITY MODE: DRY RUN (SIMULATE ONLY)", key="dry_run_enabled")
     else:
         st.markdown(html_out, unsafe_allow_html=True)
-        st.markdown(f"<h1 style='font-family: \"Source Sans 3\", \"Source Sans Pro\", sans-serif; font-size: 1.75rem; font-weight: 700; color: #31333F; letter-spacing: -0.02em; margin-top: -15px; margin-bottom: -15px; padding: 0;'>{title}</h1>", unsafe_allow_html=True)
 
 def render_footer():
     st.markdown(clean_html("""
