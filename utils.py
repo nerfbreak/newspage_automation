@@ -349,7 +349,7 @@ def render_footer():
         </div>
         <div style='background-color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; border-radius: 0px; padding: 12px 16px; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; color: #5D6271; margin-top: 18px; max-width: 580px; margin-left: auto; margin-right: auto; line-height: 1.5; text-align: center;'>
             <strong style="color: #0F172A; display: block; margin-bottom: 4px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Disclaimer</strong>
-            This application is an independently developed, unofficial utility designed solely to automate repetitive tasks, improve operational efficiency, and save working hours. It is not officially endorsed, sponsored, or affiliated with Reckitt, Accenture, or the Newspage platform.
+            This application is an independently developed by Muhammad Rizki Firdaus (Contractor), unofficial utility designed solely to automate repetitive tasks, improve operational efficiency, and save working hours. It is not officially endorsed, sponsored, or affiliated with Reckitt, Accenture, or the Newspage platform.
         </div>
     </div>
     """), unsafe_allow_html=True)
