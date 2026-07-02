@@ -84,7 +84,7 @@ st.markdown(f"""
         </div>
     </div>
     <h1 style='font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 900; color: #0F172A; margin: 0; line-height: 1.1; letter-spacing: -0.02em; word-wrap: break-word;'>HALO, {html.escape(st.session_state.current_user).upper()}! 👋</h1>
-    <p style='font-size: clamp(0.85rem, 2vw, 1.05rem); color: #0F172A; margin-top: 16px; margin-bottom: 0; font-weight: 700; border-top: 3px solid #0F172A; padding-top: 12px; display: inline-block; text-transform: uppercase;'>PANTAU RINGKASAN AKTIVITAS OTOMATISASI DISTRIBUTOR ANDA HARI INI, {datetime.now().strftime('%d %b %Y').upper()}.</p>
+    <p style='font-size: clamp(0.85rem, 2vw, 1.05rem); color: #0F172A; margin-top: 16px; margin-bottom: 0; font-weight: 700; border-top: 3px solid #0F172A; padding-top: 12px; display: block; text-transform: uppercase;'>PANTAU RINGKASAN AKTIVITAS OTOMATISASI DISTRIBUTOR ANDA HARI INI, {datetime.now().strftime('%d %b %Y').upper()}.</p>
 </div>
 """, unsafe_allow_html=True)
 
