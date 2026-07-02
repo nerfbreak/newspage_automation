@@ -18,11 +18,7 @@ _config = database.get_system_config(supabase)
 
 # --- 2. AUTHENTICATION GATEKEEPER ---
 
-@st.cache_resource
-def get_cookie_manager():
-    return stx.CookieManager()
-
-cookie_manager = get_cookie_manager()
+cookie_manager = stx.CookieManager(key="cookie_manager")
 # Let the cookie manager initialize
 # It needs a run to fetch cookies from the client
 if cookie_manager.get_all() is None:
