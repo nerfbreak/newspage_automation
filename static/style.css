@@ -193,6 +193,37 @@ button[data-testid="stBaseButton-primaryFormSubmit"] {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
 
+/* --- Neo-Brutalist Breadcrumb --- */
+.neo-breadcrumb-link {
+    text-decoration: none;
+    color: #0F172A;
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border: 2px solid #0F172A;
+    background-color: #FFFFFF;
+    box-shadow: 3px 3px 0px 0px #0F172A;
+    transition: all 0.15s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.neo-breadcrumb-link:hover {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px 0px 0px #0F172A;
+    background-color: #0F172A;
+    color: #FFFFFF;
+}
+.neo-breadcrumb-page {
+    color: #0F172A;
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border: 2px solid #0F172A;
+    box-shadow: 3px 3px 0px 0px #0F172A;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
 /* --- Dialog / Modal Components --- */
 div[role="dialog"] {
     background-color: #FFFFFF !important;

@@ -234,8 +234,6 @@ def render_header(title, subtitle=""):
     html_out = ""
 
     if "Automation Tool" not in title:
-        st.page_link("pages/0_dashboard.py", label="Dashboard", icon=":material/home:")
-        
         MODULE_META = {
             "Inventory Adjustment": {"desc": "Singkronisasi & rekonsiliasi data stok fisik vs sistem", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'></path><polyline points='3.27 6.96 12 12.01 20.73 6.96'></polyline><line x1='12' y1='22.08' x2='12' y2='12'></line></svg>", "color": "#FFDE59"},
             "Sales Extraction": {"desc": "Otomatisasi penarikan faktur penjualan distributor", "icon": "<svg width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='3' width='20' height='14' rx='2' ry='2'></rect><line x1='8' y1='21' x2='16' y2='21'></line><line x1='12' y1='17' x2='12' y2='21'></line></svg>", "color": "#4CC9F0"},
@@ -252,7 +250,24 @@ def render_header(title, subtitle=""):
         desc, icon, bg_color = meta["desc"], meta["icon"], meta.get("color", "#FFDE59")
         
         html_out += f"""
-        <div style='margin-top: 8px; margin-bottom: 24px; padding: clamp(16px, 3vw, 24px); background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; flex-wrap: wrap; align-items: center; gap: 20px;'>
+        <nav aria-label="breadcrumb">
+            <ol style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-family: 'Source Sans 3', sans-serif; list-style: none; padding: 0; margin: 0; margin-bottom: 16px;">
+                <li style="display: inline-flex; align-items: center;">
+                    <a href="dashboard" target="_self" class="neo-breadcrumb-link">
+                        Dashboard
+                    </a>
+                </li>
+                <li role="presentation" aria-hidden="true" style="display: inline-flex; align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+                </li>
+                <li style="display: inline-flex; align-items: center;">
+                    <span class="neo-breadcrumb-page" style="background-color: {bg_color};">
+                        {title}
+                    </span>
+                </li>
+            </ol>
+        </nav>
+        <div style='margin-bottom: 24px; padding: clamp(16px, 3vw, 24px); background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; flex-wrap: wrap; align-items: center; gap: 20px;'>
             <div style='font-size: 2.2rem; background: {bg_color}; border: 3px solid #0F172A; border-radius: 0px; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0px 0px #0F172A; color: #0F172A;'>
                 {icon}
             </div>
