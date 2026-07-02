@@ -42,13 +42,7 @@ with col2:
     if st.button("Sign Out", type="secondary", use_container_width=True):
         st.session_state.logged_in = False
         st.session_state.current_user = "unknown"
-        # We need to clear the cookie, but extra_streamlit_components isn't imported here.
-        # We can just set logged_in = False and rerun, app.py will handle it if we add clear logic.
-        # Wait, if we just rerun, app.py will read the cookie and log them right back in!
-        # So we MUST clear the cookie here.
-        import extra_streamlit_components as stx
-        cookie_manager = stx.CookieManager()
-        cookie_manager.delete("auth_user")
+        st.session_state.logout_requested = True
         st.rerun()
 
 # --- DATABASE CONNECTION ---

@@ -24,6 +24,12 @@ cookie_manager = stx.CookieManager(key="cookie_manager")
 if cookie_manager.get_all() is None:
     st.stop()
 
+# --- HANDLE LOGOUT ---
+if st.session_state.get("logout_requested"):
+    if "auth_user" in cookie_manager.get_all():
+        cookie_manager.delete("auth_user")
+    st.session_state.logout_requested = False
+
 MAX_LOGIN_ATTEMPTS = 5
 LOCKOUT_SECONDS = 300  # 5 minutes
 SESSION_TIMEOUT_SECONDS = 86400 * 7  # 7 days
@@ -34,6 +40,7 @@ init_session_state(
     login_attempts=0,
     lockout_until=0,
     last_activity=0,
+    logout_requested=False,
 )
 
 # --- SESSION TIMEOUT ---
