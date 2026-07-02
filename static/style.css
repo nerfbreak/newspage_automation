@@ -1181,9 +1181,14 @@ table.neo-table th {
 }
 
 /* NEO-BRUTALISM FILE UPLOADER */
-div[data-testid="stFileUploader"] {
+div[data-testid="stFileUploader"],
+div[data-testid="stFileUploader"] * {
     touch-action: pan-y !important;
     overflow: hidden !important;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    max-height: none !important;
 }
 section[data-testid="stFileUploaderDropzone"] {
     background-color: #FFFFFF !important;
