@@ -230,6 +230,12 @@ button[data-testid="stBaseButton-primaryFormSubmit"] {
 }
 
 /* --- Dialog / Modal Components --- */
+/* Hide the injected Streamlit dashboard page link used for JS hack */
+div.element-container:has(#hidden-dash-anchor),
+div.element-container:has(#hidden-dash-anchor) + div.element-container {
+    display: none !important;
+}
+
 div[role="dialog"] {
     background-color: #FFFFFF !important;
     border: 4px solid #0F172A !important;
