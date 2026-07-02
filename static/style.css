@@ -678,13 +678,15 @@ div[data-testid="stDataFrame"] {
 
 .section-header-underline {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
-    font-size: 0.85rem;
+    font-size: 1.15rem;
     font-weight: 900;
     color: #0F172A;
+    background-color: #FFFFFF;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-bottom: 4px solid #0F172A;
-    padding-bottom: 4px;
+    border: 3px solid #0F172A;
+    box-shadow: 5px 5px 0px 0px #0F172A;
+    padding: 8px 20px;
     display: inline-block;
 }
 
