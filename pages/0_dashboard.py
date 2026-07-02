@@ -34,17 +34,41 @@ def load_historical_logs(_supabase):
 check_auth()
 
 # --- HEADER ---
+@st.dialog("Sign Out")
+def logout_dialog():
+    st.markdown("""
+        <div style='text-align: center; margin-bottom: 24px; font-family: "Source Sans 3", sans-serif;'>
+            <div style='display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background-color: #E63946; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; border-radius: 0px;'>
+                <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'>
+                    <path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'></path>
+                    <polyline points='16 17 21 12 16 7'></polyline>
+                    <line x1='21' y1='12' x2='9' y2='12'></line>
+                </svg>
+            </div>
+            <h3 style='margin-bottom: 8px; color: #0F172A; font-weight: 900; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em;'>Are you absolutely sure?</h3>
+            <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0;'>This action cannot be undone. This will end your current session and require you to sign in again.</p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Cancel", use_container_width=True):
+            st.rerun()
+    with col2:
+        if st.button("Continue", type="primary", use_container_width=True):
+            st.session_state.logged_in = False
+            st.session_state.current_user = "unknown"
+            st.session_state.logout_requested = True
+            st.session_state.ignore_cookie = True
+            st.rerun()
+
 # We keep the original render_header for session state and top border logic
 col1, col2 = st.columns([0.85, 0.15])
 with col1:
     render_header("Automation Tool", st.session_state.current_user)
 with col2:
     if st.button("Sign Out", type="secondary", use_container_width=True):
-        st.session_state.logged_in = False
-        st.session_state.current_user = "unknown"
-        st.session_state.logout_requested = True
-        st.session_state.ignore_cookie = True
-        st.rerun()
+        logout_dialog()
 
 # --- DATABASE CONNECTION ---
 supabase = database.init_supabase()
