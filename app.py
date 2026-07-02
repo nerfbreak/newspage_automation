@@ -144,11 +144,11 @@ if not st.session_state.logged_in:
             # Neo-Brutalist Changelog Headers
             changelog_content = changelog_content.replace(
                 "### ✨ Fitur Baru", 
-                "<h3><span style='background: #A3E635; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; padding: 4px 12px; font-weight: 900; font-family: \"Courier New\", Courier, monospace; letter-spacing: 0.05em; text-transform: uppercase;'>★ NEW FEATURES</span></h3>\n\n"
+                "<h3><span style='background: #A3E635; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; padding: 4px 12px; font-weight: 900; font-family: \"Source Sans 3\", sans-serif; letter-spacing: 0.05em; text-transform: uppercase;'>NEW FEATURES</span></h3>\n\n"
             )
             changelog_content = changelog_content.replace(
                 "### 🛠️ Perbaikan & Peningkatan", 
-                "<h3><span style='background: #FBBF24; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; padding: 4px 12px; font-weight: 900; font-family: \"Courier New\", Courier, monospace; letter-spacing: 0.05em; text-transform: uppercase;'>⚡ IMPROVEMENTS</span></h3>\n\n"
+                "<h3><span style='background: #FBBF24; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; padding: 4px 12px; font-weight: 900; font-family: \"Source Sans 3\", sans-serif; letter-spacing: 0.05em; text-transform: uppercase;'>IMPROVEMENTS</span></h3>\n\n"
             )
             st.markdown(changelog_content, unsafe_allow_html=True)
         except Exception:
