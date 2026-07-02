@@ -577,14 +577,17 @@ def _render_progress_label(placeholder, dist, user, current, total):
         with c1:
             st.markdown(f"""
                 <style>
-                    button[kind="primary"] {{
+                    button[kind="primary"],
+                    button[data-testid="stBaseButton-primary"] {{
                         background-color: #E63946 !important;
                     }}
-                    button[kind="primary"] p {{
+                    button[kind="primary"] p,
+                    button[data-testid="stBaseButton-primary"] p {{
                         color: #FFFFFF !important;
                         font-weight: 800 !important;
                     }}
-                    button[kind="primary"]:hover {{
+                    button[kind="primary"]:hover,
+                    button[data-testid="stBaseButton-primary"]:hover {{
                         background-color: #D62828 !important;
                     }}
                 </style>
