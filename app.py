@@ -64,6 +64,9 @@ if not st.session_state.logged_in:
         submit = st.form_submit_button("LOGIN", type="primary", use_container_width=True)
         
         if submit:
+            if username:
+                username = username.strip().title()
+            
             if not username:
                 st.markdown("<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>Please enter a username.</p></div>", unsafe_allow_html=True)
             else:
