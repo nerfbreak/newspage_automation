@@ -582,7 +582,22 @@ def _render_progress_label(placeholder, dist, user, current, total):
                 </div>
             """, unsafe_allow_html=True)
         with c2:
-            st.button("🛑 TERMINATE BOT", key=f"term_bot_{current}_{total}", use_container_width=True, type="primary")
+            st.markdown("""
+                <span id='terminate-btn-marker'></span>
+                <style>
+                    div[data-testid="column"]:has(#terminate-btn-marker) button {
+                        background-color: #E63946 !important;
+                    }
+                    div[data-testid="column"]:has(#terminate-btn-marker) button p {
+                        color: #FFFFFF !important;
+                        font-weight: 800 !important;
+                    }
+                    div[data-testid="column"]:has(#terminate-btn-marker) button:hover {
+                        background-color: #D62828 !important;
+                    }
+                </style>
+            """, unsafe_allow_html=True)
+            st.button("TERMINATE BOT", key=f"term_bot_{current}_{total}", use_container_width=True, type="primary")
         with c3:
             st.markdown(f"""
                 <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end;'>
