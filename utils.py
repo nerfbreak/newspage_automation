@@ -150,7 +150,7 @@ def render_metric_card(title, value, accent=False):
     # Neo-Brutalist Premium Execution style for metric cards
     bg = "#0068C9" if accent else "#FFFFFF"
     fg = "#FFFFFF" if accent else "#0F172A"
-    border = "2px solid #0F172A"
+    border = "3px solid #0F172A"
     shadow = "6px 6px 0px 0px #0F172A"
     
     title = html.escape(str(title))
