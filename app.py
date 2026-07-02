@@ -19,14 +19,15 @@ _config = database.get_system_config(supabase)
 # --- 2. AUTHENTICATION GATEKEEPER ---
 
 cookie_manager = stx.CookieManager(key="cookie_manager")
+cookies = cookie_manager.get_all()
 # Let the cookie manager initialize
 # It needs a run to fetch cookies from the client
-if cookie_manager.get_all() is None:
+if cookies is None:
     st.stop()
 
 # --- HANDLE LOGOUT ---
 if st.session_state.get("logout_requested"):
-    if "auth_user" in cookie_manager.get_all():
+    if "auth_user" in cookies:
         cookie_manager.delete("auth_user")
     st.session_state.logout_requested = False
 
@@ -56,7 +57,7 @@ if st.session_state.logged_in and st.session_state.last_activity > 0:
         st.session_state.last_activity = time.time()
 
 if not st.session_state.logged_in:
-    auth_cookie = cookie_manager.get(cookie="auth_user")
+    auth_cookie = cookies.get("auth_user") if cookies else None
     if auth_cookie:
         st.session_state.logged_in = True
         st.session_state.current_user = auth_cookie
