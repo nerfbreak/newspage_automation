@@ -256,7 +256,7 @@ def render_header(title, subtitle=""):
         <nav aria-label="breadcrumb">
             <ol style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-family: 'Source Sans 3', sans-serif; list-style: none; padding: 0; margin: 0; margin-bottom: 12px;">
                 <li style="display: flex; align-items: center;">
-                    <a href="#" onclick="var link = window.parent.document.querySelector('div.element-container:has(#hidden-dash-anchor) + div.element-container a'); if(link) link.click(); return false;" class="neo-breadcrumb-link">
+                    <a href="#" onclick="var link = document.querySelector('div.element-container:has(#hidden-dash-anchor) + div.element-container a'); if(link) link.click(); return false;" class="neo-breadcrumb-link">
                         DASHBOARD
                     </a>
                 </li>
