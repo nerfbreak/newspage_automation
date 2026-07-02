@@ -96,7 +96,7 @@ with m4:
     db_text = "DB CONNECTED" if db_connected else "DB ERROR"
     
     st.markdown(clean_html(f"""
-        <div style='background-color: #FFFFFF; padding: 20px 24px; border-radius: 0px; box-shadow: 4px 4px 0px 0px #0F172A; display: flex; flex-direction: column; justify-content: center; border: 2px solid #0F172A; margin-bottom: 16px; width: 100%; height: 125px; box-sizing: border-box; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; gap: 12px;'>
+        <div style='background-color: #FFFFFF; padding: 20px 24px; border-radius: 0px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; flex-direction: column; justify-content: center; border: 2px solid #0F172A; margin-bottom: 16px; width: 100%; height: 125px; box-sizing: border-box; font-family: "Source Sans 3", "Source Sans Pro", sans-serif; gap: 12px;'>
             <div style='display: flex; align-items: center; justify-content: space-between;'>
                 <span style='font-size: 0.8rem; font-weight: 700; color: #475569;'>System</span>
                 <div style='display: flex; align-items: center; gap: 6px;'><div class='{db_class}'></div><span style='font-size: 0.7rem; font-weight: 800; color: #64748B;'>{db_text}</span></div>
