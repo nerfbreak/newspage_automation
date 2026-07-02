@@ -590,6 +590,13 @@ def _render_progress_label(placeholder, dist, user, current, total):
                     button[data-testid="stBaseButton-primary"]:hover {{
                         background-color: #D62828 !important;
                     }}
+                    @media (max-width: 768px) {{
+                        button[kind="primary"],
+                        button[data-testid="stBaseButton-primary"] {{
+                            margin-top: 16px !important;
+                            margin-bottom: 16px !important;
+                        }}
+                    }}
                 </style>
                 <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap;'>
                     <div style='background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
