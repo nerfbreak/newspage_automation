@@ -333,13 +333,15 @@ button[data-testid="stBaseButton-primaryFormSubmit"] {
     border: 1px solid transparent;
 }
 
-/* --- Selectbox & Text Input --- */
+/* --- Selectbox & Text Input & Date Input --- */
 div[data-testid="stSelectbox"] div[data-baseweb="select"] > div,
-div[data-testid="stTextInput"] input {
+div[data-testid="stTextInput"] input,
+div[data-testid="stDateInput"] > div {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
     font-size: 0.85rem !important;
     font-weight: 600 !important;
     color: #0F172A !important;
+    background-color: #FFFFFF !important;
     letter-spacing: 0.01em !important;
     border-radius: 0px !important;
     border: 2px solid #0F172A !important;
@@ -348,7 +350,8 @@ div[data-testid="stTextInput"] input {
 }
 
 div[data-testid="stSelectbox"] div[data-baseweb="select"]:focus-within > div,
-div[data-testid="stTextInput"] input:focus {
+div[data-testid="stTextInput"] input:focus,
+div[data-testid="stDateInput"] > div:focus-within {
     border-color: #0F172A !important;
     box-shadow: 6px 6px 0px 0px #0F172A !important;
 }
@@ -357,6 +360,16 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] {
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
+}
+
+div[data-testid="stDateInput"] input {
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: #0F172A !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 
