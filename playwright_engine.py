@@ -729,12 +729,16 @@ def _setup_terminate_button(placeholder):
                                 stBtnContainer.style.opacity = '0';
                                 stBtnContainer.style.overflow = 'visible';
                                 
+                                stBtn.style.position = 'absolute';
+                                stBtn.style.top = '0';
+                                stBtn.style.left = '0';
                                 stBtn.style.width = '100%';
                                 stBtn.style.height = '100%';
                                 stBtn.style.opacity = '0';
                                 stBtn.style.cursor = 'pointer';
                                 stBtn.style.margin = '0';
                                 stBtn.style.padding = '0';
+                                stBtn.style.zIndex = '999999';
                             } else {
                                 stBtnContainer.style.display = 'none';
                             }
