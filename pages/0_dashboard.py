@@ -92,7 +92,7 @@ with col2:
                 <div style="background: #E63946; width: 64px; height: 64px; margin: -72px auto 24px auto; border: 4px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; display: flex; align-items: center; justify-content: center;">
                     <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'></path><polyline points='16 17 21 12 16 7'></polyline><line x1='21' y1='12' x2='9' y2='12'></line></svg>
                 </div>
-                <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are you absolutely sure?</h3>
+                <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are You Sure?</h3>
                 <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will end your current session and require you to sign in again.</p>
                 <label for="signout-modal-toggle" class="neo-btn-cancel-signout">Cancel</label>
                 <button type="button" class="neo-btn-confirm-signout" onclick="document.querySelector('div.element-container:has(#neo-signout-marker) + div.element-container button').click()">CONFIRM</button>

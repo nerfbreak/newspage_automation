@@ -81,6 +81,9 @@ temp_promo_*
 
 # Dev/Scratch
 scratch/
+scratch_*
+patch_*
+fix_*
 *.ps1
 sign_apk.ps1
 

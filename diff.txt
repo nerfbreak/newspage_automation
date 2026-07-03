@@ -1,0 +1,191 @@
+--- run_execution
++++ run_execution_manual
+@@ -1,76 +1,69 @@
+-def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, current_user=None, dry_run=None):
++def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None, dry_run=None):
+     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
+     ensure_playwright()
+-    global_start_time = time.time(); success_count, failed_count = 0, 0
+-    ui_log("SYS", "Allocating memory and initializing Chromium headless core...")
+-    if supabase: ui_log("SYS", "Supabase client active.")
+-
+-    alert_callback(f"<b>BOT STARTED</b>\nTask: Reconcile Stock\nDist: {selected_distributor}\nTotal SKU: {len(df_view)}")
+-
+     try:
+-        progress_bar = st.progress(0)
++        global_start_time = time.time()
++        success_count, failed_count = 0, 0
++        
++        progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
+         term_ph = st.empty()
+         _setup_terminate_button(term_ph)
+         total_rows = len(df_view)
+-        text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
++        text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user) if show_status_box else None
+ 
+         with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar) as (page, browser):
+-            # Fetch distributor exception from DB
++            # Resolve actual warehouse from distributor_exceptions
+             exception_dict = database.get_distributor_warehouse_exceptions(supabase)
+             target_whs = exception_dict.get(bot_user)
+             actual_warehouse = target_whs if target_whs and WAREHOUSE == "GOOD_WHS" else WAREHOUSE
+             
+-            _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log)
+-
++            _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log, remark_text)
++            
+             _update_progress_text(text_ph, 0, total_rows)
+             
+             for i, (idx, row) in enumerate(df_view.iterrows()):
+                 _update_progress_text(text_ph, i + 1, total_rows)
++                if progress_placeholder:
++                    progress_placeholder.progress((i + 1) / total_rows)
++                def fmt(v):
++                    try:
++                        if pd.isna(v): return ''
++                        f = float(v)
++                        if f == 0: return ''
++                        return str(int(f)) if f.is_integer() else str(f)
++                    except:
++                        return str(v).strip()
++
+                 sku = str(row['SKU']).strip()
+-
+-                if row.get('Status') == 'Invalid':
+-                    ui_log("WARN", f"SKU [{sku}] skipped: {row.get('Keterangan', 'Invalid Qty')}")
+-                    if supabase:
+-                        try:
+-                            database.log_adjustment(supabase, sku, str(row.get('Qty')), "Invalid", f"Skipped: {row.get('Keterangan')}", bot_user, run_by=current_user)
+-                        except Exception:
+-                            pass
+-                    progress_bar.progress((i+1)/total_rows)
+-                    if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1:
+-                        utils.render_neo_table(table_placeholder, df_view)
+-                    continue
+-
+-                try: qty = str(int(float(row['Qty'])))
+-                except Exception: qty = str(row['Qty']).strip()
++                pac = fmt(row.get('PAC', 0))
++                car = fmt(row.get('CAR', 0))
++                ea = fmt(row.get('EA', 0))
++                
++                # Fallback: if PAC, CAR, and EA are all empty, but Qty is present in the row, use Qty as EA
++                if not pac and not car and not ea and 'Qty' in row:
++                    ea = fmt(row['Qty'])
+ 
+                 ui_log("INJECT", f"Processing Payload {i+1}/{total_rows} | Target SKU: [{sku}]")
+                 try:
+-                    _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log)
++                    _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log)
+                     
+                     df_view.at[idx, 'Status'] = 'Success'
+-                    df_view.at[idx, 'Keterangan'] = f'Input {qty} EA'
++                    df_view.at[idx, 'Keterangan'] = 'Input successfully'
+                     success_count += 1
+                     ui_log("SUCCESS", f"Transaction {i+1} committed. Grid updated.")
+                 except Exception as loop_err: 
+                     err_msg = str(loop_err)
+                     df_view.at[idx, 'Status'] = 'Failed'
++                    df_view.at[idx, 'Keterangan'] = 'Node Timeout'
++                    failed_count += 1
++                    ui_log("ERROR", f"Timeout on SKU [{sku}]. Node unresponsive. Skipping.")
+                     
+-                    if "Insufficient" in err_msg:
+-                        df_view.at[idx, 'Keterangan'] = 'Insufficient Stock'
+-                        failed_count += 1
+-                        ui_log("ERROR", f"Failed on SKU [{sku}]: {err_msg}. Skipping.")
+-                    else:
+-                        df_view.at[idx, 'Keterangan'] = 'Node Timeout'
+-                        failed_count += 1
+-                        ui_log("ERROR", f"Timeout on SKU [{sku}]. Node unresponsive. Skipping.")
+-                    
+-                progress_bar.progress((i+1)/total_rows)
+                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
+                     utils.render_neo_table(table_placeholder, df_view)
+                     
+             if failed_count > 0:
+                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
+-                _log_df_to_supabase(supabase, df_view, bot_user, current_user)
++                _log_df_to_supabase(supabase, df_view, bot_user, current_user, pack_mode=True)
+             else:
+                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
+                 if dry_run:
+@@ -91,13 +84,13 @@
+                     st.session_state.is_bot_running = False
+                     return success_count, failed_count, elapsed
+                 page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
+-                _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj save")
++                _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "manual stkadj save")
+                 try: 
+                     yes_btn = page.locator("id=pag_PopUp_YesNo_btn_Yes_Value")
+                     yes_btn.wait_for(state="visible", timeout=5000)
+                     ui_log("SERVER", "Confirming save dialog...")
+                     yes_btn.click()
+-                    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj save yes")
++                    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "manual stkadj save yes")
+                     ui_log("SERVER", "Document physically written to database.")
+                 except Exception: 
+                     ui_log("SERVER", "Auto-save confirmed. Document written to database.")
+@@ -110,17 +103,9 @@
+                 # Update descriptions in df_view
+                 for idx, row in df_view.iterrows():
+                     if row.get('Status') == 'Success':
+-                        try:
+-                            q_raw = row.get('Qty', 0)
+-                            if pd.isna(q_raw): q = ''
+-                            else:
+-                                f = float(q_raw)
+-                                q = str(int(f)) if f.is_integer() else str(f)
+-                        except:
+-                            q = str(row.get('Qty', '')).strip()
+-                        df_view.at[idx, 'Keterangan'] = f"Input {q} EA"
++                        df_view.at[idx, 'Keterangan'] = "Input successfully"
+ 
+-                _log_df_to_supabase(supabase, df_view, bot_user, current_user)
++                _log_df_to_supabase(supabase, df_view, bot_user, current_user, pack_mode=True)
+ 
+                 # Refresh the final dataframe view in the UI
+                 utils.render_neo_table(table_placeholder, df_view)
+@@ -129,7 +114,7 @@
+             try:
+                 page.once("dialog", lambda dialog: dialog.accept())
+                 page.locator("id=btnLogout").click(timeout=10000)
+-                _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "logout")
++                _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "manual logout")
+                 ui_log("AUTH", "Pop up confirm logout...")
+                 page.wait_for_timeout(2000)
+                 ui_log("SUCCESS", "Logged out successfully.")
+@@ -143,24 +128,24 @@
+             if failed_count > 0:
+                 ui_log("ERROR", f"Aborted. Total runtime: {elapsed//60}m {elapsed%60}s")
+                 box_html = utils.make_error_box(f"ABORTED — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m {elapsed%60}s")
+-                st.markdown(box_html, unsafe_allow_html=True)
++                if show_status_box:
++                    st.markdown(box_html, unsafe_allow_html=True)
+                 failed_skus = df_view[df_view["Status"] == "Failed"]["SKU"].tolist()
+                 sku_str = ("\nFailed SKUs: " + ", ".join(failed_skus[:5]) + ("..." if len(failed_skus) > 5 else "")) if failed_skus else ""
+                 alert_callback(f"[WARNING] <b>BOT ABORTED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s{sku_str}")
+                 st.toast('Execution aborted due to errors!', icon="🚨")
++                st.session_state.is_bot_running = False
++                return success_count, failed_count, elapsed
+             else:
+                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
+                 box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
+                 alert_msg = f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s"
+-                st.markdown(box_html, unsafe_allow_html=True)
++                if show_status_box:
++                    st.markdown(box_html, unsafe_allow_html=True)
+                 alert_callback(alert_msg)
+                 st.toast('System override complete!')
+-                st.session_state.reconcile_result = None
++                st.session_state.is_bot_running = False
++                return success_count, failed_count, elapsed
+ 
+-            st.session_state.is_bot_running = False
+-
+-    except Exception as e:
++    except PlaywrightTimeoutError: 
+         st.session_state.is_bot_running = False
+-        st.error("System halted.")
+-        ui_log("ERROR", f"FAILURE: {e}")
+-        alert_callback(f"[ALERT] <b>FATAL ERROR (EXECUTE)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
