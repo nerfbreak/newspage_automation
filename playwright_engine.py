@@ -683,7 +683,11 @@ def _setup_terminate_button(placeholder):
                     background-color: #E63946 !important;
                     color: #FFFFFF !important;
                     height: 44px !important;
-                    width: 100% !important;
+                    min-height: 44px !important;
+                    max-height: 44px !important;
+                    width: 180px !important;
+                    min-width: 180px !important;
+                    max-width: 180px !important;
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
@@ -701,6 +705,7 @@ def _setup_terminate_button(placeholder):
                     color: #FFFFFF !important;
                     margin: 0 !important;
                     padding: 0 !important;
+                    line-height: 1 !important;
                 }
                 div.element-container:has(#neo-kill-bot-marker) + div.element-container button:hover {
                     transform: translate(2px, 2px) !important;
@@ -732,7 +737,7 @@ def _setup_terminate_button(placeholder):
             st.session_state.is_bot_running = False
             st.session_state.execute_done = False
             
-        st.button("CONFIRM", key="term_bot_hidden", on_click=terminate_callback)
+        st.button("CONFIRM", key="term_bot_hidden", on_click=terminate_callback, use_container_width=True)
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):
