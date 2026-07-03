@@ -72,10 +72,15 @@ with st.container(border=True):
         st.session_state.mutasi_review_df = None
 
 if uploaded_file is not None:
+    st.markdown("""
+        <style>
+            div[data-testid="stFileUploader"] section > div:last-child { display: none !important; }
+        </style>
+    """, unsafe_allow_html=True)
     df_raw = data_processor.load_data(uploaded_file)
 
     if df_raw is not None and not df_raw.empty:
-        st.markdown(make_solid_box(f"File loaded — {len(df_raw)} rows, {len(df_raw.columns)} columns", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+        st.markdown(make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A"), unsafe_allow_html=True)
 
         # --- COLUMN MAPPING ---
         st.subheader("Column Mapping")

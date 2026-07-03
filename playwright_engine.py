@@ -461,14 +461,15 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
 def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user, dry_run=None):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
+        term_ph = st.empty()
+        _setup_terminate_button(term_ph)
+        text_ph = st.empty()
+        progress_bar = st.progress(0)
+
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
-            term_ph = st.empty()
-            _setup_terminate_button(term_ph)
-            text_ph = st.empty()
-            progress_bar = st.progress(0)
-            
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
             real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run, progress_bar, text_ph)
+
             if progress_bar: progress_bar.progress(1.0)
             
             if dry_run:
@@ -771,6 +772,12 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
     alert_callback(f"<b>BOT STARTED</b>\nTask: Reconcile Stock\nDist: {selected_distributor}\nTotal SKU: {len(df_view)}")
 
     try:
+        term_ph = st.empty()
+        _setup_terminate_button(term_ph)
+        progress_bar = st.progress(0)
+        total_rows = len(df_view)
+        text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
+
         with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
             # Fetch distributor exception from DB
             exception_dict = database.get_distributor_warehouse_exceptions(supabase)
@@ -779,11 +786,6 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             
             _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log)
 
-            term_ph = st.empty()
-            _setup_terminate_button(term_ph)
-            progress_bar = st.progress(0)
-            total_rows = len(df_view)
-            text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
             _update_progress_text(text_ph, 0, total_rows)
             
             for i, (idx, row) in enumerate(df_view.iterrows()):
@@ -1107,6 +1109,12 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         global_start_time = time.time()
         success_count, failed_count = 0, 0
         
+        term_ph = st.empty()
+        _setup_terminate_button(term_ph)
+        progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
+        total_rows = len(df_view)
+        text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
+
         with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
             # Resolve actual warehouse from distributor_exceptions
             exception_dict = database.get_distributor_warehouse_exceptions(supabase)
@@ -1115,11 +1123,6 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             
             _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log, remark_text)
             
-            term_ph = st.empty()
-            _setup_terminate_button(term_ph)
-            progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
-            total_rows = len(df_view)
-            text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
             _update_progress_text(text_ph, 0, total_rows)
             
             for i, (idx, row) in enumerate(df_view.iterrows()):

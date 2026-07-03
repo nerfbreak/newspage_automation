@@ -61,6 +61,15 @@ with st.container(border=True):
     )
 
 # Parse uploaded file into raw dataframe
+if uploaded_file is not None:
+    st.markdown("""
+        <style>
+            div[data-testid="stFileUploader"] section > div:last-child { display: none !important; }
+        </style>
+    """, unsafe_allow_html=True)
+    from utils import make_solid_box
+    st.markdown(make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A"), unsafe_allow_html=True)
+    
 if uploaded_file is not None and st.session_state.initial_stock_raw is None and st.session_state.initial_stock_df is None:
     try:
         if uploaded_file.name.endswith('.csv'):

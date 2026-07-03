@@ -72,10 +72,21 @@ if "Auto Compare" in adj_mode:
         with st.container(border=True, height=220):
             def handle_fragment_upload():
                 f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key="file2_uploader")
-                st.markdown("<div style='margin-bottom: 0px;'></div>", unsafe_allow_html=True)
+                if f:
+                    st.markdown("""
+                        <style>
+                            div[data-testid="stFileUploader"] section > div:last-child { display: none !important; }
+                        </style>
+                    """, unsafe_allow_html=True)
+                    from utils import make_solid_box
+                    st.markdown(make_solid_box(f"FILE LOADED: {f.name}", "#FFDE59", "#0F172A"), unsafe_allow_html=True)
+                else:
+                    st.markdown("<div style='margin-bottom: 0px;'></div>", unsafe_allow_html=True)
+                
                 curr_f = getattr(f, "file_id", f.name if f else None) if f else None
                 if curr_f != st.session_state.prev_file2:
                     st.session_state.prev_file2 = curr_f
+                    st.session_state.show_comparison = False
                     if not st.session_state.is_bot_running: st.rerun()
 
             if hasattr(st, "fragment"):
@@ -122,7 +133,13 @@ if "Auto Compare" in adj_mode:
 
     # --- DATA COMPARISON ---
     np_source_ready = (st.session_state.np_df is not None) or (file1 is not None)
+    
     if np_source_ready and file2:
+        st.markdown("<div style='margin-bottom: 24px;'></div>", unsafe_allow_html=True)
+        if st.button("PROSES FILE & BANDINGKAN", type="primary", use_container_width=True, icon=":material/compare_arrows:"):
+            st.session_state.show_comparison = True
+            
+    if st.session_state.get('show_comparison') and np_source_ready and file2:
         df1 = st.session_state.np_df if st.session_state.np_df is not None else data_processor.load_data(file1)
         df2 = data_processor.load_data(file2)
     

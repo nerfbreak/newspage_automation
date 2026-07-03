@@ -50,6 +50,11 @@ with st.container(border=True):
     uploaded_file = st.file_uploader("Drag & Drop Newspage BDP Tracker.xlsx here", type=["xlsx"])
     
     if uploaded_file:
+        st.markdown("""
+            <style>
+                div[data-testid="stFileUploader"] section > div:last-child { display: none !important; }
+            </style>
+        """, unsafe_allow_html=True)
         try:
             with st.spinner("Membaca data dari Excel..."):
                 xl = pd.ExcelFile(uploaded_file)
@@ -57,7 +62,8 @@ with st.container(border=True):
                 
                 if "tracker MDM" in available_sheets:
                     st.session_state.uploaded_mdm_data = pd.read_excel(xl, sheet_name="tracker MDM")
-                    st.success("Sheet 'tracker MDM' berhasil dibaca!")
+                    from utils import make_solid_box
+                    st.markdown(make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A"), unsafe_allow_html=True)
                 
                 if "BDP" in available_sheets:
                     st.session_state.uploaded_bdp_data = pd.read_excel(xl, sheet_name="BDP")
