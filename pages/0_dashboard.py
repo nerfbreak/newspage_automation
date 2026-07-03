@@ -72,13 +72,12 @@ with col2:
             .neo-btn-cancel-signout:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }
             
             /* Hide the entire Streamlit button container when modal is closed */
-            div.element-container:has(#signout-modal-toggle:not(:checked)) ~ div.element-container:has(#neo-signout-marker) + div.element-container,
-            div.element-container:has(#neo-signout-marker) + div.element-container {
+            div.element-container:has(#neo-signout-marker):has(#signout-modal-toggle:not(:checked)) + div.element-container {
                 display: none !important;
             }
             
             /* Show the Streamlit button container when modal is open */
-            div.element-container:has(#signout-modal-toggle:checked) ~ div.element-container:has(#neo-signout-marker) + div.element-container {
+            div.element-container:has(#neo-signout-marker):has(#signout-modal-toggle:checked) + div.element-container {
                 display: block !important;
             }
             

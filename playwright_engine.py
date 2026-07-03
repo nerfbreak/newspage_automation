@@ -667,13 +667,12 @@ def _setup_terminate_button(placeholder):
                 .neo-btn-cancel:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }
                 
                 /* Hide the entire Streamlit button container when modal is closed */
-                div.element-container:has(#term-modal-toggle:not(:checked)) ~ div.element-container:has(#neo-kill-bot-marker) + div.element-container,
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container {
+                div.element-container:has(#neo-kill-bot-marker):has(#term-modal-toggle:not(:checked)) + div.element-container {
                     display: none !important;
                 }
                 
                 /* Show the Streamlit button container when modal is open */
-                div.element-container:has(#term-modal-toggle:checked) ~ div.element-container:has(#neo-kill-bot-marker) + div.element-container {
+                div.element-container:has(#neo-kill-bot-marker):has(#term-modal-toggle:checked) + div.element-container {
                     display: block !important;
                 }
                 
