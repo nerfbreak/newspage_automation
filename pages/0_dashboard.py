@@ -79,11 +79,47 @@ with col2:
             
             /* Visually hide the Streamlit button container initially so it doesn't flash */
             div.element-container:has(#neo-signout-marker) + div.element-container {
-                opacity: 0;
-                position: absolute;
-                width: 0;
-                height: 0;
-                overflow: hidden;
+                display: none;
+            }
+            
+            /* Style the Streamlit button to look exactly like the native Confirm button */
+            div.element-container:has(#neo-signout-marker) + div.element-container button {
+                background-color: #E63946 !important;
+                color: #FFFFFF !important;
+                font-family: 'Source Sans 3', sans-serif !important;
+                font-weight: 900 !important;
+                font-size: 0.85rem !important;
+                text-transform: uppercase !important;
+                border: 4px solid #0F172A !important;
+                box-shadow: 4px 4px 0px 0px #0F172A !important;
+                border-radius: 0px !important;
+                transition: all 0.2s ease !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            div.element-container:has(#neo-signout-marker) + div.element-container button:hover {
+                transform: translate(2px, 2px) !important;
+                box-shadow: 2px 2px 0px 0px #0F172A !important;
+                color: #FFFFFF !important;
+            }
+            div.element-container:has(#neo-signout-marker) + div.element-container button:active {
+                transform: translate(4px, 4px) !important;
+                box-shadow: 0px 0px 0px 0px #0F172A !important;
+                color: #FFFFFF !important;
+            }
+            div.element-container:has(#neo-signout-marker) + div.element-container button:focus {
+                outline: none !important;
+                color: #FFFFFF !important;
+            }
+            div.element-container:has(#neo-signout-marker) + div.element-container button p {
+                margin: 0 !important;
+                padding: 0 !important;
+                color: #FFFFFF !important;
+                font-weight: 900 !important;
+                line-height: 1 !important;
             }
         </style>
         <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 0px; margin-top: 14px;">
@@ -98,7 +134,7 @@ with col2:
                 <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are You Sure?</h3>
                 <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will end your current session and require you to sign in again.</p>
                 <label for="signout-modal-toggle" class="neo-btn-cancel-signout">Cancel</label>
-                <button type="button" class="neo-btn-confirm-signout" id="btn-confirm-signout">CONFIRM</button>
+                <button type="button" class="neo-btn-confirm-signout" id="anchor-confirm-signout" style="visibility: hidden; pointer-events: none;">CONFIRM</button>
             </div>
         </div>
         <div id="neo-signout-marker" style="display: none;"></div>
@@ -119,36 +155,30 @@ with col2:
             var parentDoc = parentWin.document;
             
             function syncSignoutButton() {
-                var refBtn = parentDoc.getElementById('btn-confirm-signout');
+                var anchor = parentDoc.getElementById('anchor-confirm-signout');
                 var stBtnContainer = parentDoc.querySelector('div.element-container:has(#neo-signout-marker) + div.element-container');
-                if (refBtn && stBtnContainer) {
-                    var stBtn = stBtnContainer.querySelector('button');
-                    if (stBtn) {
-                        var rect = refBtn.getBoundingClientRect();
-                        if (rect.width > 0 && rect.height > 0) {
-                            stBtnContainer.style.display = 'block';
-                            stBtnContainer.style.position = 'fixed';
-                            stBtnContainer.style.top = rect.top + 'px';
-                            stBtnContainer.style.left = rect.left + 'px';
-                            stBtnContainer.style.width = rect.width + 'px';
-                            stBtnContainer.style.height = rect.height + 'px';
-                            stBtnContainer.style.zIndex = '999999';
-                            stBtnContainer.style.opacity = '0';
-                            stBtnContainer.style.overflow = 'visible';
-                            
+                if (anchor && stBtnContainer) {
+                    var rect = anchor.getBoundingClientRect();
+                    if (rect.width > 0 && rect.height > 0) {
+                        stBtnContainer.style.display = 'block';
+                        stBtnContainer.style.position = 'fixed';
+                        stBtnContainer.style.top = rect.top + 'px';
+                        stBtnContainer.style.left = rect.left + 'px';
+                        stBtnContainer.style.width = rect.width + 'px';
+                        stBtnContainer.style.height = rect.height + 'px';
+                        stBtnContainer.style.zIndex = '999999';
+                        stBtnContainer.style.opacity = '1';
+                        
+                        var stBtn = stBtnContainer.querySelector('button');
+                        if (stBtn) {
                             stBtn.style.position = 'absolute';
                             stBtn.style.top = '0';
                             stBtn.style.left = '0';
                             stBtn.style.width = '100%';
                             stBtn.style.height = '100%';
-                            stBtn.style.opacity = '0';
-                            stBtn.style.cursor = 'pointer';
-                            stBtn.style.margin = '0';
-                            stBtn.style.padding = '0';
-                            stBtn.style.zIndex = '999999';
-                        } else {
-                            stBtnContainer.style.display = 'none';
                         }
+                    } else {
+                        stBtnContainer.style.display = 'none';
                     }
                 }
             }
