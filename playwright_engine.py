@@ -573,51 +573,85 @@ def _setup_progress_layout(placeholder, dist, user):
     if not placeholder:
         return None
     with placeholder.container():
-        c1, c_btn, c_text = st.columns([7, 1.5, 1.5], vertical_alignment="center")
+        c1, c_text = st.columns([8.5, 1.5], vertical_alignment="center")
         with c1:
             st.markdown(f"""
                 <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap;'>
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
-                    <div style='margin-left: auto; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 700; color: #E63946; font-style: italic; display: flex; align-items: center;'>
-                        Klik tombol PROCESSED untuk membatalkan progress Bot ➔
-                    </div>
+                    <div style='margin-left: auto; height: 40px; display: flex; align-items: center; justify-content: center; background: #FFDE59; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>PROCESSED</div>
                 </div>
             """, unsafe_allow_html=True)
-        with c_btn:
-            # Render the visible HTML button
-            st.markdown(f"""
-                <button id='stealth-btn-master' class='stealth-term-btn'>PROCESSED</button>
-                <div id='stealth-target-master' style='display:none;'></div>
-            """, unsafe_allow_html=True)
             
-            # Hidden Streamlit button to receive the click
-            def terminate_callback():
-                st.session_state.is_bot_running = False
-                st.session_state.execute_done = False
-                
-            st.button("KILL", key="term_bot_hidden", on_click=terminate_callback)
+        with c_text:
+            text_ph = st.empty()
             
-            # Inject JS once to attach listener
-            st.iframe("""
-                <script>
-                    const parentDoc = window.parent.document;
-                    const btn = parentDoc.getElementById('stealth-btn-master');
-                    if (btn && !btn.hasAttribute('data-listener')) {
-                        btn.setAttribute('data-listener', 'true');
-                        btn.addEventListener('click', function() {
-                            if (confirm('Apakah Anda yakin ingin membatalkan dan menghentikan eksekusi Bot?')) {
-                                const stBtns = parentDoc.querySelectorAll('button');
-                                stBtns.forEach(b => {
-                                    if(b.textContent === 'KILL') b.click();
-                                });
-                            }
-                        });
-                    }
-                </script>
-            """, height=1)
+        # Floating Neo-Brutalist Terminate Button
+        st.markdown(f"""
+            <style>
+                .floating-terminate-btn {{
+                    position: fixed;
+                    bottom: 32px;
+                    right: 32px;
+                    z-index: 999999;
+                    background-color: #E63946;
+                    color: #FFFFFF;
+                    border: 3px solid #0F172A;
+                    box-shadow: 8px 8px 0px 0px #0F172A;
+                    padding: 14px 28px;
+                    font-family: 'Source Sans 3', sans-serif;
+                    font-weight: 900;
+                    font-size: 1.1rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }}
+                .floating-terminate-btn:hover {{
+                    transform: translate(4px, 4px);
+                    box-shadow: 4px 4px 0px 0px #0F172A;
+                    background-color: #D62828;
+                }}
+                @media (max-width: 768px) {{
+                    .floating-terminate-btn {{
+                        bottom: 16px;
+                        right: 16px;
+                        padding: 12px 20px;
+                        font-size: 1rem;
+                        box-shadow: 6px 6px 0px 0px #0F172A;
+                    }}
+                }}
+            </style>
+            <button id='stealth-btn-master' class='floating-terminate-btn'>TERMINATE BOT</button>
+            <div id='stealth-target-master' style='display:none;'></div>
+        """, unsafe_allow_html=True)
+        
+        # Hidden Streamlit button to receive the click
+        def terminate_callback():
+            st.session_state.is_bot_running = False
+            st.session_state.execute_done = False
             
-        text_ph = c_text.empty()
+        st.button("KILL", key="term_bot_hidden", on_click=terminate_callback)
+        
+        # Inject JS once to attach listener
+        st.iframe("""
+            <script>
+                const parentDoc = window.parent.document;
+                const btn = parentDoc.getElementById('stealth-btn-master');
+                if (btn && !btn.hasAttribute('data-listener')) {
+                    btn.setAttribute('data-listener', 'true');
+                    btn.addEventListener('click', function() {
+                        if (confirm('Apakah Anda yakin ingin membatalkan dan menghentikan eksekusi Bot?')) {
+                            const stBtns = parentDoc.querySelectorAll('button');
+                            stBtns.forEach(b => {
+                                if(b.textContent === 'KILL') b.click();
+                            });
+                        }
+                    });
+                }
+            </script>
+        """, height=1)
+        
         return text_ph
 
 def _update_progress_text(text_ph, current, total):
