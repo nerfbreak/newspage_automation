@@ -73,13 +73,14 @@ if "Auto Compare" in adj_mode:
             def handle_fragment_upload():
                 f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key="file2_uploader")
                 if f:
-                    st.markdown("""
-                        <style>
-                            div[data-testid="stFileUploader"] section { display: none !important; }
-                        </style>
-                    """, unsafe_allow_html=True)
                     from utils import make_solid_box
-                    st.markdown(make_solid_box(f"FILE LOADED: {f.name}", "#FFDE59", "#0F172A"), unsafe_allow_html=True)
+                    st.markdown(f"""
+                        <style>
+                            div[data-testid="stFileUploader"] section {{ display: none !important; }}
+                            div[data-testid="stFileUploader"] {{ margin-bottom: -1rem !important; padding-bottom: 0px !important; }}
+                        </style>
+                        {make_solid_box(f"FILE LOADED: {f.name}", "#FFDE59", "#0F172A")}
+                    """, unsafe_allow_html=True)
                     if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
                         st.session_state.file2_uploader = None
                         st.rerun()

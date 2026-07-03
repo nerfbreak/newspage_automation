@@ -251,9 +251,9 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
 def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, ext_ui_log, alert_callback, supabase, current_user, dry_run=None, ext_label_placeholder=None):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
+        progress_bar = st.progress(0)
         term_ph = st.empty()
         _setup_terminate_button(term_ph)
-        progress_bar = st.progress(0)
         text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
@@ -468,10 +468,10 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
 def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user, dry_run=None, ext_label_placeholder=None):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
+        progress_bar = st.progress(0)
         term_ph = st.empty()
         _setup_terminate_button(term_ph)
         text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
-        progress_bar = st.progress(0)
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
@@ -591,23 +591,19 @@ def _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user
     dist = str(selected_distributor).strip()
     
     
-    processed_html = f"""
-                <div style='margin-left: auto; display: flex; align-items: stretch;' id='dynamic-progress-container'>
-                    <div style='display: flex; align-items: center; justify-content: center; background: #FFDE59; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; border-right: none;'>PROCESSED</div>
-                    <div id='dynamic-progress-counter' style='display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; min-width: 80px;'>0/0</div>
-                </div>
-    """ if show_processed else ""
+    processed_html = f"""<div style='margin-left: auto; display: flex; align-items: stretch;' id='dynamic-progress-container'>
+    <div style='display: flex; align-items: center; justify-content: center; background: #FFDE59; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; border-right: none;'>PROCESSED</div>
+    <div id='dynamic-progress-counter' style='display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; min-width: 80px;'>0/0</div>
+</div>""" if show_processed else ""
 
     with log_label_placeholder.container():
-        st.markdown(f"""
-            <div style='display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;'>
-                <div style='display: flex; align-items: stretch;'>
-                    <div style='display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; border-right: none;'>ACTIVE ACCOUNT</div>
-                    <div style='display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
-                </div>
-                {processed_html}
-            </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div style='display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;'>
+    <div style='display: flex; align-items: stretch;'>
+        <div style='display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; border-right: none;'>ACTIVE ACCOUNT</div>
+        <div style='display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
+    </div>
+    {processed_html}
+</div>""", unsafe_allow_html=True)
         return st.empty()
 
 def _update_progress_text(text_ph, current, total):
@@ -639,10 +635,10 @@ def _setup_terminate_button(placeholder):
                 #term-modal-toggle:checked ~ .neo-modal-overlay { display: flex; }
                 
                 .neo-btn-terminate {
-                    background-color: #E63946; color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; padding: 4px 8px; font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 0.65rem; text-transform: uppercase; cursor: pointer; transition: all 0.1s ease; display: inline-block;
+                    background-color: #E63946; color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; padding: 4px 8px; font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 0.65rem; text-transform: uppercase; cursor: pointer; transition: all 0.1s ease; display: block;
                 }
                 .neo-btn-terminate:hover {
-                    transform: translate(2px, 2px); box-shadow: 1px 1px 0px 0px #0F172A;
+                    transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A;
                 }
                 
                 /* Hide Streamlit button initially */
@@ -652,7 +648,7 @@ def _setup_terminate_button(placeholder):
                     z-index: 999999;
                     top: 50%;
                     left: 50%;
-                    margin-top: 60px;
+                    margin-top: 90px;
                     margin-left: 8px;
                 }
                 
@@ -694,20 +690,20 @@ def _setup_terminate_button(placeholder):
             
             <div id="neo-kill-bot-marker" style="display: none;"></div>
             
-            <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 4px;">
+            <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 8px; margin-top: 8px;">
                 <label for="term-modal-toggle" class="neo-btn-terminate" style="width: 100%; text-align: center; box-sizing: border-box; font-size: 0.85rem; padding: 6px 12px;">TERMINATE</label>
             </div>
             <input type="checkbox" id="term-modal-toggle" />
             
             <div class="neo-modal-overlay">
-                <div style="background: #FFFFFF; border: 4px solid #0F172A; box-shadow: 12px 12px 0px 0px #0F172A; padding: 32px; max-width: 450px; width: 90%; height: 290px; text-align: center; position: relative; box-sizing: border-box;">
+                <div style="background: #FFFFFF; border: 4px solid #0F172A; box-shadow: 12px 12px 0px 0px #0F172A; padding: 32px; max-width: 450px; width: 90%; height: 350px; text-align: center; position: relative; box-sizing: border-box;">
                     <div style='display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background-color: #E63946; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; border-radius: 0px;'>
                         <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'></path><polyline points='16 17 21 12 16 7'></polyline><line x1='21' y1='12' x2='9' y2='12'></line></svg>
                     </div>
                     <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are you absolutely sure?</h3>
                     <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will stop the bot immediately.</p>
                     
-                    <label for="term-modal-toggle" style="background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; right: 50%; margin-right: 8px; top: 205px;">Cancel</label>
+                    <label for="term-modal-toggle" style="background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; right: 50%; margin-right: 8px; top: 265px;">Cancel</label>
                 </div>
             </div>
         """, unsafe_allow_html=True)
@@ -759,9 +755,9 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
     alert_callback(f"<b>BOT STARTED</b>\nTask: Reconcile Stock\nDist: {selected_distributor}\nTotal SKU: {len(df_view)}")
 
     try:
+        progress_bar = st.progress(0)
         term_ph = st.empty()
         _setup_terminate_button(term_ph)
-        progress_bar = st.progress(0)
         total_rows = len(df_view)
         text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
 
@@ -1096,9 +1092,9 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         global_start_time = time.time()
         success_count, failed_count = 0, 0
         
+        progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
         term_ph = st.empty()
         _setup_terminate_button(term_ph)
-        progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
         total_rows = len(df_view)
         text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user) if show_status_box else None
 

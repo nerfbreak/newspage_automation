@@ -50,11 +50,6 @@ with st.container(border=True):
     uploaded_file = st.file_uploader("Drag & Drop Newspage BDP Tracker.xlsx here", type=["xlsx"])
     
     if uploaded_file:
-        st.markdown("""
-            <style>
-                div[data-testid="stFileUploader"] section { display: none !important; }
-            </style>
-        """, unsafe_allow_html=True)
         try:
             with st.spinner("Membaca data dari Excel..."):
                 xl = pd.ExcelFile(uploaded_file)
@@ -63,7 +58,13 @@ with st.container(border=True):
                 if "tracker MDM" in available_sheets:
                     st.session_state.uploaded_mdm_data = pd.read_excel(xl, sheet_name="tracker MDM")
                     from utils import make_solid_box
-                    st.markdown(make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A"), unsafe_allow_html=True)
+                    st.markdown(f"""
+                        <style>
+                            div[data-testid="stFileUploader"] section {{ display: none !important; }}
+                            div[data-testid="stFileUploader"] {{ margin-bottom: -1rem !important; padding-bottom: 0px !important; }}
+                        </style>
+                        {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
+                    """, unsafe_allow_html=True)
                     if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
                         # Just force rerun to clear
                         st.rerun()
