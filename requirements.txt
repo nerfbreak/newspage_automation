@@ -9,3 +9,4 @@ bcrypt==5.0.0
 streamlit-option-menu==0.4.0
 openai>=1.0.0
 extra-streamlit-components>=0.1.81
+rich<15.0.0
