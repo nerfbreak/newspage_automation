@@ -599,8 +599,7 @@ def _setup_progress_layout(placeholder, dist, user):
             st.button("KILL", key="term_bot_hidden", on_click=terminate_callback)
             
             # Inject JS once to attach listener
-            import streamlit.components.v1 as components
-            components.html("""
+            st.iframe("""
                 <script>
                     const parentDoc = window.parent.document;
                     const btn = parentDoc.getElementById('stealth-btn-master');
