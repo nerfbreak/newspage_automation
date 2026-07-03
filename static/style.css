@@ -993,8 +993,10 @@ div[data-testid="stExpander"] summary p {
 }
 
 
-
 /* Styling khusus untuk stSegmentedControl (Neo-Brutalism) */
+div.element-container:has(div[data-testid="stButtonGroup"]) {
+    margin-bottom: 0px !important;
+}
 div[data-testid="stButtonGroup"] > div[role="radiogroup"] {
     background-color: #FFFFFF !important;
     border: 3px solid #0F172A !important;
