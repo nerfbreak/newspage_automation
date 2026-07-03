@@ -74,13 +74,17 @@ with st.container(border=True):
 if uploaded_file is not None:
     st.markdown("""
         <style>
-            div[data-testid="stFileUploader"] section > div:last-child { display: none !important; }
+            div[data-testid="stFileUploader"] section { display: none !important; }
         </style>
     """, unsafe_allow_html=True)
     df_raw = data_processor.load_data(uploaded_file)
 
     if df_raw is not None and not df_raw.empty:
         st.markdown(make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A"), unsafe_allow_html=True)
+        if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
+            st.session_state.mutasi_file_uploader = None
+            st.session_state.mutasi_file_id = None
+            st.rerun()
 
         # --- COLUMN MAPPING ---
         st.subheader("Column Mapping")

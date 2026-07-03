@@ -248,9 +248,21 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     
     return real_filename, file_path
 
-def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, ext_ui_log, alert_callback, supabase, current_user, dry_run=None):
+def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, ext_ui_log, alert_callback, supabase, current_user, dry_run=None, ext_label_placeholder=None):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
+        if ext_label_placeholder:
+            with ext_label_placeholder.container():
+                term_ph = st.empty()
+                _setup_terminate_button(term_ph)
+                progress_bar = st.progress(0)
+                text_ph = st.empty()
+        else:
+            term_ph = st.empty()
+            _setup_terminate_button(term_ph)
+            progress_bar = st.progress(0)
+            text_ph = st.empty()
+
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
             
@@ -260,7 +272,9 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
             
             actual_warehouse = target_whs if target_whs and WAREHOUSE == "GOOD_WHS" else WAREHOUSE
             
-            real_filename, file_path = _dispatch_extraction_job(page, TIMEOUT_MS, actual_warehouse, ext_ui_log, browser, dry_run)
+            real_filename, file_path = _dispatch_extraction_job(page, TIMEOUT_MS, actual_warehouse, ext_ui_log, browser, dry_run, progress_bar, text_ph)
+            
+            if progress_bar: progress_bar.progress(1.0)
             
             if dry_run:
                 ext_ui_log("DRY_RUN", "Dry run complete - extraction skipped.")
@@ -458,13 +472,20 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
     
     return real_filename, file_path
 
-def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user, dry_run=None):
+def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user, dry_run=None, ext_label_placeholder=None):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
-        term_ph = st.empty()
-        _setup_terminate_button(term_ph)
-        text_ph = st.empty()
-        progress_bar = st.progress(0)
+        if ext_label_placeholder:
+            with ext_label_placeholder.container():
+                term_ph = st.empty()
+                _setup_terminate_button(term_ph)
+                text_ph = st.empty()
+                progress_bar = st.progress(0)
+        else:
+            term_ph = st.empty()
+            _setup_terminate_button(term_ph)
+            text_ph = st.empty()
+            progress_bar = st.progress(0)
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
@@ -574,162 +595,131 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     ui_log("INJECT", f"Node resolved. Assigning adjustment quantity: {qty} EA")
     qty_input.fill(qty)
     page.wait_for_timeout(500)
+        page.locator("id=pag_I_StkAdj_NewGeneral_btn_Add_Value").click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj add")
+        ui_log("SYS", "Awaiting DOM form reset confirmation...")
+        page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
+
+def _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user):
+    user = str(bot_user).strip()
+    dist = str(selected_distributor).strip()
     
-    ui_log("INJECT", "Dispatching Add command to grid...")
-    page.locator("id=pag_I_StkAdj_NewGeneral_btn_Add_Value").click(force=True)
-    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj add")
-    ui_log("SYS", "Awaiting DOM form reset confirmation...")
-    page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
-
-
-def _setup_progress_layout(placeholder, dist, user):
-    """Sets up the layout ONCE to prevent UI blinking during loops."""
-    if not placeholder:
-        return None
-    with placeholder.container():
-        c1, c_text = st.columns([8.5, 1.5], vertical_alignment="center")
-        with c1:
-            st.markdown(f"""
-                <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;'>
-                    <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
-                    <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
-                    <div style='margin-left: auto; height: 40px; display: flex; align-items: center; justify-content: center; background: #FFDE59; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>PROCESSED</div>
+    with log_label_placeholder.container():
+        st.markdown(f"""
+            <div style='display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;'>
+                <div style='display: flex; align-items: stretch;'>
+                    <div style='display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; border-right: none;'>ACTIVE ACCOUNT</div>
+                    <div style='display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
                 </div>
-            """, unsafe_allow_html=True)
-            
-        with c_text:
-            text_ph = st.empty()
-            
-        return text_ph
+                <div style='margin-left: auto; display: flex; align-items: stretch;' id='dynamic-progress-container'>
+                    <div style='display: flex; align-items: center; justify-content: center; background: #FFDE59; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; border-right: none;'>PROCESSED</div>
+                    <div id='dynamic-progress-counter' style='display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; min-width: 80px;'>0/0</div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        return st.empty()
 
 def _update_progress_text(text_ph, current, total):
-    """Updates only the text part to avoid layout re-rendering and blinking."""
-    if not text_ph:
-        return
+    if not text_ph: return
     text_ph.markdown(f"""
-        <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{current}/{total}</div>
+        <script>
+            var counter = window.parent.document.getElementById('dynamic-progress-counter') || document.getElementById('dynamic-progress-counter');
+            if (counter) counter.innerText = '{current}/{total}';
+        </script>
     """, unsafe_allow_html=True)
 
 def _setup_terminate_button(placeholder):
-    """Renders the terminate button and custom Neo-Brutalist confirmation modal."""
-    with placeholder:
-        st.markdown(f"""
+    """Renders the terminate button and custom Neo-Brutalist confirmation modal using Pure CSS."""
+    with placeholder.container():
+        st.markdown("""
             <style>
-                .neo-modal-overlay {{
+                .neo-modal-overlay {
+                    display: none;
                     position: fixed;
                     top: 0; left: 0; right: 0; bottom: 0;
                     background: rgba(15, 23, 42, 0.7);
                     z-index: 999998;
-                    display: none;
                     align-items: center;
                     justify-content: center;
                     backdrop-filter: blur(4px);
-                }}
-                .neo-modal {{
-                    background: #FFFFFF;
-                    border: 4px solid #0F172A;
-                    box-shadow: 12px 12px 0px 0px #0F172A;
-                    padding: 32px;
-                    max-width: 450px;
-                    width: 90%;
-                    text-align: center;
-                }}
-                .neo-modal-title {{
-                    font-family: 'Source Sans 3', sans-serif;
-                    font-weight: 900;
-                    font-size: 1.2rem;
-                    color: #0F172A;
-                    margin-bottom: 24px;
-                    text-transform: uppercase;
-                }}
-                .neo-modal-buttons {{
-                    display: flex;
-                    gap: 16px;
-                    justify-content: center;
-                }}
-                .neo-btn-yes, .neo-btn-no {{
-                    font-family: 'Source Sans 3', sans-serif;
-                    font-weight: 800;
-                    font-size: 1rem;
-                    padding: 10px 24px;
-                    border: 3px solid #0F172A;
-                    cursor: pointer;
-                    text-transform: uppercase;
-                    transition: all 0.1s ease;
-                }}
-                .neo-btn-yes {{
-                    background: #E63946;
-                    color: #FFFFFF;
-                    box-shadow: 4px 4px 0px 0px #0F172A;
-                }}
-                .neo-btn-yes:hover {{
-                    transform: translate(2px, 2px);
-                    box-shadow: 2px 2px 0px 0px #0F172A;
-                }}
-                .neo-btn-no {{
-                    background: #F1F5F9;
-                    color: #0F172A;
-                    box-shadow: 4px 4px 0px 0px #0F172A;
-                }}
-                .neo-btn-no:hover {{
-                    transform: translate(2px, 2px);
-                    box-shadow: 2px 2px 0px 0px #0F172A;
-                }}
+                }
+                
+                #term-modal-toggle { display: none; }
+                #term-modal-toggle:checked ~ .neo-modal-overlay { display: flex; }
+                
+                .neo-btn-terminate {
+                    background-color: #E63946; color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; padding: 4px 8px; font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 0.65rem; text-transform: uppercase; cursor: pointer; transition: all 0.1s ease; display: inline-block;
+                }
+                .neo-btn-terminate:hover {
+                    transform: translate(2px, 2px); box-shadow: 1px 1px 0px 0px #0F172A;
+                }
+                
+                /* Hide Streamlit button initially */
+                div.element-container:has(button p:contains("KILL_BOT_CONFIRM")) {
+                    display: none;
+                    position: fixed;
+                    z-index: 999999;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(10px, 75px);
+                }
+                
+                /* Show Streamlit button when modal is open */
+                div.element-container:has(#term-modal-toggle:checked) ~ div.element-container:has(button p:contains("KILL_BOT_CONFIRM")) {
+                    display: block !important;
+                }
+                
+                /* Style the Streamlit button to match neo-brutalism */
+                div.element-container:has(button p:contains("KILL_BOT_CONFIRM")) button {
+                    background-color: #E63946 !important;
+                    color: #FFFFFF !important;
+                    border: 3px solid #0F172A !important;
+                    box-shadow: 4px 4px 0px 0px #0F172A !important;
+                    padding: 6px 24px !important;
+                    font-family: 'Source Sans 3', sans-serif !important;
+                    font-weight: 800 !important;
+                    font-size: 1rem !important;
+                    text-transform: uppercase !important;
+                    border-radius: 0 !important;
+                    min-height: 0 !important;
+                    height: 44px !important;
+                }
+                div.element-container:has(button p:contains("KILL_BOT_CONFIRM")) button p {
+                    font-size: 1rem !important;
+                    font-weight: 800 !important;
+                    color: #FFFFFF !important;
+                }
+                div.element-container:has(button p:contains("KILL_BOT_CONFIRM")) button:hover {
+                    transform: translate(2px, 2px) !important;
+                    box-shadow: 2px 2px 0px 0px #0F172A !important;
+                }
             </style>
             
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
-                <button id="stealth-btn-master" style="background-color: #E63946; color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; padding: 6px 12px; font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; cursor: pointer; transition: all 0.1s ease;" onmouseover="this.style.transform='translate(2px, 2px)'; this.style.boxShadow='2px 2px 0px 0px #0F172A';" onmouseout="this.style.transform='none'; this.style.boxShadow='4px 4px 0px 0px #0F172A';">TERMINATE</button>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 4px;">
+                <label for="term-modal-toggle" class="neo-btn-terminate">TERMINATE</label>
             </div>
+            <input type="checkbox" id="term-modal-toggle" />
             
-            <div id="custom-terminate-modal" class="neo-modal-overlay">
-                <div class="neo-modal">
-                    <div class="neo-modal-title">Apakah Anda yakin ingin membatalkan dan menghentikan eksekusi Bot?</div>
-                    <div class="neo-modal-buttons">
-                        <button id="modal-btn-yes" class="neo-btn-yes">OK</button>
-                        <button id="modal-btn-no" class="neo-btn-no">Cancel</button>
+            <div class="neo-modal-overlay">
+                <div style="background: #FFFFFF; border: 4px solid #0F172A; box-shadow: 12px 12px 0px 0px #0F172A; padding: 32px; max-width: 450px; width: 90%; text-align: center; position: relative;">
+                    <div style='display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background-color: #E63946; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; border-radius: 0px;'>
+                        <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'></path><polyline points='16 17 21 12 16 7'></polyline><line x1='21' y1='12' x2='9' y2='12'></line></svg>
+                    </div>
+                    <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; text-transform: uppercase;">Are you absolutely sure?</h3>
+                    <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will stop the bot immediately.</p>
+                    <div style="display: flex; gap: 16px; justify-content: center;">
+                        <label for="term-modal-toggle" style="background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 6px 24px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box;">Cancel</label>
+                        <div style="width: 140px; height: 44px; box-sizing: border-box;"></div>
                     </div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
         
-        # Hidden Streamlit button to receive the click
         def terminate_callback():
             st.session_state.is_bot_running = False
             st.session_state.execute_done = False
             
-        st.button("KILL", key="term_bot_hidden", on_click=terminate_callback)
-        
-        # Inject JS to handle modal and click propagation
-        st.iframe("""
-            <script>
-                const parentDoc = window.parent.document;
-                
-                // Add listener to the document to handle dynamic buttons (event delegation)
-                if (!parentDoc.hasAttribute('data-modal-listener')) {
-                    parentDoc.setAttribute('data-modal-listener', 'true');
-                    
-                    parentDoc.addEventListener('click', function(e) {
-                        if (e.target && e.target.id === 'stealth-btn-master') {
-                            const modal = parentDoc.getElementById('custom-terminate-modal');
-                            if (modal) modal.style.display = 'flex';
-                        }
-                        else if (e.target && e.target.id === 'modal-btn-no') {
-                            const modal = parentDoc.getElementById('custom-terminate-modal');
-                            if (modal) modal.style.display = 'none';
-                        }
-                        else if (e.target && e.target.id === 'modal-btn-yes') {
-                            const modal = parentDoc.getElementById('custom-terminate-modal');
-                            if (modal) modal.style.display = 'none';
-                            
-                            const stBtns = parentDoc.querySelectorAll('button');
-                            stBtns.forEach(b => {
-                                if (b.textContent === 'KILL') b.click();
-                            });
-                        }
-                    });
-                }
-            </script>
-        """, height=1)
+        st.button("KILL_BOT_CONFIRM", key="term_bot_hidden", on_click=terminate_callback)
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):
@@ -772,11 +762,12 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
     alert_callback(f"<b>BOT STARTED</b>\nTask: Reconcile Stock\nDist: {selected_distributor}\nTotal SKU: {len(df_view)}")
 
     try:
-        term_ph = st.empty()
-        _setup_terminate_button(term_ph)
-        progress_bar = st.progress(0)
-        total_rows = len(df_view)
-        text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
+        with log_label_placeholder.container():
+            term_ph = st.empty()
+            _setup_terminate_button(term_ph)
+            progress_bar = st.progress(0)
+            total_rows = len(df_view)
+            text_ph = _setup_progress_layout(st.empty(), selected_distributor, bot_user)
 
         with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
             # Fetch distributor exception from DB
@@ -1109,11 +1100,19 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         global_start_time = time.time()
         success_count, failed_count = 0, 0
         
-        term_ph = st.empty()
-        _setup_terminate_button(term_ph)
-        progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
-        total_rows = len(df_view)
-        text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
+        if log_label_placeholder:
+            with log_label_placeholder.container():
+                term_ph = st.empty()
+                _setup_terminate_button(term_ph)
+                progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
+                total_rows = len(df_view)
+                text_ph = _setup_progress_layout(st.empty(), selected_distributor, bot_user) if show_status_box else None
+        else:
+            term_ph = st.empty()
+            _setup_terminate_button(term_ph)
+            progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
+            total_rows = len(df_view)
+            text_ph = None
 
         with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
             # Resolve actual warehouse from distributor_exceptions

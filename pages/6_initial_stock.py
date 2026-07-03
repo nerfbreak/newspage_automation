@@ -64,11 +64,16 @@ with st.container(border=True):
 if uploaded_file is not None:
     st.markdown("""
         <style>
-            div[data-testid="stFileUploader"] section > div:last-child { display: none !important; }
+            div[data-testid="stFileUploader"] section { display: none !important; }
         </style>
     """, unsafe_allow_html=True)
     from utils import make_solid_box
     st.markdown(make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A"), unsafe_allow_html=True)
+    if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
+        st.session_state.initial_stock_file = None
+        st.session_state.initial_stock_raw = None
+        st.session_state.initial_stock_df = None
+        st.rerun()
     
 if uploaded_file is not None and st.session_state.initial_stock_raw is None and st.session_state.initial_stock_df is None:
     try:

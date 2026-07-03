@@ -53,7 +53,7 @@ if "Auto Compare" in adj_mode:
     
     with col1:
         st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-        with st.container(border=True, height=220):
+        with st.container(border=True):
             list_dist = database.get_distributor_list(supabase)
             url_dist, default_index = resolve_distributor_url(list_dist)
 
@@ -69,17 +69,20 @@ if "Auto Compare" in adj_mode:
 
     with col2:
         st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-        with st.container(border=True, height=220):
+        with st.container(border=True):
             def handle_fragment_upload():
                 f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key="file2_uploader")
                 if f:
                     st.markdown("""
                         <style>
-                            div[data-testid="stFileUploader"] section > div:last-child { display: none !important; }
+                            div[data-testid="stFileUploader"] section { display: none !important; }
                         </style>
                     """, unsafe_allow_html=True)
                     from utils import make_solid_box
                     st.markdown(make_solid_box(f"FILE LOADED: {f.name}", "#FFDE59", "#0F172A"), unsafe_allow_html=True)
+                    if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
+                        st.session_state.file2_uploader = None
+                        st.rerun()
                 else:
                     st.markdown("<div style='margin-bottom: 0px;'></div>", unsafe_allow_html=True)
                 
@@ -127,7 +130,8 @@ if "Auto Compare" in adj_mode:
 
         playwright_engine.run_extract(
             bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
-            ext_ui_log, send_telegram_alert, supabase, st.session_state.current_user
+            ext_ui_log, send_telegram_alert, supabase, st.session_state.current_user,
+            ext_label_placeholder=ext_label_placeholder
         )
 
 

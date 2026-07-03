@@ -99,7 +99,8 @@ if extract_btn:
     playwright_engine.run_sales_extract(
         bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, 
         start_date_str, end_date_str,
-        ext_ui_log, send_telegram_alert, supabase, st.session_state.current_user
+        ext_ui_log, send_telegram_alert, supabase, st.session_state.current_user,
+        ext_label_placeholder=ext_label_placeholder
     )
 
 render_footer()
