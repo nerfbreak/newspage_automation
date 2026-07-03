@@ -28,7 +28,6 @@ See the [CHANGELOG.md](CHANGELOG.md) for recent updates and release history.
 - **Dry Run Mode** — Global simulation toggle that runs the full automation flow without pressing Save, for safe pre-execution testing.
 - **Error Screenshots** — Automatically captures a browser screenshot on fatal error and sends it to Telegram.
 - **Operational Dashboard** — Live system health, connection ping, KPI metrics, execution log history, and app launcher.
-- **AI Assistant** — Built-in AI chatbot (DeepSeek via NVIDIA API) for data analytics and query support.
 - **Enterprise Security** — `bcrypt` password hashing, `AES-256 Fernet` credential encryption, session timeout, and login lockout.
 - **Telegram Alerts** — Real-time push notifications for bot start, completion, errors, and abort events.
 
@@ -43,7 +42,6 @@ See the [CHANGELOG.md](CHANGELOG.md) for recent updates and release history.
 | Database | [Supabase](https://supabase.com/) (PostgreSQL) |
 | Security | Bcrypt + Cryptography (Fernet/AES-256) |
 | Alerts | Telegram Bot API |
-| AI | DeepSeek-V4-Pro via NVIDIA API |
 
 ---
 
@@ -63,8 +61,7 @@ See the [CHANGELOG.md](CHANGELOG.md) for recent updates and release history.
 │   ├── 3_promotion_comparison.py   # Promo sync + SharePoint comparison
 │   ├── 4_stock_mutation.py         # Stock mutation tracking & execution
 │   ├── 5_clearance_stock.py        # Clearance stock monitoring
-│   ├── 6_initial_stock.py          # Initial stock baseline management
-│   └── 7_ai_assistant.py           # AI chatbot interface (DeepSeek via NVIDIA)
+│   └── 6_initial_stock.py          # Initial stock baseline management
 ├── static/
 │   ├── style.css                   # Global Neo-Brutalist application theme
 │   ├── login.css                   # Login page styling
@@ -116,9 +113,6 @@ MASTER_KEY   = "your-fernet-encryption-key"   # AES-256 Fernet key
 # Optional — Telegram alerts
 TELEGRAM_BOT_TOKEN = "your-bot-token"
 TELEGRAM_CHAT_ID   = "your-chat-id"
-
-# Optional — AI Assistant
-NVIDIA_API_KEY = "your-nvidia-api-key"
 ```
 
 ### 3. Install Dependencies
