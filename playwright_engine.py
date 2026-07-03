@@ -595,10 +595,10 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     ui_log("INJECT", f"Node resolved. Assigning adjustment quantity: {qty} EA")
     qty_input.fill(qty)
     page.wait_for_timeout(500)
-        page.locator("id=pag_I_StkAdj_NewGeneral_btn_Add_Value").click(force=True)
-        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj add")
-        ui_log("SYS", "Awaiting DOM form reset confirmation...")
-        page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
+    page.locator("id=pag_I_StkAdj_NewGeneral_btn_Add_Value").click(force=True)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj add")
+    ui_log("SYS", "Awaiting DOM form reset confirmation...")
+    page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
 def _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user):
     user = str(bot_user).strip()
