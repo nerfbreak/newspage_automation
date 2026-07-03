@@ -57,7 +57,7 @@ html, body, [data-testid="stAppViewContainer"], p, label, small {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
 html, body, [data-testid="stAppViewContainer"] {
-    background-color: #FFFFFF !important;
+    background-color: #dbeafe !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
