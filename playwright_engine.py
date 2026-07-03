@@ -18,18 +18,19 @@ def _setup_event_loop():
 
 
 @contextmanager
-def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log):
+def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar=None):
     ensure_playwright()
     _setup_event_loop()
     from playwright.sync_api import sync_playwright
 
     with sync_playwright() as p:
         ui_log("SYS", "Spawning browser context with isolated session...")
+        if progress_bar: progress_bar.progress(0.05)
         browser = p.chromium.launch(headless=True)
         context = browser.new_context(no_viewport=True)
         page = context.new_page()
         try:
-            _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log)
+            _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar)
             yield page, browser
         except Exception as e:
             try:
@@ -60,8 +61,9 @@ def ensure_playwright():
         except Exception as e2:
             st.error(f"Failed to install browser engine: {e2}")
 
-def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log):
+def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar=None):
     ui_log("AUTH", f"Connecting to {URL_LOGIN}...")
+    if progress_bar: progress_bar.progress(0.1)
     
     # Check if this is superuser based on secrets
     try:
@@ -72,6 +74,7 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
     
     page.goto(URL_LOGIN, wait_until="networkidle")
     ui_log("AUTH", f"DOM ready. Injecting {account_desc} credentials...")
+    if progress_bar: progress_bar.progress(0.15)
     page.locator("id=txtUserid").fill(user_id_np)
     page.locator("id=txtPasswd").fill(pass_np)
     page.locator("id=btnLogin").click(force=True)
@@ -100,9 +103,11 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
             raise Exception("Timeout: Server tidak merespon saat verifikasi login. Kredensial mungkin salah atau server down.")
     
     # Harus menggunakan networkidle agar semua JS click handler (actionpath) terpasang sebelum _navigate_to_stock_adjustment dijalankan.
+    if progress_bar: progress_bar.progress(0.25)
     page.wait_for_url("**/Default.aspx", timeout=TIMEOUT_MS, wait_until="networkidle")
     ui_log("AUTH", "Login successful. Session established.")
     ui_log("SUCCESS", "Handshake verified.")
+    if progress_bar: progress_bar.progress(0.3)
 
 def _wait_for_page_ready(page, timeout_ms, ui_log=None, context=""):
     """Menunggu halaman/in-page AJAX request selesai sebelum lanjut ke step berikutnya.
@@ -121,8 +126,9 @@ def _wait_for_page_ready(page, timeout_ms, ui_log=None, context=""):
         if ui_log:
             ui_log("WAIT", f"Networkidle timeout{label} — proceeding cautiously.")
 
-def _navigate_to_import_export(page, TIMEOUT_MS, ui_log):
+def _navigate_to_import_export(page, TIMEOUT_MS, ui_log, progress_bar=None):
     ui_log("NAV", "Navigating to System module...")
+    if progress_bar: progress_bar.progress(0.35)
     page.wait_for_timeout(1000)
     
     # Ensure 'System' tab is selected
@@ -136,6 +142,7 @@ def _navigate_to_import_export(page, TIMEOUT_MS, ui_log):
         pass
 
     ui_log("NAV", "Searching for Import/Export Job module in DOM...")
+    if progress_bar: progress_bar.progress(0.4)
     
     target_id = "pag_Sys_Root_tab_Detail_itm_Job"
     
@@ -153,16 +160,17 @@ def _navigate_to_import_export(page, TIMEOUT_MS, ui_log):
         ui_log("WARN", "ID-based JS click failed, trying brute-force...")
         try:
             # Try clicking the parent SysAdminSetup if we can find it
-            parent = page.locator("[id*='itm_SysAdminSetup']").first
-            if parent.is_visible():
-                parent.click(force=True)
+            parent_menu = page.locator("td:has-text('SysAdminSetup')").first
+            if parent_menu.is_visible():
+                parent_menu.click(force=True)
                 page.wait_for_timeout(1000)
-            
-            # Final attempt: direct text click
-            page.get_by_text("Import/Export Job").first.click(force=True)
-        except:
-            ui_log("ERROR", "Navigation failed. System menu might be blocked.")
-            raise e
+                page.locator(f"id={target_id}").click(force=True)
+                _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "Import/Export menu fallback")
+                page.wait_for_timeout(1500)
+            else:
+                raise Exception("Parent menu not visible")
+        except Exception as e2:
+            raise Exception("Gagal menavigasi ke menu Import/Export Job. Struktur DOM berubah atau menu disembunyikan.") from e2
 
     page.wait_for_timeout(1000)
     
@@ -265,8 +273,8 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
         _setup_terminate_button(term_ph)
         text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
 
-        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
-            _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
+        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log, progress_bar) as (page, browser):
+            _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log, progress_bar)
             
             # Fetch distributor exception from DB
             exception_dict = database.get_distributor_warehouse_exceptions(supabase)
@@ -274,7 +282,7 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
             
             actual_warehouse = target_whs if target_whs and WAREHOUSE == "GOOD_WHS" else WAREHOUSE
             
-            real_filename, file_path = _dispatch_extraction_job(page, TIMEOUT_MS, actual_warehouse, ext_ui_log, browser, dry_run)
+            real_filename, file_path = _dispatch_extraction_job(page, TIMEOUT_MS, actual_warehouse, ext_ui_log, browser, dry_run, progress_bar)
             
             if progress_bar: progress_bar.progress(1.0)
             
@@ -482,8 +490,8 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
         _setup_terminate_button(term_ph)
         text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
 
-        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
-            _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
+        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log, progress_bar) as (page, browser):
+            _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log, progress_bar)
             real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run, progress_bar, text_ph)
 
             if progress_bar: progress_bar.progress(1.0)
@@ -606,7 +614,7 @@ def _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user
 </div>""" if show_processed else ""
 
     with log_label_placeholder.container():
-        st.markdown(f"""<div style='display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;'>
+        st.markdown(f"""<div style='display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;'>
     <div style='display: flex; align-items: stretch;'>
         <div style='display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; border-right: none;'>ACTIVE ACCOUNT</div>
         <div style='display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
@@ -697,7 +705,7 @@ def _setup_terminate_button(placeholder):
                 }
             </style>
 <div id="neo-kill-bot-marker" style="display: none;"></div>
-<div style="display: flex; justify-content: center; width: 100%; margin-bottom: 8px; margin-top: 8px;">
+<div style="display: flex; justify-content: center; width: 100%; margin-bottom: 0px; margin-top: 0px;">
 <label for="term-modal-toggle" class="neo-btn-terminate" style="width: 100%; text-align: center; box-sizing: border-box; font-size: 0.85rem; padding: 6px 12px;">TERMINATE</label>
 </div>
 <input type="checkbox" id="term-modal-toggle" />
@@ -766,7 +774,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
         total_rows = len(df_view)
         text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
 
-        with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
+        with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar) as (page, browser):
             # Fetch distributor exception from DB
             exception_dict = database.get_distributor_warehouse_exceptions(supabase)
             target_whs = exception_dict.get(bot_user)
@@ -1103,7 +1111,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         total_rows = len(df_view)
         text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user) if show_status_box else None
 
-        with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
+        with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar) as (page, browser):
             # Resolve actual warehouse from distributor_exceptions
             exception_dict = database.get_distributor_warehouse_exceptions(supabase)
             target_whs = exception_dict.get(bot_user)

@@ -1373,8 +1373,8 @@ div[data-testid="stProgress"] div[role="progressbar"] {
 }
 
 div[data-testid="stProgressBar"], div[data-testid="stProgress"] {
-    margin-top: 12px !important;
-    margin-bottom: 8px !important;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
 }
 
 div[data-testid="stProgressBar"] div[role="progressbar"] > div,
