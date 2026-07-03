@@ -1170,6 +1170,7 @@ div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBl
     background-color: #FFFFFF !important;
     overflow: visible !important;
     transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+    height: 100% !important;
 }
 
 div.element-container:has(.neo-container-marker) + div:hover,
@@ -1183,6 +1184,12 @@ div.element-container:has(.neo-container-marker) + div > div[data-testid="stVert
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
+    height: 100% !important;
+}
+
+/* Ensure the column itself stretches */
+[data-testid="column"] > div:has(.neo-container-marker) + div {
+    flex-grow: 1;
 }
 
 /* --- True Neo-Brutalist HTML Tables (st.markdown fallback) --- */

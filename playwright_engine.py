@@ -647,7 +647,8 @@ def _setup_terminate_button(placeholder):
                     z-index: 999999;
                     top: 50%;
                     left: 50%;
-                    transform: translate(10px, 75px);
+                    margin-top: 60px;
+                    margin-left: 8px;
                 }
                 
                 /* Show Streamlit button when modal is open */
@@ -661,7 +662,7 @@ def _setup_terminate_button(placeholder):
                     color: #FFFFFF !important;
                     border: 3px solid #0F172A !important;
                     box-shadow: 4px 4px 0px 0px #0F172A !important;
-                    padding: 6px 24px !important;
+                    padding: 0px !important;
                     font-family: 'Source Sans 3', sans-serif !important;
                     font-weight: 800 !important;
                     font-size: 1rem !important;
@@ -669,11 +670,16 @@ def _setup_terminate_button(placeholder):
                     border-radius: 0 !important;
                     min-height: 0 !important;
                     height: 44px !important;
+                    width: 180px !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
                 }
                 div.element-container:has(#neo-kill-bot-marker) + div.element-container button p {
                     font-size: 1rem !important;
                     font-weight: 800 !important;
                     color: #FFFFFF !important;
+                    margin: 0 !important;
                 }
                 div.element-container:has(#neo-kill-bot-marker) + div.element-container button:hover {
                     transform: translate(2px, 2px) !important;
@@ -683,22 +689,20 @@ def _setup_terminate_button(placeholder):
             
             <div id="neo-kill-bot-marker" style="display: none;"></div>
             
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 4px;">
-                <label for="term-modal-toggle" class="neo-btn-terminate">TERMINATE</label>
+            <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 4px;">
+                <label for="term-modal-toggle" class="neo-btn-terminate" style="width: 100%; text-align: center; box-sizing: border-box; font-size: 0.85rem; padding: 6px 12px;">TERMINATE</label>
             </div>
             <input type="checkbox" id="term-modal-toggle" />
             
             <div class="neo-modal-overlay">
-                <div style="background: #FFFFFF; border: 4px solid #0F172A; box-shadow: 12px 12px 0px 0px #0F172A; padding: 32px; max-width: 450px; width: 90%; text-align: center; position: relative;">
+                <div style="background: #FFFFFF; border: 4px solid #0F172A; box-shadow: 12px 12px 0px 0px #0F172A; padding: 32px; max-width: 450px; width: 90%; height: 290px; text-align: center; position: relative; box-sizing: border-box;">
                     <div style='display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background-color: #E63946; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; border-radius: 0px;'>
                         <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'></path><polyline points='16 17 21 12 16 7'></polyline><line x1='21' y1='12' x2='9' y2='12'></line></svg>
                     </div>
-                    <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; text-transform: uppercase;">Are you absolutely sure?</h3>
+                    <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are you absolutely sure?</h3>
                     <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will stop the bot immediately.</p>
-                    <div style="display: flex; gap: 16px; justify-content: center;">
-                        <label for="term-modal-toggle" style="background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 6px 24px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box;">Cancel</label>
-                        <div style="width: 140px; height: 44px; box-sizing: border-box;"></div>
-                    </div>
+                    
+                    <label for="term-modal-toggle" style="background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; right: 50%; margin-right: 8px; top: 205px;">Cancel</label>
                 </div>
             </div>
         """, unsafe_allow_html=True)
