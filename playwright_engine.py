@@ -573,27 +573,24 @@ def _render_progress_label(placeholder, dist, user, current, total):
     if not placeholder:
         return
     with placeholder.container():
-        c1, c2, c3 = st.columns([5, 2, 3], vertical_alignment="center")
+        c1, c_btn, c_text = st.columns([7, 1.5, 1.5], vertical_alignment="center")
         with c1:
             st.markdown(f"""
-                <div id='terminate-btn-anchor' style='display: none;'></div>
-                <div id='terminate-target-col' style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap;'>
+                <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap;'>
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
                 </div>
+                <div id='processed-btn-anchor' style='display: none;'></div>
             """, unsafe_allow_html=True)
-        with c2:
+        with c_btn:
             def terminate_callback():
                 st.session_state.is_bot_running = False
                 st.session_state.execute_done = False
                 
-            st.button("TERMINATE", key=f"term_bot_{current}_{total}", use_container_width=True, type="primary", on_click=terminate_callback)
-        with c3:
+            st.button("PROCESSED", key=f"term_bot_{current}_{total}", use_container_width=True, on_click=terminate_callback)
+        with c_text:
             st.markdown(f"""
-                <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end;'>
-                    <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFDE59; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>PROCESSED</div>
-                    <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{current}/{total}</div>
-                </div>
+                <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{current}/{total}</div>
             """, unsafe_allow_html=True)
 
 

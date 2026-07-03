@@ -226,26 +226,37 @@ div[role="dialog"] button[aria-label="Close"] svg {
     stroke-width: 3px !important;
 }
 
-/* Specifically target the TERMINATE button layout which is the next column after #terminate-btn-anchor */
-div[data-testid="stColumn"]:has(#terminate-btn-anchor) + div[data-testid="stColumn"] button {
-    background-color: #E63946 !important;
-    border-color: #0F172A !important;
-    /* Reset margins for perfect alignment */
+/* Specifically target the PROCESSED button layout which is the next column after #processed-btn-anchor */
+div[data-testid="stColumn"]:has(#processed-btn-anchor) + div[data-testid="stColumn"] button {
+    background-color: #FFDE59 !important;
+    border: 2px solid #0F172A !important;
+    box-shadow: 3px 3px 0px 0px #0F172A !important;
+    border-radius: 0 !important;
     margin: 0 !important;
     height: 40px !important;
     min-height: 40px !important;
     padding: 0 16px !important;
     transform: none !important;
+    transition: all 0.2s ease !important;
 }
-div[data-testid="stColumn"]:has(#terminate-btn-anchor) + div[data-testid="stColumn"] button p {
+div[data-testid="stColumn"]:has(#processed-btn-anchor) + div[data-testid="stColumn"] button p {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+/* Turn RED on hover to indicate it's actually a TERMINATE button! */
+div[data-testid="stColumn"]:has(#processed-btn-anchor) + div[data-testid="stColumn"] button:hover {
+    background-color: #E63946 !important;
+    transform: translate(2px, 2px) !important;
+    box-shadow: 1px 1px 0px 0px #0F172A !important;
+}
+div[data-testid="stColumn"]:has(#processed-btn-anchor) + div[data-testid="stColumn"] button:hover p {
     color: #FFFFFF !important;
 }
-div[data-testid="stColumn"]:has(#terminate-btn-anchor) + div[data-testid="stColumn"] button:hover {
-    background-color: #D62828 !important;
-    border-color: #0F172A !important;
-}
 @media (max-width: 768px) {
-    div[data-testid="stColumn"]:has(#terminate-btn-anchor) + div[data-testid="stColumn"] button {
+    div[data-testid="stColumn"]:has(#processed-btn-anchor) + div[data-testid="stColumn"] button {
         margin-top: 16px !important;
         margin-bottom: 16px !important;
     }
