@@ -627,12 +627,12 @@ def _update_progress_text(text_ph, current, total):
     if not text_ph: return
     import streamlit.components.v1 as components
     with text_ph.container():
-        st.html(f"""
+        components.html(f"""
             <script>
                 var counter = window.parent.document.getElementById('dynamic-progress-counter') || document.getElementById('dynamic-progress-counter');
                 if (counter) counter.innerText = '{current}/{total}';
             </script>
-        """)
+        """, height=0, width=0)
 
 def _setup_terminate_button(placeholder):
     """Renders the terminate button and custom Neo-Brutalist confirmation modal using Pure CSS."""
@@ -701,18 +701,22 @@ def _setup_terminate_button(placeholder):
             
         st.button("CONFIRM", key="term_bot_hidden", on_click=terminate_callback, use_container_width=True)
         
-        st.html("""
+        import streamlit.components.v1 as components
+        components.html("""
             <script>
-                var doc = window.parent.document;
-                var confirmBtn = doc.getElementById('btn-confirm-terminate');
-                if(confirmBtn) {
-                    confirmBtn.onclick = function() {
-                        var hiddenBtn = doc.querySelector('div.element-container:has(#neo-kill-bot-marker) + div.element-container button');
-                        if(hiddenBtn) hiddenBtn.click();
-                    };
+                var parentWin = window.parent;
+                var parentDoc = parentWin.document;
+                if (!parentWin._terminate_listener_added) {
+                    parentDoc.body.addEventListener('click', function(e) {
+                        if (e.target && e.target.id === 'btn-confirm-terminate') {
+                            var hiddenBtn = parentDoc.querySelector('div.element-container:has(#neo-kill-bot-marker) + div.element-container button');
+                            if (hiddenBtn) hiddenBtn.click();
+                        }
+                    });
+                    parentWin._terminate_listener_added = true;
                 }
             </script>
-        """)
+        """, height=0, width=0)
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):

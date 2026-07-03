@@ -108,18 +108,22 @@ with col2:
 
     st.button("CONFIRM", key="signout_confirm_hidden", on_click=signout_callback, use_container_width=True)
     
-    st.html("""
+    import streamlit.components.v1 as components
+    components.html("""
         <script>
-            var doc = window.parent.document;
-            var confirmBtn = doc.getElementById('btn-confirm-signout');
-            if(confirmBtn) {
-                confirmBtn.onclick = function() {
-                    var hiddenBtn = doc.querySelector('div.element-container:has(#neo-signout-marker) + div.element-container button');
-                    if(hiddenBtn) hiddenBtn.click();
-                };
+            var parentWin = window.parent;
+            var parentDoc = parentWin.document;
+            if (!parentWin._signout_listener_added) {
+                parentDoc.body.addEventListener('click', function(e) {
+                    if (e.target && e.target.id === 'btn-confirm-signout') {
+                        var hiddenBtn = parentDoc.querySelector('div.element-container:has(#neo-signout-marker) + div.element-container button');
+                        if (hiddenBtn) hiddenBtn.click();
+                    }
+                });
+                parentWin._signout_listener_added = true;
             }
         </script>
-    """)
+    """, height=0, width=0)
 
 # --- DATABASE CONNECTION ---
 supabase = database.init_supabase()
