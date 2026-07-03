@@ -218,18 +218,7 @@ if st.session_state.is_mutasi_running:
     log_label_b_ph = st.empty()
     log_b_ph = st.empty()
 
-    log_label_a_ph.markdown(f"""
-        <div style='display: inline-flex; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; margin-bottom: 8px; background-color: #FFFFFF; align-items: center;'>
-            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #FFFFFF; background-color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px; border-right: 2px solid #0F172A;'>System Activity</span>
-            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #0F172A; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px;'>DEDUCT LOG — {dist_a}</span>
-        </div>
-    """, unsafe_allow_html=True)
-    log_label_b_ph.markdown(f"""
-        <div style='display: inline-flex; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; margin-bottom: 8px; background-color: #FFFFFF; align-items: center;'>
-            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #FFFFFF; background-color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px; border-right: 2px solid #0F172A;'>System Activity</span>
-            <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #0F172A; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px;'>ADD LOG — {dist_b}</span>
-        </div>
-    """, unsafe_allow_html=True)
+
 
     # Execute — engine handles log rendering internally
     try:

@@ -254,7 +254,7 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
         term_ph = st.empty()
         _setup_terminate_button(term_ph)
         progress_bar = st.progress(0)
-        text_ph = st.empty()
+        text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
@@ -470,7 +470,7 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
     try:
         term_ph = st.empty()
         _setup_terminate_button(term_ph)
-        text_ph = st.empty()
+        text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
         progress_bar = st.progress(0)
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
@@ -586,10 +586,18 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
-def _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user):
+def _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user, show_processed=True):
     user = str(bot_user).strip()
     dist = str(selected_distributor).strip()
     
+    
+    processed_html = f"""
+                <div style='margin-left: auto; display: flex; align-items: stretch;' id='dynamic-progress-container'>
+                    <div style='display: flex; align-items: center; justify-content: center; background: #FFDE59; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; border-right: none;'>PROCESSED</div>
+                    <div id='dynamic-progress-counter' style='display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; min-width: 80px;'>0/0</div>
+                </div>
+    """ if show_processed else ""
+
     with log_label_placeholder.container():
         st.markdown(f"""
             <div style='display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;'>
@@ -597,10 +605,7 @@ def _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user
                     <div style='display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; border-right: none;'>ACTIVE ACCOUNT</div>
                     <div style='display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
                 </div>
-                <div style='margin-left: auto; display: flex; align-items: stretch;' id='dynamic-progress-container'>
-                    <div style='display: flex; align-items: center; justify-content: center; background: #FFDE59; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; border-right: none;'>PROCESSED</div>
-                    <div id='dynamic-progress-counter' style='display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 4px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; min-width: 80px;'>0/0</div>
-                </div>
+                {processed_html}
             </div>
         """, unsafe_allow_html=True)
         return st.empty()
@@ -758,7 +763,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
         _setup_terminate_button(term_ph)
         progress_bar = st.progress(0)
         total_rows = len(df_view)
-        text_ph = _setup_progress_layout(st.empty(), selected_distributor, bot_user)
+        text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
 
         with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
             # Fetch distributor exception from DB
@@ -1095,7 +1100,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         _setup_terminate_button(term_ph)
         progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
         total_rows = len(df_view)
-        text_ph = _setup_progress_layout(st.empty(), selected_distributor, bot_user) if show_status_box else None
+        text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user) if show_status_box else None
 
         with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
             # Resolve actual warehouse from distributor_exceptions
