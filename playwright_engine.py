@@ -672,9 +672,13 @@ def _setup_terminate_button(placeholder):
                 .neo-btn-confirm-html:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A; }
                 .neo-btn-confirm-html:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }
                 
-                /* Completely hide the Streamlit button */
+                /* Visually hide the Streamlit button container initially so it doesn't flash */
                 div.element-container:has(#neo-kill-bot-marker) + div.element-container {
-                    display: none !important;
+                    opacity: 0;
+                    position: absolute;
+                    width: 0;
+                    height: 0;
+                    overflow: hidden;
                 }
             </style>
 <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 0px; margin-top: 0px;">
@@ -706,14 +710,40 @@ def _setup_terminate_button(placeholder):
             <script>
                 var parentWin = window.parent;
                 var parentDoc = parentWin.document;
-                if (!parentWin._terminate_listener_added) {
-                    parentDoc.body.addEventListener('click', function(e) {
-                        if (e.target && e.target.id === 'btn-confirm-terminate') {
-                            var hiddenBtn = parentDoc.querySelector('div.element-container:has(#neo-kill-bot-marker) + div.element-container button');
-                            if (hiddenBtn) hiddenBtn.click();
+                
+                function syncTerminateButton() {
+                    var refBtn = parentDoc.getElementById('btn-confirm-terminate');
+                    var stBtnContainer = parentDoc.querySelector('div.element-container:has(#neo-kill-bot-marker) + div.element-container');
+                    if (refBtn && stBtnContainer) {
+                        var stBtn = stBtnContainer.querySelector('button');
+                        if (stBtn) {
+                            var rect = refBtn.getBoundingClientRect();
+                            if (rect.width > 0 && rect.height > 0) {
+                                stBtnContainer.style.display = 'block';
+                                stBtnContainer.style.position = 'fixed';
+                                stBtnContainer.style.top = rect.top + 'px';
+                                stBtnContainer.style.left = rect.left + 'px';
+                                stBtnContainer.style.width = rect.width + 'px';
+                                stBtnContainer.style.height = rect.height + 'px';
+                                stBtnContainer.style.zIndex = '999999';
+                                stBtnContainer.style.opacity = '0';
+                                stBtnContainer.style.overflow = 'visible';
+                                
+                                stBtn.style.width = '100%';
+                                stBtn.style.height = '100%';
+                                stBtn.style.opacity = '0';
+                                stBtn.style.cursor = 'pointer';
+                                stBtn.style.margin = '0';
+                                stBtn.style.padding = '0';
+                            } else {
+                                stBtnContainer.style.display = 'none';
+                            }
                         }
-                    });
-                    parentWin._terminate_listener_added = true;
+                    }
+                }
+                
+                if (!parentWin._sync_terminate_interval) {
+                    parentWin._sync_terminate_interval = setInterval(syncTerminateButton, 50);
                 }
             </script>
         """, height=0, width=0)
