@@ -586,7 +586,7 @@ def _render_progress_label(placeholder, dist, user, current, total):
             """, unsafe_allow_html=True)
         with c_btn:
             st.markdown(f"""
-                <button class='stealth-term-btn' onclick="if(confirm('Apakah Anda yakin ingin membatalkan dan menghentikan eksekusi Bot?')){{ const b = document.querySelector('#stealth-target-{current}').closest('.element-container').nextElementSibling.querySelector('button'); if(b) b.click(); }}">
+                <button id='stealth-btn-{current}' class='stealth-term-btn'>
                     PROCESSED
                 </button>
                 <div id='stealth-target-{current}' style='display:none;'></div>
@@ -601,6 +601,27 @@ def _render_progress_label(placeholder, dist, user, current, total):
             st.markdown(f"""
                 <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{current}/{total}</div>
             """, unsafe_allow_html=True)
+            
+        import streamlit.components.v1 as components
+        components.html(f"""
+            <script>
+                const parentDoc = window.parent.document;
+                const btn = parentDoc.getElementById('stealth-btn-{current}');
+                if (btn && !btn.hasAttribute('data-listener')) {{
+                    btn.setAttribute('data-listener', 'true');
+                    btn.addEventListener('click', function() {{
+                        if (confirm('Apakah Anda yakin ingin membatalkan dan menghentikan eksekusi Bot?')) {{
+                            const target = parentDoc.getElementById('stealth-target-{current}');
+                            if (target) {{
+                                const stContainer = target.closest('.element-container');
+                                const hiddenBtn = stContainer.nextElementSibling.querySelector('button');
+                                if (hiddenBtn) hiddenBtn.click();
+                            }}
+                        }}
+                    }});
+                }}
+            </script>
+        """, height=0)
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):
