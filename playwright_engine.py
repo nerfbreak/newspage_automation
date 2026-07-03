@@ -319,7 +319,7 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
         st.error(f"System error: {e}")
         alert_callback(f"[ALERT] <b>SYSTEM ERROR (EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
 
-def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser, dry_run=False):
+def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser, dry_run=False, progress_bar=None, text_ph=None):
     ui_log("NAV", "Initiating sales export job sequence...")
     # The _navigate_to_import_export function already clicked Add Job, so we are now on the New General page.
     page.locator("id=pag_FW_SYS_INTF_JOB_NewGeneral_JOB_TYPE_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
@@ -347,11 +347,17 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
         {"id": "E_28880804000000006", "status": None}
     ]
     
+    total_steps = len(interfaces)
     for idx, intf in enumerate(interfaces):
+        if progress_bar:
+            progress_bar.progress((idx) / total_steps)
+        if text_ph:
+            _update_progress_text(text_ph, idx + 1, total_steps)
+            
         intf_id = intf["id"]
         status_val = intf["status"]
         
-        ui_log("INJECT", f"Binding interface target {idx+1}/{len(interfaces)}: {intf_id}")
+        ui_log("INJECT", f"Binding interface target {idx+1}/{total_steps}: {intf_id}")
         
         if idx > 0:
             ui_log("SYS", "Triggering NEW interface formulation...")
@@ -456,8 +462,15 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
+            term_ph = st.empty()
+            _setup_terminate_button(term_ph)
+            text_ph = st.empty()
+            progress_bar = st.progress(0)
+            
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
-            real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run)
+            real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run, progress_bar, text_ph)
+            if progress_bar: progress_bar.progress(1.0)
+            
             if dry_run:
                 ext_ui_log("DRY_RUN", "Dry run complete - extraction skipped.")
                 st.session_state.sales_csv_data = None
@@ -576,7 +589,7 @@ def _setup_progress_layout(placeholder, dist, user):
         c1, c_text = st.columns([8.5, 1.5], vertical_alignment="center")
         with c1:
             st.markdown(f"""
-                <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap;'>
+                <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;'>
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
                     <div style='margin-left: auto; height: 40px; display: flex; align-items: center; justify-content: center; background: #FFDE59; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>PROCESSED</div>
@@ -586,7 +599,19 @@ def _setup_progress_layout(placeholder, dist, user):
         with c_text:
             text_ph = st.empty()
             
-        # Custom Neo-Brutalist Confirmation Modal
+        return text_ph
+
+def _update_progress_text(text_ph, current, total):
+    """Updates only the text part to avoid layout re-rendering and blinking."""
+    if not text_ph:
+        return
+    text_ph.markdown(f"""
+        <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{current}/{total}</div>
+    """, unsafe_allow_html=True)
+
+def _setup_terminate_button(placeholder):
+    """Renders the terminate button and custom Neo-Brutalist confirmation modal."""
+    with placeholder:
         st.markdown(f"""
             <style>
                 .neo-modal-overlay {{
@@ -651,6 +676,10 @@ def _setup_progress_layout(placeholder, dist, user):
                 }}
             </style>
             
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+                <button id="stealth-btn-master" style="background-color: #E63946; color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; padding: 6px 12px; font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; cursor: pointer; transition: all 0.1s ease;" onmouseover="this.style.transform='translate(2px, 2px)'; this.style.boxShadow='2px 2px 0px 0px #0F172A';" onmouseout="this.style.transform='none'; this.style.boxShadow='4px 4px 0px 0px #0F172A';">TERMINATE</button>
+            </div>
+            
             <div id="custom-terminate-modal" class="neo-modal-overlay">
                 <div class="neo-modal">
                     <div class="neo-modal-title">Apakah Anda yakin ingin membatalkan dan menghentikan eksekusi Bot?</div>
@@ -660,7 +689,6 @@ def _setup_progress_layout(placeholder, dist, user):
                     </div>
                 </div>
             </div>
-            <div id='stealth-target-master' style='display:none;'></div>
         """, unsafe_allow_html=True)
         
         # Hidden Streamlit button to receive the click
@@ -701,16 +729,6 @@ def _setup_progress_layout(placeholder, dist, user):
                 }
             </script>
         """, height=1)
-        
-        return text_ph
-
-def _update_progress_text(text_ph, current, total):
-    """Updates only the text part to avoid layout re-rendering and blinking."""
-    if not text_ph:
-        return
-    text_ph.markdown(f"""
-        <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{current}/{total}</div>
-    """, unsafe_allow_html=True)
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):
@@ -761,6 +779,8 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             
             _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log)
 
+            term_ph = st.empty()
+            _setup_terminate_button(term_ph)
             progress_bar = st.progress(0)
             total_rows = len(df_view)
             text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
@@ -1095,6 +1115,8 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             
             _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log, remark_text)
             
+            term_ph = st.empty()
+            _setup_terminate_button(term_ph)
             progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
             total_rows = len(df_view)
             text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
