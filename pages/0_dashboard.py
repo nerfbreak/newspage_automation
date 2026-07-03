@@ -34,41 +34,119 @@ def load_historical_logs(_supabase):
 check_auth()
 
 # --- HEADER ---
-@st.dialog("Sign Out")
-def logout_dialog():
-    st.markdown("""
-        <div style='text-align: center; margin-bottom: 24px; font-family: "Source Sans 3", sans-serif;'>
-            <div style='display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background-color: #E63946; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; border-radius: 0px;'>
-                <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'>
-                    <path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'></path>
-                    <polyline points='16 17 21 12 16 7'></polyline>
-                    <line x1='21' y1='12' x2='9' y2='12'></line>
-                </svg>
-            </div>
-            <h3 style='margin-bottom: 8px; color: #0F172A; font-weight: 900; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em;'>Are you absolutely sure?</h3>
-            <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0;'>This action cannot be undone. This will end your current session and require you to sign in again.</p>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("Cancel", use_container_width=True):
-            st.rerun()
-    with col2:
-        if st.button("Continue", type="primary", use_container_width=True):
-            st.session_state.logged_in = False
-            st.session_state.current_user = "unknown"
-            st.session_state.logout_requested = True
-            st.session_state.ignore_cookie = True
-            st.rerun()
-
-# We keep the original render_header for session state and top border logic
+# --- HEADER ---
 col1, col2 = st.columns([0.85, 0.15])
 with col1:
     render_header("Automation Tool", st.session_state.current_user)
 with col2:
-    if st.button("Sign Out", type="secondary", use_container_width=True):
-        logout_dialog()
+    st.markdown("""
+        <style>
+            .neo-modal-overlay-signout {
+                display: none;
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(15, 23, 42, 0.7);
+                z-index: 999998;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(4px);
+            }
+            
+            #signout-modal-toggle { display: none; }
+            #signout-modal-toggle:checked ~ .neo-modal-overlay-signout { display: flex; }
+            
+            .neo-btn-signout {
+                background-color: #0068C9; color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 0px; font-family: 'Source Sans 3', sans-serif; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; width: 100%; height: 41px; box-sizing: border-box;
+            }
+            .neo-btn-signout:hover {
+                transform: translate(2px, 2px); box-shadow: 4px 4px 0px 0px #0F172A;
+            }
+            .neo-btn-signout:active {
+                transform: translate(4px, 4px); box-shadow: 2px 2px 0px 0px #0F172A;
+            }
+            
+            /* Hide Streamlit button initially */
+            div.element-container:has(#neo-signout-marker) + div.element-container {
+                display: none;
+                position: fixed;
+                z-index: 999999;
+                top: 50%;
+                left: 50%;
+                margin-top: 93px;
+                margin-left: 8px;
+            }
+            
+            /* Show Streamlit button when modal is open */
+            div.element-container:has(#signout-modal-toggle:checked) + div.element-container {
+                display: block !important;
+            }
+            /* Style the Streamlit button to match neo-brutalism */
+            div.element-container:has(#neo-signout-marker) + div.element-container {
+                width: 180px !important;
+            }
+            div.element-container:has(#neo-signout-marker) + div.element-container button,
+            div.element-container:has(#neo-signout-marker) + div.element-container button:hover,
+            div.element-container:has(#neo-signout-marker) + div.element-container button:active {
+                background-color: #E63946 !important;
+                color: #FFFFFF !important;
+                height: 44px !important;
+                min-height: 44px !important;
+                max-height: 44px !important;
+                width: 180px !important;
+                min-width: 180px !important;
+                max-width: 180px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                border: 3px solid #0F172A !important;
+                border-radius: 0 !important;
+                box-shadow: 4px 4px 0px 0px #0F172A !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+                transform: none !important;
+            }
+            div.element-container:has(#neo-signout-marker) + div.element-container button p {
+                font-size: 1rem !important;
+                font-weight: 800 !important;
+                color: #FFFFFF !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                line-height: 1 !important;
+            }
+            div.element-container:has(#neo-signout-marker) + div.element-container button:hover {
+                transform: translate(2px, 2px) !important;
+                box-shadow: 2px 2px 0px 0px #0F172A !important;
+            }
+            div.element-container:has(#neo-signout-marker) + div.element-container button:active {
+                transform: translate(4px, 4px) !important;
+                box-shadow: 0px 0px 0px 0px #0F172A !important;
+            }
+        </style>
+        <div id="neo-signout-marker" style="display: none;"></div>
+        <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 0px; margin-top: 14px;">
+            <label for="signout-modal-toggle" class="neo-btn-signout">Sign Out</label>
+        </div>
+        <input type="checkbox" id="signout-modal-toggle" />
+        <div class="neo-modal-overlay-signout">
+            <div style="background: #FFFFFF; border: 4px solid #0F172A; box-shadow: 12px 12px 0px 0px #0F172A; padding: 32px; max-width: 450px; width: 90%; height: 350px; text-align: center; position: relative; box-sizing: border-box;">
+                <div style="background: #E63946; width: 64px; height: 64px; margin: -72px auto 24px auto; border: 4px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; display: flex; align-items: center; justify-content: center;">
+                    <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'></path><polyline points='16 17 21 12 16 7'></polyline><line x1='21' y1='12' x2='9' y2='12'></line></svg>
+                </div>
+                <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are you absolutely sure?</h3>
+                <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will end your current session and require you to sign in again.</p>
+                <label for="signout-modal-toggle" style="background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; right: 50%; margin-right: 8px; top: 265px;">Cancel</label>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    def signout_callback():
+        st.session_state.logged_in = False
+        st.session_state.current_user = "unknown"
+        st.session_state.logout_requested = True
+        st.session_state.ignore_cookie = True
+
+    st.button("CONFIRM", key="signout_confirm_hidden", on_click=signout_callback, use_container_width=True)
 
 # --- DATABASE CONNECTION ---
 supabase = database.init_supabase()
