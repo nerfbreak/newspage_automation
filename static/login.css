@@ -4,7 +4,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMainViewContaine
     width: 100vw !important;
     margin: 0 !important;
     padding: 0 !important;
-    background-color: #FFFFFF !important;
+    background-color: #dbeafe !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
@@ -21,7 +21,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMainViewContaine
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    background-color: #FFFFFF !important;
+    background-color: #dbeafe !important;
 }
 
 /* Global 0px Border Radius Override */

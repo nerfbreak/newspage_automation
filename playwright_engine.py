@@ -666,23 +666,65 @@ def _setup_terminate_button(placeholder):
                 .neo-btn-cancel:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A; }
                 .neo-btn-cancel:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }
                 
-                .neo-btn-confirm-html {
-                    background: #E63946; color: #FFFFFF; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; left: 50%; margin-left: 8px; top: 265px;
-                }
-                .neo-btn-confirm-html:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A; }
-                .neo-btn-confirm-html:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }
-                
-                /* Completely hide the Streamlit button */
+                /* Hide the entire Streamlit button container when modal is closed */
+                div.element-container:has(#term-modal-toggle:not(:checked)) ~ div.element-container:has(#neo-kill-bot-marker) + div.element-container,
                 div.element-container:has(#neo-kill-bot-marker) + div.element-container {
-                    position: absolute !important;
-                    opacity: 0 !important;
-                    width: 0 !important;
-                    height: 0 !important;
-                    overflow: hidden !important;
-                    z-index: -9999 !important;
+                    display: none !important;
+                }
+                
+                /* Show the Streamlit button container when modal is open */
+                div.element-container:has(#term-modal-toggle:checked) ~ div.element-container:has(#neo-kill-bot-marker) + div.element-container {
+                    display: block !important;
+                }
+                
+                /* Directly style the Streamlit button to break out of its container and position exactly where CONFIRM should be */
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container button {
+                    position: fixed !important;
+                    top: 50% !important;
+                    left: 50% !important;
+                    margin-top: 90px !important;
+                    margin-left: 8px !important;
+                    z-index: 999999 !important;
+                    background: #E63946 !important;
+                    color: #FFFFFF !important;
+                    font-family: 'Source Sans 3', sans-serif !important;
+                    font-weight: 800 !important;
+                    font-size: 1rem !important;
+                    padding: 0px !important;
+                    width: 180px !important;
+                    height: 44px !important;
+                    min-width: 180px !important;
+                    max-width: 180px !important;
+                    min-height: 44px !important;
+                    max-height: 44px !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    border: 3px solid #0F172A !important;
+                    border-radius: 0 !important;
+                    box-shadow: 4px 4px 0px 0px #0F172A !important;
+                    cursor: pointer !important;
+                    text-transform: uppercase !important;
+                    box-sizing: border-box !important;
+                    transform: none !important;
+                }
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:hover {
+                    transform: translate(2px, 2px) !important;
+                    box-shadow: 2px 2px 0px 0px #0F172A !important;
+                }
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:active {
+                    transform: translate(4px, 4px) !important;
+                    box-shadow: 0px 0px 0px 0px #0F172A !important;
+                }
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container button p {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    font-size: 1rem !important;
+                    font-weight: 800 !important;
+                    color: #FFFFFF !important;
+                    line-height: 1 !important;
                 }
             </style>
-<div id="neo-kill-bot-marker" style="display: none;"></div>
 <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 0px; margin-top: 0px;">
 <label for="term-modal-toggle" class="neo-btn-terminate" style="width: 100%; text-align: center; box-sizing: border-box; font-size: 0.85rem; padding: 6px 12px;">TERMINATE</label>
 </div>
@@ -695,9 +737,9 @@ def _setup_terminate_button(placeholder):
 <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are You Sure?</h3>
 <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will stop the bot immediately.</p>
 <label for="term-modal-toggle" class="neo-btn-cancel">Cancel</label>
-<button type="button" class="neo-btn-confirm-html" onclick="var btn = window.parent.document.querySelector('div.element-container:has(#neo-kill-bot-marker) + div.element-container button') || document.querySelector('div.element-container:has(#neo-kill-bot-marker) + div.element-container button'); if(btn) { btn.click(); } else { console.log('Button not found'); }">CONFIRM</button>
 </div>
 </div>
+<div id="neo-kill-bot-marker" style="display: none;"></div>
         """, unsafe_allow_html=True)
         
         def terminate_callback():
