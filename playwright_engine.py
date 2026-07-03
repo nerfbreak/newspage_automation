@@ -746,41 +746,50 @@ def _setup_terminate_button(placeholder):
             <script>
                 var parentWin = window.parent;
                 var parentDoc = parentWin.document;
+                          function syncTerminateButton() {
+                var anchor = parentDoc.getElementById('anchor-confirm-terminate');
+                var marker = parentDoc.getElementById('neo-kill-bot-marker');
                 
-                function syncTerminateButton() {
-                    var anchor = parentDoc.getElementById('anchor-confirm-terminate');
-                    var stBtnContainer = parentDoc.querySelector('div.element-container:has(#neo-kill-bot-marker) + div.element-container');
-                    if (anchor && stBtnContainer) {
-                        var rect = anchor.getBoundingClientRect();
-                        if (rect.width > 0 && rect.height > 0) {
-                            stBtnContainer.style.display = 'block';
-                            stBtnContainer.style.position = 'fixed';
-                            stBtnContainer.style.top = rect.top + 'px';
-                            stBtnContainer.style.left = rect.left + 'px';
-                            stBtnContainer.style.width = rect.width + 'px';
-                            stBtnContainer.style.height = rect.height + 'px';
-                            stBtnContainer.style.zIndex = '999999';
-                            stBtnContainer.style.opacity = '1';
-                            
-                            var stBtn = stBtnContainer.querySelector('button');
-                            if (stBtn) {
-                                stBtn.style.position = 'absolute';
-                                stBtn.style.top = '0';
-                                stBtn.style.left = '0';
-                                stBtn.style.width = '100%';
-                                stBtn.style.height = '100%';
+                if (anchor && marker) {
+                    var markdownContainer = marker.closest('div.element-container');
+                    if (markdownContainer) {
+                        var stBtnContainer = markdownContainer.nextElementSibling;
+                        while (stBtnContainer && !stBtnContainer.querySelector('button')) {
+                            stBtnContainer = stBtnContainer.nextElementSibling;
+                        }
+                        if (stBtnContainer) {
+                            var rect = anchor.getBoundingClientRect();
+                            if (rect.width > 0 && rect.height > 0) {
+                                stBtnContainer.style.display = 'block';
+                                stBtnContainer.style.position = 'fixed';
+                                stBtnContainer.style.top = rect.top + 'px';
+                                stBtnContainer.style.left = rect.left + 'px';
+                                stBtnContainer.style.width = rect.width + 'px';
+                                stBtnContainer.style.height = rect.height + 'px';
+                                stBtnContainer.style.zIndex = '999999';
+                                stBtnContainer.style.opacity = '1';
+                                
+                                var stBtn = stBtnContainer.querySelector('button');
+                                if (stBtn) {
+                                    stBtn.style.position = 'absolute';
+                                    stBtn.style.top = '0';
+                                    stBtn.style.left = '0';
+                                    stBtn.style.width = '100%';
+                                    stBtn.style.height = '100%';
+                                }
+                            } else {
+                                stBtnContainer.style.display = 'none';
                             }
-                        } else {
-                            stBtnContainer.style.display = 'none';
                         }
                     }
                 }
-                
-                if (!parentWin._sync_terminate_interval) {
-                    parentWin._sync_terminate_interval = setInterval(syncTerminateButton, 50);
-                }
-            </script>
-        """, height=0, width=0)
+            }
+            
+            if (!parentWin._sync_terminate_interval) {
+                parentWin._sync_terminate_interval = setInterval(syncTerminateButton, 50);
+            }
+        </script>
+    """, height=0, width=0)
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):

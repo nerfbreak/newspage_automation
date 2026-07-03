@@ -156,29 +156,39 @@ with col2:
             
             function syncSignoutButton() {
                 var anchor = parentDoc.getElementById('anchor-confirm-signout');
-                var stBtnContainer = parentDoc.querySelector('div.element-container:has(#neo-signout-marker) + div.element-container');
-                if (anchor && stBtnContainer) {
-                    var rect = anchor.getBoundingClientRect();
-                    if (rect.width > 0 && rect.height > 0) {
-                        stBtnContainer.style.display = 'block';
-                        stBtnContainer.style.position = 'fixed';
-                        stBtnContainer.style.top = rect.top + 'px';
-                        stBtnContainer.style.left = rect.left + 'px';
-                        stBtnContainer.style.width = rect.width + 'px';
-                        stBtnContainer.style.height = rect.height + 'px';
-                        stBtnContainer.style.zIndex = '999999';
-                        stBtnContainer.style.opacity = '1';
-                        
-                        var stBtn = stBtnContainer.querySelector('button');
-                        if (stBtn) {
-                            stBtn.style.position = 'absolute';
-                            stBtn.style.top = '0';
-                            stBtn.style.left = '0';
-                            stBtn.style.width = '100%';
-                            stBtn.style.height = '100%';
+                var marker = parentDoc.getElementById('neo-signout-marker');
+                
+                if (anchor && marker) {
+                    var markdownContainer = marker.closest('div.element-container');
+                    if (markdownContainer) {
+                        var stBtnContainer = markdownContainer.nextElementSibling;
+                        while (stBtnContainer && !stBtnContainer.querySelector('button')) {
+                            stBtnContainer = stBtnContainer.nextElementSibling;
                         }
-                    } else {
-                        stBtnContainer.style.display = 'none';
+                        if (stBtnContainer) {
+                            var rect = anchor.getBoundingClientRect();
+                            if (rect.width > 0 && rect.height > 0) {
+                                stBtnContainer.style.display = 'block';
+                                stBtnContainer.style.position = 'fixed';
+                                stBtnContainer.style.top = rect.top + 'px';
+                                stBtnContainer.style.left = rect.left + 'px';
+                                stBtnContainer.style.width = rect.width + 'px';
+                                stBtnContainer.style.height = rect.height + 'px';
+                                stBtnContainer.style.zIndex = '999999';
+                                stBtnContainer.style.opacity = '1';
+                                
+                                var stBtn = stBtnContainer.querySelector('button');
+                                if (stBtn) {
+                                    stBtn.style.position = 'absolute';
+                                    stBtn.style.top = '0';
+                                    stBtn.style.left = '0';
+                                    stBtn.style.width = '100%';
+                                    stBtn.style.height = '100%';
+                                }
+                            } else {
+                                stBtnContainer.style.display = 'none';
+                            }
+                        }
                     }
                 }
             }
