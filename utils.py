@@ -193,7 +193,26 @@ def render_metric_card(title, value, accent=False):
 def render_terminal(placeholder, logs_history: list):
     display_logs = "<br>".join(logs_history[-100:])
     html_content = f"""
-    <div class="terminal-box" id="ext_term_box">{display_logs}<br><span class="blink_me">&#9608;</span></div>
+    <div style="position: relative; margin-top: -20px;">
+        <div class="terminal-box" id="ext_term_box">{display_logs}<br><span class="blink_me">&#9608;</span></div>
+        <button id="stealth-btn-master" style="
+            position: absolute; 
+            bottom: 36px; 
+            right: 16px; 
+            background-color: #E63946; 
+            color: #FFFFFF; 
+            border: 2px solid #0F172A; 
+            box-shadow: 4px 4px 0px 0px #0F172A; 
+            padding: 6px 12px; 
+            font-family: 'Source Sans 3', sans-serif; 
+            font-weight: 900; 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            cursor: pointer; 
+            transition: all 0.1s ease;
+            z-index: 10;
+        " onmouseover="this.style.transform='translate(2px, 2px)'; this.style.boxShadow='2px 2px 0px 0px #0F172A';" onmouseout="this.style.transform='none'; this.style.boxShadow='4px 4px 0px 0px #0F172A';">TERMINATE</button>
+    </div>
     <script>
         var t = window.parent.document.getElementById('ext_term_box') || document.getElementById('ext_term_box');
         if (t) t.scrollTop = t.scrollHeight;

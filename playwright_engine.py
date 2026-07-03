@@ -586,43 +586,80 @@ def _setup_progress_layout(placeholder, dist, user):
         with c_text:
             text_ph = st.empty()
             
-        # Floating Neo-Brutalist Terminate Button
+        # Custom Neo-Brutalist Confirmation Modal
         st.markdown(f"""
             <style>
-                .floating-terminate-btn {{
+                .neo-modal-overlay {{
                     position: fixed;
-                    bottom: 32px;
-                    right: 32px;
-                    z-index: 999999;
-                    background-color: #E63946;
-                    color: #FFFFFF;
-                    border: 3px solid #0F172A;
-                    box-shadow: 8px 8px 0px 0px #0F172A;
-                    padding: 14px 28px;
+                    top: 0; left: 0; right: 0; bottom: 0;
+                    background: rgba(15, 23, 42, 0.7);
+                    z-index: 999998;
+                    display: none;
+                    align-items: center;
+                    justify-content: center;
+                    backdrop-filter: blur(4px);
+                }}
+                .neo-modal {{
+                    background: #FFFFFF;
+                    border: 4px solid #0F172A;
+                    box-shadow: 12px 12px 0px 0px #0F172A;
+                    padding: 32px;
+                    max-width: 450px;
+                    width: 90%;
+                    text-align: center;
+                }}
+                .neo-modal-title {{
                     font-family: 'Source Sans 3', sans-serif;
                     font-weight: 900;
-                    font-size: 1.1rem;
+                    font-size: 1.2rem;
+                    color: #0F172A;
+                    margin-bottom: 24px;
                     text-transform: uppercase;
-                    letter-spacing: 0.05em;
+                }}
+                .neo-modal-buttons {{
+                    display: flex;
+                    gap: 16px;
+                    justify-content: center;
+                }}
+                .neo-btn-yes, .neo-btn-no {{
+                    font-family: 'Source Sans 3', sans-serif;
+                    font-weight: 800;
+                    font-size: 1rem;
+                    padding: 10px 24px;
+                    border: 3px solid #0F172A;
                     cursor: pointer;
-                    transition: all 0.2s ease;
+                    text-transform: uppercase;
+                    transition: all 0.1s ease;
                 }}
-                .floating-terminate-btn:hover {{
-                    transform: translate(4px, 4px);
+                .neo-btn-yes {{
+                    background: #E63946;
+                    color: #FFFFFF;
                     box-shadow: 4px 4px 0px 0px #0F172A;
-                    background-color: #D62828;
                 }}
-                @media (max-width: 768px) {{
-                    .floating-terminate-btn {{
-                        bottom: 16px;
-                        right: 16px;
-                        padding: 12px 20px;
-                        font-size: 1rem;
-                        box-shadow: 6px 6px 0px 0px #0F172A;
-                    }}
+                .neo-btn-yes:hover {{
+                    transform: translate(2px, 2px);
+                    box-shadow: 2px 2px 0px 0px #0F172A;
+                }}
+                .neo-btn-no {{
+                    background: #F1F5F9;
+                    color: #0F172A;
+                    box-shadow: 4px 4px 0px 0px #0F172A;
+                }}
+                .neo-btn-no:hover {{
+                    transform: translate(2px, 2px);
+                    box-shadow: 2px 2px 0px 0px #0F172A;
                 }}
             </style>
-            <button id='stealth-btn-master' class='floating-terminate-btn'>TERMINATE BOT</button>
+            
+            <div id="custom-terminate-modal" class="neo-modal-overlay">
+                <div class="neo-modal">
+                    <div class="neo-modal-title">Apakah Anda yakin ingin membatalkan dan menghentikan eksekusi Bot?</div>
+                    <div class="neo-modal-buttons">
+                        <button id="modal-btn-yes" class="neo-btn-yes">OK</button>
+                        <button id="modal-btn-no" class="neo-btn-no">Cancel</button>
+                    </div>
+                </div>
+            </div>
             <div id='stealth-target-master' style='display:none;'></div>
         """, unsafe_allow_html=True)
         
@@ -633,18 +670,31 @@ def _setup_progress_layout(placeholder, dist, user):
             
         st.button("KILL", key="term_bot_hidden", on_click=terminate_callback)
         
-        # Inject JS once to attach listener
+        # Inject JS to handle modal and click propagation
         st.iframe("""
             <script>
                 const parentDoc = window.parent.document;
-                const btn = parentDoc.getElementById('stealth-btn-master');
-                if (btn && !btn.hasAttribute('data-listener')) {
-                    btn.setAttribute('data-listener', 'true');
-                    btn.addEventListener('click', function() {
-                        if (confirm('Apakah Anda yakin ingin membatalkan dan menghentikan eksekusi Bot?')) {
+                
+                // Add listener to the document to handle dynamic buttons (event delegation)
+                if (!parentDoc.hasAttribute('data-modal-listener')) {
+                    parentDoc.setAttribute('data-modal-listener', 'true');
+                    
+                    parentDoc.addEventListener('click', function(e) {
+                        if (e.target && e.target.id === 'stealth-btn-master') {
+                            const modal = parentDoc.getElementById('custom-terminate-modal');
+                            if (modal) modal.style.display = 'flex';
+                        }
+                        else if (e.target && e.target.id === 'modal-btn-no') {
+                            const modal = parentDoc.getElementById('custom-terminate-modal');
+                            if (modal) modal.style.display = 'none';
+                        }
+                        else if (e.target && e.target.id === 'modal-btn-yes') {
+                            const modal = parentDoc.getElementById('custom-terminate-modal');
+                            if (modal) modal.style.display = 'none';
+                            
                             const stBtns = parentDoc.querySelectorAll('button');
                             stBtns.forEach(b => {
-                                if(b.textContent === 'KILL') b.click();
+                                if (b.textContent === 'KILL') b.click();
                             });
                         }
                     });

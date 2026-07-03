@@ -303,7 +303,7 @@ div.element-container:has(iframe[height="1"]) {
     line-height: 1.8;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    margin-top: 6px;
+    margin-top: 0px;
     margin-bottom: 24px;
 }
 .terminal-box::-webkit-scrollbar { display: none; }
