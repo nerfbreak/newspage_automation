@@ -568,10 +568,10 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
 
-def _render_progress_label(placeholder, dist, user, current, total):
-    """Render the Active Account / Processed progress label above the terminal."""
+def _setup_progress_layout(placeholder, dist, user):
+    """Sets up the layout ONCE to prevent UI blinking during loops."""
     if not placeholder:
-        return
+        return None
     with placeholder.container():
         c1, c_btn, c_text = st.columns([7, 1.5, 1.5], vertical_alignment="center")
         with c1:
@@ -585,29 +585,48 @@ def _render_progress_label(placeholder, dist, user, current, total):
                 </div>
             """, unsafe_allow_html=True)
         with c_btn:
-            import streamlit.components.v1 as components
-            import os
-            try:
-                # Declare component safely
-                _stealth_button = components.declare_component(
-                    "stealth_button",
-                    path=os.path.join(os.path.dirname(__file__), "components", "stealth_button")
-                )
-            except Exception:
-                # Fallback if already declared
-                _stealth_button = components.declare_component("stealth_button", path=os.path.join(os.path.dirname(__file__), "components", "stealth_button"))
+            # Render the visible HTML button
+            st.markdown(f"""
+                <button id='stealth-btn-master' class='stealth-term-btn'>PROCESSED</button>
+            """, unsafe_allow_html=True)
             
-            # The custom component handles the JS confirm. If the user clicks OK, it returns True!
-            clicked = _stealth_button(key=f"term_bot_{current}_{total}")
-            if clicked:
+            # Hidden Streamlit button to receive the click
+            def terminate_callback():
                 st.session_state.is_bot_running = False
                 st.session_state.execute_done = False
-                st.rerun()
                 
-        with c_text:
-            st.markdown(f"""
-                <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{current}/{total}</div>
-            """, unsafe_allow_html=True)
+            st.button("KILL", key="term_bot_hidden", on_click=terminate_callback)
+            
+            # Inject JS once to attach listener
+            import streamlit.components.v1 as components
+            components.html("""
+                <script>
+                    const parentDoc = window.parent.document;
+                    const btn = parentDoc.getElementById('stealth-btn-master');
+                    if (btn && !btn.hasAttribute('data-listener')) {
+                        btn.setAttribute('data-listener', 'true');
+                        btn.addEventListener('click', function() {
+                            if (confirm('Apakah Anda yakin ingin membatalkan dan menghentikan eksekusi Bot?')) {
+                                const stBtns = parentDoc.querySelectorAll('button');
+                                stBtns.forEach(b => {
+                                    if(b.textContent === 'KILL') b.click();
+                                });
+                            }
+                        });
+                    }
+                </script>
+            """, height=0)
+            
+        text_ph = c_text.empty()
+        return text_ph
+
+def _update_progress_text(text_ph, current, total):
+    """Updates only the text part to avoid layout re-rendering and blinking."""
+    if not text_ph:
+        return
+    text_ph.markdown(f"""
+        <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{current}/{total}</div>
+    """, unsafe_allow_html=True)
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):
@@ -660,10 +679,11 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
 
             progress_bar = st.progress(0)
             total_rows = len(df_view)
-            _render_progress_label(log_label_placeholder, selected_distributor, bot_user, 0, total_rows)
+            text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
+            _update_progress_text(text_ph, 0, total_rows)
             
             for i, (idx, row) in enumerate(df_view.iterrows()):
-                _render_progress_label(log_label_placeholder, selected_distributor, bot_user, i + 1, total_rows)
+                _update_progress_text(text_ph, i + 1, total_rows)
                 sku = str(row['SKU']).strip()
 
                 if row.get('Status') == 'Invalid':
@@ -991,11 +1011,13 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             
             _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log, remark_text)
             
+            progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
             total_rows = len(df_view)
-            _render_progress_label(log_label_placeholder, selected_distributor, bot_user, 0, total_rows)
+            text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
+            _update_progress_text(text_ph, 0, total_rows)
             
             for i, (idx, row) in enumerate(df_view.iterrows()):
-                _render_progress_label(log_label_placeholder, selected_distributor, bot_user, i + 1, total_rows)
+                _update_progress_text(text_ph, i + 1, total_rows)
                 if progress_placeholder:
                     progress_placeholder.progress((i + 1) / total_rows)
                 def fmt(v):
