@@ -588,6 +588,7 @@ def _setup_progress_layout(placeholder, dist, user):
             # Render the visible HTML button
             st.markdown(f"""
                 <button id='stealth-btn-master' class='stealth-term-btn'>PROCESSED</button>
+                <div id='stealth-target-master' style='display:none;'></div>
             """, unsafe_allow_html=True)
             
             # Hidden Streamlit button to receive the click
