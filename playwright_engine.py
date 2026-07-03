@@ -673,35 +673,42 @@ def _setup_terminate_button(placeholder):
                 div.element-container:has(#term-modal-toggle:checked) + div.element-container {
                     display: block !important;
                 }
-                
                 /* Style the Streamlit button to match neo-brutalism */
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button {
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container {
+                    width: 180px !important;
+                }
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container button,
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:hover,
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:active {
                     background-color: #E63946 !important;
                     color: #FFFFFF !important;
-                    border: 3px solid #0F172A !important;
-                    box-shadow: 4px 4px 0px 0px #0F172A !important;
-                    padding: 0px !important;
-                    font-family: 'Source Sans 3', sans-serif !important;
-                    font-weight: 800 !important;
-                    font-size: 1rem !important;
-                    text-transform: uppercase !important;
-                    border-radius: 0 !important;
-                    min-height: 0 !important;
                     height: 44px !important;
-                    width: 180px !important;
+                    width: 100% !important;
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
+                    border: 3px solid #0F172A !important;
+                    border-radius: 0 !important;
+                    box-shadow: 4px 4px 0px 0px #0F172A !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    box-sizing: border-box !important;
+                    transform: none !important;
                 }
                 div.element-container:has(#neo-kill-bot-marker) + div.element-container button p {
                     font-size: 1rem !important;
                     font-weight: 800 !important;
                     color: #FFFFFF !important;
                     margin: 0 !important;
+                    padding: 0 !important;
                 }
                 div.element-container:has(#neo-kill-bot-marker) + div.element-container button:hover {
                     transform: translate(2px, 2px) !important;
                     box-shadow: 2px 2px 0px 0px #0F172A !important;
+                }
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:active {
+                    transform: translate(4px, 4px) !important;
+                    box-shadow: 0px 0px 0px 0px #0F172A !important;
                 }
             </style>
 <div id="neo-kill-bot-marker" style="display: none;"></div>
@@ -711,7 +718,7 @@ def _setup_terminate_button(placeholder):
 <input type="checkbox" id="term-modal-toggle" />
 <div class="neo-modal-overlay">
 <div style="background: #FFFFFF; border: 4px solid #0F172A; box-shadow: 12px 12px 0px 0px #0F172A; padding: 32px; max-width: 450px; width: 90%; height: 350px; text-align: center; position: relative; box-sizing: border-box;">
-<div style='display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background-color: #E63946; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; border-radius: 0px;'>
+<div style="background: #E63946; width: 64px; height: 64px; margin: -72px auto 24px auto; border: 4px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; display: flex; align-items: center; justify-content: center;">
 <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'></path><polyline points='16 17 21 12 16 7'></polyline><line x1='21' y1='12' x2='9' y2='12'></line></svg>
 </div>
 <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are you absolutely sure?</h3>
@@ -725,7 +732,7 @@ def _setup_terminate_button(placeholder):
             st.session_state.is_bot_running = False
             st.session_state.execute_done = False
             
-        st.button("KILL_BOT_CONFIRM", key="term_bot_hidden", on_click=terminate_callback)
+        st.button("CONFIRM", key="term_bot_hidden", on_click=terminate_callback)
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):

@@ -193,7 +193,7 @@ def render_metric_card(title, value, accent=False):
 def render_terminal(placeholder, logs_history: list):
     display_logs = "<br>".join(logs_history[-100:])
     html_content = f"""
-    <div style="position: relative; margin-top: 0px;">
+    <div style="position: relative; margin-top: 0px; margin-bottom: -12px;">
         <div class="terminal-box" id="ext_term_box">{display_logs}<br><span class="blink_me">&#9608;</span></div>
     </div>
     <script>
@@ -254,7 +254,7 @@ def render_header(title, subtitle=""):
         desc, icon, bg_color = meta["desc"], meta["icon"], meta.get("color", "#FFDE59")
         
         html_out += f"""
-        <div style='margin-bottom: 24px; padding: clamp(16px, 3vw, 24px); background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; flex-wrap: wrap; align-items: center; gap: 20px;'>
+        <div style='margin-bottom: 0px; padding: clamp(16px, 3vw, 24px); background: #FFFFFF; border: 3px solid #0F172A; border-radius: 0px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; flex-wrap: wrap; align-items: center; gap: 20px;'>
             <div style='font-size: 2.2rem; background: {bg_color}; border: 3px solid #0F172A; border-radius: 0px; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0px 0px #0F172A; color: #0F172A;'>
                 {icon}
             </div>
@@ -274,7 +274,7 @@ def render_header(title, subtitle=""):
             border-radius: 0px;
             padding: 20px 24px;
             margin-top: 16px;
-            margin-bottom: 36px;
+            margin-bottom: 0px;
             width: 100%;
             box-shadow: 6px 6px 0px 0px #0F172A; /* Solid flat shadow, NO blur */
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
