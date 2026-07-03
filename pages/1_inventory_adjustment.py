@@ -71,7 +71,8 @@ if "Auto Compare" in adj_mode:
         st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
         with st.container(border=True):
             def handle_fragment_upload():
-                f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key="file2_uploader")
+                if "f2_key" not in st.session_state: st.session_state.f2_key = 0
+                f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key=f"file2_uploader_{st.session_state.f2_key}")
                 if f:
                     from utils import make_solid_box
                     st.markdown(f"""
@@ -82,7 +83,7 @@ if "Auto Compare" in adj_mode:
                         {make_solid_box(f"FILE LOADED: {f.name}", "#FFDE59", "#0F172A")}
                     """, unsafe_allow_html=True)
                     if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
-                        st.session_state.file2_uploader = None
+                        st.session_state.f2_key += 1
                         st.rerun()
                 else:
                     st.markdown("<div style='margin-bottom: 0px;'></div>", unsafe_allow_html=True)
@@ -103,7 +104,7 @@ if "Auto Compare" in adj_mode:
                 render_upload_dist()
             else:
                 handle_fragment_upload()
-            file2 = st.session_state.get("file2_uploader")
+            file2 = st.session_state.get(f"file2_uploader_{st.session_state.get('f2_key', 0)}")
 
     if st.session_state.np_df is not None:
         st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)

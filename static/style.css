@@ -1372,6 +1372,11 @@ div[data-testid="stProgress"] div[role="progressbar"] {
     overflow: hidden !important;
 }
 
+div[data-testid="stProgressBar"], div[data-testid="stProgress"] {
+    margin-top: 12px !important;
+    margin-bottom: 8px !important;
+}
+
 div[data-testid="stProgressBar"] div[role="progressbar"] > div,
 div[data-testid="stProgress"] div[role="progressbar"] > div {
     background-color: #FFDE59 !important;

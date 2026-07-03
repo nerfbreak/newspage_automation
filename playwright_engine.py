@@ -172,7 +172,8 @@ def _navigate_to_import_export(page, TIMEOUT_MS, ui_log):
     btn_add.click(force=True)
     page.wait_for_timeout(500)
 
-def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_run=False):
+def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_run=False, progress_bar=None):
+    if progress_bar: progress_bar.progress(0.1)
     ui_log("INJECT", "Setting job type: Export [E], desc: Text Inventory Master...")
     page.locator("id=pag_FW_SYS_INTF_JOB_NewGeneral_JOB_TYPE_Value").select_option("E")
     page.wait_for_timeout(1000)
@@ -181,21 +182,25 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     page.locator("id=pag_FW_SYS_INTF_JOB_NewGeneral_EXE_TYPE_Value").select_option("M")
     page.wait_for_timeout(1000)
     
+    if progress_bar: progress_bar.progress(0.2)
     ui_log("NAV", "Proceeding to next step...")
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "extraction Next")
     page.wait_for_timeout(1000)
     
+    if progress_bar: progress_bar.progress(0.3)
     ui_log("SYS", "Bypassing disclaimer prompt...")
     ok_btn = page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value")
     ok_btn.wait_for(state="visible", timeout=TIMEOUT_MS)
     ok_btn.click(force=True)
     page.wait_for_timeout(500)
     
+    if progress_bar: progress_bar.progress(0.4)
     ui_log("NAV", "Opening interface selection popup...")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
     page.wait_for_timeout(1000)
     
+    if progress_bar: progress_bar.progress(0.5)
     ui_log("INJECT", "Searching target interface: E_20150315090000028...")
     search_field = page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value")
     # Popups are extremely heavy and slow to load on the Newspage server. Increase search field wait timeout to 180s.
@@ -204,21 +209,25 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
     page.wait_for_timeout(800)
     
+    if progress_bar: progress_bar.progress(0.6)
     ui_log("INJECT", "Selecting target interface from results...")
     target_text = page.get_by_text("E_20150315090000028", exact=True)
     target_text.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
     target_text.click(force=True)
     page.wait_for_timeout(800)
     
+    if progress_bar: progress_bar.progress(0.7)
     ui_log("INJECT", "Setting file type: Delimited [D], separator: standard...")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0").check()
     page.wait_for_timeout(2000)
     
+    if progress_bar: progress_bar.progress(0.8)
     ui_log("INJECT", f"Applying warehouse filter: [{WAREHOUSE}]...")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_grd_DynamicFilter_ctl02_dyn_Field_txt_Value").fill(WAREHOUSE)
     page.wait_for_timeout(1500)
     
+    if progress_bar: progress_bar.progress(0.9)
     ui_log("SYS", "Committing parameters to job definition...")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_btn_Add_Value").click(force=True)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "extraction Add commit")
@@ -475,7 +484,7 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
-            real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run)
+            real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run, progress_bar, text_ph)
 
             if progress_bar: progress_bar.progress(1.0)
             
@@ -687,25 +696,21 @@ def _setup_terminate_button(placeholder):
                     box-shadow: 2px 2px 0px 0px #0F172A !important;
                 }
             </style>
-            
-            <div id="neo-kill-bot-marker" style="display: none;"></div>
-            
-            <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 8px; margin-top: 8px;">
-                <label for="term-modal-toggle" class="neo-btn-terminate" style="width: 100%; text-align: center; box-sizing: border-box; font-size: 0.85rem; padding: 6px 12px;">TERMINATE</label>
-            </div>
-            <input type="checkbox" id="term-modal-toggle" />
-            
-            <div class="neo-modal-overlay">
-                <div style="background: #FFFFFF; border: 4px solid #0F172A; box-shadow: 12px 12px 0px 0px #0F172A; padding: 32px; max-width: 450px; width: 90%; height: 350px; text-align: center; position: relative; box-sizing: border-box;">
-                    <div style='display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background-color: #E63946; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; border-radius: 0px;'>
-                        <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'></path><polyline points='16 17 21 12 16 7'></polyline><line x1='21' y1='12' x2='9' y2='12'></line></svg>
-                    </div>
-                    <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are you absolutely sure?</h3>
-                    <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will stop the bot immediately.</p>
-                    
-                    <label for="term-modal-toggle" style="background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; right: 50%; margin-right: 8px; top: 265px;">Cancel</label>
-                </div>
-            </div>
+<div id="neo-kill-bot-marker" style="display: none;"></div>
+<div style="display: flex; justify-content: center; width: 100%; margin-bottom: 8px; margin-top: 8px;">
+<label for="term-modal-toggle" class="neo-btn-terminate" style="width: 100%; text-align: center; box-sizing: border-box; font-size: 0.85rem; padding: 6px 12px;">TERMINATE</label>
+</div>
+<input type="checkbox" id="term-modal-toggle" />
+<div class="neo-modal-overlay">
+<div style="background: #FFFFFF; border: 4px solid #0F172A; box-shadow: 12px 12px 0px 0px #0F172A; padding: 32px; max-width: 450px; width: 90%; height: 350px; text-align: center; position: relative; box-sizing: border-box;">
+<div style='display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background-color: #E63946; border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; border-radius: 0px;'>
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'></path><polyline points='16 17 21 12 16 7'></polyline><line x1='21' y1='12' x2='9' y2='12'></line></svg>
+</div>
+<h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are you absolutely sure?</h3>
+<p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will stop the bot immediately.</p>
+<label for="term-modal-toggle" style="background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; right: 50%; margin-right: 8px; top: 265px;">Cancel</label>
+</div>
+</div>
         """, unsafe_allow_html=True)
         
         def terminate_callback():
