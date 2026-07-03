@@ -661,55 +661,63 @@ def _setup_terminate_button(placeholder):
                 }
                 
                 .neo-btn-cancel {
-                    background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; right: 50%; margin-right: 8px; top: 265px;
+                    background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 250px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; left: 50%; transform: translateX(-50%); top: 215px;
                 }
-                .neo-btn-cancel:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A; }
-                .neo-btn-cancel:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }
-                
-                .neo-btn-confirm-html {
-                    background: #E63946; color: #FFFFFF; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; left: 50%; margin-left: 8px; top: 265px;
-                }
-                .neo-btn-confirm-html:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A; }
-                .neo-btn-confirm-html:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }
+                .neo-btn-cancel:hover { transform: translateX(-50%) translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A; }
+                .neo-btn-cancel:active { transform: translateX(-50%) translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }
                 
                 /* Visually hide the Streamlit button container initially so it doesn't flash */
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container {
-                    display: none;
+                div.element-container:has(#term-modal-toggle) + div.element-container {
+                    display: none !important;
+                }
+                
+                /* Show and position the Streamlit button when modal is open */
+                div.element-container:has(#term-modal-toggle:checked) + div.element-container {
+                    display: flex !important;
+                    position: fixed !important;
+                    z-index: 999999 !important;
+                    top: calc(50% + 106px) !important;
+                    left: 50% !important;
+                    transform: translateX(-50%) !important;
+                    width: 250px !important;
+                    height: 44px !important;
                 }
                 
                 /* Style the Streamlit button to look exactly like the native Confirm button */
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button {
+                div.element-container:has(#term-modal-toggle) + div.element-container button {
                     background-color: #E63946 !important;
                     color: #FFFFFF !important;
                     font-family: 'Source Sans 3', sans-serif !important;
                     font-weight: 900 !important;
-                    font-size: 0.85rem !important;
+                    font-size: 1rem !important;
                     text-transform: uppercase !important;
-                    border: 4px solid #0F172A !important;
+                    border: 3px solid #0F172A !important;
                     box-shadow: 4px 4px 0px 0px #0F172A !important;
                     border-radius: 0px !important;
-                    transition: all 0.2s ease !important;
+                    transition: all 0.1s ease !important;
                     padding: 0 !important;
                     margin: 0 !important;
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
+                    width: 100% !important;
+                    height: 100% !important;
                 }
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:hover {
+                div.element-container:has(#term-modal-toggle) + div.element-container button:hover {
                     transform: translate(2px, 2px) !important;
                     box-shadow: 2px 2px 0px 0px #0F172A !important;
                     color: #FFFFFF !important;
                 }
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:active {
+                div.element-container:has(#term-modal-toggle) + div.element-container button:active {
                     transform: translate(4px, 4px) !important;
                     box-shadow: 0px 0px 0px 0px #0F172A !important;
                     color: #FFFFFF !important;
                 }
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:focus {
+                div.element-container:has(#term-modal-toggle) + div.element-container button:focus {
                     outline: none !important;
                     color: #FFFFFF !important;
                 }
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button p {
+                div.element-container:has(#term-modal-toggle) + div.element-container button p {
                     margin: 0 !important;
                     padding: 0 !important;
                     color: #FFFFFF !important;
@@ -729,10 +737,8 @@ def _setup_terminate_button(placeholder):
 <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are You Sure?</h3>
 <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will stop the bot immediately.</p>
 <label for="term-modal-toggle" class="neo-btn-cancel">Cancel</label>
-<button type="button" class="neo-btn-confirm-html" id="anchor-confirm-terminate" style="visibility: hidden; pointer-events: none;">CONFIRM</button>
 </div>
 </div>
-<div id="neo-kill-bot-marker" style="display: none;"></div>
         """, unsafe_allow_html=True)
         
         def terminate_callback():
@@ -740,56 +746,6 @@ def _setup_terminate_button(placeholder):
             st.session_state.execute_done = False
             
         st.button("CONFIRM", key="term_bot_hidden", on_click=terminate_callback, use_container_width=True)
-        
-        import streamlit.components.v1 as components
-        components.html("""
-            <script>
-                var parentWin = window.parent;
-                var parentDoc = parentWin.document;
-                          function syncTerminateButton() {
-                var anchor = parentDoc.getElementById('anchor-confirm-terminate');
-                var marker = parentDoc.getElementById('neo-kill-bot-marker');
-                
-                if (anchor && marker) {
-                    var markdownContainer = marker.closest('div.element-container');
-                    if (markdownContainer) {
-                        var stBtnContainer = markdownContainer.nextElementSibling;
-                        while (stBtnContainer && !stBtnContainer.querySelector('button')) {
-                            stBtnContainer = stBtnContainer.nextElementSibling;
-                        }
-                        if (stBtnContainer) {
-                            var rect = anchor.getBoundingClientRect();
-                            if (rect.width > 0 && rect.height > 0) {
-                                stBtnContainer.style.display = 'block';
-                                stBtnContainer.style.position = 'fixed';
-                                stBtnContainer.style.top = rect.top + 'px';
-                                stBtnContainer.style.left = rect.left + 'px';
-                                stBtnContainer.style.width = rect.width + 'px';
-                                stBtnContainer.style.height = rect.height + 'px';
-                                stBtnContainer.style.zIndex = '999999';
-                                stBtnContainer.style.opacity = '1';
-                                
-                                var stBtn = stBtnContainer.querySelector('button');
-                                if (stBtn) {
-                                    stBtn.style.position = 'absolute';
-                                    stBtn.style.top = '0';
-                                    stBtn.style.left = '0';
-                                    stBtn.style.width = '100%';
-                                    stBtn.style.height = '100%';
-                                }
-                            } else {
-                                stBtnContainer.style.display = 'none';
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (!parentWin._sync_terminate_interval) {
-                parentWin._sync_terminate_interval = setInterval(syncTerminateButton, 50);
-            }
-        </script>
-    """, height=0, width=0)
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):
