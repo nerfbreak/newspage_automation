@@ -576,13 +576,13 @@ def _render_progress_label(placeholder, dist, user, current, total):
         c1, c2, c3 = st.columns([5, 2, 3], vertical_alignment="center")
         with c1:
             st.markdown(f"""
+                <div id='terminate-btn-anchor' style='display: none;'></div>
                 <div id='terminate-target-col' style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap;'>
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
                 </div>
             """, unsafe_allow_html=True)
         with c2:
-            st.markdown("<div id='terminate-btn-anchor'></div>", unsafe_allow_html=True)
             def terminate_callback():
                 st.session_state.is_bot_running = False
                 st.session_state.execute_done = False

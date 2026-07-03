@@ -226,11 +226,8 @@ div[role="dialog"] button[aria-label="Close"] svg {
     stroke-width: 3px !important;
 }
 
-/* Specifically target the TERMINATE button layout which is the next container after #terminate-btn-anchor */
-div.element-container:has(#terminate-btn-anchor) {
-    display: none !important; /* Hide the anchor completely so it takes no vertical space */
-}
-div.element-container:has(#terminate-btn-anchor) + div.element-container button {
+/* Specifically target the TERMINATE button layout which is the next column after #terminate-btn-anchor */
+div[data-testid="column"]:has(#terminate-btn-anchor) + div[data-testid="column"] button {
     background-color: #E63946 !important;
     border-color: #0F172A !important;
     /* Reset margins for perfect alignment */
@@ -240,15 +237,15 @@ div.element-container:has(#terminate-btn-anchor) + div.element-container button 
     padding: 0 16px !important;
     transform: none !important;
 }
-div.element-container:has(#terminate-btn-anchor) + div.element-container button p {
+div[data-testid="column"]:has(#terminate-btn-anchor) + div[data-testid="column"] button p {
     color: #FFFFFF !important;
 }
-div.element-container:has(#terminate-btn-anchor) + div.element-container button:hover {
+div[data-testid="column"]:has(#terminate-btn-anchor) + div[data-testid="column"] button:hover {
     background-color: #D62828 !important;
     border-color: #0F172A !important;
 }
 @media (max-width: 768px) {
-    div.element-container:has(#terminate-btn-anchor) + div.element-container button {
+    div[data-testid="column"]:has(#terminate-btn-anchor) + div[data-testid="column"] button {
         margin-top: 16px !important;
         margin-bottom: 16px !important;
     }
