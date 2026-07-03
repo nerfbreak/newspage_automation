@@ -251,17 +251,10 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
 def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, ext_ui_log, alert_callback, supabase, current_user, dry_run=None, ext_label_placeholder=None):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
-        if ext_label_placeholder:
-            with ext_label_placeholder.container():
-                term_ph = st.empty()
-                _setup_terminate_button(term_ph)
-                progress_bar = st.progress(0)
-                text_ph = st.empty()
-        else:
-            term_ph = st.empty()
-            _setup_terminate_button(term_ph)
-            progress_bar = st.progress(0)
-            text_ph = st.empty()
+        term_ph = st.empty()
+        _setup_terminate_button(term_ph)
+        progress_bar = st.progress(0)
+        text_ph = st.empty()
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
@@ -272,7 +265,7 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
             
             actual_warehouse = target_whs if target_whs and WAREHOUSE == "GOOD_WHS" else WAREHOUSE
             
-            real_filename, file_path = _dispatch_extraction_job(page, TIMEOUT_MS, actual_warehouse, ext_ui_log, browser, dry_run, progress_bar, text_ph)
+            real_filename, file_path = _dispatch_extraction_job(page, TIMEOUT_MS, actual_warehouse, ext_ui_log, browser, dry_run)
             
             if progress_bar: progress_bar.progress(1.0)
             
@@ -475,21 +468,14 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
 def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user, dry_run=None, ext_label_placeholder=None):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
-        if ext_label_placeholder:
-            with ext_label_placeholder.container():
-                term_ph = st.empty()
-                _setup_terminate_button(term_ph)
-                text_ph = st.empty()
-                progress_bar = st.progress(0)
-        else:
-            term_ph = st.empty()
-            _setup_terminate_button(term_ph)
-            text_ph = st.empty()
-            progress_bar = st.progress(0)
+        term_ph = st.empty()
+        _setup_terminate_button(term_ph)
+        text_ph = st.empty()
+        progress_bar = st.progress(0)
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
-            real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run, progress_bar, text_ph)
+            real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run)
 
             if progress_bar: progress_bar.progress(1.0)
             
@@ -655,7 +641,7 @@ def _setup_terminate_button(placeholder):
                 }
                 
                 /* Hide Streamlit button initially */
-                div.element-container:has(button p:contains("KILL_BOT_CONFIRM")) {
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container {
                     display: none;
                     position: fixed;
                     z-index: 999999;
@@ -665,12 +651,12 @@ def _setup_terminate_button(placeholder):
                 }
                 
                 /* Show Streamlit button when modal is open */
-                div.element-container:has(#term-modal-toggle:checked) ~ div.element-container:has(button p:contains("KILL_BOT_CONFIRM")) {
+                div.element-container:has(#term-modal-toggle:checked) + div.element-container {
                     display: block !important;
                 }
                 
                 /* Style the Streamlit button to match neo-brutalism */
-                div.element-container:has(button p:contains("KILL_BOT_CONFIRM")) button {
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container button {
                     background-color: #E63946 !important;
                     color: #FFFFFF !important;
                     border: 3px solid #0F172A !important;
@@ -684,16 +670,18 @@ def _setup_terminate_button(placeholder):
                     min-height: 0 !important;
                     height: 44px !important;
                 }
-                div.element-container:has(button p:contains("KILL_BOT_CONFIRM")) button p {
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container button p {
                     font-size: 1rem !important;
                     font-weight: 800 !important;
                     color: #FFFFFF !important;
                 }
-                div.element-container:has(button p:contains("KILL_BOT_CONFIRM")) button:hover {
+                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:hover {
                     transform: translate(2px, 2px) !important;
                     box-shadow: 2px 2px 0px 0px #0F172A !important;
                 }
             </style>
+            
+            <div id="neo-kill-bot-marker" style="display: none;"></div>
             
             <div style="display: flex; justify-content: flex-end; margin-bottom: 4px;">
                 <label for="term-modal-toggle" class="neo-btn-terminate">TERMINATE</label>
@@ -762,12 +750,11 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
     alert_callback(f"<b>BOT STARTED</b>\nTask: Reconcile Stock\nDist: {selected_distributor}\nTotal SKU: {len(df_view)}")
 
     try:
-        with log_label_placeholder.container():
-            term_ph = st.empty()
-            _setup_terminate_button(term_ph)
-            progress_bar = st.progress(0)
-            total_rows = len(df_view)
-            text_ph = _setup_progress_layout(st.empty(), selected_distributor, bot_user)
+        term_ph = st.empty()
+        _setup_terminate_button(term_ph)
+        progress_bar = st.progress(0)
+        total_rows = len(df_view)
+        text_ph = _setup_progress_layout(st.empty(), selected_distributor, bot_user)
 
         with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
             # Fetch distributor exception from DB
@@ -1100,19 +1087,11 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         global_start_time = time.time()
         success_count, failed_count = 0, 0
         
-        if log_label_placeholder:
-            with log_label_placeholder.container():
-                term_ph = st.empty()
-                _setup_terminate_button(term_ph)
-                progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
-                total_rows = len(df_view)
-                text_ph = _setup_progress_layout(st.empty(), selected_distributor, bot_user) if show_status_box else None
-        else:
-            term_ph = st.empty()
-            _setup_terminate_button(term_ph)
-            progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
-            total_rows = len(df_view)
-            text_ph = None
+        term_ph = st.empty()
+        _setup_terminate_button(term_ph)
+        progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
+        total_rows = len(df_view)
+        text_ph = _setup_progress_layout(st.empty(), selected_distributor, bot_user) if show_status_box else None
 
         with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log) as (page, browser):
             # Resolve actual warehouse from distributor_exceptions
