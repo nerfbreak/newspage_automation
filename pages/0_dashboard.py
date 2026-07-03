@@ -354,7 +354,21 @@ asyncio.run(main())
             except Exception as e:
                 st.toast(f"Ping Failed: {e}", icon=":material/error:")
                 
-    st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
+    st.markdown("""
+    <style>
+    div.element-container:has(.compact-timeline-marker) + div {
+        border-radius: 0px !important;
+        border: 3px solid #0F172A !important;
+        box-shadow: 6px 6px 0px 0px #0F172A !important;
+        background-color: #FFFFFF !important;
+        height: auto !important; 
+    }
+    [data-testid="column"] > div:has(.compact-timeline-marker) + div {
+        flex-grow: 0 !important;
+    }
+    </style>
+    <span class='compact-timeline-marker'></span>
+    """, unsafe_allow_html=True)
     with st.container(border=True):
         
         if db_connected:
@@ -381,7 +395,7 @@ asyncio.run(main())
                     unified_rows.append({"ts": row["created_at"], "dist": row.get("distributor_name", "N/A"), "mod": mod, "status": clean_status, "by": row.get("extracted_by")})
                     
             unified_rows.sort(key=lambda x: x["ts"], reverse=True)
-            unified_rows = unified_rows[:4] # Only show top 4 in timeline to align perfectly with module rows
+            unified_rows = unified_rows[:5] # Only show top 5 in timeline
             
             if unified_rows:
                 tl_html = "<div style='margin-left: 8px;'>"
