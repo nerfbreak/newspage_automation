@@ -579,11 +579,14 @@ def _render_progress_label(placeholder, dist, user, current, total):
                 <div style='display: flex; align-items: center; gap: 12px; flex-wrap: wrap;'>
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
+                    <div style='margin-left: auto; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 700; color: #E63946; font-style: italic; display: flex; align-items: center;'>
+                        Klik tombol PROCESSED untuk membatalkan progress Bot ➔
+                    </div>
                 </div>
             """, unsafe_allow_html=True)
         with c_btn:
             st.markdown(f"""
-                <button class='stealth-term-btn' onclick="if(confirm('Klik tombol OK untuk membatalkan progress Bot --->')){{ const b = document.querySelector('#stealth-target-{current}').closest('.element-container').nextElementSibling.querySelector('button'); if(b) b.click(); }}">
+                <button class='stealth-term-btn' onclick="if(confirm('Apakah Anda yakin ingin membatalkan dan menghentikan eksekusi Bot?')){{ const b = document.querySelector('#stealth-target-{current}').closest('.element-container').nextElementSibling.querySelector('button'); if(b) b.click(); }}">
                     PROCESSED
                 </button>
                 <div id='stealth-target-{current}' style='display:none;'></div>
