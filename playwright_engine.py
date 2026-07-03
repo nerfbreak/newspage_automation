@@ -625,12 +625,14 @@ def _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user
 
 def _update_progress_text(text_ph, current, total):
     if not text_ph: return
-    text_ph.markdown(f"""
-        <script>
-            var counter = window.parent.document.getElementById('dynamic-progress-counter') || document.getElementById('dynamic-progress-counter');
-            if (counter) counter.innerText = '{current}/{total}';
-        </script>
-    """, unsafe_allow_html=True)
+    import streamlit.components.v1 as components
+    with text_ph.container():
+        components.html(f"""
+            <script>
+                var counter = window.parent.document.getElementById('dynamic-progress-counter') || document.getElementById('dynamic-progress-counter');
+                if (counter) counter.innerText = '{current}/{total}';
+            </script>
+        """, height=0, width=0)
 
 def _setup_terminate_button(placeholder):
     """Renders the terminate button and custom Neo-Brutalist confirmation modal using Pure CSS."""
@@ -658,62 +660,21 @@ def _setup_terminate_button(placeholder):
                     transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A;
                 }
                 
-                /* Hide Streamlit button initially */
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container {
-                    display: none;
-                    position: fixed;
-                    z-index: 999999;
-                    top: 50%;
-                    left: 50%;
-                    margin-top: 93px;
-                    margin-left: 8px;
+                .neo-btn-cancel {
+                    background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; right: 50%; margin-right: 8px; top: 265px;
                 }
+                .neo-btn-cancel:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A; }
+                .neo-btn-cancel:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }
                 
-                /* Show Streamlit button when modal is open */
-                div.element-container:has(#term-modal-toggle:checked) + div.element-container {
-                    display: block !important;
+                .neo-btn-confirm-html {
+                    background: #E63946; color: #FFFFFF; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; left: 50%; margin-left: 8px; top: 265px;
                 }
-                /* Style the Streamlit button to match neo-brutalism */
+                .neo-btn-confirm-html:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A; }
+                .neo-btn-confirm-html:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }
+                
+                /* Completely hide the Streamlit button */
                 div.element-container:has(#neo-kill-bot-marker) + div.element-container {
-                    width: 180px !important;
-                }
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button,
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:hover,
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:active {
-                    background-color: #E63946 !important;
-                    color: #FFFFFF !important;
-                    height: 44px !important;
-                    min-height: 44px !important;
-                    max-height: 44px !important;
-                    width: 180px !important;
-                    min-width: 180px !important;
-                    max-width: 180px !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
-                    border: 3px solid #0F172A !important;
-                    border-radius: 0 !important;
-                    box-shadow: 4px 4px 0px 0px #0F172A !important;
-                    padding: 0 !important;
-                    margin: 0 !important;
-                    box-sizing: border-box !important;
-                    transform: none !important;
-                }
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button p {
-                    font-size: 1rem !important;
-                    font-weight: 800 !important;
-                    color: #FFFFFF !important;
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    line-height: 1 !important;
-                }
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:hover {
-                    transform: translate(2px, 2px) !important;
-                    box-shadow: 2px 2px 0px 0px #0F172A !important;
-                }
-                div.element-container:has(#neo-kill-bot-marker) + div.element-container button:active {
-                    transform: translate(4px, 4px) !important;
-                    box-shadow: 0px 0px 0px 0px #0F172A !important;
+                    display: none !important;
                 }
             </style>
 <div id="neo-kill-bot-marker" style="display: none;"></div>
@@ -728,7 +689,8 @@ def _setup_terminate_button(placeholder):
 </div>
 <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are you absolutely sure?</h3>
 <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will stop the bot immediately.</p>
-<label for="term-modal-toggle" style="background: #F1F5F9; color: #0F172A; font-family: 'Source Sans 3', sans-serif; font-weight: 800; font-size: 1rem; padding: 0px; width: 180px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #0F172A; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #0F172A; transition: all 0.1s ease; box-sizing: border-box; position: absolute; right: 50%; margin-right: 8px; top: 265px;">Cancel</label>
+<label for="term-modal-toggle" class="neo-btn-cancel">Cancel</label>
+<button type="button" class="neo-btn-confirm-html" onclick="document.querySelector('div.element-container:has(#neo-kill-bot-marker) + div.element-container button').click()">CONFIRM</button>
 </div>
 </div>
         """, unsafe_allow_html=True)
