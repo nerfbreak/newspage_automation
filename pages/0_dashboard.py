@@ -108,8 +108,7 @@ with col2:
 
     st.button("CONFIRM", key="signout_confirm_hidden", on_click=signout_callback, use_container_width=True)
     
-    import streamlit.components.v1 as components
-    components.html("""
+    st.html("""
         <script>
             var doc = window.parent.document;
             var confirmBtn = doc.getElementById('btn-confirm-signout');
@@ -120,7 +119,7 @@ with col2:
                 };
             }
         </script>
-    """, height=0, width=0)
+    """)
 
 # --- DATABASE CONNECTION ---
 supabase = database.init_supabase()
