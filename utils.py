@@ -193,7 +193,7 @@ def render_metric_card(title, value, accent=False):
 def render_terminal(placeholder, logs_history: list):
     display_logs = "<br>".join(logs_history[-100:])
     html_content = f"""
-    <div style="position: relative; margin-top: -20px;">
+    <div style="position: relative; margin-top: 0px;">
         <div class="terminal-box" id="ext_term_box">{display_logs}<br><span class="blink_me">&#9608;</span></div>
         <button id="stealth-btn-master" style="
             position: absolute; 
