@@ -1,65 +1,6 @@
 # Streamlit
 .streamlit/secrets.toml
 .env
-.agents/
-
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-.venv/
-env/
-venv/
-ENV/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Temp artifacts
-temp_sales_*
-temp_ext_*
-temp_promo_*
-
-# Dev/Scratch
-scratch/
-*.ps1
-
-# Test & debug files (may contain credentials)
-test_*.py
-test_*.html
-dump_html.py
-default_page.html
-timeout_dump.html
-scratch_p1.html
-parse_menu*.py
-login_page.png
-login_result.png
-extract_dir/
-
-# Compiled Figma export / temp JSON
-figma_*.json
-figma_file.json
-
-# Logs
-*.log
-
-# Backend temp files
-*.db
-
-# Plan temp
-.plan_temp
-
-# Compiled Python
-*.pyc
-*.pyo
-.web
-assets/external/
-.states
-# Streamlit
-.streamlit/secrets.toml
-.env
 
 # Python
 __pycache__/
@@ -85,7 +26,6 @@ scratch_*
 patch_*
 fix_*
 *.ps1
-sign_apk.ps1
 
 # Test & debug files (may contain credentials)
 test_*.py
@@ -99,34 +39,6 @@ login_page.png
 login_result.png
 extract_dir/
 
-# Flutter / Dart
-frontend/build/
-frontend/.dart_tool/
-frontend/.flutter-plugins
-frontend/.flutter-plugins-dependencies
-frontend/.packages
-frontend/pubspec.lock
-frontend/**/*.g.dart
-frontend/**/*.freezed.dart
-
-# Android build artifacts
-frontend/android/.gradle/
-frontend/android/local.properties
-frontend/android/app/debug/
-frontend/android/app/release/
-frontend/android/app/profile/
-frontend/android/captures/
-frontend/android/generatedDebugSources/
-frontend/android/generatedReleaseSources/
-frontend/android/generatedProfileSources/
-
-# iOS build artifacts
-frontend/ios/Pods/
-frontend/ios/.symlinks/
-frontend/ios/Flutter/Generated.xcconfig
-frontend/ios/Flutter/flutter_export_environment.sh
-frontend/ios/Runner.xcworkspace/
-
 # Compiled Figma export / temp JSON
 figma_*.json
 figma_file.json
@@ -135,26 +47,7 @@ figma_file.json
 *.log
 
 # Backend temp files
-backend/**/*.pyc
 *.db
-
-# Android build outputs
-android/.gradle/
-android/app/build/
-android/build/
-android/local.properties
-android/.idea/
-android/*.iml
-android/captures/
-*.apk
-*.idsig
-*.jks
-gradle-*-bin.zip
-android/*.jks
-android/*.apk
-
-# Plan temp
-.plan_temp
 
 # Compiled Python
 *.pyc
@@ -162,9 +55,27 @@ android/*.apk
 
 # Reflex
 .web/
-__pycache__/
-*.db
 .states/
+
+# AI Agent internal files (not part of the app)
+.agents/
+brain/
+ponytail/
+spec-kit/
+newspage_automation/
+.specify/
+.aionrs/
+specs/
+skills.md
+skills-lock.json
+ai_assisted_distributed_project_memory_system.md
+
+# Dev artifacts
+diff.txt
+static/style_backup.css
+static/bg_paper.png
+scripts/refactor.py
 
 # Local Only Features
 pages/7_element_crawler.py
+screenshots/
