@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body { margin: 0; padding: 4px; overflow: hidden; background: transparent; }
+      .stealth-term-btn {
+        background-color: #FFDE59;
+        border: 2px solid #0F172A;
+        box-shadow: 3px 3px 0px 0px #0F172A;
+        color: #0F172A;
+        font-weight: 800;
+        font-family: "Source Sans 3", sans-serif;
+        font-size: 0.85rem;
+        height: 40px;
+        margin: 0;
+        padding: 0 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+      }
+      .stealth-term-btn:hover {
+        background-color: #E63946;
+        color: #FFFFFF;
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 0px 0px #0F172A;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="btn" class="stealth-term-btn">PROCESSED</button>
+    <script>
+      function sendMessageToStreamlitClient(type, data) {
+        var outData = Object.assign({
+          isStreamlitMessage: true,
+          type: type,
+        }, data);
+        window.parent.postMessage(outData, "*");
+      }
+
+      function init() {
+        sendMessageToStreamlitClient("streamlit:componentReady", {apiVersion: 1});
+        sendMessageToStreamlitClient("streamlit:setFrameHeight", {height: 48});
+      }
+
+      const btn = document.getElementById("btn");
+      btn.onclick = function() {
+        if(confirm("Apakah Anda yakin ingin membatalkan dan menghentikan eksekusi Bot?")) {
+          sendMessageToStreamlitClient("streamlit:setComponentValue", {value: true});
+        }
+      };
+
+      window.addEventListener("message", function(event) {
+        if (event.data.type === "streamlit:render") {
+            // Re-set frame height just in case
+            sendMessageToStreamlitClient("streamlit:setFrameHeight", {height: 48});
+        }
+      });
+
+      init();
+    </script>
+  </body>
+</html>
