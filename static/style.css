@@ -227,7 +227,7 @@ div[role="dialog"] button[aria-label="Close"] svg {
 }
 
 /* Specifically target the TERMINATE button layout which is the next column after #terminate-btn-anchor */
-div[data-testid="column"]:has(#terminate-btn-anchor) + div[data-testid="column"] button {
+div[data-testid="stColumn"]:has(#terminate-btn-anchor) + div[data-testid="stColumn"] button {
     background-color: #E63946 !important;
     border-color: #0F172A !important;
     /* Reset margins for perfect alignment */
@@ -237,15 +237,15 @@ div[data-testid="column"]:has(#terminate-btn-anchor) + div[data-testid="column"]
     padding: 0 16px !important;
     transform: none !important;
 }
-div[data-testid="column"]:has(#terminate-btn-anchor) + div[data-testid="column"] button p {
+div[data-testid="stColumn"]:has(#terminate-btn-anchor) + div[data-testid="stColumn"] button p {
     color: #FFFFFF !important;
 }
-div[data-testid="column"]:has(#terminate-btn-anchor) + div[data-testid="column"] button:hover {
+div[data-testid="stColumn"]:has(#terminate-btn-anchor) + div[data-testid="stColumn"] button:hover {
     background-color: #D62828 !important;
     border-color: #0F172A !important;
 }
 @media (max-width: 768px) {
-    div[data-testid="column"]:has(#terminate-btn-anchor) + div[data-testid="column"] button {
+    div[data-testid="stColumn"]:has(#terminate-btn-anchor) + div[data-testid="stColumn"] button {
         margin-top: 16px !important;
         margin-bottom: 16px !important;
     }
