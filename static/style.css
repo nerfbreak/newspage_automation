@@ -269,7 +269,7 @@ div.element-container:has([id^="stealth-target-"]) + div.element-container {
 }
 
 /* Hide zero-height Streamlit components (iframes) to prevent unwanted margin-bottom layout shifts */
-div.element-container:has(iframe[height="0"]) {
+div.element-container:has(iframe[height="1"]) {
     position: absolute !important;
     width: 1px !important;
     height: 1px !important;

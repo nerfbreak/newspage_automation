@@ -615,7 +615,7 @@ def _setup_progress_layout(placeholder, dist, user):
                         });
                     }
                 </script>
-            """, height=0)
+            """, height=1)
             
         text_ph = c_text.empty()
         return text_ph
