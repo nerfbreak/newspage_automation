@@ -2,27 +2,40 @@
 
 Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 
+---
+
+## v2.5 — Juli 2026
+
 ### ✨ Fitur Baru
-- **Login Persistent (Cookies)**: Sesi login sekarang disimpan secara lokal di browser selama 7 hari. Anda tidak akan terlogout saat me-refresh halaman atau meninggalkan perangkat (tahan banting).
-- **Ekstraksi Sales Multi-Interface**: Bot Ekstraksi Data Sales sekarang mampu menarik 5 jenis interface sekaligus (`E_28880804000000001`, `00`, `02`, `03`, dan `06`) dalam 1 kali tarikan (*Batching*) dan mengemasnya dalam format `.zip`.
-- **Alat Ping Server**: Menambahkan fitur "Ping" di menu Dashboard untuk mengecek apakah server portal Newspage sedang online atau merespon lambat, lengkap dengan indikator waktu respons (*Response Time*).
-- **Dashboard Riwayat Aktivitas**: Tampilan dashboard baru yang lebih bersih dan rapi untuk memantau seluruh riwayat eksekusi bot secara langsung.
-- **Modul Mutasi Stok**: Fitur baru untuk memindahkan kuantitas stok antar distributor secara otomatis dan aman.
-- **Modul Clearance Stock**: Fitur baru untuk mereset atau mengosongkan stok dengan cepat.
-- **Filter Waktu Fleksibel**: Sekarang Anda bisa melihat riwayat aktivitas berdasarkan hari ini, 7 hari terakhir, atau 30 hari terakhir.
-- **Peningkatan Visual & Animasi**: Menambahkan animasi halus (transisi, efek sentuhan pada tombol, dan loading halaman) yang membuat aplikasi terasa lebih premium dan responsif.
-- **Tampilan Bebas Gangguan**: Menyembunyikan menu bawaan Streamlit (seperti bar atas dan samping) secara penuh untuk memberikan pengalaman desain yang lebih fokus, luas, dan bersih.
+
+- **Mode Dry Run (Simulasi)**: Tambahkan toggle global di tampilan utama untuk menjalankan semua alur otomasi secara penuh tanpa menekan tombol *Save* di portal Newspage. Berguna untuk menguji konfigurasi sebelum eksekusi nyata.
+- **Notifikasi Error + Screenshot**: Bot sekarang otomatis menangkap *screenshot* layar browser saat terjadi error fatal, dan mengirimkannya langsung ke Telegram beserta pesan peringatan.
+- **Pelacakan File Upload**: Setiap file distributor yang diunggah sebelum eksekusi kini disimpan di Supabase. Histori file tersedia di kolom baru "File Diunggah" pada tabel Log History di Dashboard.
+- **Alat Ping Server**: Menambahkan fitur "Ping" di menu Dashboard untuk mengecek apakah server portal Newspage sedang online atau merespon lambat, lengkap dengan indikator waktu respons.
+- **AI Assistant**: Integrasi chatbot AI (DeepSeek via NVIDIA API) langsung di dalam aplikasi untuk membantu analisis data dan query otomasi.
+- **Modul Mutasi Stok**: Fitur untuk memindahkan kuantitas stok antar distributor secara otomatis dan aman.
+- **Modul Clearance Stock**: Fitur untuk mereset atau mengosongkan stok dengan cepat.
+- **Ekstraksi Sales Multi-Interface**: Bot kini mampu menarik 5 jenis interface sekaligus dalam 1 kali tarikan (*Batching*) dan mengemasnya dalam format `.zip`.
+- **Dashboard Riwayat Aktivitas**: Tampilan riwayat eksekusi terpadu dengan filter waktu (Hari Ini, 7 Hari, 30 Hari), badge modul berwarna, dan kolom "Dijalankan Oleh".
+- **Filter Waktu Fleksibel**: Lihat riwayat aktivitas berdasarkan hari ini, 7 hari terakhir, atau 30 hari terakhir.
+- **Login Persistent (Cookies)**: Sesi login disimpan selama 7 hari. Tidak akan terlogout saat me-refresh halaman.
+
+---
 
 ### 🛠️ Perbaikan & Peningkatan
-- **Perbaikan Bug Form Login**: Menambal *bug* yang menyebabkan layout form login melebar (rusak) selama sepersekian detik setelah login berhasil.
-- **Desain UI Neo-Brutalism**: Mengubah total tampilan dan estetika aplikasi menjadi gaya *Neo-Brutalism* berkelas premium dengan kotak bersudut siku 90 derajat, garis tepi (*border*) hitam tebal yang tegas, dan efek bayangan (*drop shadow*) blok hitam pekat bertegangan tinggi di semua tombol, metrik, dan tabel log.
-- **Penyempurnaan Tampilan UI**: Merapikan garis bawah pada judul tiap sesi agar pas sesuai panjang teks, memperbaiki ukuran tombol aksi yang terlalu lebar, dan mengubah warna teks log terminal (SYS, NAV, AUTH) agar senada dan serasi dengan tema Streamlit Biru-Abu.
-- **Perbaikan Dropdown Otomasi**: Menambal *bug* yang menyebabkan sistem macet (*Timeout* 30 detik) saat opsi "Confirmed" pada kolom *Dynamic Filter* tidak ditemukan di *interface* tertentu pada saat proses ekstraksi data.
-- **Stabilitas Bot (Page Load Wait)**: Bot sekarang menunggu halaman benar-benar selesai dimuat 100% sebelum melanjutkan ke langkah berikutnya. Ini mencegah error seperti "elemen tidak ditemukan" yang sering terjadi saat server Newspage sedang lambat.
-- **Akurasi Kuantitas**: Memperbaiki sistem input angka saat proses mutasi agar tidak terjadi error atau kekosongan data di portal Newspage.
-- **Tampilan Tabel Eksekusi**: Merapikan tabel proses saat bot berjalan agar lebih enak dibaca dan rapi dari awal eksekusi.
-- **Indikator Loading**: Memperbaiki loading bar yang sering macet saat proses Mutasi Stok berjalan, sekarang progress terlihat real-time.
-- **Notifikasi Rapi**: Menggabungkan notifikasi sukses yang menumpuk menjadi satu ringkasan yang jelas dan bersih.
-- **Optimalisasi Tampilan**: Memperbaiki jarak dan spasi di berbagai halaman agar aplikasi lebih responsif dan nyaman digunakan.
-- **Responsivitas HP (Mobile)**: Memperbaiki label pada tabel riwayat di Dashboard agar teks tidak terpotong atau berantakan saat dibuka melalui layar HP yang kecil.
-- **Keselarasan Halaman Login**: Memperbaiki tata letak teks dan ikon pada halaman *Login* agar posisinya sejajar sempurna dan presisi di tengah layar.
+
+- **Stabilitas Bot (Page Load Wait)**: Bot kini menunggu halaman benar-benar selesai dimuat 100% sebelum melanjutkan ke langkah berikutnya, mencegah error "elemen tidak ditemukan" saat server Newspage sedang lambat.
+- **Perbaikan Tombol Terminate & Sign Out**: Tombol *Confirm* pada dialog Terminate eksekusi dan Sign Out kini 100% andal. Diperbaiki dari masalah *click-jacking*, event listener yang terputus akibat React re-render, hingga pemblokiran lintas-*iframe* di Streamlit Cloud — kini menggunakan layout CSS murni yang tidak bergantung pada JavaScript.
+- **Perbaikan Counter Eksekusi (Bug 0/0)**: Memperbaiki bug di mana counter "PROCESSED X/Y" tidak memperbarui angkanya. Diperbaiki dengan menggunakan `streamlit.components.v1.html()` sebagai pengganti `st.markdown` untuk eksekusi script DOM yang lebih andal.
+- **Perbaikan Flickering UI Eksekusi**: Layout progress bar dan tombol Terminate tidak lagi berkedip/*flicker* selama bot berjalan. Layout kini diinisialisasi sekali di luar loop eksekusi.
+- **Perbaikan Alignment Layout Logger**: Kotak log terminal (`SYSTEM ACTIVITY`) sekarang sejajar sempurna secara horizontal menggunakan flex container, menggantikan `st.columns` yang bermasalah.
+- **Perbaikan Koneksi Ping Superuser**: Fitur ping koneksi di Dashboard untuk kredensial Superuser kini menggunakan Playwright *subprocess* untuk menangani enkripsi RSA ASP.NET yang tidak bisa diakali dengan `requests` biasa.
+- **Perbaikan Dropdown Otomasi**: Menambal bug yang menyebabkan sistem macet (*Timeout* 30 detik) saat opsi "Confirmed" tidak ditemukan di interface tertentu.
+- **Perbaikan Exception Warehouse**: Distributor seperti PT. Panjunan kini menggunakan kode warehouse pengecualian (`00GOOD_WHS`) yang benar alih-alih fallback default.
+- **Perbaikan Race Condition Login**: Mengganti jeda statis 5 detik dengan polling dinamis hingga 60 detik untuk menangani popup "Same User Already Logged On" yang muncul terlambat di server lambat.
+- **Akurasi Kuantitas Mutasi Stok**: Memperbaiki bug input angka saat mutasi yang menyebabkan kekosongan data di portal Newspage.
+- **Desain UI Neo-Brutalism**: Tampilan keseluruhan diubah menjadi gaya *Neo-Brutalism* premium — kotak bersudut 90 derajat, garis tepi hitam tebal, dan efek bayangan blok hitam di semua komponen UI.
+- **Perbaikan Modal Terminate & Sign Out**: Mengganti popup bawaan Streamlit dengan modal CSS murni Neo-Brutalist yang pixel-perfect dan konsisten.
+- **Responsivitas Mobile**: Memperbaiki label tabel di Dashboard agar tidak terpotong di layar HP.
+- **Indikator Loading Real-Time**: Loading bar di modul Mutasi Stok kini berjalan real-time, tidak lagi macet di tengah jalan.
+- **Notifikasi Terpadu**: Menggabungkan notifikasi sukses yang menumpuk menjadi satu ringkasan yang bersih.
