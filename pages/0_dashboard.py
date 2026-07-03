@@ -79,7 +79,12 @@ with col2:
             
             /* Completely hide the Streamlit button */
             div.element-container:has(#neo-signout-marker) + div.element-container {
-                display: none !important;
+                position: absolute !important;
+                opacity: 0 !important;
+                width: 0 !important;
+                height: 0 !important;
+                overflow: hidden !important;
+                z-index: -9999 !important;
             }
         </style>
         <div id="neo-signout-marker" style="display: none;"></div>
@@ -95,7 +100,7 @@ with col2:
                 <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are You Sure?</h3>
                 <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will end your current session and require you to sign in again.</p>
                 <label for="signout-modal-toggle" class="neo-btn-cancel-signout">Cancel</label>
-                <button type="button" class="neo-btn-confirm-signout" onclick="document.querySelector('div.element-container:has(#neo-signout-marker) + div.element-container button').click()">CONFIRM</button>
+                <button type="button" class="neo-btn-confirm-signout" onclick="var btn = window.parent.document.querySelector('div.element-container:has(#neo-signout-marker) + div.element-container button') || document.querySelector('div.element-container:has(#neo-signout-marker) + div.element-container button'); if(btn) { btn.click(); } else { console.log('Button not found'); }">CONFIRM</button>
             </div>
         </div>
     """, unsafe_allow_html=True)

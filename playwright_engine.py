@@ -674,7 +674,12 @@ def _setup_terminate_button(placeholder):
                 
                 /* Completely hide the Streamlit button */
                 div.element-container:has(#neo-kill-bot-marker) + div.element-container {
-                    display: none !important;
+                    position: absolute !important;
+                    opacity: 0 !important;
+                    width: 0 !important;
+                    height: 0 !important;
+                    overflow: hidden !important;
+                    z-index: -9999 !important;
                 }
             </style>
 <div id="neo-kill-bot-marker" style="display: none;"></div>
@@ -690,7 +695,7 @@ def _setup_terminate_button(placeholder):
 <h3 style="font-family: 'Source Sans 3', sans-serif; font-weight: 900; font-size: 1.5rem; color: #0F172A; margin-bottom: 8px; margin-top: 0; text-transform: uppercase;">Are You Sure?</h3>
 <p style='color: #475569; font-weight: 700; font-size: 0.95rem; margin-top: 0; margin-bottom: 24px;'>This action cannot be undone. This will stop the bot immediately.</p>
 <label for="term-modal-toggle" class="neo-btn-cancel">Cancel</label>
-<button type="button" class="neo-btn-confirm-html" onclick="document.querySelector('div.element-container:has(#neo-kill-bot-marker) + div.element-container button').click()">CONFIRM</button>
+<button type="button" class="neo-btn-confirm-html" onclick="var btn = window.parent.document.querySelector('div.element-container:has(#neo-kill-bot-marker) + div.element-container button') || document.querySelector('div.element-container:has(#neo-kill-bot-marker) + div.element-container button'); if(btn) { btn.click(); } else { console.log('Button not found'); }">CONFIRM</button>
 </div>
 </div>
         """, unsafe_allow_html=True)
