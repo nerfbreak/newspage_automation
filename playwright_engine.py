@@ -665,7 +665,7 @@ def _setup_terminate_button(placeholder):
                     z-index: 999999;
                     top: 50%;
                     left: 50%;
-                    margin-top: 90px;
+                    margin-top: 93px;
                     margin-left: 8px;
                 }
                 
