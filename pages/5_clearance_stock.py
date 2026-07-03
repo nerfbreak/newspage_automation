@@ -174,10 +174,10 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
             log_placeholder = st.empty()
 
             log_label_placeholder.markdown(f"""
-                <div style='display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;'>
-                        <div style='background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
-                        <div style='background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{selected_distributor} ({bot_user})</div>
-                    </div>
+                <div style='display: inline-flex; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; margin-bottom: 8px; background-color: #FFFFFF; align-items: center;'>
+                    <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #FFFFFF; background-color: #0068C9; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px; border-right: 2px solid #0F172A;'>System Activity</span>
+                    <span style='font-family: "Source Sans 3", sans-serif; font-size: 0.7rem; font-weight: 900; color: #0F172A; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px;'>EXECUTION LOG</span>
+                </div>
             """, unsafe_allow_html=True)
             bot_ui_log, _ = make_terminal_logger(log_placeholder)
 
