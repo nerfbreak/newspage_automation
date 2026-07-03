@@ -86,7 +86,7 @@ with col2:
                 position: fixed !important;
                 top: 50% !important;
                 left: 50% !important;
-                margin-top: 90px !important;
+                margin-top: 94px !important;
                 margin-left: 8px !important;
                 z-index: 999999 !important;
                 background: #E63946 !important;
