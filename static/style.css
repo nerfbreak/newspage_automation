@@ -226,8 +226,8 @@ div[role="dialog"] button[aria-label="Close"] svg {
     stroke-width: 3px !important;
 }
 
-/* Specifically target the PROCESSED button layout which is the next column after #processed-btn-anchor */
-div[data-testid="stColumn"]:has(#processed-btn-anchor) + div[data-testid="stColumn"] button {
+/* Specifically target the PROCESSED stealth HTML button */
+.stealth-term-btn {
     background-color: #FFDE59 !important;
     border: 2px solid #0F172A !important;
     box-shadow: 3px 3px 0px 0px #0F172A !important;
@@ -238,25 +238,37 @@ div[data-testid="stColumn"]:has(#processed-btn-anchor) + div[data-testid="stColu
     padding: 0 16px !important;
     transform: none !important;
     transition: all 0.2s ease !important;
-}
-div[data-testid="stColumn"]:has(#processed-btn-anchor) + div[data-testid="stColumn"] button p {
     color: #0F172A !important;
     font-weight: 800 !important;
     font-size: 0.85rem !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
+    width: 100% !important;
+    cursor: pointer !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 /* Turn RED on hover to indicate it's actually a TERMINATE button! */
-div[data-testid="stColumn"]:has(#processed-btn-anchor) + div[data-testid="stColumn"] button:hover {
+.stealth-term-btn:hover {
     background-color: #E63946 !important;
+    color: #FFFFFF !important;
     transform: translate(2px, 2px) !important;
     box-shadow: 1px 1px 0px 0px #0F172A !important;
 }
-div[data-testid="stColumn"]:has(#processed-btn-anchor) + div[data-testid="stColumn"] button:hover p {
-    color: #FFFFFF !important;
+/* Hide the actual Streamlit button that receives the JS click */
+div.element-container:has([id^="stealth-target-"]) + div.element-container {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    border: 0 !important;
 }
 @media (max-width: 768px) {
-    div[data-testid="stColumn"]:has(#processed-btn-anchor) + div[data-testid="stColumn"] button {
+    .stealth-term-btn {
         margin-top: 16px !important;
         margin-bottom: 16px !important;
     }

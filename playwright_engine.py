@@ -580,14 +580,20 @@ def _render_progress_label(placeholder, dist, user, current, total):
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #0068C9; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>ACTIVE ACCOUNT</div>
                     <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{dist} ({user})</div>
                 </div>
-                <div id='processed-btn-anchor' style='display: none;'></div>
             """, unsafe_allow_html=True)
         with c_btn:
+            st.markdown(f"""
+                <button class='stealth-term-btn' onclick="if(confirm('Klik tombol OK untuk membatalkan progress Bot --->')){{ const b = document.querySelector('#stealth-target-{current}').closest('.element-container').nextElementSibling.querySelector('button'); if(b) b.click(); }}">
+                    PROCESSED
+                </button>
+                <div id='stealth-target-{current}' style='display:none;'></div>
+            """, unsafe_allow_html=True)
+            
             def terminate_callback():
                 st.session_state.is_bot_running = False
                 st.session_state.execute_done = False
                 
-            st.button("PROCESSED", key=f"term_bot_{current}_{total}", use_container_width=True, on_click=terminate_callback)
+            st.button("KILL", key=f"term_bot_{current}_{total}", use_container_width=True, on_click=terminate_callback)
         with c_text:
             st.markdown(f"""
                 <div style='height: 40px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; color: #0F172A; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 0 16px; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em;'>{current}/{total}</div>
