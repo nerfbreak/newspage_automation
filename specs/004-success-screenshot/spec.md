@@ -41,6 +41,7 @@ As a user, I want to receive a screenshot of the final browser screen in Telegra
 
 - **FR-001**: The system MUST capture a screenshot of the active browser window immediately upon the successful completion of an automated Playwright task (prior to the logout sequence).
   - *Clarification (BUG-001)*: For transaction-generating modules (like Stock Adjustment), the system MUST navigate to the transaction list view and search for the newly created transaction before capturing the screenshot, ensuring the image provides meaningful proof.
+  - *Clarification (BUG-002)*: The search filter for Status MUST specifically be set to "Approved" (`"A"`) rather than selecting all statuses.
 - **FR-002**: The system MUST attach the captured screenshot to the success notification sent to the configured Telegram chat.
 - **FR-003**: The system MUST gracefully handle screenshot failures (e.g., file system errors) by falling back to sending a text-only success notification.
 - **FR-004**: The system MUST ensure the existing error screenshot functionality remains unaffected.
@@ -60,3 +61,4 @@ As a user, I want to receive a screenshot of the final browser screen in Telegra
 
 ---
 **Bugfix**: 2026-07-04 — [BUG-001] Updated FR-001 to mandate navigating to the list view for Stock Adjustment screenshots.
+**Bugfix**: 2026-07-05 — [BUG-002] Updated FR-001 to specify "Approved" status filter for Stock Adjustment screenshots.

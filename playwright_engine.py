@@ -642,8 +642,8 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         today_btn.wait_for(state="visible", timeout=5000)
         today_btn.click(force=True)
         
-        # Set Status to empty (All) to ensure Pending transactions show up
-        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("")
+        # Set Status to Approved (A) to ensure only valid newly created transactions show up
+        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("A")
         
         # Click Search
         page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").click(force=True)

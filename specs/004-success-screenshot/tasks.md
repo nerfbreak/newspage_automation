@@ -40,8 +40,8 @@
 
 - [X] T001 [US1] Inject screenshot capture logic before logout in `run_extract` in `c:\Users\Reckitt\Documents\Optimize\playwright_engine.py`
 - [X] T002 [US1] Inject screenshot capture logic before logout in `run_sales_extract` in `c:\Users\Reckitt\Documents\Optimize\playwright_engine.py` (depends on T001)
-- [X] T003 [US1] ⚠️ Reopened: Inject screenshot capture logic before logout in `run_execution` in `c:\Users\Reckitt\Documents\Optimize\playwright_engine.py` (depends on T002) *(reopened & completed — BUG-001: must navigate to List View and search first)*
-- [X] T004 [US1] ⚠️ Reopened: Inject screenshot capture logic before logout in `run_execution_manual` in `c:\Users\Reckitt\Documents\Optimize\playwright_engine.py` (depends on T003) *(reopened & completed — BUG-001: must navigate to List View and search first)*
+- [X] T003 [US1] ⚠️ Reopened: Inject screenshot capture logic before logout in `run_execution` in `c:\Users\Reckitt\Documents\Optimize\playwright_engine.py` (depends on T002) *(reopened & completed — BUG-002: change status filter to 'A')*
+- [X] T004 [US1] ⚠️ Reopened: Inject screenshot capture logic before logout in `run_execution_manual` in `c:\Users\Reckitt\Documents\Optimize\playwright_engine.py` (depends on T003) *(reopened & completed — BUG-002: change status filter to 'A')*
 - [X] T005 [US1] Inject screenshot capture logic before logout in `run_mutasi_execution` in `c:\Users\Reckitt\Documents\Optimize\playwright_engine.py` (depends on T004)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
@@ -94,3 +94,4 @@
 
 ---
 **Bugfix**: 2026-07-04 — [BUG-001] Updated from bugfix patch.
+**Bugfix**: 2026-07-05 — [BUG-002] Updated from bugfix patch.

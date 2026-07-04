@@ -14,7 +14,7 @@
 ## Summary
 
 Add a feature to capture a screenshot of the browser right before the logout sequence upon successful task completion, and pass this screenshot to the Telegram alert callback. This requires surgical modifications to `playwright_engine.py` across extraction and execution workflows.
-*(BUG-001)*: For execution workflows, the bot will specifically navigate to the list view, filter by today's date, and search to ensure the screenshot captures the actual transaction record.
+*(BUG-001 & BUG-002)*: For execution workflows, the bot will specifically navigate to the list view, filter by today's date and "Approved" status, and search to ensure the screenshot captures the actual transaction record.
 
 ## Technical Context
 
@@ -70,3 +70,4 @@ None.
 
 ---
 **Bugfix**: 2026-07-04 — [BUG-001] Updated from bugfix patch.
+**Bugfix**: 2026-07-05 — [BUG-002] Updated from bugfix patch.
