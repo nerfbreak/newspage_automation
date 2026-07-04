@@ -650,8 +650,8 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").click(force=True)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj search")
         
-        # Wait for the first row (latest transaction) to be visible
-        page.locator("id=pag_I_StkAdj_grd_List_ctl02_grs_TXN_NO_Value").wait_for(state="visible", timeout=10000)
+        # Wait for the first row (latest transaction) to be visible - REMOVED BY USER REQUEST
+        # page.locator("id=pag_I_StkAdj_grd_List_ctl02_grs_TXN_NO_Value").wait_for(state="visible", timeout=10000)
         
         # Capture screenshot
         os.makedirs("screenshots", exist_ok=True)

@@ -196,3 +196,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 
 - Added an optional file uploader (CSV/Excel) to the Manual Entry feature in pages/1_inventory_adjustment.py to allow users to upload files and map columns directly into the manual entry grid, per Spec 005.
 - **2026-07-05**: **Bug Fix**: Fixed a TimeoutError in playwright_engine.py during Stock Adjustment success screenshot capture by bypassing the flaky ASP.NET CalendarExtender UI and injecting the date directly into the text input.
+- **2026-07-05**: **Bug Fix**: Removed the explicit wait for the grid row pag_I_StkAdj_grd_List_ctl02_grs_TXN_NO_Value in the Stock Adjustment screenshot logic to prevent a 10000ms TimeoutError. The bot now takes the screenshot immediately after the search loads.
