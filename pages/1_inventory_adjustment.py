@@ -85,6 +85,7 @@ if "Auto Compare" in adj_mode:
                         </style>
                         {make_solid_box(f"FILE LOADED: {f.name}", "#FFDE59", "#0F172A")}
                     """, unsafe_allow_html=True)
+                    st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
                     if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
                         st.session_state.f2_key += 1
                         st.rerun()
@@ -110,6 +111,7 @@ if "Auto Compare" in adj_mode:
             file2 = st.session_state.get(f"file2_uploader_{st.session_state.get('f2_key', 0)}")
             
         if st.session_state.np_df is not None:
+            st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
             if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
                 st.session_state.np_df = None
                 st.rerun()
@@ -268,6 +270,7 @@ elif "Manual Entry" in adj_mode:
                 st.error(f"Error parsing file: {e}")
                 st.session_state.manual_uploaded_df = None
                 
+            st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
             if st.button("Hapus File", type="secondary", icon=":material/delete:", use_container_width=True):
                 st.session_state.manual_uploader_key += 1
                 st.session_state.manual_uploaded_df = None

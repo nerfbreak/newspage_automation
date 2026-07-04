@@ -70,6 +70,7 @@ if uploaded_file is not None:
         </style>
         {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
     """, unsafe_allow_html=True)
+    st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
     if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
         st.session_state.initial_stock_file = None
         st.session_state.initial_stock_raw = None
@@ -150,6 +151,7 @@ if st.session_state.initial_stock_df is not None:
     df_init = st.session_state.initial_stock_df
 
     st.markdown(make_solid_box(f"Loaded — {len(df_init)} items from uploaded file", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+    st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
     if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
         st.session_state.initial_stock_df = None
         st.session_state.initial_stock_raw = None

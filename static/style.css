@@ -14,6 +14,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;600;700;800;900&display=swap');
 
 /* --- Global Elements & Reset --- */
+span[data-testid="stIconMaterial"], .material-symbols-rounded {
+    font-variation-settings: 'FILL' 1, 'wght' 900, 'GRAD' 200, 'opsz' 48 !important;
+}
 * {
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
@@ -248,6 +251,29 @@ div[role="dialog"] button[aria-label="Close"] svg {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Destructive action buttons (Hapus File, Clear Data) via injected anchor */
+div[data-testid="element-container"]:has(.destructive-btn-anchor) + div[data-testid="element-container"] button,
+div.element-container:has(.destructive-btn-anchor) + div.element-container button {
+    background-color: #E63946 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
+}
+div[data-testid="element-container"]:has(.destructive-btn-anchor) + div[data-testid="element-container"] button:hover,
+div.element-container:has(.destructive-btn-anchor) + div.element-container button:hover {
+    background-color: #FFFFFF !important;
+    color: #E63946 !important;
+    transform: translate(2px, 2px) !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+}
+div[data-testid="element-container"]:has(.destructive-btn-anchor) + div[data-testid="element-container"] button:hover p,
+div.element-container:has(.destructive-btn-anchor) + div.element-container button:hover p,
+div[data-testid="element-container"]:has(.destructive-btn-anchor) + div[data-testid="element-container"] button:hover span,
+div.element-container:has(.destructive-btn-anchor) + div.element-container button:hover span {
+    color: #E63946 !important;
 }
 /* Turn RED on hover to indicate it's actually a TERMINATE button! */
 .stealth-term-btn:hover {
@@ -1066,19 +1092,23 @@ a[data-testid="stPageLink-NavLink"] {
     box-shadow: 4px 4px 0px 0px #0F172A !important;
 }
 a[data-testid="stPageLink-NavLink"]:hover {
-    background: #FFFFFF !important;
+    background: #FFDE59 !important;
     transform: translate(2px, 2px) !important;
-    
+    box-shadow: 2px 2px 0px 0px #0F172A !important;
 }
 a[data-testid="stPageLink-NavLink"] p {
     font-family: "Source Sans 3", sans-serif !important;
     font-size: 13px !important;
-    font-weight: 800 !important;
+    font-weight: 900 !important;
     color: #0F172A !important;
     margin: 0px !important;
     line-height: 1 !important;
     letter-spacing: 0.05em !important;
     text-transform: uppercase !important;
+}
+a[data-testid="stPageLink-NavLink"] span[data-testid="stIconMaterial"] {
+    font-variation-settings: 'FILL' 1, 'wght' 900, 'GRAD' 200, 'opsz' 48 !important;
+    color: #0F172A !important;
 }
 
 /* Hide Secret Crawler from Sidebar */

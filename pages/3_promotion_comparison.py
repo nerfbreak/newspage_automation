@@ -65,6 +65,7 @@ with st.container(border=True):
                         </style>
                         {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
                     """, unsafe_allow_html=True)
+                    st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
                     if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
                         # Just force rerun to clear
                         st.rerun()

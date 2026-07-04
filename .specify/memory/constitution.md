@@ -1,16 +1,12 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: [TEMPLATE] → 1.0.0 (initial ratification)
-Added sections:
-  - Core Principles (5 principles)
-  - Security & Credential Standards
-  - Development Workflow & Code Freeze
-  - Governance
+Version change: 1.0.0 → 1.1.0 (Added external integration principle)
+Added sections: Principle VI. Free & Serverless External Integrations
+Removed sections: None
 Templates requiring updates:
-  ✅ .specify/memory/constitution.md (this file — written now)
-  ✅ Aligned with .agents/MEMORY.md and .agents/AGENTS.md constraints
-Follow-up TODOs: None — all placeholders resolved.
+  ✅ .specify/memory/constitution.md (Reviewed)
+Follow-up TODOs: None
 -->
 
 # Optimize Newspage Automation Constitution
@@ -75,6 +71,11 @@ MUST track `logged_in`, `current_user`, and `last_activity`. Sessions expire aft
 consistent, structured log data. Gaps in logging corrupt analytics and make it
 impossible to audit which user ran which operation.
 
+### VI. Free & Serverless External Integrations
+All new external integrations or messaging bridges (e.g., forwarding Telegram screenshots to WhatsApp via Open-WA) MUST prioritize zero-cost, fully free deployment architectures. If a separate project or web service is required for the integration, it MUST be hosted on platforms providing adequate free tiers (e.g., Vercel, Render) without incurring ongoing costs.
+
+**Rationale**: To maintain the project's low-overhead operating model, auxiliary features like notification forwarding should not introduce new monthly server expenses.
+
 ## Security & Credential Standards
 
 - All secrets MUST be stored in `.streamlit/secrets.toml` — this file is gitignored.
@@ -121,4 +122,4 @@ Amendments require:
 All AI coding agents working on this project MUST read this constitution at the
 start of each session alongside `.agents/MEMORY.md`.
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-06-30
+**Version**: 1.1.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-04
