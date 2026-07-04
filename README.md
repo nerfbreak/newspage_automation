@@ -143,3 +143,8 @@ All runtime configuration containing sensitive URLs and credentials is stored in
 ---
 
 *Built by **Muhammad Rizki Firdaus** · **@cakwe.sore** · 2026*
+
+## Additional Services
+
+- [Telegram to WhatsApp Relay](specs/007-telegram-wa-relay/quickstart.md) - A standalone microservice for forwarding screenshots to WhatsApp.
+

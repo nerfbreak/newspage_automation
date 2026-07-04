@@ -56,7 +56,7 @@ if "Auto Compare" in adj_mode:
     
     with col1:
         st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-        with st.container(border=True, height=175):
+        with st.container(border=True, height=165):
             list_dist = database.get_distributor_list(supabase)
             url_dist, default_index = resolve_distributor_url(list_dist)
 
@@ -72,7 +72,7 @@ if "Auto Compare" in adj_mode:
 
     with col2:
         st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-        with st.container(border=True, height=175):
+        with st.container(border=True, height=165):
             def handle_fragment_upload():
                 if "f2_key" not in st.session_state: st.session_state.f2_key = 0
                 f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key=f"file2_uploader_{st.session_state.f2_key}")
