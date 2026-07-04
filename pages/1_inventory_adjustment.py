@@ -65,10 +65,10 @@ if "Auto Compare" in adj_mode:
             st.query_params["d"] = encode_param(selected_distributor)
             bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
             if bot_user: st.session_state.current_np_user_id = bot_user
-        
-            btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
-            extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
             file1 = None
+            
+        btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
+        extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
 
     with col2:
         st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
@@ -108,12 +108,14 @@ if "Auto Compare" in adj_mode:
             else:
                 handle_fragment_upload()
             file2 = st.session_state.get(f"file2_uploader_{st.session_state.get('f2_key', 0)}")
+            
+        if st.session_state.np_df is not None:
+            if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
+                st.session_state.np_df = None
+                st.rerun()
 
     if st.session_state.np_df is not None:
         st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-        if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
-            st.session_state.np_df = None
-            st.rerun()
 
     ext_label_placeholder = st.empty()
     ext_log_placeholder = st.empty()
