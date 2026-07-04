@@ -655,14 +655,13 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
         
-        # Leave Date From alone (defaults to today in Newspage)
-        # Clear Date To (defaults to empty)
-        page.evaluate("() => { var el = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtTo_Value'); if(el) { el.value = ''; el.dispatchEvent(new Event('change', {bubbles: true})); } }")
+        # Do not modify dates at all to avoid ASP.NET validation blocking the search
         
-        # Set Status to Pending (P) because newly created stock adjustments are Open (Pending)
-        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("P")
+        # Set Status to empty string (All Statuses) to guarantee the new transaction is found
+        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("")
         
-        # Click Search
+        # Click Search using Playwright click, but wait 1s before to ensure form is ready
+        page.wait_for_timeout(1000)
         page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").click(force=True)
         page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj search")
