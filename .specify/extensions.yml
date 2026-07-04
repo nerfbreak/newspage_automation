@@ -7,6 +7,15 @@ installed:
 settings:
   auto_execute_hooks: true
 hooks:
+  before_specify:
+  - extension: checkpoint
+    command: speckit.constitution
+    enabled: true
+    optional: true
+    priority: 5
+    prompt: Review and update the project constitution before writing the new feature spec?
+    description: Ensure constitution is current before specifying a new feature
+    condition: null
   after_specify:
   - extension: agent-context
     command: speckit.agent-context.update
@@ -41,4 +50,13 @@ hooks:
     priority: 10
     prompt: Run verify-tasks in a fresh session to check for phantom completions
     description: Post-implementation phantom completion detector
+    condition: null
+  after_checkpoint:
+  - extension: checkpoint
+    command: git push
+    enabled: true
+    optional: true
+    priority: 10
+    prompt: Push committed changes to remote repository?
+    description: Push checkpoint commit to GitHub after implementation
     condition: null

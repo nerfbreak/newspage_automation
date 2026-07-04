@@ -46,3 +46,41 @@ Whenever the user asks you to implement a new feature, fix a bug, or make archit
 - **NO TOUCH RULE**: Do NOT refactor, modify, or rewrite any existing helper function, playwright selector, or page business logic under the guise of optimization when adding new features or resolving issues. Keep existing logic intact unless explicitly requested by the user.
 - **PASSWORD VERIFICATION FOR UNLOCKING**: If the user explicitly asks to modify, override, or change any of the locked business logic, you MUST first ask the user to provide the unlock password. The password is "Dama". Do not execute any changes to the frozen logic until the user successfully provides this exact password in the chat.
 - **CHANGELOG RESTRICTION**: When updating CHANGELOG.md, you MUST only include user-facing Features (under `### Added`) and Bug Fixes (under `### Fixed`). Do not include internal refactorings, reverts, or developer-only changes unless explicitly requested. This rule is locked.
+
+## 🔒 MANDATORY SPEC-KIT WORKFLOW (LOCKED — CANNOT BE SKIPPED)
+
+Whenever the user requests a **new feature**, **feature update**, or **significant change**, you MUST follow the complete Spec-Kit workflow in order. This is non-negotiable and cannot be skipped, shortened, or reordered.
+
+### Required Workflow Order
+
+1. `/speckit-constitution` — Review and update the project constitution if the new feature introduces new principles or governance concerns. ALWAYS run this first to ensure alignment.
+2. `/speckit-specify` — Write a formal feature specification from the user's natural language description.
+3. `/speckit-plan` — Generate the technical implementation plan from the spec.
+4. `/speckit-tasks` — Break the plan into dependency-ordered, actionable tasks.
+5. `/speckit-implement` — Execute all tasks from tasks.md.
+6. `/speckit-verify-run` + `/speckit-verify-tasks-run` — Validate the implementation against spec, plan, and tasks.
+7. `/speckit-checkpoint-commit` — Commit the verified implementation to git.
+
+### Trigger Conditions
+
+This workflow is triggered automatically when the user says ANY of the following (or similar):
+- "tambah fitur ..."
+- "bikin fitur ..."
+- "update fitur ..."
+- "gw mau ada fitur ..."
+- "tolong tambahin ..."
+- "add feature ..."
+- "implement ..."
+- "buat halaman baru ..."
+- Or any other natural-language description of a new capability.
+
+### Skipping Steps
+
+You may **only** skip a step if the user explicitly says to skip it (e.g., "skip ke implement langsung"). You must clearly note which step is being skipped and why.
+
+### Minor Fixes & Bug Fixes
+
+For bug fixes or trivial one-line corrections that do NOT introduce new behavior:
+- Use `/speckit-bugfix-report` → `/speckit-bugfix-patch` → `/speckit-bugfix-verify` instead of the full feature workflow.
+- Then `/speckit-checkpoint-commit` to save the fix.
+
