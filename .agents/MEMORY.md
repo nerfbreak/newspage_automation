@@ -193,3 +193,5 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-07-05**: **UI Enhancement:** Updated the `make_solid_box` ("Extracted" info box) to use a solid `#0068C9` blue background with white font, and `make_success_box` ("Success" box) to use a solid `#2E7D32` green background with white font, aligning with the neo-brutalism design style.
 - **2026-07-05**: **UI Enhancement:** Styled internal grid lines of `st.data_editor` to be thick solid black by injecting `--gdg-border-color` and `--gdg-line-color` CSS variables to `#0F172A` in `style.css`.
 - **2026-07-05**: **UI Enhancement:** Renamed column headers in `1_inventory_adjustment.py` data editor from "Qty PAC" to "PAC", "Qty CAR" to "CAR", and "Qty EA" to "EA" per user request.
+
+- Added an optional file uploader (CSV/Excel) to the Manual Entry feature in pages/1_inventory_adjustment.py to allow users to upload files and map columns directly into the manual entry grid, per Spec 005.

@@ -1,4 +1,4 @@
-﻿# Tasks: Add file uploader to manual entry
+# Tasks: Add file uploader to manual entry
 
 **Input**: Design documents from /specs/005-manual-entry-uploader/
 
@@ -8,7 +8,7 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Update pages/5_manual_entry.py to import pandas and io
+- [X] T001 Update pages/5_manual_entry.py to import pandas and io
 
 ---
 
@@ -18,7 +18,7 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 Ensure state variables for uploaded file data exist in pages/5_manual_entry.py
+- [X] T002 Ensure state variables for uploaded file data exist in pages/5_manual_entry.py
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -32,11 +32,11 @@
 
 ### Implementation for User Story 1
 
-- [ ] T003 [US1] Add st.file_uploader component to pages/5_manual_entry.py (depends on T002)
-- [ ] T004 [US1] Implement file parsing logic (pd.read_csv, pd.read_excel) in pages/5_manual_entry.py (depends on T003)
-- [ ] T005 [US1] Render parsed data preview via st.dataframe in pages/5_manual_entry.py (depends on T004)
-- [ ] T006 [US1] Add UI dropdowns (st.selectbox) for mapping PAC, CAR, and EA to uploaded columns in pages/5_manual_entry.py (depends on T005)
-- [ ] T007 [US1] Implement data extraction and injection logic using the mapped columns in pages/5_manual_entry.py (depends on T006)
+- [X] T003 [US1] Add st.file_uploader component to pages/5_manual_entry.py (depends on T002)
+- [X] T004 [US1] Implement file parsing logic (pd.read_csv, pd.read_excel) in pages/5_manual_entry.py (depends on T003)
+- [X] T005 [US1] Render parsed data preview via st.dataframe in pages/5_manual_entry.py (depends on T004)
+- [X] T006 [US1] Add UI dropdowns (st.selectbox) for mapping PAC, CAR, and EA to uploaded columns in pages/5_manual_entry.py (depends on T005)
+- [X] T007 [US1] Implement data extraction and injection logic using the mapped columns in pages/5_manual_entry.py (depends on T006)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -46,7 +46,7 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T008 [P] Apply Neo-Brutalist styling classes to any new buttons or elements if needed in pages/5_manual_entry.py
+- [X] T008 [P] Apply Neo-Brutalist styling classes to any new buttons or elements if needed in pages/5_manual_entry.py
 
 ---
 

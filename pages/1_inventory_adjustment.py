@@ -1,4 +1,5 @@
 import time
+import io
 import streamlit as st
 import utils
 import database
@@ -34,6 +35,8 @@ init_session_state(
     execute_done=False,
     adj_mode="Auto Compare",
     manual_df=pd.DataFrame([{"SKU": "", "PAC": 0, "CAR": 0, "EA": 0}]),
+    manual_uploader_key=0,
+    manual_uploaded_df=None,
 )
 
 render_wakelock()
@@ -244,6 +247,59 @@ elif "Manual Entry" in adj_mode:
         st.query_params["d"] = encode_param(selected_distributor)
         bot_user, bot_pass = database.get_distributor_creds(supabase, selected_distributor)
         
+    st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown("<div class='header-wrapper-left'><span class='section-header-underline'>OPTIONAL: UPLOAD FILE</span></div>", unsafe_allow_html=True)
+        
+        uploaded_manual = st.file_uploader("Upload Excel / CSV", type=["csv", "xlsx", "xls"], key=f"manual_uploader_{st.session_state.manual_uploader_key}")
+        
+        if uploaded_manual:
+            st.markdown(make_solid_box(f"FILE LOADED: {uploaded_manual.name}", "#FFDE59", "#0F172A"), unsafe_allow_html=True)
+            try:
+                if uploaded_manual.name.endswith('.csv'):
+                    df_up = pd.read_csv(uploaded_manual)
+                else:
+                    df_up = pd.read_excel(uploaded_manual)
+                
+                st.session_state.manual_uploaded_df = df_up
+            except Exception as e:
+                st.error(f"Error parsing file: {e}")
+                st.session_state.manual_uploaded_df = None
+                
+            if st.button("Hapus File", type="secondary", icon=":material/delete:", use_container_width=True):
+                st.session_state.manual_uploader_key += 1
+                st.session_state.manual_uploaded_df = None
+                st.rerun()
+
+        if st.session_state.get("manual_uploaded_df") is not None:
+            df_up = st.session_state.manual_uploaded_df
+            st.dataframe(df_up.head(5), use_container_width=True)
+            
+            st.markdown("<div style='margin-bottom:10px;'><b>Mapping Kolom:</b></div>", unsafe_allow_html=True)
+            mcol1, mcol2, mcol3, mcol4 = st.columns(4)
+            cols = ["-"] + list(df_up.columns)
+            with mcol1:
+                sel_sku = st.selectbox("SKU Column", cols, index=1 if len(cols)>1 else 0)
+            with mcol2:
+                sel_pac = st.selectbox("PAC Column", cols, index=0)
+            with mcol3:
+                sel_car = st.selectbox("CAR Column", cols, index=0)
+            with mcol4:
+                sel_ea  = st.selectbox("EA Column", cols, index=0)
+                
+            if st.button("Apply Mapping ke Tabel", type="primary", use_container_width=True, icon=":material/done_all:"):
+                if sel_sku == "-":
+                    st.error("SKU Column harus dipilih.")
+                else:
+                    new_df = pd.DataFrame()
+                    new_df["SKU"] = df_up[sel_sku].astype(str)
+                    new_df["PAC"] = pd.to_numeric(df_up[sel_pac], errors='coerce').fillna(0) if sel_pac != "-" else 0
+                    new_df["CAR"] = pd.to_numeric(df_up[sel_car], errors='coerce').fillna(0) if sel_car != "-" else 0
+                    new_df["EA"]  = pd.to_numeric(df_up[sel_ea], errors='coerce').fillna(0)  if sel_ea != "-" else 0
+                    
+                    st.session_state.manual_df = new_df
+                    st.rerun()
+
     st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
     with st.container(border=True):
         st.markdown("<div class='header-wrapper-center-notop'><span class='section-header-underline'>FIELD SKU INPUT</span></div>", unsafe_allow_html=True)
