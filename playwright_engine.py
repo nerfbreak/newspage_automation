@@ -26,7 +26,17 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
     with sync_playwright() as p:
         ui_log("SYS", "Spawning browser context with isolated session...")
         if progress_bar: progress_bar.progress(0.05)
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(
+            headless=True,
+            args=[
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--no-zygote",
+                "--disable-software-rasterizer"
+            ]
+        )
         context = browser.new_context(viewport={"width": 1920, "height": 1080})
         page = context.new_page()
         try:
@@ -42,8 +52,17 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
                 pass
             raise
         finally:
-            browser.close()
-            ui_log("SYS", "Browser closed. Releasing session memory...")
+            ui_log("SYS", "Closing browser context and releasing memory...")
+            try:
+                context.close()
+            except:
+                pass
+            try:
+                browser.close()
+            except:
+                pass
+            import gc
+            gc.collect()
 
 def ensure_playwright():
     try:
