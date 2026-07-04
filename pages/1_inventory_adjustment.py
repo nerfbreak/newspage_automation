@@ -56,7 +56,7 @@ if "Auto Compare" in adj_mode:
     
     with col1:
         st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-        with st.container(border=True):
+        with st.container(border=True, height=175):
             list_dist = database.get_distributor_list(supabase)
             url_dist, default_index = resolve_distributor_url(list_dist)
 
@@ -67,12 +67,12 @@ if "Auto Compare" in adj_mode:
             if bot_user: st.session_state.current_np_user_id = bot_user
             file1 = None
             
-        btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
-        extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
+            btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
+            extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
 
     with col2:
         st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-        with st.container(border=True):
+        with st.container(border=True, height=175):
             def handle_fragment_upload():
                 if "f2_key" not in st.session_state: st.session_state.f2_key = 0
                 f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key=f"file2_uploader_{st.session_state.f2_key}")
