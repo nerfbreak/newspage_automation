@@ -41,7 +41,7 @@ bot_status = "RUNNING" if st.session_state.is_promo_bot_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="PROMO ENGINE")
 render_header("Promotion Comparison", st.session_state.current_user)
 
-with st.expander("📖 Panduan Pengguna - Promotion Comparison"):
+with st.expander(":material/menu_book: Panduan Pengguna - Promotion Comparison"):
     st.markdown("""
     **Cara Penggunaan:**
     1. Unggah file tracker promosi dari SharePoint (BDP Tracker).

@@ -40,7 +40,7 @@ bot_status = "RUNNING" if st.session_state.is_clearance_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="CLEARANCE ENGINE")
 render_header("Clearance Stock", st.session_state.current_user)
 
-with st.expander("📖 Panduan Pengguna - Clearance Stock"):
+with st.expander(":material/menu_book: Panduan Pengguna - Clearance Stock"):
     st.markdown("""
     **Cara Penggunaan:**
     1. Pilih **Distributor** yang stoknya ingin dinolkan (clearance).

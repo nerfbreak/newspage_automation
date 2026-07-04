@@ -153,7 +153,7 @@ with col2:
 
     st.button("CONFIRM", key="signout_confirm_hidden", on_click=signout_callback, use_container_width=True)
 
-with st.expander("📖 Panduan Pengguna - Automation Tool (Dashboard)"):
+with st.expander(":material/menu_book: Panduan Pengguna - Automation Tool (Dashboard)"):
     st.markdown("""
     **Cara Penggunaan Dashboard:**
     1. **Overview:** Halaman ini menyajikan ringkasan seluruh aktivitas bot otomasi (Extract, Adjust, Mutasi, Clearance, dll) hari ini.

@@ -41,7 +41,7 @@ bot_status = "RUNNING" if st.session_state.is_mutasi_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="MUTASI ENGINE")
 render_header("Mutasi Stock", st.session_state.current_user)
 
-with st.expander("📖 Panduan Pengguna - Mutasi Stock"):
+with st.expander(":material/menu_book: Panduan Pengguna - Mutasi Stock"):
     st.markdown("""
     **Cara Penggunaan:**
     1. Pilih **Distributor Pengirim** dan **Distributor Penerima**. Keduanya harus berbeda.

@@ -40,7 +40,7 @@ bot_status = "RUNNING" if st.session_state.is_initial_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="INITIAL STOCK ENGINE")
 render_header("Initial Stock", st.session_state.current_user)
 
-with st.expander("📖 Panduan Pengguna - Initial Stock"):
+with st.expander(":material/menu_book: Panduan Pengguna - Initial Stock"):
     st.markdown("""
     **Cara Penggunaan:**
     1. Pilih **Distributor** yang akan diisi saldo awal stoknya (Initial Stock).
