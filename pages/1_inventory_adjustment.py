@@ -260,9 +260,9 @@ elif "Manual Entry" in adj_mode:
             width="stretch",
             column_config={
                 "SKU": st.column_config.TextColumn("SKU Code", required=True),
-                "PAC": st.column_config.NumberColumn("Qty PAC", default=0),
-                "CAR": st.column_config.NumberColumn("Qty CAR", default=0),
-                "EA": st.column_config.NumberColumn("Qty EA", default=0),
+                "PAC": st.column_config.NumberColumn("PAC", default=0),
+                "CAR": st.column_config.NumberColumn("CAR", default=0),
+                "EA": st.column_config.NumberColumn("EA", default=0),
             },
             key="manual_editor"
         )

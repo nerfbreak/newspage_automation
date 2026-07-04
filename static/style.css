@@ -779,6 +779,9 @@ div[data-testid="stDataFrame"] {
     background-color: #FFFFFF !important;
     margin-bottom: 24px !important;
     transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+    /* Force Glide Data Grid internal lines to be black */
+    --gdg-border-color: #0F172A !important;
+    --gdg-line-color: #0F172A !important;
 }
 div[data-testid="stDataFrame"]:hover {
     
@@ -1190,6 +1193,201 @@ div.element-container:has(.neo-container-marker) + div > div[data-testid="stVert
 }
 
 /* Ensure the column itself stretches */
+[data-testid="column"] > div:has(.neo-container-marker) + div {
+    flex-grow: 1;
+}
+
+/* --- True Neo-Brutalist HTML Tables (st.markdown fallback) --- */
+.neo-table-wrapper {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 3px solid #0F172A;
+    box-shadow: 6px 6px 0px 0px #0F172A;
+    background-color: #FFFFFF;
+    margin-bottom: 24px;
+}
+table.neo-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table.neo-table th, table.neo-table td {
+    border: 2px solid #0F172A;
+    padding: 10px 14px;
+    color: #0F172A;
+}
+table.neo-table td {
+    font-size: 1rem;
+}
+table.neo-table th {
+    font-size: 0.85rem;
+    background-color: #f1f5f9;
+    font-weight: 800;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 4px solid #0F172A !important;
+}
+
+/* NEO-BRUTALISM FILE UPLOADER */
+div[data-testid="stFileUploader"],
+div[data-testid="stFileUploader"] * {
+    touch-action: pan-y !important;
+    overflow: hidden !important;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    max-height: none !important;
+}
+section[data-testid="stFileUploaderDropzone"] {
+    background-color: #FFFFFF !important;
+    border: 3px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
+    padding: 24px !important;
+    overflow: hidden !important;
+    touch-action: pan-y !important;
+}
+section[data-testid="stFileUploaderDropzone"] button[kind="secondary"] {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    border: 3px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    text-transform: uppercase !important;
+    font-weight: 800 !important;
+    transition: all 0.2s ease !important;
+}
+section[data-testid="stFileUploaderDropzone"] button[kind="secondary"]:hover {
+    transform: translate(2px, 2px) !important;
+    box-shadow: 2px 2px 0px 0px #0F172A !important;
+}
+div[data-testid="stFileUploaderDropzoneInstructions"] {
+    color: #0F172A !important;
+    font-weight: 700 !important;
+    opacity: 0.8 !important;
+}
+
+/* NEO-BRUTALISM UPLOADED FILE ITEM */
+div[data-testid="stUploadedFile"] {
+    background-color: #FFFFFF !important;
+    border: 3px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    padding: 8px 12px !important;
+    margin-top: 16px !important;
+}
+
+div[data-testid="stUploadedFile"] * {
+    font-weight: 700 !important;
+    color: #0F172A !important;
+}
+
+div[data-testid="stUploadedFile"] button {
+    background-color: #E63946 !important;
+    border: 2px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 2px 2px 0px 0px #0F172A !important;
+    opacity: 1 !important;
+    transition: all 0.1s ease !important;
+}
+
+div[data-testid="stUploadedFile"] button:hover {
+    transform: translate(2px, 2px) !important;
+    box-shadow: 0px 0px 0px 0px #0F172A !important;
+}
+
+div[data-testid="stUploadedFile"] button svg {
+    fill: #FFFFFF !important;
+}
+
+
+/* NEO-BRUTALISM ALERTS (st.info, st.warning, st.error, st.success) */
+div[data-testid="stAlert"] {
+    background-color: #FFFFFF !important;
+    border: 3px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
+    margin-bottom: 24px !important;
+}
+div[data-testid="stAlertContainer"] {
+    background: transparent !important;
+    padding: 16px 20px !important;
+}
+div[data-testid="stAlert"] p {
+    color: #0F172A !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+}
+/* Ensure the alert icon matches the dark theme */
+div[data-testid="stAlert"] svg {
+    color: #0F172A !important;
+    fill: #0F172A !important;
+}
+
+/* ============================================================
+   NEO-BRUTALISM TOASTS (Sonner Style)
+   ============================================================ */
+div[data-testid="stToast"] {
+    background-color: #FFFFFF !important;
+    border: 3px solid #0F172A !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
+    border-radius: 0px !important;
+}
+
+div[data-testid="stToast"] * {
+    color: #0F172A !important;
+}
+
+div[data-testid="stToast"] div[data-testid="stMarkdownContainer"] p {
+    font-family: "Source Sans 3", sans-serif !important;
+    font-weight: 700 !important;
+}
+
+div[data-testid="stToast"] button {
+    background-color: #FFDE59 !important;
+    border: 2px solid #0F172A !important;
+    border-radius: 0px !important;
+    box-shadow: 2px 2px 0px 0px #0F172A !important;
+    transition: all 0.1s ease !important;
+    margin-right: 8px !important;
+}
+
+div[data-testid="stToast"] button:hover {
+    transform: translate(1px, 1px) !important;
+    box-shadow: 1px 1px 0px 0px #0F172A !important;
+    background-color: #FFC000 !important;
+}
+
+div[data-testid="stToast"] button svg {
+    stroke: #0F172A !important;
+    stroke-width: 2.5px !important;
+}
+
+/* ============================================================
+   NEO-BRUTALISM PROGRESS BAR
+   ============================================================ */
+div[data-testid="stProgressBar"] div[role="progressbar"],
+div[data-testid="stProgress"] div[role="progressbar"] {
+    background-color: #FFFFFF !important;
+    border: 3px solid #0F172A !important;
+    border-radius: 0px !important;
+    height: 24px !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    overflow: hidden !important;
+}
+
+div[data-testid="stProgressBar"], div[data-testid="stProgress"] {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+div[data-testid="stProgressBar"] div[role="progressbar"] > div,
+div[data-testid="stProgress"] div[role="progressbar"] > div {
+    background-color: #FFDE59 !important;
+    border-radius: 0px !important;
+    height: 100% !important;
+    border-right: 3px solid #0F172A !important;
 [data-testid="column"] > div:has(.neo-container-marker) + div {
     flex-grow: 1;
 }
