@@ -1,12 +1,13 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.0.0 → 1.1.0 (Added external integration principle)
-Added sections: Principle VI. Free & Serverless External Integrations
+Version change: 1.2.0 → 1.3.0 (Expanded Security-First Credential Handling with Session Protection, Execution Sanitization, and RLS)
+Added sections: None
+Modified sections: Core Principles -> II. Security-First Credential Handling & Session Protection
 Removed sections: None
 Templates requiring updates:
-  ✅ .specify/memory/constitution.md (Reviewed)
-Follow-up TODOs: None
+  ✅ .specify/memory/constitution.md (Updated)
+Follow-up TODOs: Run /speckit-specify to write the feature specification for implementing cookie signing and subprocess execution sanitization.
 -->
 
 # Optimize Newspage Automation Constitution
@@ -26,16 +27,13 @@ errors. Stability is more valuable than code elegance.
 **Unlock procedure**: Any request to modify frozen logic MUST be verified by the
 unlock password `"Dama"` in the active chat session before any changes are executed.
 
-### II. Security-First Credential Handling
-Credentials MUST never be hardcoded in source files. All distributor passwords MUST
-be stored in Supabase and encrypted with AES-256 (Fernet). The master encryption key
-MUST reside exclusively in `.streamlit/secrets.toml` (local) or Streamlit Cloud
-environment secrets (deployment). Auto-encryption of plain-text passwords on first
-fetch is permitted and encouraged.
+### II. Security-First Credential Handling & Session Protection
+- **Credential Encryption**: Credentials MUST never be hardcoded in source files. All distributor passwords MUST be stored in Supabase and encrypted with AES-256 (Fernet). The master encryption key MUST reside exclusively in `.streamlit/secrets.toml` (local) or Streamlit Cloud environment secrets (deployment). Auto-encryption of plain-text passwords on first fetch is permitted and encouraged.
+- **Session Integrity**: Plaintext identifiers (such as raw usernames) MUST NOT be stored in browser cookies for session validation without digital signatures (HMAC) or encryption. Cookies used for auto-login/session-persistence must be signed or encrypted using the `MASTER_KEY` to prevent privilege escalation and account spoofing.
+- **Execution Sanitization**: Subprocess invocations (like Playwright test scripts) MUST NOT format user inputs or database config strings directly into python script text/commands. All dynamic inputs MUST be passed safely via operating system environment variables or standard input (stdin) to prevent Command/Code Injection (RCE).
+- **Least Privilege & RLS**: PostgreSQL Row-Level Security (RLS) MUST be enabled on Supabase tables to prevent unauthorized read/write access. Database client keys MUST restrict table queries to the absolute minimum required.
 
-**Rationale**: The application handles login credentials for multiple distributors.
-A leak would allow unauthorized portal access affecting inventory and sales data
-across the entire distribution network.
+**Rationale**: The application handles sensitive distributor credentials and execution configurations. A session hijack or code injection would allow unauthorized access or complete server compromise, affecting business operations and financial logs.
 
 ### III. Selector Integrity — No Guessing Allowed
 Playwright selectors used for browser automation MUST be sourced from
@@ -72,9 +70,14 @@ consistent, structured log data. Gaps in logging corrupt analytics and make it
 impossible to audit which user ran which operation.
 
 ### VI. Free & Serverless External Integrations
-All new external integrations or messaging bridges (e.g., forwarding Telegram screenshots to WhatsApp via Open-WA) MUST prioritize zero-cost, fully free deployment architectures. If a separate project or web service is required for the integration, it MUST be hosted on platforms providing adequate free tiers (e.g., Vercel, Render) without incurring ongoing costs.
+All new external integrations or messaging bridges (e.g., forwarding Telegram screenshots to WhatsApp) MUST prioritize zero-cost, fully free deployment architectures. If a separate project or web service is required for the integration, it MUST be hosted on platforms providing adequate free tiers without incurring ongoing costs. For heavy workloads like WhatsApp engines, self-hosted API Gateways (e.g., `rmyndharis/OpenWA`) deployed via Docker on free platforms like Hugging Face Spaces are preferred over heavy monolithic scripts.
 
-**Rationale**: To maintain the project's low-overhead operating model, auxiliary features like notification forwarding should not introduce new monthly server expenses.
+**Rationale**: To maintain the project's low-overhead operating model, auxiliary features like notification forwarding should not introduce new monthly server expenses. Separating the heavy engine from the lightweight logic (relay) ensures better stability and resource utilization.
+
+### VII. User Documentation
+All modules MUST be accompanied by a clear, accessible user guide tailored for non-technical operations staff.
+**Rationale**: The system is used by distributor staff who may not understand technical error messages or complex workflows. Guides prevent operational blockage and reduce support overhead.
+
 
 ## Security & Credential Standards
 
@@ -122,4 +125,4 @@ Amendments require:
 All AI coding agents working on this project MUST read this constitution at the
 start of each session alongside `.agents/MEMORY.md`.
 
-**Version**: 1.1.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-04
+**Version**: 1.3.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05

@@ -153,6 +153,15 @@ with col2:
 
     st.button("CONFIRM", key="signout_confirm_hidden", on_click=signout_callback, use_container_width=True)
 
+with st.expander("📖 Panduan Pengguna - Automation Tool (Dashboard)"):
+    st.markdown("""
+    **Cara Penggunaan Dashboard:**
+    1. **Overview:** Halaman ini menyajikan ringkasan seluruh aktivitas bot otomasi (Extract, Adjust, Mutasi, Clearance, dll) hari ini.
+    2. **Module Navigation:** Gunakan menu di panel samping atau tombol *Launch Module* pada masing-masing kartu untuk membuka fitur spesifik.
+    3. **Ping Server:** Gunakan tombol **Ping** di bagian *Recent Activity* untuk mengetes koneksi server Newspage dengan kredensial Superuser.
+    4. **Activity Report:** Di bagian bawah, Anda dapat memantau log aktivitas harian dari seluruh distributor.
+    """)
+
 # --- DATABASE CONNECTION ---
 supabase = database.init_supabase()
 db_connected = supabase is not None
@@ -298,17 +307,21 @@ with right_col:
                         ensure_playwright()
                     except Exception as e:
                         st.toast(f"Failed to install browser dependencies: {e}", icon=":material/error:")
-                    script = f"""
-import asyncio, time
+                    script = """
+import os, asyncio, time
 from playwright.async_api import async_playwright
 async def main():
     try:
+        url = os.environ.get('PING_URL', '')
+        bot_user = os.environ.get('PING_USER', '')
+        bot_pass = os.environ.get('PING_PASS', '')
+        
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)
             page = await browser.new_page()
-            await page.goto('{url}', wait_until='domcontentloaded')
-            await page.fill('id=txtUserid', '{bot_user}')
-            await page.fill('id=txtPasswd', '{bot_pass}')
+            await page.goto(url, wait_until='domcontentloaded')
+            await page.fill('id=txtUserid', bot_user)
+            await page.fill('id=txtPasswd', bot_pass)
             await page.click('id=btnLogin', force=True)
             
             start_wait = time.time()
@@ -335,9 +348,15 @@ async def main():
         print('ERR: ' + str(e))
 asyncio.run(main())
 """
+                    import os
+                    env = os.environ.copy()
+                    env["PING_URL"] = url
+                    env["PING_USER"] = bot_user
+                    env["PING_PASS"] = bot_pass
+                    
                     try:
                         import sys
-                        res = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True, timeout=25)
+                        res = subprocess.run([sys.executable, "-c", script], env=env, capture_output=True, text=True, timeout=25)
                         elapsed = time.time() - start_t
                         out = res.stdout.strip()
                         err = res.stderr.strip()

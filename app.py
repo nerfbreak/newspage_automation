@@ -62,17 +62,24 @@ if st.session_state.logged_in and st.session_state.last_activity > 0:
 if not st.session_state.logged_in:
     auth_cookie = cookies.get("auth_user") if cookies else None
     if auth_cookie and not st.session_state.get("ignore_cookie"):
-        st.session_state.logged_in = True
-        st.session_state.current_user = auth_cookie
-        st.session_state.last_activity = time.time()
-        st.rerun()
+        decrypted_user = database.decrypt_data(auth_cookie)
+        if decrypted_user:
+            st.session_state.logged_in = True
+            st.session_state.current_user = decrypted_user
+            st.session_state.last_activity = time.time()
+            st.rerun()
+        else:
+            if "auth_user" in cookies:
+                cookie_manager.delete("auth_user")
+                cookies.pop("auth_user", None)
 
 if not st.session_state.logged_in:
     inject_css("login.css")
 
     if st.session_state.get("login_success"):
         st.markdown("<div style='max-width: 400px; margin: 0 auto; background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 16px 20px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 1.1rem; font-weight: 800; margin: 0; text-align: center;'>Authentication Successful.<br>Welcome Back!</p></div>", unsafe_allow_html=True)
-        cookie_manager.set("auth_user", st.session_state.current_user, max_age=86400 * 7) # 7 days
+        encrypted_cookie = database.encrypt_data(st.session_state.current_user)
+        cookie_manager.set("auth_user", encrypted_cookie, max_age=86400 * 7) # 7 days
         time.sleep(1.2)
         st.session_state.logged_in = True
         st.session_state.ignore_cookie = False

@@ -40,6 +40,15 @@ bot_status = "RUNNING" if st.session_state.is_clearance_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="CLEARANCE ENGINE")
 render_header("Clearance Stock", st.session_state.current_user)
 
+with st.expander("📖 Panduan Pengguna - Clearance Stock"):
+    st.markdown("""
+    **Cara Penggunaan:**
+    1. Pilih **Distributor** yang stoknya ingin dinolkan (clearance).
+    2. Klik tombol **Extract Stock** untuk menarik data stok tersisa dari server distributor.
+    3. Tinjau daftar SKU pada tabel **Stock Clearance Review**. Seluruh Qty akan otomatis dikonversi menjadi angka negatif sebagai pengurang (Clear Qty).
+    4. Klik **Execute** untuk mengeksekusi penyesuaian stok (clearance). Jangan tutup browser hingga proses selesai 100%.
+    """)
+
 # --- DISTRIBUTOR SELECTION ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
@@ -55,11 +64,12 @@ with st.container(border=True):
     ext_label_placeholder = st.empty()
     ext_log_placeholder = st.empty()
 
-    if st.session_state.is_clearance_running:
-        st.markdown(make_solid_box("Extracting stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-        extract_btn = False
-    else:
-        extract_btn = st.button("Extract Stock", type="primary", use_container_width=True, disabled=not bot_user, icon=":material/download:")
+st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+if st.session_state.is_clearance_running:
+    st.markdown(make_solid_box("Extracting stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+    extract_btn = False
+else:
+    extract_btn = st.button("Extract Stock", type="primary", use_container_width=True, disabled=not bot_user, icon=":material/download:")
 
 # Use pending flag so extraction starts AFTER rerun hides the button
 if extract_btn:
@@ -91,7 +101,6 @@ if st.session_state.get("_pending_clearance_extract", False):
 # --- REVIEW EXTRACTED DATA ---
 if st.session_state.clearance_df is not None:
     st.markdown(make_solid_box(f"Extracted — {len(st.session_state.clearance_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-    st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
     if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
         st.session_state.clearance_df = None
         st.rerun()

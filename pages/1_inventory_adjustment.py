@@ -48,6 +48,21 @@ bot_status = "RUNNING" if st.session_state.is_bot_running else "STANDBY"
 render_indicators(db_status, bot_status)
 render_header("Inventory Adjustment", st.session_state.current_user)
 
+with st.expander("📖 Panduan Pengguna - Inventory Adjustment"):
+    st.markdown("""
+    **Cara Penggunaan:**
+    1. Pilih mode penyesuaian: **Auto Compare** (menarik stok server lalu membandingkan dengan file distributor) atau **Manual Entry** (mengetik SKU secara langsung).
+    2. Pada mode **Auto Compare**: 
+       - Pilih distributor lalu klik **Extract Stock** untuk menarik data dari server.
+       - Unggah file stok distributor pada panel sebelah kanan.
+       - Klik **PROSES FILE & BANDINGKAN**.
+       - Pastikan mapping kolom sudah sesuai, kemudian klik **Start Adjustment**.
+       - Tinjau hasil selisih (Match/Mismatch).
+    3. Pada mode **Manual Entry**:
+       - Pilih distributor, lalu masukkan detail SKU beserta qty secara manual ke dalam tabel input.
+    4. Klik **EXECUTE** untuk menjalankan bot otomatis. **Tunggu hingga proses selesai dan jangan tutup browser.**
+    """)
+
 adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
 adj_mode = adj_mode_sel if adj_mode_sel else "Auto Compare"
 
@@ -56,7 +71,7 @@ if "Auto Compare" in adj_mode:
     
     with col1:
         st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-        with st.container(border=True, height=165):
+        with st.container(border=True):
             list_dist = database.get_distributor_list(supabase)
             url_dist, default_index = resolve_distributor_url(list_dist)
 
@@ -67,12 +82,14 @@ if "Auto Compare" in adj_mode:
             if bot_user: st.session_state.current_np_user_id = bot_user
             file1 = None
             
-            btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
-            extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
+        st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+        btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
+        extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
+
 
     with col2:
         st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-        with st.container(border=True, height=165):
+        with st.container(border=True):
             def handle_fragment_upload():
                 if "f2_key" not in st.session_state: st.session_state.f2_key = 0
                 f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key=f"file2_uploader_{st.session_state.f2_key}")
@@ -85,7 +102,6 @@ if "Auto Compare" in adj_mode:
                         </style>
                         {make_solid_box(f"FILE LOADED: {f.name}", "#FFDE59", "#0F172A")}
                     """, unsafe_allow_html=True)
-                    st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
                     if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
                         st.session_state.f2_key += 1
                         st.rerun()
@@ -111,7 +127,6 @@ if "Auto Compare" in adj_mode:
             file2 = st.session_state.get(f"file2_uploader_{st.session_state.get('f2_key', 0)}")
             
         if st.session_state.np_df is not None:
-            st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
             if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
                 st.session_state.np_df = None
                 st.rerun()
@@ -270,7 +285,6 @@ elif "Manual Entry" in adj_mode:
                 st.error(f"Error parsing file: {e}")
                 st.session_state.manual_uploaded_df = None
                 
-            st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
             if st.button("Hapus File", type="secondary", icon=":material/delete:", use_container_width=True):
                 st.session_state.manual_uploader_key += 1
                 st.session_state.manual_uploaded_df = None

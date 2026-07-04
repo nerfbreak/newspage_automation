@@ -28,6 +28,15 @@ bot_status = "RUNNING" if st.session_state.is_bot_running else "STANDBY"
 render_indicators(db_status, bot_status)
 render_header("Sales Data Extraction", st.session_state.current_user)
 
+with st.expander("📖 Panduan Pengguna - Sales Data Extraction"):
+    st.markdown("""
+    **Cara Penggunaan:**
+    1. Pilih **Nama Distributor** yang data penjualannya ingin ditarik.
+    2. Tentukan **Start Date** dan **End Date** untuk memfilter periode waktu data penjualan.
+    3. Klik tombol **Extract Invoice**.
+    4. Tunggu hingga proses bot selesai berjalan. Log proses akan muncul pada layar.
+    5. Setelah berhasil, akan muncul tombol **Download Extracted Data (ZIP)** untuk mengunduh hasil ekstraksi.
+    """)
 
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
@@ -60,11 +69,12 @@ with st.container(border=True):
     if start_date > end_date:
         st.error("Start date must be before or equal to end date.")
         st.stop()
-
-    btn_label = "Extracting…" if st.session_state.is_bot_running else "Extract Invoice"
-    extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
+        
+st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+btn_label = "Extracting…" if st.session_state.is_bot_running else "Extract Invoice"
+extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
     
-    if st.session_state.get('sales_csv_data'):
+if st.session_state.get('sales_csv_data'):
         st.markdown("<div style='margin-bottom: 8px;'></div>", unsafe_allow_html=True)
         st.download_button(
             label="Download Extracted Data (ZIP)",

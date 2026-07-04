@@ -41,6 +41,17 @@ bot_status = "RUNNING" if st.session_state.is_mutasi_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="MUTASI ENGINE")
 render_header("Mutasi Stock", st.session_state.current_user)
 
+with st.expander("📖 Panduan Pengguna - Mutasi Stock"):
+    st.markdown("""
+    **Cara Penggunaan:**
+    1. Pilih **Distributor Pengirim** dan **Distributor Penerima**. Keduanya harus berbeda.
+    2. Unggah file Excel/CSV berisi daftar SKU dan jumlah (Qty) yang akan dimutasi.
+    3. Sesuaikan **Column Mapping** (SKU, Description, Qty) jika sistem tidak mendeteksinya secara otomatis.
+    4. Periksa **Stock Review** untuk memastikan daftar SKU, jumlah pengurang (Deduct), dan penambah (Add) sudah tepat.
+    5. Pilih **Reason Adjustment** dan tambahkan **Remark** opsional.
+    6. Klik **Execute** untuk memproses mutasi. Pastikan Anda tidak menutup browser hingga log eksekusi pada pengirim maupun penerima telah selesai 100%.
+    """)
+
 # --- DISTRIBUTOR SELECTION ---
 col1, col2 = st.columns(2)
 
@@ -82,7 +93,6 @@ if uploaded_file is not None:
             </style>
             {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
         """, unsafe_allow_html=True)
-        st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
         if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
             st.session_state.mutasi_file_uploader = None
             st.session_state.mutasi_file_id = None
@@ -164,8 +174,9 @@ with st.container(border=True):
     selected_reason_label = st.selectbox("Reason Adjustment", list(reason_options.values()), index=default_reason_idx, key="mutasi_reason")
     selected_reason_code = [k for k, v in reason_options.items() if v == selected_reason_label][0]
     remark_text = st.text_input("Remark", max_chars=50, key="mutasi_remark")
-
-    execute_clicked = st.button("Execute", type="primary", use_container_width=True, disabled=not can_execute, icon=":material/play_arrow:")
+    
+st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+execute_clicked = st.button("Execute", type="primary", use_container_width=True, disabled=not can_execute, icon=":material/play_arrow:")
 
 if execute_clicked:
     st.session_state.is_mutasi_running = True

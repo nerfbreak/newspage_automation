@@ -24,6 +24,7 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 
 ### 🛠️ Perbaikan & Peningkatan
 
+- **Hardening Keamanan Sistem**: Mengenkripsi cookie sesi `auth_user` menggunakan algoritme Fernet AES-256 untuk mencegah eksploitasi pembajakan sesi (Session Hijacking), dan mensanitasi parameter eksekusi subprocess di dashboard ping test menggunakan OS environment variables guna memblokir celah injeksi kode (Remote Code Execution).
 - **Stabilitas Bot (Page Load Wait)**: Bot kini menunggu halaman benar-benar selesai dimuat 100% sebelum melanjutkan ke langkah berikutnya, mencegah error "elemen tidak ditemukan" saat server Newspage sedang lambat.
 - **Perbaikan Tombol Terminate & Sign Out**: Tombol *Confirm* pada dialog Terminate eksekusi dan Sign Out kini 100% andal — diperbaiki dari masalah *click-jacking*, event listener yang terputus akibat React re-render, hingga pemblokiran lintas-*iframe* di Streamlit Cloud. Kini menggunakan layout CSS murni tanpa ketergantungan pada JavaScript.
 - **Perbaikan Counter Eksekusi (Bug 0/0)**: Memperbaiki bug di mana counter "PROCESSED X/Y" tidak memperbarui angkanya selama bot berjalan.

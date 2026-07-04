@@ -252,29 +252,6 @@ div[role="dialog"] button[aria-label="Close"] svg {
     align-items: center;
     justify-content: center;
 }
-
-/* Destructive action buttons (Hapus File, Clear Data) via injected anchor */
-div[data-testid="element-container"]:has(.destructive-btn-anchor) + div[data-testid="element-container"] button,
-div.element-container:has(.destructive-btn-anchor) + div.element-container button {
-    background-color: #E63946 !important;
-    color: #FFFFFF !important;
-    border: 2px solid #0F172A !important;
-    border-radius: 0px !important;
-    box-shadow: 6px 6px 0px 0px #0F172A !important;
-}
-div[data-testid="element-container"]:has(.destructive-btn-anchor) + div[data-testid="element-container"] button:hover,
-div.element-container:has(.destructive-btn-anchor) + div.element-container button:hover {
-    background-color: #FFFFFF !important;
-    color: #E63946 !important;
-    transform: translate(2px, 2px) !important;
-    box-shadow: 4px 4px 0px 0px #0F172A !important;
-}
-div[data-testid="element-container"]:has(.destructive-btn-anchor) + div[data-testid="element-container"] button:hover p,
-div.element-container:has(.destructive-btn-anchor) + div.element-container button:hover p,
-div[data-testid="element-container"]:has(.destructive-btn-anchor) + div[data-testid="element-container"] button:hover span,
-div.element-container:has(.destructive-btn-anchor) + div.element-container button:hover span {
-    color: #E63946 !important;
-}
 /* Turn RED on hover to indicate it's actually a TERMINATE button! */
 .stealth-term-btn:hover {
     background-color: #E63946 !important;

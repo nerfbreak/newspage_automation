@@ -41,6 +41,15 @@ bot_status = "RUNNING" if st.session_state.is_promo_bot_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="PROMO ENGINE")
 render_header("Promotion Comparison", st.session_state.current_user)
 
+with st.expander("📖 Panduan Pengguna - Promotion Comparison"):
+    st.markdown("""
+    **Cara Penggunaan:**
+    1. Unggah file tracker promosi dari SharePoint (BDP Tracker).
+    2. Tentukan **Start Date** dan **End Date** untuk rentang waktu promosi yang ditarik.
+    3. Klik **Start Sync** untuk menarik data promosi dari server Newspage.
+    4. Klik **Run Analysis** untuk menjalankan analisis kecocokan data antara SharePoint dan Newspage.
+    5. Periksa status (MATCH/CONFLICT/MISSING) pada tabel hasil.
+    """)
 
 # --- FILE UPLOADER SECTION ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
@@ -65,7 +74,6 @@ with st.container(border=True):
                         </style>
                         {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
                     """, unsafe_allow_html=True)
-                    st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
                     if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
                         # Just force rerun to clear
                         st.rerun()

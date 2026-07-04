@@ -40,6 +40,17 @@ bot_status = "RUNNING" if st.session_state.is_initial_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="INITIAL STOCK ENGINE")
 render_header("Initial Stock", st.session_state.current_user)
 
+with st.expander("📖 Panduan Pengguna - Initial Stock"):
+    st.markdown("""
+    **Cara Penggunaan:**
+    1. Pilih **Distributor** yang akan diisi saldo awal stoknya (Initial Stock).
+    2. Unggah file Excel/CSV yang berisi kolom SKU dan jumlah (Qty).
+    3. Sistem akan memindai nama kolom secara otomatis. Jika keliru, sesuaikan mapping pada **Column Mapping**.
+    4. Klik **Load Data** untuk memproses file.
+    5. Periksa kesesuaian data pada tabel **Initial Stock Review**. SKU dengan Qty 0 atau negatif akan otomatis dilewati.
+    6. Klik **Execute** untuk memasukkan data stok ke sistem Newspage. Jangan tutup browser selama proses berlangsung.
+    """)
+
 # --- DISTRIBUTOR SELECTION ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
@@ -70,7 +81,6 @@ if uploaded_file is not None:
         </style>
         {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
     """, unsafe_allow_html=True)
-    st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
     if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
         st.session_state.initial_stock_file = None
         st.session_state.initial_stock_raw = None
@@ -151,7 +161,6 @@ if st.session_state.initial_stock_df is not None:
     df_init = st.session_state.initial_stock_df
 
     st.markdown(make_solid_box(f"Loaded — {len(df_init)} items from uploaded file", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-    st.markdown('<div class="destructive-btn-anchor"></div>', unsafe_allow_html=True)
     if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
         st.session_state.initial_stock_df = None
         st.session_state.initial_stock_raw = None
