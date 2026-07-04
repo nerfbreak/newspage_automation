@@ -629,6 +629,39 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
+def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
+    ui_log("SYS", "Navigating to List view to capture transaction screenshot...")
+    try:
+        # Go to List View by clicking the side menu again
+        page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
+        
+        # Set Date To to Today
+        page.locator("id=pag_I_StkAdj_dat_STKADJ_DtTo_SelectButton").click(force=True)
+        today_btn = page.locator("id=pag_I_StkAdj_dat_STKADJ_DtTo_ajax_CalendarExtender_today")
+        today_btn.wait_for(state="visible", timeout=5000)
+        today_btn.click(force=True)
+        
+        # Set Status to empty (All) to ensure Pending transactions show up
+        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("")
+        
+        # Click Search
+        page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj search")
+        
+        # Wait for the first row (latest transaction) to be visible
+        page.locator("id=pag_I_StkAdj_grd_List_ctl02_grs_TXN_NO_Value").wait_for(state="visible", timeout=10000)
+        
+        # Capture screenshot
+        os.makedirs("screenshots", exist_ok=True)
+        success_shot = f"screenshots/{prefix}_{int(time.time())}.png"
+        page.screenshot(path=success_shot, timeout=3000)
+        ui_log("SYS", "Transaction success screenshot captured.")
+        return success_shot
+    except Exception as shot_err:
+        ui_log("WARN", f"Failed to capture transaction screenshot: {shot_err}")
+        return None
+
 def _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user, show_processed=True):
     user = str(bot_user).strip()
     dist = str(selected_distributor).strip()
@@ -933,13 +966,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             # [T003] Capture success screenshot before logout
             success_shot = None
             if failed_count == 0:
-                try:
-                    os.makedirs("screenshots", exist_ok=True)
-                    success_shot = f"screenshots/success_exec_{int(time.time())}.png"
-                    page.screenshot(path=success_shot, timeout=3000)
-                    ui_log("SYS", "Success screenshot captured.")
-                except Exception:
-                    success_shot = None
+                success_shot = _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, "success_exec")
 
             ui_log("AUTH", "Initiating system logout sequence...")
             try:
@@ -1269,13 +1296,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             # [T004] Capture success screenshot before logout
             success_shot = None
             if failed_count == 0:
-                try:
-                    os.makedirs("screenshots", exist_ok=True)
-                    success_shot = f"screenshots/success_manual_{int(time.time())}.png"
-                    page.screenshot(path=success_shot, timeout=3000)
-                    ui_log("SYS", "Success screenshot captured.")
-                except Exception:
-                    success_shot = None
+                success_shot = _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, "success_manual")
 
             ui_log("AUTH", "Initiating system logout sequence...")
             try:
