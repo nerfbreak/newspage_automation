@@ -668,12 +668,43 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj search")
         
-        # Immediately capture screenshot of the List View
-        os.makedirs("screenshots", exist_ok=True)
-        success_shot = f"screenshots/{prefix}_{int(time.time())}.png"
-        page.screenshot(path=success_shot, timeout=3000)
-        ui_log("SYS", "Transaction success screenshot captured.")
-        return success_shot
+        # Sort by Stock Adjustment No descending via direct ASP.NET JS PostBack
+        ui_log("SYS", "Sorting transactions descending...")
+        page.evaluate("__doPostBack('pag_I_StkAdj_grd_List','Sort$TXN_NO')")
+        page.wait_for_timeout(3000)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 1")
+        
+        page.evaluate("__doPostBack('pag_I_StkAdj_grd_List','Sort$TXN_NO')")
+        page.wait_for_timeout(3000)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 2")
+        
+        # Open details of the top record via CSS wildcard and JavaScript href execution
+        ui_log("SYS", "Opening transaction detail...")
+        try:
+            row_link = page.locator("a[id*='grs_TXN_NO_Value']").first
+            row_link.wait_for(state="attached", timeout=15000)
+            href = row_link.get_attribute("href")
+            if href and href.startswith("javascript:"):
+                page.evaluate(href.replace("javascript:", ""))
+            else:
+                row_link.click(force=True)
+            
+            # Wait for detail page to load
+            page.wait_for_timeout(3000)
+            _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj detail")
+            
+            # Capture screenshot
+            os.makedirs("screenshots", exist_ok=True)
+            success_shot = f"screenshots/{prefix}_{int(time.time())}.png"
+            page.screenshot(path=success_shot, timeout=3000)
+            ui_log("SYS", "Transaction success screenshot captured.")
+            return success_shot
+        except Exception as err:
+            ui_log("WARN", f"Grid row not found. Capturing List View instead. {str(err)}")
+            os.makedirs("screenshots", exist_ok=True)
+            fallback_shot = f"screenshots/{prefix}_list_fallback_{int(time.time())}.png"
+            page.screenshot(path=fallback_shot, timeout=3000)
+            return fallback_shot
     except Exception as shot_err:
         ui_log("WARN", f"Failed to capture transaction screenshot: {shot_err}")
         return None
