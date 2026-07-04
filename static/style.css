@@ -913,6 +913,7 @@ div[data-testid="stExpander"] details {
     background-color: #FFFFFF !important;
     box-shadow: 6px 6px 0px 0px #0F172A !important;
     transition: transform 0.15s ease !important;
+    margin-top: 24px !important;
     margin-bottom: 16px !important;
 }
 div[data-testid="stExpander"] details:hover {
