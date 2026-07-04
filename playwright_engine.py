@@ -653,9 +653,13 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
     try:
         # Go to List View by clicking the side menu
         page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
+        # CRITICAL FIX: Wait for ASP.NET to actually begin the postback before waiting for networkidle
+        page.wait_for_timeout(3000) 
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
         
-        # Set Status to Approved (A)
+        # Force Status to Approved (A) with explicit JS to avoid Playwright race conditions
+        page.wait_for_timeout(1000)
+        page.evaluate("document.getElementById('pag_I_StkAdj_drp_Status_Value').value = 'A'")
         page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("A")
         
         # Click Search
