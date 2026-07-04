@@ -350,7 +350,7 @@ def render_footer():
                 by kopi mang toni.
             </span>
         </div>
-        <div style='background-color: #FFFFFF; border: 2px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; border-radius: 0px; padding: 16px 24px; font-size: 0.9rem; color: #5D6271; margin-top: 18px; max-width: 680px; margin-left: auto; margin-right: auto; line-height: 1.6; text-align: center;'>
+        <div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; border-radius: 0px; padding: 16px 24px; font-size: 0.9rem; color: #5D6271; margin-top: 18px; max-width: 680px; margin-left: auto; margin-right: auto; line-height: 1.6; text-align: center;'>
             <strong style="color: #0F172A; display: block; margin-bottom: 8px; text-transform: uppercase; font-size: 1rem; letter-spacing: 0.05em;">Disclaimer</strong>
             This application is an independently developed by Muhammad Rizki Firdaus (Contractor), unofficial utility designed solely to automate repetitive tasks, improve operational efficiency, and save working hours. It is not officially endorsed, sponsored, or affiliated with Reckitt, Accenture, or the Newspage platform.
         </div>
