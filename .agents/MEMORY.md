@@ -1,4 +1,4 @@
-# AI Project Memory (Optimize Newspage)
+﻿# AI Project Memory (Optimize Newspage)
 
 This file acts as the "Distributed Project Memory" for AI agents. It tracks architectural decisions, recent changes, and known states to prevent hallucinations and maintain a single source of truth across all AI sessions.
 
@@ -6,36 +6,72 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **Frontend**: Streamlit (Pages: Dashboard, Inventory Adjustment, Sales Extraction, Promotion Comparison, Stock Mutation, Clearance Stock, Initial Stock).
 - **Backend/DB**: Supabase (PostgreSQL) for user auth, vault, and system config. `cryptography` for AES-256 encryption.
 - **Automation Engine**: Playwright (`playwright_engine.py`) handling interactions with the Newspage portal.
-- **Selectors**: UI automation selectors are documented in `elements_yang_dipakai_dinewspage_sebagai_otomasi.md`.
 
-## Preferred UI/UX & Design Guidelines
-- **Clean Layout Spacing**: Always wrap section headers in `pages/` inside `.header-wrapper-center` or `.header-wrapper-left` container classes defined in `static/style.css` to prevent text sticking/cramping.
-- **English-Translated Disclaimer Footer**: The footer disclaimer must remain in English, formatted with a soft blue background wrapper (`background-color: rgba(0, 104, 201, 0.04); border: 1px solid rgba(0, 104, 201, 0.1); border-radius: 8px`) for a clean, professional aesthetic.
-- **Execution UI Visual Branding**: Replace generic or boring "Execution" subheaders with themed column titles. Use vertical colored borders on the left side of column headers to group actions (e.g., `#FF2B2B` red border for Deduct/Negative flow and `#09A53C` green border for Add/Positive flow).
-- **Safe HTML & Character Rendering**: Never use raw HTML entity codes like `&nbsp;` directly in output logs that undergo `html.escape()`. Use regular space characters to prevent literal `&NBSP;` rendering bugs.
-- **Avoid Glassmorphism/Translucency**: Do NOT use CSS properties like `backdrop-filter`, `rgba` on main containers, or complex gradients (glassmorphism) for the UI (including the login screen). It breaks Streamlit's layout rendering. Stick to solid, flat, modern colors (e.g., `#FFFFFF`, `#F8FAFC`).
-- **Strict Background & Native UI Overrides**: The application background must remain a solid clean `#FFFFFF` (white) without any image textures or noise effects. The Streamlit header (`[data-testid="stHeader"]`) and sidebar (`[data-testid="stSidebar"]`) must be completely hidden using `display: none !important;` to prevent them from overlapping custom UI elements. The main app container (`[data-testid="stAppViewContainer"]`) is styled with a blue top border (`border-top: 4px solid #0068C9`).
-- **Use Material Icons**: Do NOT use default native emojis (e.g. ❌, ✅, ⚠️). Always use Streamlit's built-in Material Icons syntax (`:material/icon_name:`) for components like `st.toast`, `st.button`, etc., to maintain a premium and consistent aesthetic.
-- **Neo-Brutalism Standard Dimensions**: All Neo-Brutalist containers and boxes (Metric Cards, System Engine, etc.) MUST strictly adhere to these mathematical dimensions to ensure 100% UI symmetry: Tinggi mutlak (Height) = `125px`, Bayangan mutlak (Shadow) = `6px 6px 0px 0px #0F172A`, Ketebalan Garis mutlak (Border) = `3px solid #0F172A`, Jarak dalam mutlak (Padding) = `20px 24px` (20px atas-bawah).
+---
 
-## Locked Features & Code Freeze
+## ðŸ”’ LOCKED DESIGN SYSTEM â€” Neo-Brutalism (PERMANENT, DO NOT OVERRIDE)
+
+> **CRITICAL RULE**: This project uses **Neo-Brutalism** as its one and only design language. This is a **permanent, locked decision**. ANY future UI work â€” new pages, new components, new modals, new alerts, new widgets â€” MUST strictly follow this design system. Do NOT introduce Material Design, Glassmorphism, Neumorphism, Bootstrap, TailwindCSS default utilities, or any other aesthetic system that contradicts the rules below.
+
+### Design Tokens (The Law)
+| Token | Value | Notes |
+|---|---|---|
+| **Primary Color** | `#0068C9` | Streamlit Blue â€” buttons, links, accents |
+| **Accent Yellow** | `#FFDE59` | Highlight, badge background |
+| **Accent Red** | `#E63946` | Destructive actions (delete, terminate, confirm danger) |
+| **Dark / Text / Border** | `#0F172A` | Near-black â€” ALL borders, ALL shadows, ALL key text |
+| **Page Background** | `#dbeafe` | Light blue canvas (global) |
+| **Card Background** | `#FFFFFF` | Pure white for all cards/containers |
+| **Subtle Surface** | `#F1F5F9` | Cancel buttons, secondary areas |
+| **Container Border** | `3px solid #0F172A` | ALWAYS â€” zero exceptions on containers/cards |
+| **Button Border** | `2px solid #0F172A` | For buttons specifically |
+| **Border Radius** | `0px` | ALWAYS sharp corners â€” never rounded |
+| **Box Shadow** | `6px 6px 0px 0px #0F172A` | Flat, NO blur â€” the Neo-Brutalism signature |
+| **Hover Shadow** | `4px 4px 0px 0px #0F172A` | Reduce on hover |
+| **Active Shadow** | `2px 2px 0px 0px #0F172A` | Reduce further on click |
+| **Hover Transform** | `translate(2px, 2px)` | Physical press feel â€” always paired with shadow reduction |
+| **Font (Body)** | `Source Sans 3`, `Source Sans Pro` | Google Fonts |
+| **Font (Terminal/Code)** | `Source Code Pro` | Monospace â€” terminal logs only |
+| **Font Weight (Labels)** | `800` | All caps labels, uppercase badges |
+| **Font Weight (Headings)** | `900` | Maximum impact titles |
+| **Letter Spacing (Labels)** | `0.05em â€“ 0.08em` | Uppercase badge labels |
+
+### Standard Component Dimensions
+| Component | Rule |
+|---|---|
+| **Metric Cards** | Height: `125px`, Padding: `20px 24px` |
+| **Standard Buttons** | Min-Height: `44px`, Border: `2px solid #0F172A`, Shadow: `6px 6px 0px 0px #0F172A` |
+| **Containers / Cards** | Border: `3px solid #0F172A`, Shadow: `6px 6px 0px 0px #0F172A`, Radius: `0px` |
+| **Terminal Log Box** | Border: `4px solid #0F172A`, Shadow: `8px 8px 0px 0px #0F172A`, Height: `350px` |
+| **Modal Overlay Backdrop** | `rgba(15,23,42,0.7)` + `backdrop-filter: blur(4px)` (backdrop-filter on overlay ONLY, not content cards) |
+
+### 10 Rules That CANNOT Be Violated
+1. **NO glassmorphism** â€” no `backdrop-filter` on content cards, no `rgba` semi-transparent backgrounds on main UI elements.
+2. **NO border-radius** on any card, button, input, or container â€” always `0px`.
+3. **NO emoji in UI** â€” use Streamlit Material Icons (`:material/icon_name:`) only.
+4. **NO box-shadow blur** â€” always `box-shadow: X Y 0px 0px #0F172A` (blur and spread values always `0px`).
+5. **NO inline style drift** â€” all values must match the design token table above exactly.
+6. **NO Streamlit default header/sidebar** â€” always hidden via `display: none !important` in CSS.
+7. **CSS sibling targeting** must use the `:has()` selector pattern for Streamlit element targeting â€” never `~` alone.
+8. **Safe HTML** â€” always run dynamic user-facing text through `html.escape()` before injecting into `st.markdown`.
+9. **Background rule** â€” global page bg is always `#dbeafe`; all card/container bg is always `#FFFFFF`.
+10. **Modals are CSS-only** â€” use `<input type="checkbox">` toggle pattern. Never use JavaScript for modal open/close.
+
+---
+
+## ðŸ”’ Locked Features & Code Freeze
 - **Frozen Modules**: **Stock Mutation**, **Inventory Adjustment**, **Sales Extraction**, **Promotion Comparison**, **Clearance Stock**, **Initial Stock**, and **Credential Auto-Encryption**.
 - **Rule**: All core execution flow, Playwright steps, Supabase connections, and credential handling for these features are locked. Any future development or new features must build on top of or alongside these modules without modifying their verified core logics.
 - **Unlock Password**: If modification to the frozen logic is explicitly requested, you must verify the password `"Dama"` in the chat before doing any changes.
 - **Changelog Restriction**: When updating `CHANGELOG.md`, only user-facing Features (`### Added`) and Bug Fixes (`### Fixed`) must be recorded.
 
-
-
 ---
 
 ## Changelog & Decisions
 
-- **2026-06-24**: Initialized AI Project Memory system. Established `AGENTS.md` to force all future AI interactions to read and write to this `MEMORY.md` file.
-- **[Archived Decision]**: Implemented 5 login attempts lockout and 1-hour session timeout in `app.py`.
-- **[Archived Decision]**: Implemented AES-256 Fernet encryption for `distributor_vault` credentials.
 - **2026-06-24**: Reverted the Bento Box UI as it broke Streamlit's layout engine. Implemented a **Streamlit-Native Premium UI** instead: set elegant colors in `config.toml`, stripped destructive CSS overrides from `style.css` and `login.css`, and updated `utils.py` to use flat, safe, inline-styled HTML components.
 - **2026-06-24**: Rolled back UI to original state per user request. Enabled global font antialiasing.
-- **2026-06-25**: Critical security fixes — added `html.escape()` to all HTML injection points in `utils.py` (XSS prevention), enabled CORS in `config.toml`, pinned all dependency versions in `requirements.txt`, moved orphaned `refactor.py` to `scripts/`, added `EXCLUDE_PREFIX` constant to `database.py`, fixed misleading docstring in `database.py`, removed dead `style_status()` function from `utils.py`.
+- **2026-06-25**: Critical security fixes â€” added `html.escape()` to all HTML injection points in `utils.py` (XSS prevention), enabled CORS in `config.toml`, pinned all dependency versions in `requirements.txt`, moved orphaned `refactor.py` to `scripts/`, added `EXCLUDE_PREFIX` constant to `database.py`, fixed misleading docstring in `database.py`, removed dead `style_status()` function from `utils.py`.
 - **2026-06-26**: Fixed Stock Mutation quantity execution bug: added a fallback to the `Qty` column when `PAC`, `CAR`, and `EA` columns are missing, ensuring quantities are correctly written to the EA input in the Newspage portal instead of injecting empty/zero values. Pre-initialized Status and Keterangan columns in dataframes to avoid visual glitches.
 - **2026-06-26**: Resolved "Decryption error" issue: restored missing local `.streamlit/secrets.toml` from backup to enable decryption of distributor passwords locally, and identified that `MASTER_KEY` needs to be set to `7Cm4lTUOm1-DPgwHRE28ZCZ28b33KDMVV_8Ug_AxiWM=` in the deployment env/secrets.
 - **2026-06-26**: Implemented auto-encryption feature for plain-text passwords: if a distributor password stored in Supabase fails decryption and is detected as plain text (does not start with 'gAAAA'), it will be automatically encrypted and written back to Supabase on first fetch, enabling a seamless workflow for registering new distributors.
@@ -77,7 +113,7 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **[Archived Decision]**: Implemented AES-256 Fernet encryption for `distributor_vault` credentials.
 - **2026-06-24**: Reverted the Bento Box UI as it broke Streamlit's layout engine. Implemented a **Streamlit-Native Premium UI** instead: set elegant colors in `config.toml`, stripped destructive CSS overrides from `style.css` and `login.css`, and updated `utils.py` to use flat, safe, inline-styled HTML components.
 - **2026-06-24**: Rolled back UI to original state per user request. Enabled global font antialiasing.
-- **2026-06-25**: Critical security fixes — added `html.escape()` to all HTML injection points in `utils.py` (XSS prevention), enabled CORS in `config.toml`, pinned all dependency versions in `requirements.txt`, moved orphaned `refactor.py` to `scripts/`, added `EXCLUDE_PREFIX` constant to `database.py`, fixed misleading docstring in `database.py`, removed dead `style_status()` function from `utils.py`.
+- **2026-06-25**: Critical security fixes â€” added `html.escape()` to all HTML injection points in `utils.py` (XSS prevention), enabled CORS in `config.toml`, pinned all dependency versions in `requirements.txt`, moved orphaned `refactor.py` to `scripts/`, added `EXCLUDE_PREFIX` constant to `database.py`, fixed misleading docstring in `database.py`, removed dead `style_status()` function from `utils.py`.
 - **2026-06-26**: Fixed Stock Mutation quantity execution bug: added a fallback to the `Qty` column when `PAC`, `CAR`, and `EA` columns are missing, ensuring quantities are correctly written to the EA input in the Newspage portal instead of injecting empty/zero values. Pre-initialized Status and Keterangan columns in dataframes to avoid visual glitches.
 - **2026-06-26**: Resolved "Decryption error" issue: restored missing local `.streamlit/secrets.toml` from backup to enable decryption of distributor passwords locally, and identified that `MASTER_KEY` needs to be set to `7Cm4lTUOm1-DPgwHRE28ZCZ28b33KDMVV_8Ug_AxiWM=` in the deployment env/secrets.
 - **2026-06-26**: Implemented auto-encryption feature for plain-text passwords: if a distributor password stored in Supabase fails decryption and is detected as plain text (does not start with 'gAAAA'), it will be automatically encrypted and written back to Supabase on first fetch, enabling a seamless workflow for registering new distributors.
@@ -147,3 +183,5 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-07-04**: **UI Enhancement:** Replaced Javascript anchor-syncing with Pure CSS Modal Layout for Terminate and Sign Out dialogs. Completely stripped all injected JavaScript and redesigned modal to use stacked Top/Bottom layout.
 - **2026-07-04**: **UI Enhancement:** Fixed Dashboard "Recent Activity" timeline white space bug. Restored display count to 5 items and decoupled the right column from the global `height: 100% !important` flex-grow rule using a custom `.compact-timeline-marker` CSS class.
 - **2026-07-04**: Performed GitHub repository cleanup. Removed broken git submodules (`newspage_automation`, `ponytail`, `spec-kit`), deleted junk files (`diff.txt`, `style_backup.css`, `bg_paper.png`, `scripts/refactor.py`, `ai_assisted_distributed_project_memory_system.md`, `skills.md`, `skills-lock.json`, `brain/`), and cleaned up duplicate entries in `.gitignore` and `MEMORY.md`.
+- **2026-07-04**: **LOCKED DESIGN DECISION**: Neo-Brutalism is permanently locked as the sole design system for this project. Full design token specification (colors, shadows, borders, dimensions, fonts) has been documented in `MEMORY.md` under the "Locked Design System" section and enforced via `AGENTS.md`. All future UI work must strictly comply without exception.
+
