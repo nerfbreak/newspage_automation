@@ -655,17 +655,12 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
         
-        # Set Date From and To using JavaScript to avoid Playwright DOM quirks
-        from datetime import datetime, timezone, timedelta
-        tz_gmt7 = timezone(timedelta(hours=7))
-        today_str = datetime.now(tz_gmt7).strftime("%d/%m/%Y")
-        page.evaluate(f"""() => {{
-            document.getElementById('pag_I_StkAdj_dat_STKADJ_DtFrom_Value').value = '{today_str}';
-            document.getElementById('pag_I_StkAdj_dat_STKADJ_DtTo_Value').value = '{today_str}';
-        }}""")
+        # Leave Date From alone (defaults to today in Newspage)
+        # Clear Date To (defaults to empty)
+        page.evaluate("() => { var el = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtTo_Value'); if(el) { el.value = ''; el.dispatchEvent(new Event('change', {bubbles: true})); } }")
         
-        # Set Status to empty string to ensure ALL statuses (Approved, Pending, etc) are visible
-        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("")
+        # Set Status to Approved (A)
+        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("A")
         
         # Click Search
         page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").click(force=True)
