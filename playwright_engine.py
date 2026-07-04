@@ -684,14 +684,13 @@ def _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user
 
 def _update_progress_text(text_ph, current, total):
     if not text_ph: return
-    import streamlit.components.v1 as components
     with text_ph.container():
-        components.html(f"""
+        st.html(f"""
             <script>
                 var counter = window.parent.document.getElementById('dynamic-progress-counter') || document.getElementById('dynamic-progress-counter');
                 if (counter) counter.innerText = '{current}/{total}';
             </script>
-        """, height=0, width=0)
+        """, unsafe_allow_javascript=True)
 
 def _setup_terminate_button(placeholder):
     """Renders the terminate button and custom Neo-Brutalist confirmation modal using Pure CSS."""
