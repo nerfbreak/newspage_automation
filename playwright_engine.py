@@ -655,18 +655,14 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
         
-        # Set Date From to Today using GMT+7 timezone
+        # Set Date From and To using JavaScript to avoid Playwright DOM quirks
         from datetime import datetime, timezone, timedelta
         tz_gmt7 = timezone(timedelta(hours=7))
         today_str = datetime.now(tz_gmt7).strftime("%d/%m/%Y")
-        dt_from = page.locator("id=pag_I_StkAdj_dat_STKADJ_DtFrom_Value")
-        dt_from.fill(today_str)
-        page.evaluate("() => { var el = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtFrom_Value'); if(el) el.dispatchEvent(new Event('change', {bubbles: true})); }")
-
-        # Set Date To to Today using direct string fill to bypass flaky CalendarExtender
-        dt_input = page.locator("id=pag_I_StkAdj_dat_STKADJ_DtTo_Value")
-        dt_input.fill(today_str)
-        page.evaluate("() => { var el = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtTo_Value'); if(el) el.dispatchEvent(new Event('change', {bubbles: true})); }")
+        page.evaluate(f"""() => {{
+            document.getElementById('pag_I_StkAdj_dat_STKADJ_DtFrom_Value').value = '{today_str}';
+            document.getElementById('pag_I_StkAdj_dat_STKADJ_DtTo_Value').value = '{today_str}';
+        }}""")
         
         # Set Status to empty string to ensure ALL statuses (Approved, Pending, etc) are visible
         page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("")
@@ -676,18 +672,26 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj search")
         
-        # Sort by Stock Adjustment No descending (click twice to ensure newest is on top)
-        sort_btn = page.locator("id=pag_I_StkAdj_grd_List_ctl01_pag_I_StkAdj_grd_List_2_TXN_NO_SortField")
-        sort_btn.click(force=True)
+        # Sort by Stock Adjustment No descending via direct ASP.NET JS PostBack
+        ui_log("SYS", "Sorting transactions descending...")
+        page.evaluate("__doPostBack('pag_I_StkAdj_grd_List','Sort$TXN_NO')")
         page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 1")
         
-        sort_btn.click(force=True)
+        page.evaluate("__doPostBack('pag_I_StkAdj_grd_List','Sort$TXN_NO')")
         page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 2")
         
-        # Click the top record to open details
-        page.locator("id=pag_I_StkAdj_grd_List_ctl02_grs_TXN_NO_Value").click(force=True)
+        # Open details of the top record via CSS wildcard and JavaScript href execution
+        ui_log("SYS", "Opening transaction detail...")
+        row_link = page.locator("a[id*='grs_TXN_NO_Value']").first
+        row_link.wait_for(state="attached", timeout=15000)
+        href = row_link.get_attribute("href")
+        if href and href.startswith("javascript:"):
+            page.evaluate(href.replace("javascript:", ""))
+        else:
+            row_link.click(force=True)
+        
         page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj detail")
         
