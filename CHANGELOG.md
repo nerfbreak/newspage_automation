@@ -8,6 +8,7 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 
 ### ✨ Fitur Baru
 
+- **File Uploader Manual Entry**: Tambahkan opsi komponen pengunggah file (.csv, .xlsx, .xls) di modul *Manual Entry* beserta pratinjau tabel dan pemetaan (*mapping*) kolom secara otomatis, untuk mempercepat input data stok.
 - **Mode Dry Run (Simulasi)**: Tambahkan toggle global di tampilan utama untuk menjalankan semua alur otomasi secara penuh tanpa menekan tombol *Save* di portal Newspage. Berguna untuk menguji konfigurasi sebelum eksekusi nyata.
 - **Notifikasi Error + Screenshot**: Bot sekarang otomatis menangkap *screenshot* layar browser saat terjadi error fatal, dan mengirimkannya langsung ke Telegram beserta pesan peringatan.
 - **Pelacakan File Upload**: Setiap file distributor yang diunggah sebelum eksekusi kini disimpan di Supabase. Histori file tersedia di kolom baru "File Diunggah" pada tabel Log History di Dashboard.
