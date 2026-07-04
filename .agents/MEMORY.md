@@ -195,3 +195,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-07-05**: **UI Enhancement:** Renamed column headers in `1_inventory_adjustment.py` data editor from "Qty PAC" to "PAC", "Qty CAR" to "CAR", and "Qty EA" to "EA" per user request.
 
 - Added an optional file uploader (CSV/Excel) to the Manual Entry feature in pages/1_inventory_adjustment.py to allow users to upload files and map columns directly into the manual entry grid, per Spec 005.
+- **2026-07-05**: **Bug Fix**: Fixed a TimeoutError in playwright_engine.py during Stock Adjustment success screenshot capture by bypassing the flaky ASP.NET CalendarExtender UI and injecting the date directly into the text input.
