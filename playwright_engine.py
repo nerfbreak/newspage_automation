@@ -655,9 +655,10 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
         
-        # Set Date From to Today
-        from datetime import datetime
-        today_str = datetime.now().strftime("%d/%m/%Y")
+        # Set Date From to Today using GMT+7 timezone
+        from datetime import datetime, timezone, timedelta
+        tz_gmt7 = timezone(timedelta(hours=7))
+        today_str = datetime.now(tz_gmt7).strftime("%d/%m/%Y")
         dt_from = page.locator("id=pag_I_StkAdj_dat_STKADJ_DtFrom_Value")
         dt_from.fill(today_str)
         page.evaluate("() => { var el = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtFrom_Value'); if(el) el.dispatchEvent(new Event('change', {bubbles: true})); }")
