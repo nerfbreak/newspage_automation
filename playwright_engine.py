@@ -655,9 +655,14 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
         
-        # Set Date To to Today using direct string fill to bypass flaky CalendarExtender
+        # Set Date From to Today
         from datetime import datetime
         today_str = datetime.now().strftime("%d/%m/%Y")
+        dt_from = page.locator("id=pag_I_StkAdj_dat_STKADJ_DtFrom_Value")
+        dt_from.fill(today_str)
+        page.evaluate("() => { var el = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtFrom_Value'); if(el) el.dispatchEvent(new Event('change', {bubbles: true})); }")
+
+        # Set Date To to Today using direct string fill to bypass flaky CalendarExtender
         dt_input = page.locator("id=pag_I_StkAdj_dat_STKADJ_DtTo_Value")
         dt_input.fill(today_str)
         page.evaluate("() => { var el = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtTo_Value'); if(el) el.dispatchEvent(new Event('change', {bubbles: true})); }")
@@ -669,8 +674,16 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").click(force=True)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj search")
         
-        # Wait for the first row (latest transaction) to be visible - REMOVED BY USER REQUEST
-        # page.locator("id=pag_I_StkAdj_grd_List_ctl02_grs_TXN_NO_Value").wait_for(state="visible", timeout=10000)
+        # Sort by Stock Adjustment No descending (click twice to ensure newest is on top)
+        sort_btn = page.locator("id=pag_I_StkAdj_grd_List_ctl01_pag_I_StkAdj_grd_List_2_TXN_NO_SortField")
+        sort_btn.click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 1")
+        sort_btn.click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 2")
+        
+        # Click the top record to open details
+        page.locator("id=pag_I_StkAdj_grd_List_ctl02_grs_TXN_NO_Value").click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj detail")
         
         # Capture screenshot
         os.makedirs("screenshots", exist_ok=True)
