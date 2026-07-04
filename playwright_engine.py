@@ -655,7 +655,16 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
         
-        # Do not modify dates at all to avoid ASP.NET validation blocking the search
+        # Set Date From and To using JavaScript to avoid Playwright DOM quirks
+        from datetime import datetime, timezone, timedelta
+        tz_gmt7 = timezone(timedelta(hours=7))
+        today_str = datetime.now(tz_gmt7).strftime("%d/%m/%Y")
+        page.evaluate(f"""() => {{
+            var f = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtFrom_Value');
+            var t = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtTo_Value');
+            if(f) {{ f.value = '{today_str}'; f.dispatchEvent(new Event('change', {{bubbles: true}})); }}
+            if(t) {{ t.value = '{today_str}'; t.dispatchEvent(new Event('change', {{bubbles: true}})); }}
+        }}""")
         
         # Set Status to empty string (All Statuses) to guarantee the new transaction is found
         page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("")
