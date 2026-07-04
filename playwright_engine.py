@@ -651,63 +651,25 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
 def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
     ui_log("SYS", "Navigating to List view to capture transaction screenshot...")
     try:
-        # Go to List View by clicking the side menu again
+        # Go to List View by clicking the side menu
         page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
         
-        # Clear Date From and Date To using JavaScript 
-        page.evaluate(f"""() => {{
-            var f = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtFrom_Value');
-            var t = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtTo_Value');
-            if(f) {{ f.value = ''; f.dispatchEvent(new Event('change', {{bubbles: true}})); }}
-            if(t) {{ t.value = ''; t.dispatchEvent(new Event('change', {{bubbles: true}})); }}
-        }}""")
-        
-        # Force Status to Approved (A) as explicitly requested by user
+        # Set Status to Approved (A)
         page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("A")
         
-        # Click Search using direct ASP.NET postback to avoid UI validation overlays
-        ui_log("SYS", "Executing native search postback...")
-        page.evaluate("WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions('pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value', '', true, '', '', false, false))")
+        # Click Search
+        ui_log("SYS", "Clicking search...")
+        page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").click(force=True)
         page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj search")
         
-        # Sort by Stock Adjustment No descending via direct ASP.NET JS PostBack
-        ui_log("SYS", "Sorting transactions descending...")
-        page.evaluate("__doPostBack('pag_I_StkAdj_grd_List','Sort$TXN_NO')")
-        page.wait_for_timeout(3000)
-        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 1")
-        
-        page.evaluate("__doPostBack('pag_I_StkAdj_grd_List','Sort$TXN_NO')")
-        page.wait_for_timeout(3000)
-        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 2")
-        
-        # Open details of the top record via CSS wildcard and JavaScript href execution
-        ui_log("SYS", "Opening transaction detail...")
-        try:
-            row_link = page.locator("a[id*='grs_TXN_NO_Value']").first
-            row_link.wait_for(state="attached", timeout=15000)
-            href = row_link.get_attribute("href")
-            if href and href.startswith("javascript:"):
-                page.evaluate(href.replace("javascript:", ""))
-            else:
-                row_link.click(force=True)
-            
-            page.wait_for_timeout(3000)
-            _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj detail")
-            
-            # Capture screenshot
-            os.makedirs("screenshots", exist_ok=True)
-            success_shot = f"screenshots/{prefix}_{int(time.time())}.png"
-            page.screenshot(path=success_shot, timeout=3000)
-            ui_log("SYS", "Transaction success screenshot captured.")
-            return success_shot
-        except Exception as err:
-            ui_log("WARN", f"Grid row not found (possibly empty table). Capturing List View instead. {str(err)}")
-            os.makedirs("screenshots", exist_ok=True)
-            fallback_shot = f"screenshots/{prefix}_list_fallback_{int(time.time())}.png"
-            page.screenshot(path=fallback_shot, timeout=3000)
-            return fallback_shot
+        # Immediately capture screenshot of the List View
+        os.makedirs("screenshots", exist_ok=True)
+        success_shot = f"screenshots/{prefix}_{int(time.time())}.png"
+        page.screenshot(path=success_shot, timeout=3000)
+        ui_log("SYS", "Transaction success screenshot captured.")
+        return success_shot
     except Exception as shot_err:
         ui_log("WARN", f"Failed to capture transaction screenshot: {shot_err}")
         return None
