@@ -659,8 +659,8 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         # Clear Date To (defaults to empty)
         page.evaluate("() => { var el = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtTo_Value'); if(el) { el.value = ''; el.dispatchEvent(new Event('change', {bubbles: true})); } }")
         
-        # Set Status to Approved (A)
-        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("A")
+        # Set Status to Pending (P) because newly created stock adjustments are Open (Pending)
+        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("P")
         
         # Click Search
         page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").click(force=True)
