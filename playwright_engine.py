@@ -636,11 +636,12 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
         
-        # Set Date To to Today
-        page.locator("id=pag_I_StkAdj_dat_STKADJ_DtTo_SelectButton").click(force=True)
-        today_btn = page.locator("id=pag_I_StkAdj_dat_STKADJ_DtTo_ajax_CalendarExtender_today")
-        today_btn.wait_for(state="visible", timeout=5000)
-        today_btn.click(force=True)
+        # Set Date To to Today using direct string fill to bypass flaky CalendarExtender
+        from datetime import datetime
+        today_str = datetime.now().strftime("%d/%m/%Y")
+        dt_input = page.locator("id=pag_I_StkAdj_dat_STKADJ_DtTo_Value")
+        dt_input.fill(today_str)
+        page.evaluate("() => { var el = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtTo_Value'); if(el) el.dispatchEvent(new Event('change', {bubbles: true})); }")
         
         # Set Status to Approved (A) to ensure only valid newly created transactions show up
         page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("A")
