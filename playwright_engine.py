@@ -27,7 +27,7 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
         ui_log("SYS", "Spawning browser context with isolated session...")
         if progress_bar: progress_bar.progress(0.05)
         browser = p.chromium.launch(headless=True)
-        context = browser.new_context(no_viewport=True)
+        context = browser.new_context(viewport={"width": 1920, "height": 1080})
         page = context.new_page()
         try:
             _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar)
@@ -1446,7 +1446,7 @@ def run_interactive_inspector(user_id_np, pass_np, selected_distributor, URL_LOG
             
         # Start in headed mode
         browser = p.chromium.launch(headless=False)
-        context = browser.new_context(no_viewport=True)
+        context = browser.new_context(viewport={"width": 1920, "height": 1080})
         page = context.new_page()
         
         # Expose binding to python
