@@ -1,4 +1,4 @@
-﻿# AI Project Memory (Optimize Newspage)
+# AI Project Memory (Optimize Newspage)
 
 This file acts as the "Distributed Project Memory" for AI agents. It tracks architectural decisions, recent changes, and known states to prevent hallucinations and maintain a single source of truth across all AI sessions.
 
@@ -185,3 +185,6 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-07-04**: Performed GitHub repository cleanup. Removed broken git submodules (`newspage_automation`, `ponytail`, `spec-kit`), deleted junk files (`diff.txt`, `style_backup.css`, `bg_paper.png`, `scripts/refactor.py`, `ai_assisted_distributed_project_memory_system.md`, `skills.md`, `skills-lock.json`, `brain/`), and cleaned up duplicate entries in `.gitignore` and `MEMORY.md`.
 - **2026-07-04**: **LOCKED DESIGN DECISION**: Neo-Brutalism is permanently locked as the sole design system for this project. Full design token specification (colors, shadows, borders, dimensions, fonts) has been documented in `MEMORY.md` under the "Locked Design System" section and enforced via `AGENTS.md`. All future UI work must strictly comply without exception.
 
+
+- Installed Spec Kit community extensions (verify, verify-tasks, bugfix, checkpoint, archive) and presets (toc-navigation, explicit-task-dependencies) to enhance spec-driven workflow.
+- **2026-07-04**: **New Feature (Unlocked via password "Dama"):** Added success screenshot capture to all bot workflows in `playwright_engine.py`. The bot now takes a screenshot of the browser's final state right before logout upon successful completion and sends it to Telegram alongside the success message. Affects: `run_extract`, `run_sales_extract`, `run_execution`, `run_execution_manual` (which also covers `run_mutasi_execution`). Graceful fallback to text-only alert if screenshot capture fails. Screenshots saved to `screenshots/` directory with prefix `success_*`.

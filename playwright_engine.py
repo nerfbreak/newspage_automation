@@ -322,6 +322,19 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
             if df_ext is not None and not df_ext.empty and df_ext.shape[1] > 1:
                 df_ext.columns = [str(c).strip() for c in df_ext.columns]
                 ext_ui_log("SUCCESS", f"Payload Secured! {len(df_ext)} items loaded. Flushing to session...")
+                # [T001] Capture success screenshot before browser closes
+                success_shot = None
+                try:
+                    os.makedirs("screenshots", exist_ok=True)
+                    success_shot = f"screenshots/success_extract_{int(time.time())}.png"
+                    page.screenshot(path=success_shot, timeout=3000)
+                    ext_ui_log("SYS", "Success screenshot captured.")
+                except Exception:
+                    success_shot = None
+                alert_callback(
+                    f"[OK] <b>EXTRACT COMPLETE</b>\nDist: {selected_distributor}\nItems: {len(df_ext)}",
+                    success_shot
+                )
                 st.session_state.np_df = df_ext
                 database.log_extraction_history(supabase, selected_distributor, current_user)
                 st.session_state.is_bot_running = False
@@ -503,6 +516,19 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
                 return True
             
             ext_ui_log("SYS", "Browser closed. Ready for download.")
+            # [T002] Capture success screenshot before browser closes
+            success_shot = None
+            try:
+                os.makedirs("screenshots", exist_ok=True)
+                success_shot = f"screenshots/success_sales_{int(time.time())}.png"
+                page.screenshot(path=success_shot, timeout=3000)
+                ext_ui_log("SYS", "Success screenshot captured.")
+            except Exception:
+                success_shot = None
+            alert_callback(
+                f"[OK] <b>SALES EXTRACT COMPLETE</b>\nDist: {selected_distributor}\nFile: {real_filename}",
+                success_shot
+            )
             
             with open(file_path, "rb") as f:
                 st.session_state.sales_csv_data = f.read()
@@ -904,6 +930,17 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 # Refresh the final dataframe view in the UI
                 utils.render_neo_table(table_placeholder, df_view)
             
+            # [T003] Capture success screenshot before logout
+            success_shot = None
+            if failed_count == 0:
+                try:
+                    os.makedirs("screenshots", exist_ok=True)
+                    success_shot = f"screenshots/success_exec_{int(time.time())}.png"
+                    page.screenshot(path=success_shot, timeout=3000)
+                    ui_log("SYS", "Success screenshot captured.")
+                except Exception:
+                    success_shot = None
+
             ui_log("AUTH", "Initiating system logout sequence...")
             try:
                 page.once("dialog", lambda dialog: dialog.accept())
@@ -932,7 +969,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
                 alert_msg = f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s"
                 st.markdown(box_html, unsafe_allow_html=True)
-                alert_callback(alert_msg)
+                alert_callback(alert_msg, success_shot)
                 st.toast('System override complete!')
                 st.session_state.reconcile_result = None
 
@@ -1229,6 +1266,17 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 # Refresh the final dataframe view in the UI
                 utils.render_neo_table(table_placeholder, df_view)
             
+            # [T004] Capture success screenshot before logout
+            success_shot = None
+            if failed_count == 0:
+                try:
+                    os.makedirs("screenshots", exist_ok=True)
+                    success_shot = f"screenshots/success_manual_{int(time.time())}.png"
+                    page.screenshot(path=success_shot, timeout=3000)
+                    ui_log("SYS", "Success screenshot captured.")
+                except Exception:
+                    success_shot = None
+
             ui_log("AUTH", "Initiating system logout sequence...")
             try:
                 page.once("dialog", lambda dialog: dialog.accept())
@@ -1261,7 +1309,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 alert_msg = f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s"
                 if show_status_box:
                     st.markdown(box_html, unsafe_allow_html=True)
-                alert_callback(alert_msg)
+                alert_callback(alert_msg, success_shot)
                 st.toast('System override complete!')
                 st.session_state.is_bot_running = False
                 return success_count, failed_count, elapsed
