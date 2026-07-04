@@ -1199,9 +1199,25 @@ div.element-container:has(.neo-container-marker) + div > div[data-testid="stVert
     height: 100% !important;
 }
 
-/* Ensure the column itself stretches */
-[data-testid="column"] > div:has(.neo-container-marker) + div {
-    flex-grow: 1;
+/* Ensure the column's inner structure stretches */
+[data-testid="column"] > div[data-testid="stVerticalBlock"] {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Ensure the element-container holding the container flex-grows */
+div.element-container:has(.neo-container-marker) + div {
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Ensure the border wrapper inside the element-container also stretches */
+div.element-container:has(.neo-container-marker) + div > div[data-testid="stVerticalBlockBorderWrapper"] {
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 /* --- True Neo-Brutalist HTML Tables (st.markdown fallback) --- */
