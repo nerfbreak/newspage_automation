@@ -668,22 +668,27 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         dt_input.fill(today_str)
         page.evaluate("() => { var el = document.getElementById('pag_I_StkAdj_dat_STKADJ_DtTo_Value'); if(el) el.dispatchEvent(new Event('change', {bubbles: true})); }")
         
-        # Set Status to Approved (A) to ensure only valid newly created transactions show up
-        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("A")
+        # Set Status to empty string to ensure ALL statuses (Approved, Pending, etc) are visible
+        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("")
         
         # Click Search
         page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").click(force=True)
+        page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj search")
         
         # Sort by Stock Adjustment No descending (click twice to ensure newest is on top)
         sort_btn = page.locator("id=pag_I_StkAdj_grd_List_ctl01_pag_I_StkAdj_grd_List_2_TXN_NO_SortField")
         sort_btn.click(force=True)
+        page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 1")
+        
         sort_btn.click(force=True)
+        page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 2")
         
         # Click the top record to open details
         page.locator("id=pag_I_StkAdj_grd_List_ctl02_grs_TXN_NO_Value").click(force=True)
+        page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj detail")
         
         # Capture screenshot
