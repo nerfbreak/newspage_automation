@@ -254,8 +254,7 @@ if "Auto Compare" in adj_mode:
             
 
                 bot_ui_log, _ = make_terminal_logger(log_placeholder)
-
-                fn = f.name if 'f' in locals() and f else None
+                fn = file2.name if 'file2' in locals() and file2 else None
                 playwright_engine.run_execution(
                     df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
                     REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase,
