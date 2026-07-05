@@ -225,5 +225,7 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-07-05**: **UI Enhancement**: Styled the image caption to match the Neo-Brutalist design language (bold, uppercase, dark #0F172A, sans-serif) rather than the default browser styling.
 - **2026-07-05**: **Constitution Update**: Amended `constitution.md` to version 2.2.0, adding Principle VIII: Mandatory Remark Input for Adjustments. This enforces that the Inventory Adjustment module MUST have a "Remark" input column matching the Stock Mutation module before execution proceeds.
 - **2026-07-05**: **Constitution Patch**: Amended `constitution.md` to version 2.2.1, refining Principle VIII to require the Remark column to be automatically pre-filled with the uploaded file's name when a user uploads data via Excel/CSV, while remaining editable.
--   A d d e d   R e m a r k   c o l u m n   ( s t . t e x t _ i n p u t )   t o   I n v e n t o r y   A d j u s t m e n t   m o d u l e   w i t h   a u t o - f i l l   c a p a b i l i t i e s   f r o m   f i l e   n a m e s ,   m i r r o r i n g   S t o c k   M u t a t i o n .  
- 
+- **2026-07-05**: Added Remark column (`st.text_input`) to Inventory Adjustment module with auto-fill capabilities from file names, mirroring Stock Mutation.
+- **2026-07-05**: **Constitution Update**: Amended `constitution.md` to version 2.3.0, adding Principle IX: Client-Side Sharing Delegation, prioritizing browser-native delegation for WhatsApp messaging integration.
+- **2026-07-05**: **Constitution Update**: Amended `constitution.md` to version 2.4.0, adding Principle X: Streamlit Deprecation Compliance — Layout Widths. This enforces replacing deprecated `use_container_width` with the modern `width` parameter.
+- **2026-07-05**: Initialized feature specification for Streamlit layout width migration under `specs/016-replace-use-container-width/spec.md`.

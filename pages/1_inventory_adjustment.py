@@ -234,7 +234,11 @@ if "Auto Compare" in adj_mode:
         log_label_placeholder = st.empty()
         log_placeholder = st.empty()
         
-        auto_remark = file2.name if (file2 is not None and hasattr(file2, 'name')) else ""
+        auto_remark = ""
+        if file2 is not None and hasattr(file2, 'name'):
+            import os
+            auto_remark, _ = os.path.splitext(file2.name)
+            
         remark_text = st.text_input("Remark", value=auto_remark, max_chars=50, key="auto_remark")
         
         btn_placeholder = st.empty()
@@ -349,7 +353,11 @@ elif "Manual Entry" in adj_mode:
 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    manual_auto_remark = uploaded_manual.name if (uploaded_manual is not None and hasattr(uploaded_manual, 'name')) else ""
+    manual_auto_remark = ""
+    if uploaded_manual is not None and hasattr(uploaded_manual, 'name'):
+        import os
+        manual_auto_remark, _ = os.path.splitext(uploaded_manual.name)
+        
     manual_remark_text = st.text_input("Remark", value=manual_auto_remark, max_chars=50, key="manual_remark")
     
     log_label_placeholder = st.empty()

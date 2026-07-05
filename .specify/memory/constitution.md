@@ -1,13 +1,13 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 2.2.0 → 2.2.1 (Refined Mandatory Remark Input for Adjustments principle to include auto-filling from uploaded filename)
+Version change: 2.4.0 → 2.4.1 (Amended Principle VIII: Exclude file extensions from Remark auto-fill)
 Added sections: None
 Modified sections: Core Principles -> VIII. Mandatory Remark Input for Adjustments
 Removed sections: None
 Templates requiring updates:
   ✅ .specify/memory/constitution.md (Updated)
-Follow-up TODOs: Run /speckit-specify to write the feature specification for adding the Remark column to Inventory Adjustment, including the auto-fill behavior.
+Follow-up TODOs: Run /speckit-specify to update the feature spec for stripping extensions.
 -->
 
 # Optimize Newspage Automation Constitution
@@ -80,9 +80,21 @@ To prevent UI clutter and maintain a clean interface, post-execution actions (e.
 **Rationale**: A clean, uncluttered interface is crucial for non-technical users. Stacking multiple action buttons creates confusion about the current state of the application. Reusing the primary button slot for state-dependent actions clarifies the available next steps and reduces visual noise.
 
 ### VIII. Mandatory Remark Input for Adjustments
-Before executing the Inventory Adjustment module, there MUST be a "Remark" input column provided to the user, formatted exactly like the one present in the Stock Mutation module. If the user uploads a data file (e.g., CSV/Excel) to populate the grid, this Remark column MUST be automatically pre-filled with the name of the uploaded file to reduce manual entry effort, while remaining fully editable. The adjustment process MUST NOT proceed if this step is bypassed.
+Before executing the Inventory Adjustment module, there MUST be a "Remark" input column provided to the user, formatted exactly like the one present in the Stock Mutation module. If the user uploads a data file (e.g., CSV/Excel) to populate the grid, this Remark column MUST be automatically pre-filled with the base name of the uploaded file (explicitly excluding file extensions such as .xlsx, .csv, .xls, etc.) to reduce manual entry effort, while remaining fully editable. The adjustment process MUST NOT proceed if this step is bypassed.
 
 **Rationale**: Ensures traceability and accountability for inventory adjustments by forcing operators to provide a contextual reason or reference note before data is submitted to the system, while automating repetitive tasks like copy-pasting filenames.
+
+### IX. Client-Side Sharing Delegation
+When integrating with third-party messaging services (e.g., sharing screenshots to WhatsApp), the system MUST prioritize browser-native delegation (such as Clipboard API copy followed by user-triggered window redirect) over backend headless bots. This ensures the action executes under the user's local browser session, eliminates server-side credentials/session management, and respects user privacy.
+
+**Rationale**: Since users already maintain active, authenticated WhatsApp sessions on their personal local web browsers/laptops, utilizing browser-native capabilities (copy-pasting and opening WhatsApp Web) avoids the resource overhead, maintenance burden, and security risks associated with managing server-side headless browser sessions or storing third-party authentication tokens.
+
+### X. Streamlit Deprecation Compliance — Layout Widths
+All Streamlit widget and layout container calls MUST use the `width` parameter instead of the deprecated `use_container_width` parameter (which will be removed after 2025-12-31).
+- For `use_container_width=True`, replace with `width='stretch'`.
+- For `use_container_width=False`, replace with `width='content'`.
+
+**Rationale**: Adhering to the updated Streamlit layout APIs avoids runtime crashes and deprecation warnings, ensuring long-term application stability and grid-layout compatibility.
 
 ## Security & Credential Standards
 
@@ -130,4 +142,4 @@ Amendments require:
 All AI coding agents working on this project MUST read this constitution at the
 start of each session alongside `.agents/MEMORY.md`.
 
-**Version**: 2.2.1 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05
+**Version**: 2.4.1 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05
