@@ -222,14 +222,14 @@ if "Auto Compare" in adj_mode:
         m1, m2 = st.columns(2); match_count = st.session_state.reconcile_summary['total_match']; mismatch_count = st.session_state.reconcile_summary['total_mismatch']
         with m1: st.markdown(f'''<div class="metric-box-match"><div class="metric-label">Match</div><div class="metric-value">{match_count}</div></div>''', unsafe_allow_html=True)
         with m2: st.markdown(f'''<div class="metric-box-mismatch"><div class="metric-label">Stock difference</div><div class="metric-value">{mismatch_count}</div></div>''', unsafe_allow_html=True)
-        utils.render_neo_table(st.session_state.reconcile_summary['df_view'])
+        utils.render_responsive_dataframe(st.session_state.reconcile_summary['df_view'])
     
         df_view = st.session_state.reconcile_result.copy()
         df_view['Status'] = df_view['Status'].apply(lambda x: 'Pending' if x == 'Mismatch' else x)
         if 'Keterangan' not in df_view.columns: df_view['Keterangan'] = 'Ready to Process'
     
         st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>ADJUSTMENT SKU LIST</span></div>", unsafe_allow_html=True)
-        table_placeholder = st.empty(); utils.render_neo_table(table_placeholder, df_view)
+        table_placeholder = st.empty(); utils.render_responsive_dataframe(table_placeholder, df_view)
     
         auto_remark = ""
         if file2 is not None and hasattr(file2, 'name'):
@@ -389,7 +389,7 @@ elif "Manual Entry" in adj_mode:
                 df_exec['Keterangan'] = 'Ready to Process'
                 df_exec = df_exec.reset_index(drop=True)
                 
-                utils.render_neo_table(table_placeholder, df_exec)
+                utils.render_responsive_dataframe(table_placeholder, df_exec)
                 st.session_state.is_bot_running = True
                 st.session_state.execute_done = False
                 btn_placeholder.empty()

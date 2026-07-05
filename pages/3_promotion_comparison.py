@@ -115,7 +115,7 @@ promo_log_placeholder = st.empty()
 if st.session_state.uploaded_mdm_data is not None:
     @st.dialog("Preview SharePoint Data (MDM)")
     def preview_mdm_data():
-        utils.render_neo_table(st.session_state.uploaded_mdm_data.head(50))
+        utils.render_responsive_dataframe(st.session_state.uploaded_mdm_data.head(50))
 
     if st.button("Preview SharePoint Data (MDM)", type="primary"):
         preview_mdm_data()
@@ -260,7 +260,7 @@ if st.session_state.promo_zip_data:
         if filter_status != "All":
             df_view = df_view[df_view['MATCH_STATUS'] == filter_status]
             
-        utils.render_neo_table(df_view)
+        utils.render_responsive_dataframe(df_view)
         
         csv_buffer = io.StringIO()
         df_view.to_csv(csv_buffer, index=False)

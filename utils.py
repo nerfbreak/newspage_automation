@@ -459,3 +459,49 @@ def render_neo_table(df_or_placeholder, df=None):
     )
     html_str = f'<div class="neo-table-wrapper">{html}</div>'
     target.markdown(html_str, unsafe_allow_html=True)
+
+
+def render_responsive_dataframe(df_or_placeholder, df=None):
+    """
+    Renders a dataframe that shows as a neo-brutalist table on desktop
+    and stacks into mobile cards on screens < 768px.
+    """
+    import pandas as pd
+    
+    if df is None:
+        target_df = df_or_placeholder
+        target = st
+    else:
+        target_df = df
+        target = df_or_placeholder
+        
+    if not isinstance(target_df, pd.DataFrame):
+        target_df = pd.DataFrame(target_df)
+
+    # 1. Desktop Table HTML
+    desktop_html = target_df.to_html(
+        index=False, 
+        classes="neo-table", 
+        escape=True,
+        float_format=lambda x: str(int(x)) if x.is_integer() else str(x)
+    )
+    desktop_div = f'<div class="desktop-only-table"><div class="neo-table-wrapper">{desktop_html}</div></div>'
+    
+    # 2. Mobile Cards HTML
+    cards_html = []
+    for _, row in target_df.iterrows():
+        cards_html.append('<div class="mobile-data-card">')
+        for col_name, val in row.items():
+            str_val = str(int(val)) if isinstance(val, float) and val.is_integer() else str(val)
+            cards_html.append(f'''
+            <div class="mobile-data-row">
+                <span class="mobile-data-label">{html.escape(str(col_name))}</span>
+                <span class="mobile-data-value">{html.escape(str_val)}</span>
+            </div>
+            ''')
+        cards_html.append('</div>')
+    
+    mobile_div = f'<div class="mobile-only-cards">{"".join(cards_html)}</div>'
+    
+    # 3. Combine and render
+    target.markdown(desktop_div + mobile_div, unsafe_allow_html=True)

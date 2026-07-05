@@ -1,13 +1,13 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 2.4.0 → 2.4.1 (Amended Principle VIII: Exclude file extensions from Remark auto-fill)
-Added sections: None
-Modified sections: Core Principles -> VIII. Mandatory Remark Input for Adjustments
+Version change: 2.4.1 → 2.5.0 (Added Principle XI: Mobile-First Responsive Design)
+Added sections: Core Principles -> XI. Mobile-First Responsive Design
+Modified sections: Governance (Version bump)
 Removed sections: None
 Templates requiring updates:
   ✅ .specify/memory/constitution.md (Updated)
-Follow-up TODOs: Run /speckit-specify to update the feature spec for stripping extensions.
+Follow-up TODOs: Run /speckit-specify to detail the responsive design features.
 -->
 
 # Optimize Newspage Automation Constitution
@@ -96,6 +96,11 @@ All Streamlit widget and layout container calls MUST use the `width` parameter i
 
 **Rationale**: Adhering to the updated Streamlit layout APIs avoids runtime crashes and deprecation warnings, ensuring long-term application stability and grid-layout compatibility.
 
+### XI. Mobile-First Responsive Design
+All new features, UI components, and pages MUST be designed with dynamic responsiveness, specifically optimizing for mobile viewports. Layouts must be precise and ensure that UI elements (buttons, tables, forms, containers) do not overlap, clip, or stack incorrectly when viewed on smaller screens. The responsive design MUST still strictly adhere to the locked Neo-Brutalism design system (e.g., maintaining exact borders, colors, and shadows).
+
+**Rationale**: Users often access the application via mobile devices in on-the-go scenarios. Non-responsive UI elements that overlap or overflow the screen bounds create a frustrating user experience and prevent successful task execution.
+
 ## Security & Credential Standards
 
 - All secrets MUST be stored in `.streamlit/secrets.toml` — this file is gitignored.
@@ -142,4 +147,4 @@ Amendments require:
 All AI coding agents working on this project MUST read this constitution at the
 start of each session alongside `.agents/MEMORY.md`.
 
-**Version**: 2.4.1 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05
+**Version**: 2.5.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05

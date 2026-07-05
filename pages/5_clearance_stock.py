@@ -160,7 +160,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
     df_display = df_clear.copy()
     df_display['Clear Qty'] = -df_display['Qty'].abs()
     display_cols = ['SKU', 'Description', 'Qty', 'Clear Qty'] if 'Description' in df_display.columns else ['SKU', 'Qty', 'Clear Qty']
-    utils.render_neo_table(df_display[display_cols])
+    utils.render_responsive_dataframe(df_display[display_cols])
 
     # --- EXECUTE ---
     if st.button("Execute", type="primary", width='stretch', icon=":material/play_arrow:"):
@@ -177,7 +177,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
 
             st.subheader("Clearance Execution")
             table_placeholder = st.empty()
-            utils.render_neo_table(table_placeholder, df_exec)
+            utils.render_responsive_dataframe(table_placeholder, df_exec)
 
             log_label_placeholder = st.empty()
             log_placeholder = st.empty()

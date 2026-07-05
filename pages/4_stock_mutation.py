@@ -143,7 +143,7 @@ if uploaded_file is not None:
             df_display[f'Add ({dist_b})'] = df_display['Qty'].apply(lambda x: f"+{abs(x)}")
 
             st.subheader("Stock Review")
-            utils.render_neo_table(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']])
+            utils.render_responsive_dataframe(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']])
         else:
             st.warning("Tidak ada SKU valid di file yang diupload.")
     else:
@@ -210,12 +210,12 @@ if st.session_state.is_mutasi_running:
     df_a_display['Qty'] = '-' + df_a_display['Qty'].astype(str)
     df_a_display['Status'] = 'Pending'
     df_a_display['Keterangan'] = 'Ready'
-    utils.render_neo_table(table_a_ph, df_a_display)
+    utils.render_responsive_dataframe(table_a_ph, df_a_display)
 
     df_b_display = df_mutasi[['SKU', 'Description', 'Qty']].copy()
     df_b_display['Status'] = 'Pending'
     df_b_display['Keterangan'] = 'Ready'
-    utils.render_neo_table(table_b_ph, df_b_display)
+    utils.render_responsive_dataframe(table_b_ph, df_b_display)
 
     prog_a_ph.progress(0)
     prog_b_ph.progress(0)
