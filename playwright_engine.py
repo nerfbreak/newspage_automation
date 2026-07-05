@@ -1045,7 +1045,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
                 box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
-                alert_msg = f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s"
+                alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {selected_distributor}\nTotal SKU Mismatch : {success_count + failed_count}\nRuntime : {elapsed//60}m {elapsed%60}s\nDone by : {current_user}"
                 st.markdown(box_html, unsafe_allow_html=True)
                 alert_callback(alert_msg, success_shot, delete_after=False)
                 st.toast('System override complete!')
@@ -1380,7 +1380,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
                 box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
-                alert_msg = f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s"
+                alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {selected_distributor}\nTotal SKU Mismatch : {success_count + failed_count}\nRuntime : {elapsed//60}m {elapsed%60}s\nDone by : {current_user}"
                 if show_status_box:
                     st.markdown(box_html, unsafe_allow_html=True)
                 alert_callback(alert_msg, success_shot, delete_after=False)
