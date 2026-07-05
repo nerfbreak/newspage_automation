@@ -168,7 +168,7 @@ with st.container(border=True):
             break
     selected_reason_label = st.selectbox("Reason Adjustment", list(reason_options.values()), index=default_reason_idx, key="mutasi_reason")
     selected_reason_code = [k for k, v in reason_options.items() if v == selected_reason_label][0]
-    remark_text = st.text_input("Remark", max_chars=50, key="mutasi_remark")
+    remark_text = st.text_input("Remark : (Isian nomor dokumen)", max_chars=50, key="mutasi_remark")
     
 st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
 execute_clicked = st.button("Execute", type="primary", width='stretch', disabled=not can_execute, icon=":material/play_arrow:")
