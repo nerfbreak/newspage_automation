@@ -423,11 +423,52 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 img_bytes = file.read()
                 b64_data = base64.b64encode(img_bytes).decode("utf-8")
             
-            # Combine JS and HTML into a single iframe component
+            import streamlit.components.v1 as components
+            
             button_html = f"""
             <!DOCTYPE html>
             <html>
             <head>
+            <style>
+              body {{
+                margin: 0;
+                padding: 4px 10px 10px 4px;
+                display: flex;
+                gap: 16px;
+                overflow: hidden;
+                font-family: 'Source Sans 3', sans-serif, monospace;
+              }}
+              .neo-btn {{
+                flex: 1;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                height: 42px;
+                background-color: #0068C9;
+                color: #FFFFFF;
+                border: 2px solid #0F172A;
+                border-radius: 0px;
+                font-weight: 600;
+                font-size: 14px;
+                text-transform: uppercase;
+                text-decoration: none;
+                box-shadow: 6px 6px 0px 0px #0F172A;
+                cursor: pointer;
+                transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+                box-sizing: border-box;
+              }}
+              .neo-btn:hover {{
+                transform: translate(2px, 2px);
+                box-shadow: 4px 4px 0px 0px #0F172A;
+              }}
+              .neo-btn:active {{
+                transform: translate(4px, 4px);
+                box-shadow: 2px 2px 0px 0px #0F172A;
+              }}
+              svg {{
+                margin-right: 8px;
+              }}
+            </style>
             <script>
             async function shareToWA() {{
                 try {{
@@ -435,7 +476,19 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                     const blob = await resp.blob();
                     const item = new ClipboardItem({{"image/png": blob}});
                     await navigator.clipboard.write([item]);
-                    window.open("https://web.whatsapp.com/", "whatsapp_web_tab");
+                    
+                    let opened = false;
+                    try {{
+                        if (window.parent && window.parent.open) {{
+                            window.parent.open("https://web.whatsapp.com/", "wa_tab");
+                            opened = true;
+                        }}
+                    }} catch(err) {{}}
+                    
+                    if (!opened) {{
+                        window.open("https://web.whatsapp.com/", "wa_tab");
+                    }}
+                    
                     alert("Bukti transaksi telah disalin ke clipboard! Silakan pilih chat di WhatsApp Web lalu tekan Ctrl+V untuk mengirim.");
                 }} catch (e) {{
                     console.error("Auto copy failed, falling back to redirect:", e);
@@ -464,7 +517,7 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
             </html>
             """
             
-            st.iframe(button_html, height=60)
+            components.html(button_html, height=60)
             st.image(screenshot_path, width='stretch')
             st.markdown("<p style='text-align: center; font-weight: 800; font-family: \"Source Sans 3\", sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; color: #0F172A; margin-top: 8px;'>BUKTI TRANSAKSI</p>", unsafe_allow_html=True)
         else:
