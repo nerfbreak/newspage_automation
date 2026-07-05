@@ -424,6 +424,16 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
             
             import streamlit.components.v1 as components
             
+            import re
+            
+            # Convert HTML tags from telegram message to WhatsApp markdown
+            js_msg = ""
+            if st.session_state.get("last_alert_msg"):
+                plain_msg = re.sub(r'<b>(.*?)</b>', r'*\1*', st.session_state.last_alert_msg)
+                plain_msg = re.sub(r'<[^>]+>', '', plain_msg)
+                # Escape for Javascript injection
+                js_msg = plain_msg.replace('\n', '\\n').replace('"', '\\"').replace("'", "\\'")
+            
             button_html = f"""
             <!DOCTYPE html>
             <html>
@@ -475,26 +485,42 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 try {{
                     const res = await fetch("data:image/png;base64,{b64_data}");
                     const blob = await res.blob();
-                    preloadedBlobItem = new ClipboardItem({{"image/png": blob}});
+                    
+                    const clipboardData = {{
+                        "image/png": blob
+                    }};
+                    
+                    const textContent = "{js_msg}";
+                    if (textContent) {{
+                        clipboardData["text/plain"] = new Blob([textContent], {{ type: "text/plain" }});
+                    }}
+                    
+                    preloadedBlobItem = new ClipboardItem(clipboardData);
                 }} catch (e) {{
                     console.error("Preload failed", e);
                 }}
             }}
             window.addEventListener("DOMContentLoaded", preloadImage);
 
-            function handleWAClick(event) {{
+            function handleCopyClick(event) {{
+                const btn = event.currentTarget;
+                const originalText = btn.innerHTML;
+                
                 if (preloadedBlobItem) {{
                     navigator.clipboard.write([preloadedBlobItem]).then(() => {{
-                        console.log("Image copied successfully");
+                        btn.innerHTML = '✔ DISALIN!';
+                        btn.style.backgroundColor = '#10B981';
+                        setTimeout(() => {{
+                            btn.innerHTML = originalText;
+                            btn.style.backgroundColor = '#0068C9';
+                        }}, 2000);
                     }}).catch(err => {{
                         console.error("Clipboard write failed:", err);
+                        alert("Gagal menyalin, pastikan browser Anda mendukung Clipboard API.");
                     }});
                 }} else {{
-                    console.warn("Blob not preloaded yet");
+                    alert("Gambar belum siap, tunggu sebentar lalu coba lagi.");
                 }}
-                // We deliberately do NOT preventDefault() here.
-                // The native anchor tag handles the navigation to target="whatsapp_web_tab".
-                // This guarantees the browser natively reuses the tab instead of treating it as a popup.
             }}
             </script>
             </head>
@@ -506,12 +532,13 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 </svg>
                 UNDUH SCREENSHOT
               </a>
-              <a href="https://web.whatsapp.com/" target="whatsapp_web_tab" class="neo-btn" onclick="handleWAClick(event)">
+              <button class="neo-btn" onclick="handleCopyClick(event)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="square" stroke-linejoin="miter" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                  <path stroke-linecap="square" stroke-linejoin="miter" d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                 </svg>
-                KIRIM VIA WA
-              </a>
+                COPY GAMBAR & TEKS
+              </button>
             </body>
             </html>
             """
