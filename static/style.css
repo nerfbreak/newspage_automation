@@ -1642,9 +1642,12 @@ div[data-testid="stProgress"] div[role="progressbar"] > div[style*="width: 100%"
 }
 
 /* ============================================================
-   RED BUTTON MARKER (FOOLPROOF CONTAINER METHOD)
+   BUTTON MARKERS FOR VARIATIONS
    ============================================================ */
-div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button {
+/* RED BUTTON */
+div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button,
+div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button[kind="primary"],
+div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button[data-testid="stBaseButton-primary"] {
     background-color: #E63946 !important;
     color: #FFFFFF !important;
     border: 2px solid #0F172A !important;
@@ -1652,13 +1655,63 @@ div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button {
 div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button p {
     color: #FFFFFF !important;
 }
-div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button:hover {
+div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button:hover,
+div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button[kind="primary"]:hover {
     background-color: #E63946 !important;
     box-shadow: 4px 4px 0px 0px #0F172A !important;
     transform: translate(2px, 2px) !important;
 }
-div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button:active {
+div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button:active,
+div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button[kind="primary"]:active {
     background-color: #E63946 !important;
+    box-shadow: 2px 2px 0px 0px #0F172A !important;
+    transform: translate(4px, 4px) !important;
+}
+
+/* GREEN BUTTON */
+div[data-testid="stVerticalBlock"]:has(.green-btn-marker) button,
+div[data-testid="stVerticalBlock"]:has(.green-btn-marker) button[kind="primary"],
+div[data-testid="stVerticalBlock"]:has(.green-btn-marker) button[data-testid="stBaseButton-primary"] {
+    background-color: #10B981 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #0F172A !important;
+}
+div[data-testid="stVerticalBlock"]:has(.green-btn-marker) button p {
+    color: #FFFFFF !important;
+}
+div[data-testid="stVerticalBlock"]:has(.green-btn-marker) button:hover,
+div[data-testid="stVerticalBlock"]:has(.green-btn-marker) button[kind="primary"]:hover {
+    background-color: #10B981 !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    transform: translate(2px, 2px) !important;
+}
+div[data-testid="stVerticalBlock"]:has(.green-btn-marker) button:active,
+div[data-testid="stVerticalBlock"]:has(.green-btn-marker) button[kind="primary"]:active {
+    background-color: #10B981 !important;
+    box-shadow: 2px 2px 0px 0px #0F172A !important;
+    transform: translate(4px, 4px) !important;
+}
+
+/* ORANGE BUTTON */
+div[data-testid="stVerticalBlock"]:has(.orange-btn-marker) button,
+div[data-testid="stVerticalBlock"]:has(.orange-btn-marker) button[kind="primary"],
+div[data-testid="stVerticalBlock"]:has(.orange-btn-marker) button[data-testid="stBaseButton-primary"] {
+    background-color: #F59E0B !important;
+    color: #0F172A !important;
+    border: 2px solid #0F172A !important;
+}
+div[data-testid="stVerticalBlock"]:has(.orange-btn-marker) button p {
+    color: #0F172A !important;
+}
+div[data-testid="stVerticalBlock"]:has(.orange-btn-marker) button:hover,
+div[data-testid="stVerticalBlock"]:has(.orange-btn-marker) button[kind="primary"]:hover {
+    background-color: #F59E0B !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    transform: translate(2px, 2px) !important;
+}
+div[data-testid="stVerticalBlock"]:has(.orange-btn-marker) button:active,
+div[data-testid="stVerticalBlock"]:has(.orange-btn-marker) button[kind="primary"]:active {
+    background-color: #F59E0B !important;
     box-shadow: 2px 2px 0px 0px #0F172A !important;
     transform: translate(4px, 4px) !important;
 }

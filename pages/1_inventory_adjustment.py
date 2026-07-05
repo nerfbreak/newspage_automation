@@ -129,7 +129,7 @@ if "Auto Compare" in adj_mode:
         extract_btn = st.button(btn_label, type="primary", width='stretch', disabled=st.session_state.is_bot_running, icon=":material/download:")
 
     if st.session_state.np_df is not None:
-        st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9", margin_top="8px", margin_bottom="8px"), unsafe_allow_html=True)
+        st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#8B5CF6", "#8B5CF6", margin_top="8px", margin_bottom="8px"), unsafe_allow_html=True)
 
     ext_label_placeholder = st.empty()
     ext_log_placeholder = st.empty()
@@ -160,8 +160,10 @@ if "Auto Compare" in adj_mode:
     np_source_ready = (st.session_state.np_df is not None) or (file1 is not None)
     
     if np_source_ready and file2:
-        if st.button("PROSES FILE & BANDINGKAN", type="primary", width='stretch', icon=":material/compare_arrows:"):
-            st.session_state.show_comparison = True
+        with st.container():
+            st.markdown("<span class='green-btn-marker'></span>", unsafe_allow_html=True)
+            if st.button("PROSES FILE & BANDINGKAN", type="primary", width='stretch', icon=":material/compare_arrows:"):
+                st.session_state.show_comparison = True
             
     if st.session_state.get('show_comparison') and np_source_ready and file2:
         df1 = st.session_state.np_df if st.session_state.np_df is not None else data_processor.load_data(file1)
