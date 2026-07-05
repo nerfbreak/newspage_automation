@@ -422,17 +422,21 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 img_bytes = file.read()
                 b64_data = base64.b64encode(img_bytes).decode("utf-8")
             
+            import re
+            import urllib.parse
             import streamlit.components.v1 as components
             
-            import re
-            
             # Convert HTML tags from telegram message to WhatsApp markdown
-            js_msg = ""
-            if st.session_state.get("last_alert_msg"):
-                plain_msg = re.sub(r'<b>(.*?)</b>', r'*\1*', st.session_state.last_alert_msg)
-                plain_msg = re.sub(r'<[^>]+>', '', plain_msg)
-                # Escape for Javascript injection
-                js_msg = plain_msg.replace('\n', '\\n').replace('"', '\\"').replace("'", "\\'")
+            alert_msg = st.session_state.get("last_alert_msg", "")
+            if not alert_msg:
+                # Fallback if bot hasn't been rerun since update
+                dist = st.session_state.get("selected_distributor", "Unknown")
+                alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {dist}\nTotal SKU Mismatch : ?\nDone by : {st.session_state.current_user}"
+                
+            plain_msg = re.sub(r'<b>(.*?)</b>', r'*\1*', alert_msg)
+            plain_msg = re.sub(r'<[^>]+>', '', plain_msg)
+            wa_text = urllib.parse.quote(plain_msg)
+            wa_url = f"https://web.whatsapp.com/send?text={wa_text}"
             
             button_html = f"""
             <!DOCTYPE html>
@@ -485,42 +489,21 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 try {{
                     const res = await fetch("data:image/png;base64,{b64_data}");
                     const blob = await res.blob();
-                    
-                    const clipboardData = {{
-                        "image/png": blob
-                    }};
-                    
-                    const textContent = "{js_msg}";
-                    if (textContent) {{
-                        clipboardData["text/plain"] = new Blob([textContent], {{ type: "text/plain" }});
-                    }}
-                    
-                    preloadedBlobItem = new ClipboardItem(clipboardData);
+                    // Hanya copy GAMBAR saja, karena teks akan dikirim via URL
+                    preloadedBlobItem = new ClipboardItem({{"image/png": blob}});
                 }} catch (e) {{
                     console.error("Preload failed", e);
                 }}
             }}
             window.addEventListener("DOMContentLoaded", preloadImage);
 
-            function handleCopyClick(event) {{
-                const btn = event.currentTarget;
-                const originalText = btn.innerHTML;
-                
+            function handleWAClick(event) {{
                 if (preloadedBlobItem) {{
-                    navigator.clipboard.write([preloadedBlobItem]).then(() => {{
-                        btn.innerHTML = '✔ DISALIN!';
-                        btn.style.backgroundColor = '#10B981';
-                        setTimeout(() => {{
-                            btn.innerHTML = originalText;
-                            btn.style.backgroundColor = '#0068C9';
-                        }}, 2000);
-                    }}).catch(err => {{
+                    navigator.clipboard.write([preloadedBlobItem]).catch(err => {{
                         console.error("Clipboard write failed:", err);
-                        alert("Gagal menyalin, pastikan browser Anda mendukung Clipboard API.");
                     }});
-                }} else {{
-                    alert("Gambar belum siap, tunggu sebentar lalu coba lagi.");
                 }}
+                // Biarkan event default berjalan (browser akan navigasi ke WhatsApp URL)
             }}
             </script>
             </head>
@@ -532,13 +515,12 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 </svg>
                 UNDUH SCREENSHOT
               </a>
-              <button class="neo-btn" onclick="handleCopyClick(event)">
+              <a href="{wa_url}" target="whatsapp_web_tab" class="neo-btn" onclick="handleWAClick(event)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="square" stroke-linejoin="miter" d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  <path stroke-linecap="square" stroke-linejoin="miter" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
                 </svg>
-                COPY GAMBAR & TEKS
-              </button>
+                KIRIM VIA WA
+              </a>
             </body>
             </html>
             """
