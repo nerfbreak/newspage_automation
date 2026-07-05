@@ -776,6 +776,12 @@ def _setup_terminate_button(placeholder):
                 .neo-btn-cancel:hover { transform: translateX(-50%) translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A; }
                 .neo-btn-cancel:active { transform: translateX(-50%) translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }
                 
+                /* Tighten the gap between the progress bar and the terminate button */
+                div[data-testid="stElementContainer"]:has(.neo-btn-terminate) {
+                    margin-top: -14px !important;
+                    margin-bottom: 0px !important;
+                }
+                
                 /* Visually hide the Streamlit button container initially so it doesn't flash */
                 div.element-container:has(#term-modal-toggle) + div.element-container {
                     display: none !important;
