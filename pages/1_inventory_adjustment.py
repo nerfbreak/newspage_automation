@@ -435,11 +435,11 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                     const blob = await resp.blob();
                     const item = new ClipboardItem({{"image/png": blob}});
                     await navigator.clipboard.write([item]);
-                    window.open("https://web.whatsapp.com/", "_blank");
+                    window.open("https://web.whatsapp.com/", "whatsapp_web_tab");
                     alert("Bukti transaksi telah disalin ke clipboard! Silakan pilih chat di WhatsApp Web lalu tekan Ctrl+V untuk mengirim.");
                 }} catch (e) {{
                     console.error("Auto copy failed, falling back to redirect:", e);
-                    window.open("https://web.whatsapp.com/", "_blank");
+                    window.open("https://web.whatsapp.com/", "whatsapp_web_tab");
                     alert("Gagal menyalin otomatis. Silakan klik kanan gambar screenshot di web app lalu 'Copy Image', lalu paste di WhatsApp Web.");
                 }}
             }}
