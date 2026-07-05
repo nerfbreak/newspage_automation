@@ -68,9 +68,11 @@ with st.container(border=True):
                         </style>
                         {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
                     """, unsafe_allow_html=True)
-                    if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
-                        # Just force rerun to clear
-                        st.rerun()
+                    with st.container():
+                        st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
+                        if st.button("Hapus File Upload", type="secondary", use_container_width=True, icon=":material/delete:"):
+                            # Just force rerun to clear
+                            st.rerun()
                 
                 if "BDP" in available_sheets:
                     st.session_state.uploaded_bdp_data = pd.read_excel(xl, sheet_name="BDP")

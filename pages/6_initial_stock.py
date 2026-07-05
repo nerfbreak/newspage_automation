@@ -74,11 +74,13 @@ if uploaded_file is not None:
         </style>
         {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
     """, unsafe_allow_html=True)
-    if st.button("HAPUS FILE", type="secondary", use_container_width=True, icon=":material/delete:"):
-        st.session_state.initial_stock_file = None
-        st.session_state.initial_stock_raw = None
-        st.session_state.initial_stock_df = None
-        st.rerun()
+    with st.container():
+        st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
+        if st.button("Hapus File Upload", type="secondary", use_container_width=True, icon=":material/delete:"):
+            st.session_state.initial_stock_file = None
+            st.session_state.initial_stock_raw = None
+            st.session_state.initial_stock_df = None
+            st.rerun()
     
 if uploaded_file is not None and st.session_state.initial_stock_raw is None and st.session_state.initial_stock_df is None:
     try:
@@ -154,10 +156,12 @@ if st.session_state.initial_stock_df is not None:
     df_init = st.session_state.initial_stock_df
 
     st.markdown(make_solid_box(f"Loaded — {len(df_init)} items from uploaded file", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-    if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
-        st.session_state.initial_stock_df = None
-        st.session_state.initial_stock_raw = None
-        st.rerun()
+    with st.container():
+        st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
+        if st.button("Clear Data Extracted Initial Stock", type="primary", use_container_width=True, icon=":material/delete:"):
+            st.session_state.initial_stock_df = None
+            st.session_state.initial_stock_raw = None
+            st.rerun()
 
 # --- REVIEW TABLE ---
 if st.session_state.initial_stock_df is not None and len(st.session_state.initial_stock_df) > 0:

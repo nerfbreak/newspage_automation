@@ -63,9 +63,11 @@ st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
 extract_btn = False
 
 if st.session_state.clearance_df is not None:
-    if st.button("Clear Data", type="primary", use_container_width=True, icon=":material/delete:"):
-        st.session_state.clearance_df = None
-        st.rerun()
+    with st.container():
+        st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
+        if st.button("Clear Data Extracted Clearance Stock", type="primary", use_container_width=True, icon=":material/delete:"):
+            st.session_state.clearance_df = None
+            st.rerun()
 elif st.session_state.is_clearance_running:
     st.markdown(make_solid_box("Extracting stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
 else:

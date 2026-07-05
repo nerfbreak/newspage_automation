@@ -1,5 +1,6 @@
 import time
 import io
+import os
 import streamlit as st
 import utils
 import database
@@ -386,33 +387,27 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
     st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
     st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
     with st.container(border=True):
-        st.markdown("<div class='header-wrapper-center-notop'><span class='section-header-underline'>WHATSAPP FORWARDER</span></div>", unsafe_allow_html=True)
+        st.markdown("<div class='header-wrapper-center-notop'><span class='section-header-underline'>BUKTI TRANSAKSI (SCREENSHOT)</span></div>", unsafe_allow_html=True)
         st.markdown("""
-        <div style="background-color: #dcfce7; color: #166534; padding: 12px 16px; border-radius: 0px; font-size: 0.85rem; font-weight: 700; border: 3px solid #0F172A; margin-bottom: 24px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; align-items: center; gap: 12px;">
-            <span style="font-size: 1.2rem;">✓</span>
-            <span>Pekerjaan selesai! Anda bisa meneruskan bukti layar (screenshot) ini ke grup WhatsApp.</span>
+        <div style="background-color: #dbeafe; color: #1e3a8a; padding: 12px 16px; border-radius: 0px; font-size: 0.85rem; font-weight: 700; border: 3px solid #0F172A; margin-bottom: 24px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 1.2rem;">ℹ</span>
+            <span>Pekerjaan selesai! Silakan unduh bukti transaksi di bawah ini untuk dikirimkan secara manual.</span>
         </div>
         """, unsafe_allow_html=True)
         
-        wa_target = st.secrets.get("WHATSAPP_TARGET_GROUP", "Grup Notifikasi Bot")
-        
-        wa_btn_ph = st.empty()
-        qr_ph = st.empty()
-        
-        if wa_btn_ph.button(f"Kirim ke WA ({wa_target})", type="primary", icon=":material/send:", use_container_width=True):
-            with st.spinner("Menjalankan WhatsApp Web Headless (ini mungkin butuh beberapa detik)..."):
-                import whatsapp_engine
-                res = whatsapp_engine.forward_screenshot_to_whatsapp(wa_target, st.session_state.last_success_shot)
-                if res["status"] == "needs_qr":
-                    st.markdown("""
-                    <div style="background-color: #fef08a; color: #854d0e; padding: 12px 16px; border: 3px solid #0F172A; margin-bottom: 24px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; align-items: center; gap: 12px;">
-                        <span style="font-weight: 700;">QR Code Required:</span> Sesi WhatsApp belum aktif. Silakan scan QR Code di bawah ini.
-                    </div>
-                    """, unsafe_allow_html=True)
-                    qr_ph.image(res["qr_path"], caption="Scan QR Code ini menggunakan aplikasi WhatsApp Anda")
-                elif res["status"] == "success":
-                    st.markdown(make_success_box(res["message"]), unsafe_allow_html=True)
-                else:
-                    st.error(res["message"])
+        screenshot_path = st.session_state.last_success_shot
+        if os.path.exists(screenshot_path):
+            with open(screenshot_path, "rb") as file:
+                st.download_button(
+                    label="Unduh Screenshot (PNG)",
+                    data=file,
+                    file_name=os.path.basename(screenshot_path),
+                    mime="image/png",
+                    use_container_width=True,
+                    icon=":material/download:"
+                )
+            st.image(screenshot_path, caption="Bukti Transaksi", use_container_width=True)
+        else:
+            st.error(f"Screenshot tidak ditemukan di {screenshot_path}.")
 
 render_footer()

@@ -79,9 +79,11 @@ if st.session_state.get('sales_csv_data'):
             type="primary"
         )
     with col_clr:
-        if st.button("Clear Data", type="secondary", use_container_width=True, icon=":material/delete:"):
-            st.session_state.sales_csv_data = None
-            st.rerun()
+        with st.container():
+            st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
+            if st.button("Clear Data Extracted Sales", type="primary", use_container_width=True, icon=":material/delete:"):
+                st.session_state.sales_csv_data = None
+                st.rerun()
 else:
     btn_label = "Extracting…" if st.session_state.is_bot_running else "Extract Invoice"
     extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
