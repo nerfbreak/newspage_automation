@@ -115,7 +115,7 @@ if "Auto Compare" in adj_mode:
             file2 = st.session_state.get(f"file2_uploader_{st.session_state.get('f2_key', 0)}")
             
     # --- ACTION BUTTONS ---
-    st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top: 8px;'></div>", unsafe_allow_html=True)
     extract_btn = False
     
     if st.session_state.np_df is not None:
@@ -129,7 +129,7 @@ if "Auto Compare" in adj_mode:
         extract_btn = st.button(btn_label, type="primary", width='stretch', disabled=st.session_state.is_bot_running, icon=":material/download:")
 
     if st.session_state.np_df is not None:
-        st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
+        st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9", margin_top="8px", margin_bottom="8px"), unsafe_allow_html=True)
 
     ext_label_placeholder = st.empty()
     ext_log_placeholder = st.empty()
@@ -160,7 +160,6 @@ if "Auto Compare" in adj_mode:
     np_source_ready = (st.session_state.np_df is not None) or (file1 is not None)
     
     if np_source_ready and file2:
-        st.markdown("<div style='margin-bottom: 24px;'></div>", unsafe_allow_html=True)
         if st.button("PROSES FILE & BANDINGKAN", type="primary", width='stretch', icon=":material/compare_arrows:"):
             st.session_state.show_comparison = True
             
@@ -429,9 +428,15 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
             # Convert HTML tags from telegram message to WhatsApp markdown
             alert_msg = st.session_state.get("last_alert_msg", "")
             if not alert_msg:
-                dist = st.session_state.get("selected_distributor", "Unknown")
-                df_view = st.session_state.get("df_view")
-                total_mismatch = len(df_view) if df_view is not None else "?"
+                dist = selected_distributor if 'selected_distributor' in locals() else "Unknown"
+                
+                # Coba ambil jumlah baris
+                total_mismatch = "?"
+                if st.session_state.get("reconcile_result") is not None:
+                    total_mismatch = len(st.session_state.reconcile_result)
+                elif st.session_state.get("manual_df") is not None:
+                    total_mismatch = len(st.session_state.manual_df)
+                    
                 alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {dist}\nTotal SKU Mismatch : {total_mismatch}\nDone by : {st.session_state.current_user}"
                 
             plain_msg = re.sub(r'<b>(.*?)</b>', r'*\1*', alert_msg)
