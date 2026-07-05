@@ -170,7 +170,7 @@ with st.container(border=True):
     selected_reason_code = [k for k, v in reason_options.items() if v == selected_reason_label][0]
     rem_c1, rem_c2 = st.columns([1, 3], vertical_alignment="center")
     with rem_c1:
-        st.markdown("<p style='font-family: \"Source Sans 3\", sans-serif; font-size: 0.85rem; font-weight: 800; color: #0F172A; text-transform: uppercase; margin: 0; text-align: left;'>REMARK : (ISIAN NOMOR DOKUMEN)</p>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: right;'><p class='inline-neo-label'>REMARK : (ISIAN NOMOR DOKUMEN)</p></div>", unsafe_allow_html=True)
     with rem_c2:
         remark_text = st.text_input("Remark", max_chars=50, key="mutasi_remark", label_visibility="collapsed")
     

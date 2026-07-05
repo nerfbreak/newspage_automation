@@ -238,7 +238,7 @@ if "Auto Compare" in adj_mode:
             
         rem_c1, rem_c2 = st.columns([1, 3], vertical_alignment="center")
         with rem_c1:
-            st.markdown("<p style='font-family: \"Source Sans 3\", sans-serif; font-size: 0.85rem; font-weight: 800; color: #0F172A; text-transform: uppercase; margin: 0; text-align: left;'>REMARK : (ISIAN NOMOR DOKUMEN)</p>", unsafe_allow_html=True)
+            st.markdown("<div style='text-align: right;'><p class='inline-neo-label'>REMARK : (ISIAN NOMOR DOKUMEN)</p></div>", unsafe_allow_html=True)
         with rem_c2:
             remark_text = st.text_input("Remark", value=auto_remark, max_chars=50, key="auto_remark", label_visibility="collapsed")
         
@@ -365,7 +365,7 @@ elif "Manual Entry" in adj_mode:
         
     man_rem_c1, man_rem_c2 = st.columns([1, 3], vertical_alignment="center")
     with man_rem_c1:
-        st.markdown("<p style='font-family: \"Source Sans 3\", sans-serif; font-size: 0.85rem; font-weight: 800; color: #0F172A; text-transform: uppercase; margin: 0; text-align: left;'>REMARK : (ISIAN NOMOR DOKUMEN)</p>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: right;'><p class='inline-neo-label'>REMARK : (ISIAN NOMOR DOKUMEN)</p></div>", unsafe_allow_html=True)
     with man_rem_c2:
         manual_remark_text = st.text_input("Remark", value=manual_auto_remark, max_chars=50, key="manual_remark", label_visibility="collapsed")
     
