@@ -207,6 +207,7 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-07-05**: **Security Hardening**: Implemented AES-256 Fernet session cookie encryption/decryption in `app.py` to prevent session hijacking/spoofing, and environmental parameter sanitization in `pages/0_dashboard.py` ping subprocess execution to block Remote Code Execution (RCE) via URL/credentials injection.
 - **2026-07-05**: **UI Enhancement**: Migrated User Guide expanders to Neo-Brutalist `@st.dialog` modals across all 7 page modules to save vertical space and improve aesthetics.
 - **2026-07-05**: **UI Enhancement**: Refactored the User Guide trigger button across all 7 modules. Replaced the bulky full-width primary button with a compact, floating Neo-Brutalist secondary icon button injected directly into the header card via CSS `:has()` combinators and negative margins to optimize layout space.
+- **2026-07-05**: **Bug Fix**: Disabled the User Guide button (`disabled=st.session_state.is_bot_running`) across all 7 modules when the Playwright bot is actively executing to prevent accidental Streamlit reruns that would crash the automation thread.
 
 
 ## Critical Knowledge: ASP.NET UpdatePanel Race Conditions (2026-07-05)
