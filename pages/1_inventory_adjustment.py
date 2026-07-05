@@ -236,11 +236,7 @@ if "Auto Compare" in adj_mode:
             import os
             auto_remark, _ = os.path.splitext(file2.name)
             
-        rem_c1, rem_c2 = st.columns([1, 3], vertical_alignment="center")
-        with rem_c1:
-            st.markdown("<div style='text-align: right;'><p class='inline-neo-label'>REMARK : (ISIAN NOMOR DOKUMEN)</p></div>", unsafe_allow_html=True)
-        with rem_c2:
-            remark_text = st.text_input("Remark", value=auto_remark, max_chars=50, key="auto_remark", label_visibility="collapsed")
+        remark_text = st.text_input("Remark", value=auto_remark, max_chars=50, key="auto_remark")
         
         log_label_placeholder = st.empty()
         log_placeholder = st.empty()
@@ -364,11 +360,7 @@ elif "Manual Entry" in adj_mode:
         import os
         manual_auto_remark, _ = os.path.splitext(uploaded_manual.name)
         
-    man_rem_c1, man_rem_c2 = st.columns([1, 3], vertical_alignment="center")
-    with man_rem_c1:
-        st.markdown("<div style='text-align: right;'><p class='inline-neo-label'>REMARK : (ISIAN NOMOR DOKUMEN)</p></div>", unsafe_allow_html=True)
-    with man_rem_c2:
-        manual_remark_text = st.text_input("Remark", value=manual_auto_remark, max_chars=50, key="manual_remark", label_visibility="collapsed")
+    manual_remark_text = st.text_input("Remark", value=manual_auto_remark, max_chars=50, key="manual_remark")
     
     log_label_placeholder = st.empty()
     log_placeholder = st.empty()

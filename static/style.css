@@ -75,7 +75,7 @@ div[data-testid="stDateInput"] label,
 div[data-testid="stFileUploader"] label {
     width: 100% !important;
     justify-content: center !important;
-    display: flex;
+    display: flex !important;
 }
 
 div[data-testid="stSelectbox"] label p,
