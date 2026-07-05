@@ -1055,6 +1055,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 st.session_state.reconcile_result = None
                 
             st.session_state.last_success_shot = success_shot
+            st.session_state.last_alert_msg = alert_msg if 'alert_msg' in locals() else ""
             st.session_state.execute_done = True
             st.session_state.is_bot_running = False
 

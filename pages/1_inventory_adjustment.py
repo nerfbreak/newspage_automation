@@ -439,7 +439,11 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 elif st.session_state.get("manual_df") is not None:
                     total_mismatch = len(st.session_state.manual_df)
                     
-                alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {dist}\nTotal SKU Mismatch : {total_mismatch}\nDone by : {st.session_state.current_user}"
+                alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {dist}\nTotal SKU Mismatch : {total_mismatch}"
+                if st.session_state.get("prev_file2") is not None:
+                    fn = st.session_state.prev_file2.name if hasattr(st.session_state.prev_file2, 'name') else str(st.session_state.prev_file2)
+                    alert_msg += f"\nFile Received : {fn}"
+                alert_msg += f"\nRuntime : (Sistem belum direfresh)\nDone by : {st.session_state.current_user}"
                 
             plain_msg = re.sub(r'<b>(.*?)</b>', r'*\1*', alert_msg)
             plain_msg = re.sub(r'<[^>]+>', '', plain_msg)
