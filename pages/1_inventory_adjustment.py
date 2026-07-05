@@ -443,13 +443,14 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
             <html>
             <head>
             <style>
+              @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap');
               body {{
                 margin: 0;
                 padding: 4px 10px 10px 4px;
                 display: flex;
                 gap: 16px;
                 overflow: hidden;
-                font-family: 'Source Sans 3', sans-serif, monospace;
+                font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif;
               }}
               .neo-btn {{
                 flex: 1;
@@ -461,8 +462,9 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 color: #FFFFFF;
                 border: 2px solid #0F172A;
                 border-radius: 0px;
-                font-weight: 600;
-                font-size: 14px;
+                font-weight: 800;
+                font-size: 0.85rem;
+                letter-spacing: 0.04em;
                 text-transform: uppercase;
                 text-decoration: none;
                 box-shadow: 6px 6px 0px 0px #0F172A;
