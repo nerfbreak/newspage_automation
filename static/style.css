@@ -1622,26 +1622,22 @@ div[data-testid="stProgress"] div[role="progressbar"] > div[style*="width: 100%"
 }
 
 /* ============================================================
-   RED BUTTON MARKER
+   RED BUTTON MARKER (FOOLPROOF CONTAINER METHOD)
    ============================================================ */
-div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button,
-div.element-container:has(.red-btn-marker) + div.element-container button {
+div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button {
     background-color: #E63946 !important;
     color: #FFFFFF !important;
     border: 2px solid #0F172A !important;
 }
-div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button p,
-div.element-container:has(.red-btn-marker) + div.element-container button p {
+div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button p {
     color: #FFFFFF !important;
 }
-div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button:hover,
-div.element-container:has(.red-btn-marker) + div.element-container button:hover {
+div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button:hover {
     background-color: #E63946 !important;
     box-shadow: 4px 4px 0px 0px #0F172A !important;
     transform: translate(2px, 2px) !important;
 }
-div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button:active,
-div.element-container:has(.red-btn-marker) + div.element-container button:active {
+div[data-testid="stVerticalBlock"]:has(.red-btn-marker) button:active {
     background-color: #E63946 !important;
     box-shadow: 2px 2px 0px 0px #0F172A !important;
     transform: translate(4px, 4px) !important;
