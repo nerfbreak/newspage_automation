@@ -421,32 +421,32 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 img_bytes = file.read()
                 b64_data = base64.b64encode(img_bytes).decode("utf-8")
             
-            # Inject JavaScript to handle Clipboard Copy + Redirect to WhatsApp Web
-            js_script = """
-            <script>
-            if (typeof window.shareToWA !== 'function') {
-                window.shareToWA = async function(b64) {
-                    try {
-                        const resp = await fetch("data:image/png;base64," + b64);
-                        const blob = await resp.blob();
-                        const item = new ClipboardItem({"image/png": blob});
-                        await navigator.clipboard.write([item]);
-                        window.open("https://web.whatsapp.com/", "_blank");
-                        alert("Bukti transaksi telah disalin ke clipboard! Silakan pilih chat di WhatsApp Web lalu tekan Ctrl+V untuk mengirim.");
-                    } catch (e) {
-                        console.error("Auto copy failed, falling back to redirect:", e);
-                        window.open("https://web.whatsapp.com/", "_blank");
-                        alert("Gagal menyalin otomatis. Silakan klik kanan gambar di bawah lalu 'Copy Image', lalu paste di WhatsApp Web.");
-                    }
-                };
-            }
-            </script>
-            """
-            st.markdown(js_script, unsafe_allow_html=True)
+            import streamlit.components.v1 as components
             
-            # Custom Neo-Brutalist HTML Share Button
+            # Combine JS and HTML into a single iframe component
             button_html = f"""
-            <button onclick="window.shareToWA('{b64_data}')" style="
+            <!DOCTYPE html>
+            <html>
+            <head>
+            <script>
+            async function shareToWA() {{
+                try {{
+                    const resp = await fetch("data:image/png;base64,{b64_data}");
+                    const blob = await resp.blob();
+                    const item = new ClipboardItem({{"image/png": blob}});
+                    await navigator.clipboard.write([item]);
+                    window.open("https://web.whatsapp.com/", "_blank");
+                    alert("Bukti transaksi telah disalin ke clipboard! Silakan pilih chat di WhatsApp Web lalu tekan Ctrl+V untuk mengirim.");
+                }} catch (e) {{
+                    console.error("Auto copy failed, falling back to redirect:", e);
+                    window.open("https://web.whatsapp.com/", "_blank");
+                    alert("Gagal menyalin otomatis. Silakan klik kanan gambar screenshot di web app lalu 'Copy Image', lalu paste di WhatsApp Web.");
+                }}
+            }}
+            </script>
+            </head>
+            <body style="margin: 0; padding: 0; overflow: hidden; display: flex; align-items: flex-start; justify-content: center; padding-top: 4px; padding-left: 4px; padding-right: 10px; padding-bottom: 10px;">
+            <button onclick="shareToWA()" style="
               display: inline-flex;
               align-items: center;
               justify-content: center;
@@ -456,21 +456,24 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
               color: #FFFFFF;
               border: 3px solid #0F172A;
               border-radius: 0px;
-              font-family: 'Source Sans 3', sans-serif;
+              font-family: 'Source Sans 3', sans-serif, monospace;
               font-weight: 800;
               font-size: 0.85rem;
               text-transform: uppercase;
               letter-spacing: 0.05em;
               box-shadow: 6px 6px 0px 0px #0F172A;
               cursor: pointer;
-              margin-bottom: 16px;
               transition: transform 0.1s, box-shadow 0.1s;
+              box-sizing: border-box;
             " onmouseover="this.style.transform='translate(2px, 2px)'; this.style.boxShadow='4px 4px 0px 0px #0F172A';" onmouseout="this.style.transform='none'; this.style.boxShadow='6px 6px 0px 0px #0F172A';">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px;"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.69-4.98c-.203-.101-1.2-.591-1.386-.658-.186-.067-.322-.101-.456.101-.134.202-.518.657-.636.793-.118.135-.235.151-.438.051-2.002-1.002-3.102-2.784-3.591-3.624-.118-.2-.018-.308.082-.408.091-.09.203-.243.304-.364.102-.122.135-.203.203-.339.067-.136.034-.254-.017-.356-.05-.102-.456-1.1-.625-1.507-.164-.4-.345-.346-.47-.352-.12-.006-.258-.007-.396-.007a.78.78 0 0 0-.568.264c-.188.204-.715.7-.715 1.7 0 2 .013 4.024.137 4.2.124.177 3.86 5.886 9.349 8.25a31.306 31.306 0 0 0 3.12 1.132c1.31.378 2.502.321 3.447.18 1.054-.158 2.202-.9 2.505-1.77.303-.87.303-1.618.213-1.77-.09-.15-.323-.251-.526-.351z"/></svg>
               KIRIM KE WHATSAPP
             </button>
+            </body>
+            </html>
             """
-            st.markdown(button_html, unsafe_allow_html=True)
+            
+            components.html(button_html, height=75)
             
             with open(screenshot_path, "rb") as file:
                 st.download_button(
