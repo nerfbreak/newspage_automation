@@ -3,7 +3,7 @@ name: Keep Streamlit Alive
 on:
   schedule:
     - cron: "0 * * * *" # Berjalan setiap jam
-  workflow_dispatch: # Memungkinkan untuk dijalankan secara manual jika dibutuhkan
+  workflow_dispatch:
 
 jobs:
   ping-app:
@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Send HTTP request to Streamlit App
         run: |
-          curl -I https://newspage.streamlit.app # Ganti URL ini dengan URL aplikasi Streamlit Anda
+          curl -I https://newspage.streamlit.app
