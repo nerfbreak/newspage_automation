@@ -90,7 +90,7 @@ if "Auto Compare" in adj_mode:
                     """, unsafe_allow_html=True)
                     with st.container():
                         st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-                        if st.button("Hapus File Upload Stock Distributor", type="secondary", use_container_width=True, icon=":material/delete:"):
+                        if st.button("Hapus File Upload Stock Distributor", type="secondary", width='stretch', icon=":material/delete:"):
                             st.session_state.f2_key += 1
                             st.rerun()
                 else:
@@ -121,12 +121,12 @@ if "Auto Compare" in adj_mode:
     if st.session_state.np_df is not None:
         with st.container():
             st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-            if st.button("Clear Data Extracted Inventory Master", type="primary", use_container_width=True, icon=":material/delete:"):
+            if st.button("Clear Data Extracted Inventory Master", type="primary", width='stretch', icon=":material/delete:"):
                 st.session_state.np_df = None
                 st.rerun()
     else:
         btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
-        extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
+        extract_btn = st.button(btn_label, type="primary", width='stretch', disabled=st.session_state.is_bot_running, icon=":material/download:")
 
     if st.session_state.np_df is not None:
         st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
@@ -161,7 +161,7 @@ if "Auto Compare" in adj_mode:
     
     if np_source_ready and file2:
         st.markdown("<div style='margin-bottom: 24px;'></div>", unsafe_allow_html=True)
-        if st.button("PROSES FILE & BANDINGKAN", type="primary", use_container_width=True, icon=":material/compare_arrows:"):
+        if st.button("PROSES FILE & BANDINGKAN", type="primary", width='stretch', icon=":material/compare_arrows:"):
             st.session_state.show_comparison = True
             
     if st.session_state.get('show_comparison') and np_source_ready and file2:
@@ -197,7 +197,7 @@ if "Auto Compare" in adj_mode:
                 sku_col2 = st.selectbox("SKU column (Dist)", df2.columns, index=idx_sku2)
                 qty_col2 = st.selectbox("Qty column (Dist)", df2.columns, index=idx_qty2)
 
-        if st.button("Start Adjustment", type="primary", use_container_width=True, icon=":material/play_arrow:"):
+        if st.button("Start Adjustment", type="primary", width='stretch', icon=":material/play_arrow:"):
             TARGET_SKUS = database.get_target_skus(supabase)
             multipliers = database.get_multiplier_rules(supabase, st.session_state.current_np_user_id)
         
@@ -294,14 +294,14 @@ elif "Manual Entry" in adj_mode:
                 
             with st.container():
                 st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-                if st.button("Hapus File Upload Stock Distributor", type="secondary", icon=":material/delete:", use_container_width=True):
+                if st.button("Hapus File Upload Stock Distributor", type="secondary", icon=":material/delete:", width='stretch'):
                     st.session_state.manual_uploader_key += 1
                     st.session_state.manual_uploaded_df = None
                     st.rerun()
 
         if st.session_state.get("manual_uploaded_df") is not None:
             df_up = st.session_state.manual_uploaded_df
-            st.dataframe(df_up.head(5), use_container_width=True)
+            st.dataframe(df_up.head(5), width='stretch')
             
             st.markdown("<div style='margin-bottom:10px;'><b>Mapping Kolom:</b></div>", unsafe_allow_html=True)
             mcol1, mcol2, mcol3, mcol4 = st.columns(4)
@@ -315,7 +315,7 @@ elif "Manual Entry" in adj_mode:
             with mcol4:
                 sel_ea  = st.selectbox("EA Column", cols, index=0)
                 
-            if st.button("Apply Mapping ke Tabel", type="primary", use_container_width=True, icon=":material/done_all:"):
+            if st.button("Apply Mapping ke Tabel", type="primary", width='stretch', icon=":material/done_all:"):
                 if sel_sku == "-":
                     st.error("SKU Column harus dipilih.")
                 else:
@@ -422,10 +422,10 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                     data=file,
                     file_name=os.path.basename(screenshot_path),
                     mime="image/png",
-                    use_container_width=True,
+                    width='stretch',
                     icon=":material/download:"
                 )
-            st.image(screenshot_path, use_container_width=True)
+            st.image(screenshot_path, width='stretch')
             st.markdown("<p style='text-align: center; font-weight: 800; font-family: \"Source Sans 3\", sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; color: #0F172A; margin-top: 8px;'>BUKTI TRANSAKSI</p>", unsafe_allow_html=True)
         else:
             st.error(f"Screenshot tidak ditemukan di {screenshot_path}.")

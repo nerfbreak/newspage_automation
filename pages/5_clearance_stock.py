@@ -65,13 +65,13 @@ extract_btn = False
 if st.session_state.clearance_df is not None:
     with st.container():
         st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-        if st.button("Clear Data Extracted Clearance Stock", type="primary", use_container_width=True, icon=":material/delete:"):
+        if st.button("Clear Data Extracted Clearance Stock", type="primary", width='stretch', icon=":material/delete:"):
             st.session_state.clearance_df = None
             st.rerun()
 elif st.session_state.is_clearance_running:
     st.markdown(make_solid_box("Extracting stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
 else:
-    extract_btn = st.button("Extract Stock", type="primary", use_container_width=True, disabled=not bot_user, icon=":material/download:")
+    extract_btn = st.button("Extract Stock", type="primary", width='stretch', disabled=not bot_user, icon=":material/download:")
 
 # Use pending flag so extraction starts AFTER rerun hides the button
 if extract_btn:
@@ -163,7 +163,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
     utils.render_neo_table(df_display[display_cols])
 
     # --- EXECUTE ---
-    if st.button("Execute", type="primary", use_container_width=True, icon=":material/play_arrow:"):
+    if st.button("Execute", type="primary", width='stretch', icon=":material/play_arrow:"):
         if not bot_user or not bot_pass:
             st.error("Kredensial tidak ditemukan!")
         else:
