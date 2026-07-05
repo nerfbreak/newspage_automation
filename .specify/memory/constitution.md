@@ -1,13 +1,13 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.4.1 → 2.0.0 (Removed User Documentation principle entirely)
-Added sections: None
+Version change: 2.0.0 → 2.1.0 (Added Action Button Consolidation principle)
+Added sections: Core Principles -> VII. Action Button Consolidation
 Modified sections: None
-Removed sections: Core Principles -> VII. User Documentation
+Removed sections: None
 Templates requiring updates:
   ✅ .specify/memory/constitution.md (Updated)
-Follow-up TODOs: Run /speckit-specify to write the feature specification for removing all existing user guides across the app.
+Follow-up TODOs: Run /speckit-specify to write the feature specification for consolidating the Clear Data and Extract buttons across the app.
 -->
 
 # Optimize Newspage Automation Constitution
@@ -74,6 +74,10 @@ All new external integrations or messaging bridges (e.g., forwarding Telegram sc
 
 **Rationale**: To maintain the project's low-overhead operating model, auxiliary features like notification forwarding should not introduce new monthly server expenses. Separating the heavy engine from the lightweight logic (relay) ensures better stability and resource utilization.
 
+### VII. Action Button Consolidation
+To prevent UI clutter and maintain a clean interface, post-execution actions (e.g., "Clear Data") MUST dynamically replace the primary execution button (e.g., "Extract") in the exact same layout location once a task completes successfully. Secondary action buttons MUST NOT stack or multiply endlessly below the main containers.
+
+**Rationale**: A clean, uncluttered interface is crucial for non-technical users. Stacking multiple action buttons creates confusion about the current state of the application. Reusing the primary button slot for state-dependent actions clarifies the available next steps and reduces visual noise.
 
 ## Security & Credential Standards
 
@@ -121,4 +125,4 @@ Amendments require:
 All AI coding agents working on this project MUST read this constitution at the
 start of each session alongside `.agents/MEMORY.md`.
 
-**Version**: 2.0.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05
+**Version**: 2.1.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05

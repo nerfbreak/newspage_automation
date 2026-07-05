@@ -111,19 +111,17 @@ if "Auto Compare" in adj_mode:
                 handle_fragment_upload()
             file2 = st.session_state.get(f"file2_uploader_{st.session_state.get('f2_key', 0)}")
             
-    # --- ACTION BUTTONS (Placed in a new row so containers above are exactly equal height) ---
-    col_action1, col_action2 = st.columns(2)
-    with col_action1:
-        st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+    # --- ACTION BUTTONS ---
+    st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+    extract_btn = False
+    
+    if st.session_state.np_df is not None:
+        if st.button("Clear Data", type="primary", use_container_width=True, icon=":material/delete:"):
+            st.session_state.np_df = None
+            st.rerun()
+    else:
         btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
         extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
-
-    with col_action2:
-        st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
-        if st.session_state.np_df is not None:
-            if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
-                st.session_state.np_df = None
-                st.rerun()
 
     if st.session_state.np_df is not None:
         st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)

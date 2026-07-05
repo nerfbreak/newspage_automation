@@ -60,9 +60,14 @@ with st.container(border=True):
     ext_log_placeholder = st.empty()
 
 st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
-if st.session_state.is_clearance_running:
+extract_btn = False
+
+if st.session_state.clearance_df is not None:
+    if st.button("Clear Data", type="primary", use_container_width=True, icon=":material/delete:"):
+        st.session_state.clearance_df = None
+        st.rerun()
+elif st.session_state.is_clearance_running:
     st.markdown(make_solid_box("Extracting stock data...", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-    extract_btn = False
 else:
     extract_btn = st.button("Extract Stock", type="primary", use_container_width=True, disabled=not bot_user, icon=":material/download:")
 
@@ -96,9 +101,6 @@ if st.session_state.get("_pending_clearance_extract", False):
 # --- REVIEW EXTRACTED DATA ---
 if st.session_state.clearance_df is not None:
     st.markdown(make_solid_box(f"Extracted — {len(st.session_state.clearance_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
-    if st.button("Clear Data", use_container_width=True, icon=":material/delete:"):
-        st.session_state.clearance_df = None
-        st.rerun()
 
 # After extraction, the run_extract stores data in st.session_state.np_df
 # We need to convert it to clearance format (all qty as negative)

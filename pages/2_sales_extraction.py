@@ -65,18 +65,26 @@ with st.container(border=True):
         st.stop()
         
 st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
-btn_label = "Extracting…" if st.session_state.is_bot_running else "Extract Invoice"
-extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
-    
+extract_btn = False
+
 if st.session_state.get('sales_csv_data'):
-        st.markdown("<div style='margin-bottom: 8px;'></div>", unsafe_allow_html=True)
+    col_dl, col_clr = st.columns(2)
+    with col_dl:
         st.download_button(
             label="Download Extracted Data (ZIP)",
             data=st.session_state.sales_csv_data,
             file_name=st.session_state.sales_csv_filename,
             mime="application/zip",
-            use_container_width=True
+            use_container_width=True,
+            type="primary"
         )
+    with col_clr:
+        if st.button("Clear Data", type="secondary", use_container_width=True, icon=":material/delete:"):
+            st.session_state.sales_csv_data = None
+            st.rerun()
+else:
+    btn_label = "Extracting…" if st.session_state.is_bot_running else "Extract Invoice"
+    extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
  
 ext_label_placeholder = st.empty()
 ext_log_placeholder = st.empty()
