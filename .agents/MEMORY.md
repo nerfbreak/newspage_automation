@@ -222,3 +222,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-07-05**: **Bug Fix**: Disables automatic deletion of execution success screenshots in Telegram alert callback (send_telegram_alert) by adding a delete_after parameter, allowing the WhatsApp forwarder UI to load and send it later.
 - **2026-07-05**: **Feature**: Replaced the automated WhatsApp Forwarder UI section in the Inventory Adjustment module with a clean Neo-Brutalist Download Screenshot container and preview, allowing users to manually download and share the proof of transaction.
 - **2026-07-05**: **UI Enhancement**: Wrapped the screenshot download preview section in a native Neo-Brutalist st.expander accordion component to save vertical layout space.
+- **2026-07-05**: **UI Enhancement**: Styled the image caption to match the Neo-Brutalist design language (bold, uppercase, dark #0F172A, sans-serif) rather than the default browser styling.

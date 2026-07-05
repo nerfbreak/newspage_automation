@@ -405,7 +405,8 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                     use_container_width=True,
                     icon=":material/download:"
                 )
-            st.image(screenshot_path, caption="Bukti Transaksi", use_container_width=True)
+            st.image(screenshot_path, use_container_width=True)
+            st.markdown("<p style='text-align: center; font-weight: 800; font-family: \"Source Sans 3\", sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; color: #0F172A; margin-top: 8px;'>BUKTI TRANSAKSI</p>", unsafe_allow_html=True)
         else:
             st.error(f"Screenshot tidak ditemukan di {screenshot_path}.")
 
