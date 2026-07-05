@@ -151,7 +151,7 @@ with col2:
         st.session_state.logout_requested = True
         st.session_state.ignore_cookie = True
 
-    st.button("CONFIRM", key="signout_confirm_hidden", on_click=signout_callback, use_container_width=True)
+    st.button("CONFIRM", key="signout_confirm_hidden", on_click=signout_callback, width='stretch')
 
 
 
@@ -271,7 +271,7 @@ with left_col:
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
-                        if st.button("Launch Module", key=mod["key"], use_container_width=True): st.switch_page(mod["page"])
+                        if st.button("Launch Module", key=mod["key"], width='stretch'): st.switch_page(mod["page"])
         if i < len(MODULES) - 2:
             st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
 
@@ -280,7 +280,7 @@ with right_col:
     with rc1:
         st.markdown("<div style='margin: 0 0 16px 0; font-size: 1.05rem; color: #0F172A; background-color: #F1F5F9; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; padding: 6px 12px; display: inline-block; font-weight: 900; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.05em;'>Recent Activity</div>", unsafe_allow_html=True)
     with rc2:
-        if st.button("Ping", use_container_width=True, key="ping_newspage"):
+        if st.button("Ping", width='stretch', key="ping_newspage"):
             import requests
             import re
             import time

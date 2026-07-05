@@ -24,6 +24,7 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 
 ### 🛠️ Perbaikan & Peningkatan
 
+- **Kepatuhan Depresiasi Streamlit (Layout Widths)**: Mengimigrasi parameter lebar layout `use_container_width` yang usang ke parameter baru `width='stretch'` di seluruh modul halaman dan mesin otomasi guna mencegah potensi crash sistem di masa depan tanpa mengubah fungsi yang sudah berjalan.
 - **Penghapusan Fitur Panduan**: Menghapus seluruh tombol dan modal panduan pengguna dari semua modul aplikasi untuk merapikan antarmuka dan mencegah interupsi saat bot sedang berjalan.
 - **Hardening Keamanan Sistem**: Mengenkripsi cookie sesi `auth_user` menggunakan algoritme Fernet AES-256 untuk mencegah eksploitasi pembajakan sesi (Session Hijacking), dan mensanitasi parameter eksekusi subprocess di dashboard ping test menggunakan OS environment variables guna memblokir celah injeksi kode (Remote Code Execution).
 - **Stabilitas Bot (Page Load Wait)**: Bot kini menunggu halaman benar-benar selesai dimuat 100% sebelum melanjutkan ke langkah berikutnya, mencegah error "elemen tidak ditemukan" saat server Newspage sedang lambat.

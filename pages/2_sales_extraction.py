@@ -75,18 +75,18 @@ if st.session_state.get('sales_csv_data'):
             data=st.session_state.sales_csv_data,
             file_name=st.session_state.sales_csv_filename,
             mime="application/zip",
-            use_container_width=True,
+            width='stretch',
             type="primary"
         )
     with col_clr:
         with st.container():
             st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-            if st.button("Clear Data Extracted Sales", type="primary", use_container_width=True, icon=":material/delete:"):
+            if st.button("Clear Data Extracted Sales", type="primary", width='stretch', icon=":material/delete:"):
                 st.session_state.sales_csv_data = None
                 st.rerun()
 else:
     btn_label = "Extracting…" if st.session_state.is_bot_running else "Extract Invoice"
-    extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
+    extract_btn = st.button(btn_label, type="primary", width='stretch', disabled=st.session_state.is_bot_running, icon=":material/download:")
  
 ext_label_placeholder = st.empty()
 ext_log_placeholder = st.empty()
