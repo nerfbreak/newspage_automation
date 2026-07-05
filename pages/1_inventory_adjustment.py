@@ -469,32 +469,32 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
               }}
             </style>
             <script>
-            async function shareToWA() {{
+            let preloadedBlobItem = null;
+
+            async function preloadImage() {{
                 try {{
-                    const resp = await fetch("data:image/png;base64,{b64_data}");
-                    const blob = await resp.blob();
-                    const item = new ClipboardItem({{"image/png": blob}});
-                    await navigator.clipboard.write([item]);
-                    
-                    let opened = false;
-                    try {{
-                        if (window.parent && window.parent.open) {{
-                            window.parent.open("https://web.whatsapp.com/", "wa_tab");
-                            opened = true;
-                        }}
-                    }} catch(err) {{}}
-                    
-                    if (!opened) {{
-                        window.open("https://web.whatsapp.com/", "wa_tab");
-                    }}
-                    
-                    alert("Bukti transaksi telah disalin ke clipboard! Silakan pilih chat di WhatsApp Web lalu tekan Ctrl+V untuk mengirim.");
+                    const res = await fetch("data:image/png;base64,{b64_data}");
+                    const blob = await res.blob();
+                    preloadedBlobItem = new ClipboardItem({{"image/png": blob}});
                 }} catch (e) {{
-                    console.error("Auto copy failed, falling back to redirect:", e);
-                    try {{ window.parent.open("https://web.whatsapp.com/", "wa_tab"); }}
-                    catch(ex) {{ window.open("https://web.whatsapp.com/", "wa_tab"); }}
-                    alert("Gagal menyalin otomatis. Silakan klik kanan gambar screenshot di web app lalu 'Copy Image', lalu paste di WhatsApp Web.");
+                    console.error("Preload failed", e);
                 }}
+            }}
+            window.addEventListener("DOMContentLoaded", preloadImage);
+
+            function handleWAClick(event) {{
+                if (preloadedBlobItem) {{
+                    navigator.clipboard.write([preloadedBlobItem]).then(() => {{
+                        console.log("Image copied successfully");
+                    }}).catch(err => {{
+                        console.error("Clipboard write failed:", err);
+                    }});
+                }} else {{
+                    console.warn("Blob not preloaded yet");
+                }}
+                // We deliberately do NOT preventDefault() here.
+                // The native anchor tag handles the navigation to target="whatsapp_web_tab".
+                // This guarantees the browser natively reuses the tab instead of treating it as a popup.
             }}
             </script>
             </head>
@@ -506,12 +506,12 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 </svg>
                 UNDUH SCREENSHOT
               </a>
-              <button onclick="shareToWA()" class="neo-btn">
+              <a href="https://web.whatsapp.com/" target="whatsapp_web_tab" class="neo-btn" onclick="handleWAClick(event)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                   <path stroke-linecap="square" stroke-linejoin="miter" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
                 </svg>
                 KIRIM VIA WA
-              </button>
+              </a>
             </body>
             </html>
             """
