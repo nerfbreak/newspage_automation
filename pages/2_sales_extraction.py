@@ -28,20 +28,9 @@ bot_status = "RUNNING" if st.session_state.is_bot_running else "STANDBY"
 render_indicators(db_status, bot_status)
 render_header("Sales Data Extraction", st.session_state.current_user)
 
-@st.dialog("Panduan Pengguna - Sales Data Extraction")
-def show_user_guide():
-    st.markdown("""
-    **Cara Penggunaan:**
-    1. Pilih **Nama Distributor** yang data penjualannya ingin ditarik.
-    2. Tentukan **Start Date** dan **End Date** untuk memfilter periode waktu data penjualan.
-    3. Klik tombol **Extract Invoice**.
-    4. Tunggu hingga proses bot selesai berjalan. Log proses akan muncul pada layar.
-    5. Setelah berhasil, akan muncul tombol **Download Extracted Data (ZIP)** untuk mengunduh hasil ekstraksi.
-    """)
 
-st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
-if st.button(":material/help: Panduan", type="secondary", disabled=st.session_state.get("is_bot_running", False)):
-    show_user_guide()
+
+
 
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):

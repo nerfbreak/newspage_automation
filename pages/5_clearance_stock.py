@@ -40,19 +40,9 @@ bot_status = "RUNNING" if st.session_state.is_clearance_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="CLEARANCE ENGINE")
 render_header("Clearance Stock", st.session_state.current_user)
 
-@st.dialog("Panduan Pengguna - Clearance Stock")
-def show_user_guide():
-    st.markdown("""
-    **Cara Penggunaan:**
-    1. Pilih **Distributor** yang stoknya ingin dinolkan (clearance).
-    2. Klik tombol **Extract Stock** untuk menarik data stok tersisa dari server distributor.
-    3. Tinjau daftar SKU pada tabel **Stock Clearance Review**. Seluruh Qty akan otomatis dikonversi menjadi angka negatif sebagai pengurang (Clear Qty).
-    4. Klik **Execute** untuk mengeksekusi penyesuaian stok (clearance). Jangan tutup browser hingga proses selesai 100%.
-    """)
 
-st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
-if st.button(":material/help: Panduan", type="secondary", disabled=st.session_state.get("is_bot_running", False)):
-    show_user_guide()
+
+
 
 # --- DISTRIBUTOR SELECTION ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)

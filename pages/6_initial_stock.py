@@ -40,21 +40,9 @@ bot_status = "RUNNING" if st.session_state.is_initial_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="INITIAL STOCK ENGINE")
 render_header("Initial Stock", st.session_state.current_user)
 
-@st.dialog("Panduan Pengguna - Initial Stock")
-def show_user_guide():
-    st.markdown("""
-    **Cara Penggunaan:**
-    1. Pilih **Distributor** yang akan diisi saldo awal stoknya (Initial Stock).
-    2. Unggah file Excel/CSV yang berisi kolom SKU dan jumlah (Qty).
-    3. Sistem akan memindai nama kolom secara otomatis. Jika keliru, sesuaikan mapping pada **Column Mapping**.
-    4. Klik **Load Data** untuk memproses file.
-    5. Periksa kesesuaian data pada tabel **Initial Stock Review**. SKU dengan Qty 0 atau negatif akan otomatis dilewati.
-    6. Klik **Execute** untuk memasukkan data stok ke sistem Newspage. Jangan tutup browser selama proses berlangsung.
-    """)
 
-st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
-if st.button(":material/help: Panduan", type="secondary", disabled=st.session_state.get("is_bot_running", False)):
-    show_user_guide()
+
+
 
 # --- DISTRIBUTOR SELECTION ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)

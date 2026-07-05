@@ -41,21 +41,9 @@ bot_status = "RUNNING" if st.session_state.is_mutasi_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="MUTASI ENGINE")
 render_header("Mutasi Stock", st.session_state.current_user)
 
-@st.dialog("Panduan Pengguna - Mutasi Stock")
-def show_user_guide():
-    st.markdown("""
-    **Cara Penggunaan:**
-    1. Pilih **Distributor Pengirim** dan **Distributor Penerima**. Keduanya harus berbeda.
-    2. Unggah file Excel/CSV berisi daftar SKU dan jumlah (Qty) yang akan dimutasi.
-    3. Sesuaikan **Column Mapping** (SKU, Description, Qty) jika sistem tidak mendeteksinya secara otomatis.
-    4. Periksa **Stock Review** untuk memastikan daftar SKU, jumlah pengurang (Deduct), dan penambah (Add) sudah tepat.
-    5. Pilih **Reason Adjustment** dan tambahkan **Remark** opsional.
-    6. Klik **Execute** untuk memproses mutasi. Pastikan Anda tidak menutup browser hingga log eksekusi pada pengirim maupun penerima telah selesai 100%.
-    """)
 
-st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
-if st.button(":material/help: Panduan", type="secondary", disabled=st.session_state.get("is_bot_running", False)):
-    show_user_guide()
+
+
 
 # --- DISTRIBUTOR SELECTION ---
 col1, col2 = st.columns(2)

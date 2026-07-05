@@ -1620,42 +1620,4 @@ div[data-testid="stProgressBar"] div[role="progressbar"] > div[style*="width: 10
 div[data-testid="stProgress"] div[role="progressbar"] > div[style*="width: 100%"] {
     border-right: none !important;
 }
-
-/* ============================================================
-   NEO-BRUTALISM USER GUIDE (FLOATING BUTTON)
-   ============================================================ */
-div[data-testid="stElementContainer"]:has(.guide-anchor) {
-    display: none !important; /* Hide the anchor container */
-}
-
-div[data-testid="stElementContainer"]:has(.guide-anchor) + div[data-testid="stElementContainer"] {
-    /* Float the button up into the header card */
-    margin-top: -90px !important;
-    margin-bottom: 50px !important;
-    display: flex;
-    justify-content: flex-end;
-    padding-right: 32px; /* Align with header inner padding */
-    z-index: 10;
-    pointer-events: none; /* Let clicks pass through the invisible full-width container */
-}
-
-div[data-testid="stElementContainer"]:has(.guide-anchor) + div[data-testid="stElementContainer"] button {
-    pointer-events: auto; /* Enable clicks on the button itself */
-    width: auto !important;
-    padding: 4px 12px !important;
-    min-height: 32px !important;
-    background-color: #FFDE59 !important;
-    color: #0F172A !important;
-    border: 2px solid #0F172A !important;
-    box-shadow: 4px 4px 0px 0px #0F172A !important;
-    border-radius: 0px !important;
-    font-weight: 800 !important;
-    font-size: 0.8rem !important;
-    text-transform: uppercase !important;
-    transition: all 0.1s ease !important;
-}
-
-div[data-testid="stElementContainer"]:has(.guide-anchor) + div[data-testid="stElementContainer"] button:hover {
-    transform: translate(2px, 2px) !important;
-    box-shadow: 2px 2px 0px 0px #0F172A !important;
-}
+

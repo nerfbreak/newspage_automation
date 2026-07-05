@@ -41,20 +41,9 @@ bot_status = "RUNNING" if st.session_state.is_promo_bot_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="PROMO ENGINE")
 render_header("Promotion Comparison", st.session_state.current_user)
 
-@st.dialog("Panduan Pengguna - Promotion Comparison")
-def show_user_guide():
-    st.markdown("""
-    **Cara Penggunaan:**
-    1. Unggah file tracker promosi dari SharePoint (BDP Tracker).
-    2. Tentukan **Start Date** dan **End Date** untuk rentang waktu promosi yang ditarik.
-    3. Klik **Start Sync** untuk menarik data promosi dari server Newspage.
-    4. Klik **Run Analysis** untuk menjalankan analisis kecocokan data antara SharePoint dan Newspage.
-    5. Periksa status (MATCH/CONFLICT/MISSING) pada tabel hasil.
-    """)
 
-st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
-if st.button(":material/help: Panduan", type="secondary", disabled=st.session_state.get("is_bot_running", False)):
-    show_user_guide()
+
+
 
 # --- FILE UPLOADER SECTION ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
@@ -123,11 +112,11 @@ promo_log_placeholder = st.empty()
 # --- PREVIEW DATA ---
 if st.session_state.uploaded_mdm_data is not None:
     @st.dialog("Preview SharePoint Data (MDM)")
-def show_user_guide():
+    def preview_mdm_data():
         utils.render_neo_table(st.session_state.uploaded_mdm_data.head(50))
 
-if st.button("Preview SharePoint Data (MDM)", type="primary"):
-    show_user_guide()
+    if st.button("Preview SharePoint Data (MDM)", type="primary"):
+        preview_mdm_data()
 
 # --- TRIGGER EXTRACTION ---
 if promo_btn:
