@@ -2,7 +2,7 @@
 
 **Feature Branch**: `016-replace-use-container-width`  
 **Created**: 2026-07-05  
-**Status**: Draft  
+**Status**: Completed  
 **Input**: User description: "Please replace use_container_width with width. use_container_width will be removed after 2025-12-31. For use_container_width=True, use width='stretch'. For use_container_width=False, use width='content'."
 
 ## Table of Contents
