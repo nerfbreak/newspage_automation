@@ -445,57 +445,32 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                     alert("Bukti transaksi telah disalin ke clipboard! Silakan pilih chat di WhatsApp Web lalu tekan Ctrl+V untuk mengirim.");
                 }} catch (e) {{
                     console.error("Auto copy failed, falling back to redirect:", e);
-                    window.open("https://web.whatsapp.com/", "whatsapp_web_tab");
+                    try {{ window.parent.open("https://web.whatsapp.com/", "wa_tab"); }}
+                    catch(ex) {{ window.open("https://web.whatsapp.com/", "wa_tab"); }}
                     alert("Gagal menyalin otomatis. Silakan klik kanan gambar screenshot di web app lalu 'Copy Image', lalu paste di WhatsApp Web.");
                 }}
             }}
             </script>
             </head>
-            <body style="margin: 0; padding: 0; overflow: hidden; display: flex; align-items: flex-start; justify-content: center; padding-top: 4px; padding-left: 4px; padding-right: 10px; padding-bottom: 10px;">
-            <button onclick="shareToWA()" style="
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              width: 100%;
-              padding: 12px;
-              background-color: #0068C9;
-              color: #FFFFFF;
-              border: 3px solid #0F172A;
-              border-radius: 0px;
-              font-family: 'Source Sans 3', sans-serif, monospace;
-              font-weight: 800;
-              font-size: 0.85rem;
-              text-transform: uppercase;
-              letter-spacing: 0.05em;
-              box-shadow: 6px 6px 0px 0px #0F172A;
-              cursor: pointer;
-              transition: transform 0.1s, box-shadow 0.1s;
-              box-sizing: border-box;
-            " onmouseover="this.style.transform='translate(2px, 2px)'; this.style.boxShadow='4px 4px 0px 0px #0F172A';" onmouseout="this.style.transform='none'; this.style.boxShadow='6px 6px 0px 0px #0F172A';">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" style="margin-right: 8px;">
-                <path stroke-linecap="square" stroke-linejoin="miter" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-              </svg>
-              KIRIM VIA WA
-            </button>
+            <body>
+              <a href="data:image/png;base64,{b64_data}" download="{os.path.basename(screenshot_path)}" class="neo-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                  <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                </svg>
+                UNDUH SCREENSHOT
+              </a>
+              <button onclick="shareToWA()" class="neo-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="square" stroke-linejoin="miter" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+                KIRIM VIA WA
+              </button>
             </body>
             </html>
             """
             
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                with open(screenshot_path, "rb") as file:
-                    st.download_button(
-                        label="Unduh Screenshot",
-                        data=file,
-                        file_name=os.path.basename(screenshot_path),
-                        mime="image/png",
-                        width='stretch',
-                        icon=":material/download:"
-                    )
-            
-            with col2:
-                st.iframe(button_html, height=75)
+            components.html(iframe_html, height=60)
             st.image(screenshot_path, width='stretch')
             st.markdown("<p style='text-align: center; font-weight: 800; font-family: \"Source Sans 3\", sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; color: #0F172A; margin-top: 8px;'>BUKTI TRANSAKSI</p>", unsafe_allow_html=True)
         else:
