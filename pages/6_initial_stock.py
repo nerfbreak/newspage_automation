@@ -52,7 +52,8 @@ def show_user_guide():
     6. Klik **Execute** untuk memasukkan data stok ke sistem Newspage. Jangan tutup browser selama proses berlangsung.
     """)
 
-if st.button(":material/menu_book: Panduan Pengguna - Initial Stock", type="primary"):
+st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
+if st.button(":material/help: Panduan", type="secondary"):
     show_user_guide()
 
 # --- DISTRIBUTOR SELECTION ---

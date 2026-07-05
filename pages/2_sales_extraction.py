@@ -39,7 +39,8 @@ def show_user_guide():
     5. Setelah berhasil, akan muncul tombol **Download Extracted Data (ZIP)** untuk mengunduh hasil ekstraksi.
     """)
 
-if st.button(":material/menu_book: Panduan Pengguna - Sales Data Extraction", type="primary"):
+st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
+if st.button(":material/help: Panduan", type="secondary"):
     show_user_guide()
 
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)

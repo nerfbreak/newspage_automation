@@ -53,7 +53,8 @@ def show_user_guide():
     6. Klik **Execute** untuk memproses mutasi. Pastikan Anda tidak menutup browser hingga log eksekusi pada pengirim maupun penerima telah selesai 100%.
     """)
 
-if st.button(":material/menu_book: Panduan Pengguna - Mutasi Stock", type="primary"):
+st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
+if st.button(":material/help: Panduan", type="secondary"):
     show_user_guide()
 
 # --- DISTRIBUTOR SELECTION ---

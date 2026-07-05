@@ -50,7 +50,8 @@ def show_user_guide():
     4. Klik **Execute** untuk mengeksekusi penyesuaian stok (clearance). Jangan tutup browser hingga proses selesai 100%.
     """)
 
-if st.button(":material/menu_book: Panduan Pengguna - Clearance Stock", type="primary"):
+st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
+if st.button(":material/help: Panduan", type="secondary"):
     show_user_guide()
 
 # --- DISTRIBUTOR SELECTION ---

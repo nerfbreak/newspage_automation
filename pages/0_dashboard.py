@@ -163,7 +163,8 @@ def show_user_guide():
     4. **Activity Report:** Di bagian bawah, Anda dapat memantau log aktivitas harian dari seluruh distributor.
     """)
 
-if st.button(":material/menu_book: Panduan Pengguna - Automation Tool (Dashboard)", type="primary"):
+st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
+if st.button(":material/help: Panduan", type="secondary"):
     show_user_guide()
 
 # --- DATABASE CONNECTION ---

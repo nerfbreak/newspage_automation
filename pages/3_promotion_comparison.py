@@ -52,7 +52,8 @@ def show_user_guide():
     5. Periksa status (MATCH/CONFLICT/MISSING) pada tabel hasil.
     """)
 
-if st.button(":material/menu_book: Panduan Pengguna - Promotion Comparison", type="primary"):
+st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
+if st.button(":material/help: Panduan", type="secondary"):
     show_user_guide()
 
 # --- FILE UPLOADER SECTION ---

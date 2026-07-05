@@ -64,7 +64,8 @@ def show_user_guide():
     4. Klik **EXECUTE** untuk menjalankan bot otomatis. **Tunggu hingga proses selesai dan jangan tutup browser.**
     """)
 
-if st.button(":material/menu_book: Panduan Pengguna - Inventory Adjustment", type="primary"):
+st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
+if st.button(":material/help: Panduan", type="secondary"):
     show_user_guide()
 
 adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
