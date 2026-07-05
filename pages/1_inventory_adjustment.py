@@ -259,10 +259,11 @@ if "Auto Compare" in adj_mode:
 
                 bot_ui_log, _ = make_terminal_logger(log_placeholder)
 
+                fn = f.name if 'f' in locals() and f else None
                 playwright_engine.run_execution(
                     df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
                     REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase,
-                    current_user=st.session_state.current_user, remark_text=remark_text
+                    current_user=st.session_state.current_user, remark_text=remark_text, file_name=fn
                 )
 
 elif "Manual Entry" in adj_mode:
@@ -405,10 +406,11 @@ elif "Manual Entry" in adj_mode:
 
                 bot_ui_log, _ = make_terminal_logger(log_placeholder)
 
+                fn_manual = uploaded_manual.name if 'uploaded_manual' in locals() and uploaded_manual else None
                 playwright_engine.run_execution_manual(
                     df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
                     REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase,
-                    remark_text=manual_remark_text, current_user=st.session_state.current_user
+                    remark_text=manual_remark_text, current_user=st.session_state.current_user, file_name=fn_manual
                 )
 
 if st.session_state.get("execute_done") and st.session_state.get("last_success_shot"):

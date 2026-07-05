@@ -887,7 +887,7 @@ def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty'
             pass
 
 
-def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, current_user=None, dry_run=None, remark_text=""):
+def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, current_user=None, dry_run=None, remark_text="", file_name=None):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     global_start_time = time.time(); success_count, failed_count = 0, 0
@@ -1045,7 +1045,10 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
                 box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
-                alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {selected_distributor}\nTotal SKU Mismatch : {success_count + failed_count}\nRuntime : {elapsed//60}m {elapsed%60}s\nDone by : {current_user}"
+                alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {selected_distributor}\nTotal SKU Mismatch : {success_count + failed_count}"
+                if file_name:
+                    alert_msg += f"\nFile Received : {file_name}"
+                alert_msg += f"\nRuntime : {elapsed//60}m {elapsed%60}s\nDone by : {current_user}"
                 st.markdown(box_html, unsafe_allow_html=True)
                 alert_callback(alert_msg, success_shot, delete_after=False)
                 st.toast('System override complete!')
@@ -1234,7 +1237,7 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
-def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None, dry_run=None):
+def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None, dry_run=None, file_name=None):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     try:
@@ -1380,7 +1383,10 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
                 box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
-                alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {selected_distributor}\nTotal SKU Mismatch : {success_count + failed_count}\nRuntime : {elapsed//60}m {elapsed%60}s\nDone by : {current_user}"
+                alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {selected_distributor}\nTotal SKU Mismatch : {success_count + failed_count}"
+                if file_name:
+                    alert_msg += f"\nFile Received : {file_name}"
+                alert_msg += f"\nRuntime : {elapsed//60}m {elapsed%60}s\nDone by : {current_user}"
                 if show_status_box:
                     st.markdown(box_html, unsafe_allow_html=True)
                 alert_callback(alert_msg, success_shot, delete_after=False)
