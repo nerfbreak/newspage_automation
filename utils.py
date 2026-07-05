@@ -48,7 +48,7 @@ def _send_sync(url, payload, files=None, local_path_to_delete=None):
             except Exception as delete_err:
                 logger.warning(f"Failed to delete local screenshot {local_path_to_delete}: {delete_err}")
 
-def send_telegram_alert(message: str, photo_path: str = None):
+def send_telegram_alert(message: str, photo_path: str = None, delete_after: bool = True):
     bot_token = st.secrets.get("TELEGRAM_BOT_TOKEN", "")
     chat_id = st.secrets.get("TELEGRAM_CHAT_ID", "")
     if bot_token and chat_id:
@@ -61,7 +61,8 @@ def send_telegram_alert(message: str, photo_path: str = None):
                 with open(photo_path, 'rb') as f:
                     file_data = f.read()
                 files = {"photo": (os.path.basename(photo_path), file_data)}
-                threading.Thread(target=_send_sync, args=(url, payload, files, photo_path), daemon=True).start()
+                path_to_delete = photo_path if delete_after else None
+                threading.Thread(target=_send_sync, args=(url, payload, files, path_to_delete), daemon=True).start()
             except Exception as e:
                 logger.warning(f"Failed to read photo: {e}")
         else:

@@ -1047,7 +1047,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
                 alert_msg = f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s"
                 st.markdown(box_html, unsafe_allow_html=True)
-                alert_callback(alert_msg, success_shot)
+                alert_callback(alert_msg, success_shot, delete_after=False)
                 st.toast('System override complete!')
                 st.session_state.reconcile_result = None
                 
@@ -1383,7 +1383,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 alert_msg = f"[OK] <b>BOT FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s"
                 if show_status_box:
                     st.markdown(box_html, unsafe_allow_html=True)
-                alert_callback(alert_msg, success_shot)
+                alert_callback(alert_msg, success_shot, delete_after=False)
                 st.toast('System override complete!')
                 
             st.session_state.last_success_shot = success_shot
