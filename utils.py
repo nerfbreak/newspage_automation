@@ -32,7 +32,7 @@ def decode_param(encoded: str) -> str:
 
 
 # ── Telegram alerts (shared across all pages) ─────────────
-def _send_sync(url, payload, files=None):
+def _send_sync(url, payload, files=None, local_path_to_delete=None):
     try:
         if files:
             requests.post(url, data=payload, files=files, timeout=15)
@@ -40,6 +40,13 @@ def _send_sync(url, payload, files=None):
             requests.post(url, json=payload, timeout=5)
     except Exception as e:
         logger.warning(f"Telegram alert failed: {e}")
+    finally:
+        if local_path_to_delete and os.path.exists(local_path_to_delete):
+            try:
+                os.remove(local_path_to_delete)
+                logger.info(f"Deleted local screenshot: {local_path_to_delete}")
+            except Exception as delete_err:
+                logger.warning(f"Failed to delete local screenshot {local_path_to_delete}: {delete_err}")
 
 def send_telegram_alert(message: str, photo_path: str = None):
     bot_token = st.secrets.get("TELEGRAM_BOT_TOKEN", "")
@@ -54,7 +61,7 @@ def send_telegram_alert(message: str, photo_path: str = None):
                 with open(photo_path, 'rb') as f:
                     file_data = f.read()
                 files = {"photo": (os.path.basename(photo_path), file_data)}
-                threading.Thread(target=_send_sync, args=(url, payload, files), daemon=True).start()
+                threading.Thread(target=_send_sync, args=(url, payload, files, photo_path), daemon=True).start()
             except Exception as e:
                 logger.warning(f"Failed to read photo: {e}")
         else:
