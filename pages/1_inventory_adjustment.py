@@ -429,28 +429,28 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
             # Convert HTML tags from telegram message to WhatsApp markdown
             alert_msg = st.session_state.get("last_alert_msg", "")
             if not alert_msg:
-                # Fallback if bot hasn't been rerun since update
                 dist = st.session_state.get("selected_distributor", "Unknown")
-                alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {dist}\nTotal SKU Mismatch : ?\nDone by : {st.session_state.current_user}"
+                df_view = st.session_state.get("df_view")
+                total_mismatch = len(df_view) if df_view is not None else "?"
+                alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {dist}\nTotal SKU Mismatch : {total_mismatch}\nDone by : {st.session_state.current_user}"
                 
             plain_msg = re.sub(r'<b>(.*?)</b>', r'*\1*', alert_msg)
             plain_msg = re.sub(r'<[^>]+>', '', plain_msg)
-            wa_text = urllib.parse.quote(plain_msg)
-            wa_url = f"https://web.whatsapp.com/send?text={wa_text}"
+            # Escape for JS
+            js_msg = plain_msg.replace('\n', '\\n').replace('"', '\\"').replace("'", "\\'")
             
             button_html = f"""
             <!DOCTYPE html>
             <html>
             <head>
             <style>
-              @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap');
               body {{
                 margin: 0;
                 padding: 4px 10px 10px 4px;
                 display: flex;
-                gap: 16px;
+                gap: 12px;
                 overflow: hidden;
-                font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif;
+                font-family: 'Source Sans 3', sans-serif, monospace;
               }}
               .neo-btn {{
                 flex: 1;
@@ -462,36 +462,39 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 color: #FFFFFF;
                 border: 2px solid #0F172A;
                 border-radius: 0px;
-                font-weight: 800;
-                font-size: 0.85rem;
-                letter-spacing: 0.04em;
+                font-weight: 600;
+                font-size: 13px;
                 text-transform: uppercase;
                 text-decoration: none;
-                box-shadow: 6px 6px 0px 0px #0F172A;
+                box-shadow: 4px 4px 0px 0px #0F172A;
                 cursor: pointer;
-                transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: all 0.1s ease-in-out;
                 box-sizing: border-box;
+                padding: 0 8px;
               }}
               .neo-btn:hover {{
                 transform: translate(2px, 2px);
-                box-shadow: 4px 4px 0px 0px #0F172A;
+                box-shadow: 2px 2px 0px 0px #0F172A;
               }}
               .neo-btn:active {{
                 transform: translate(4px, 4px);
-                box-shadow: 2px 2px 0px 0px #0F172A;
+                box-shadow: 0px 0px 0px 0px #0F172A;
+              }}
+              .neo-btn.success {{
+                background-color: #10B981;
               }}
               svg {{
-                margin-right: 8px;
+                margin-right: 6px;
               }}
             </style>
             <script>
             let preloadedBlobItem = null;
+            const textToCopy = "{js_msg}";
 
             async function preloadImage() {{
                 try {{
                     const res = await fetch("data:image/png;base64,{b64_data}");
                     const blob = await res.blob();
-                    // Hanya copy GAMBAR saja, karena teks akan dikirim via URL
                     preloadedBlobItem = new ClipboardItem({{"image/png": blob}});
                 }} catch (e) {{
                     console.error("Preload failed", e);
@@ -499,30 +502,65 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
             }}
             window.addEventListener("DOMContentLoaded", preloadImage);
 
-            function handleWAClick(event) {{
+            function showSuccess(btn, originalHtml) {{
+                btn.innerHTML = '✔ DISALIN!';
+                btn.classList.add('success');
+                setTimeout(() => {{
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('success');
+                }}, 2000);
+            }}
+
+            function copyImage(event) {{
+                const btn = event.currentTarget;
+                const originalHtml = btn.innerHTML;
                 if (preloadedBlobItem) {{
-                    navigator.clipboard.write([preloadedBlobItem]).catch(err => {{
-                        console.error("Clipboard write failed:", err);
+                    navigator.clipboard.write([preloadedBlobItem]).then(() => {{
+                        showSuccess(btn, originalHtml);
+                    }}).catch(err => {{
+                        console.error("Image copy failed:", err);
+                        alert("Gagal copy gambar. Browser mungkin tidak support.");
                     }});
+                }} else {{
+                    alert("Gambar sedang disiapkan, tunggu sebentar.");
                 }}
-                // Biarkan event default berjalan (browser akan navigasi ke WhatsApp URL)
+            }}
+
+            function copyText(event) {{
+                const btn = event.currentTarget;
+                const originalHtml = btn.innerHTML;
+                navigator.clipboard.writeText(textToCopy).then(() => {{
+                    showSuccess(btn, originalHtml);
+                }}).catch(err => {{
+                    console.error("Text copy failed:", err);
+                    alert("Gagal copy teks.");
+                }});
             }}
             </script>
             </head>
             <body>
-              <a href="data:image/png;base64,{b64_data}" download="{os.path.basename(screenshot_path)}" class="neo-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <a href="data:image/png;base64,{b64_data}" download="{os.path.basename(screenshot_path)}" class="neo-btn" style="background-color: #F8FAFC; color: #0F172A;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                   <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                   <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
                 </svg>
-                UNDUH SCREENSHOT
+                UNDUH
               </a>
-              <a href="{wa_url}" target="whatsapp_web_tab" class="neo-btn" onclick="handleWAClick(event)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="square" stroke-linejoin="miter" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+              <button class="neo-btn" onclick="copyImage(event)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
                 </svg>
-                KIRIM VIA WA
-              </a>
+                COPY GAMBAR
+              </button>
+              <button class="neo-btn" onclick="copyText(event)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="square" stroke-linejoin="miter" d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+                COPY TEKS
+              </button>
             </body>
             </html>
             """
