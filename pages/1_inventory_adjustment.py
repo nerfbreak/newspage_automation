@@ -385,17 +385,16 @@ elif "Manual Entry" in adj_mode:
 
 if st.session_state.get("execute_done") and st.session_state.get("last_success_shot"):
     st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
-    st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-    with st.container(border=True):
-        st.markdown("<div class='header-wrapper-center-notop'><span class='section-header-underline'>BUKTI TRANSAKSI (SCREENSHOT)</span></div>", unsafe_allow_html=True)
+    screenshot_path = st.session_state.last_success_shot
+    
+    with st.expander("BUKTI TRANSAKSI (SCREENSHOT)", expanded=False):
         st.markdown("""
-        <div style="background-color: #dbeafe; color: #1e3a8a; padding: 12px 16px; border-radius: 0px; font-size: 0.85rem; font-weight: 700; border: 3px solid #0F172A; margin-bottom: 24px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; align-items: center; gap: 12px;">
+        <div style="background-color: #dbeafe; color: #1e3a8a; padding: 12px 16px; border-radius: 0px; font-size: 0.85rem; font-weight: 700; border: 3px solid #0F172A; margin-bottom: 24px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; align-items: center; gap: 12px; margin-top: 12px;">
             <span style="font-size: 1.2rem;">ℹ</span>
             <span>Pekerjaan selesai! Silakan unduh bukti transaksi di bawah ini untuk dikirimkan secara manual.</span>
         </div>
         """, unsafe_allow_html=True)
         
-        screenshot_path = st.session_state.last_success_shot
         if os.path.exists(screenshot_path):
             with open(screenshot_path, "rb") as file:
                 st.download_button(
