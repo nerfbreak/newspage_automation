@@ -231,9 +231,6 @@ if "Auto Compare" in adj_mode:
         st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>ADJUSTMENT SKU LIST</span></div>", unsafe_allow_html=True)
         table_placeholder = st.empty(); utils.render_neo_table(table_placeholder, df_view)
     
-        log_label_placeholder = st.empty()
-        log_placeholder = st.empty()
-        
         auto_remark = ""
         if file2 is not None and hasattr(file2, 'name'):
             import os
@@ -241,6 +238,8 @@ if "Auto Compare" in adj_mode:
             
         remark_text = st.text_input("Remark", value=auto_remark, max_chars=50, key="auto_remark")
         
+        log_label_placeholder = st.empty()
+        log_placeholder = st.empty()
         btn_placeholder = st.empty()
             
         if btn_placeholder.button("EXECUTE", type="primary", width="stretch", icon=":material/play_arrow:"):
@@ -353,6 +352,8 @@ elif "Manual Entry" in adj_mode:
 
     st.markdown("<br>", unsafe_allow_html=True)
     
+    table_placeholder = st.empty()
+
     manual_auto_remark = ""
     if uploaded_manual is not None and hasattr(uploaded_manual, 'name'):
         import os
@@ -363,7 +364,6 @@ elif "Manual Entry" in adj_mode:
     log_label_placeholder = st.empty()
     log_placeholder = st.empty()
     btn_placeholder = st.empty()
-    table_placeholder = st.empty()
 
     if btn_placeholder.button("EXECUTE MANUAL ADJUSTMENT", type="primary", width="stretch", icon=":material/play_arrow:"):
         if not manual_remark_text.strip():
