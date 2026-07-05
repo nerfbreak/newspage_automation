@@ -236,7 +236,11 @@ if "Auto Compare" in adj_mode:
             import os
             auto_remark, _ = os.path.splitext(file2.name)
             
-        remark_text = st.text_input("Remark : (Isian nomor dokumen)", value=auto_remark, max_chars=50, key="auto_remark")
+        rem_c1, rem_c2 = st.columns([1, 3], vertical_alignment="center")
+        with rem_c1:
+            st.markdown("<p style='font-family: \"Source Sans 3\", sans-serif; font-size: 0.85rem; font-weight: 800; color: #0F172A; text-transform: uppercase; margin: 0; text-align: left;'>REMARK : (ISIAN NOMOR DOKUMEN)</p>", unsafe_allow_html=True)
+        with rem_c2:
+            remark_text = st.text_input("Remark", value=auto_remark, max_chars=50, key="auto_remark", label_visibility="collapsed")
         
         log_label_placeholder = st.empty()
         log_placeholder = st.empty()
@@ -359,7 +363,11 @@ elif "Manual Entry" in adj_mode:
         import os
         manual_auto_remark, _ = os.path.splitext(uploaded_manual.name)
         
-    manual_remark_text = st.text_input("Remark : (Isian nomor dokumen)", value=manual_auto_remark, max_chars=50, key="manual_remark")
+    man_rem_c1, man_rem_c2 = st.columns([1, 3], vertical_alignment="center")
+    with man_rem_c1:
+        st.markdown("<p style='font-family: \"Source Sans 3\", sans-serif; font-size: 0.85rem; font-weight: 800; color: #0F172A; text-transform: uppercase; margin: 0; text-align: left;'>REMARK : (ISIAN NOMOR DOKUMEN)</p>", unsafe_allow_html=True)
+    with man_rem_c2:
+        manual_remark_text = st.text_input("Remark", value=manual_auto_remark, max_chars=50, key="manual_remark", label_visibility="collapsed")
     
     log_label_placeholder = st.empty()
     log_placeholder = st.empty()
@@ -420,8 +428,6 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
             with open(screenshot_path, "rb") as file:
                 img_bytes = file.read()
                 b64_data = base64.b64encode(img_bytes).decode("utf-8")
-            
-            import streamlit.components.v1 as components
             
             # Combine JS and HTML into a single iframe component
             button_html = f"""
@@ -489,7 +495,7 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                     )
             
             with col2:
-                components.html(button_html, height=75)
+                st.iframe(button_html, height=75)
             st.image(screenshot_path, width='stretch')
             st.markdown("<p style='text-align: center; font-weight: 800; font-family: \"Source Sans 3\", sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; color: #0F172A; margin-top: 8px;'>BUKTI TRANSAKSI</p>", unsafe_allow_html=True)
         else:
