@@ -1620,4 +1620,30 @@ div[data-testid="stProgressBar"] div[role="progressbar"] > div[style*="width: 10
 div[data-testid="stProgress"] div[role="progressbar"] > div[style*="width: 100%"] {
     border-right: none !important;
 }
+
+/* ============================================================
+   RED BUTTON MARKER
+   ============================================================ */
+div.element-container:has(.red-btn-marker) + div[data-testid="stButton"] button,
+div.element-container:has(.red-btn-marker) + div[data-testid="stDownloadButton"] button {
+    background-color: #E63946 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #0F172A !important;
+}
+div.element-container:has(.red-btn-marker) + div[data-testid="stButton"] button p,
+div.element-container:has(.red-btn-marker) + div[data-testid="stDownloadButton"] button p {
+    color: #FFFFFF !important;
+}
+div.element-container:has(.red-btn-marker) + div[data-testid="stButton"] button:hover,
+div.element-container:has(.red-btn-marker) + div[data-testid="stDownloadButton"] button:hover {
+    background-color: #E63946 !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    transform: translate(2px, 2px) !important;
+}
+div.element-container:has(.red-btn-marker) + div[data-testid="stButton"] button:active,
+div.element-container:has(.red-btn-marker) + div[data-testid="stDownloadButton"] button:active {
+    background-color: #E63946 !important;
+    box-shadow: 2px 2px 0px 0px #0F172A !important;
+    transform: translate(4px, 4px) !important;
+}
 
