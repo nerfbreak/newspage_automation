@@ -446,9 +446,7 @@ if db_connected:
     st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
     st.markdown("<div style='margin: 0 0 16px 0; font-size: 1.05rem; color: #0F172A; background-color: #F1F5F9; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; padding: 6px 12px; display: inline-block; font-weight: 900; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.05em;'>Full Activity Report</div>", unsafe_allow_html=True)
     
-    col_filter, _ = st.columns([1.5, 2.5])
-    with col_filter:
-        period_option = st.selectbox("Reporting Period", ["Today", "Last 7 Days", "Last 30 Days", "All Time"], index=2, key="dashboard_report_period")
+    period_option = st.selectbox("Reporting Period", ["Today", "Last 7 Days", "Last 30 Days", "All Time"], index=2, key="dashboard_report_period")
         
     now_utc = datetime.now(timezone.utc)
     if period_option == "Today": cutoff_date = now_utc.replace(hour=0, minute=0, second=0, microsecond=0)
