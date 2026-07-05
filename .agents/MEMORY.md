@@ -205,6 +205,7 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - **2026-07-05**: **Feature**: Restored sorting and detail document navigation for Stock Adjustment screenshot capture after successfully mitigating ASP.NET PostBack race conditions on the List View filters.
 - **2026-07-05**: **Project Pivot**: User explicitly cancelled the Telegram-to-WhatsApp gateway (OpenWA) deployment project due to free-tier PaaS limitations (abuse flags on HF Spaces, no free persistent volumes on Render). Workflow terminated.
 - **2026-07-05**: **Security Hardening**: Implemented AES-256 Fernet session cookie encryption/decryption in `app.py` to prevent session hijacking/spoofing, and environmental parameter sanitization in `pages/0_dashboard.py` ping subprocess execution to block Remote Code Execution (RCE) via URL/credentials injection.
+- **2026-07-05**: **UI Enhancement**: Migrated User Guide expanders to Neo-Brutalist `@st.dialog` modals across all 7 page modules to save vertical space and improve aesthetics.
 
  # #   C r i t i c a l   K n o w l e d g e :   A S P . N E T   U p d a t e P a n e l   R a c e   C o n d i t i o n s   ( 2 0 2 6 - 0 7 - 0 5 ) 
  -   * * T h e   P r o b l e m * * :   W h e n   n a v i g a t i n g   N e w s p a g e   ( e . g . ,   c l i c k i n g   a   s i d e   m e n u   t a b   l i k e   L i s t   V i e w ) ,   P l a y w r i g h t   o f t e n   m o v e s   f a s t e r   t h a n   t h e   A S P . N E T   A J A X   P o s t B a c k .   
