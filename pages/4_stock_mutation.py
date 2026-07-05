@@ -88,7 +88,7 @@ if uploaded_file is not None:
         """, unsafe_allow_html=True)
         with st.container():
             st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-            if st.button("Hapus File Upload", type="secondary", use_container_width=True, icon=":material/delete:"):
+            if st.button("Hapus File Upload", type="secondary", width='stretch', icon=":material/delete:"):
                 st.session_state.mutasi_file_uploader = None
                 st.session_state.mutasi_file_id = None
                 st.rerun()
@@ -171,7 +171,7 @@ with st.container(border=True):
     remark_text = st.text_input("Remark", max_chars=50, key="mutasi_remark")
     
 st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
-execute_clicked = st.button("Execute", type="primary", use_container_width=True, disabled=not can_execute, icon=":material/play_arrow:")
+execute_clicked = st.button("Execute", type="primary", width='stretch', disabled=not can_execute, icon=":material/play_arrow:")
 
 if execute_clicked:
     st.session_state.is_mutasi_running = True

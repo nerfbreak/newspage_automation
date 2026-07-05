@@ -854,7 +854,7 @@ def _setup_terminate_button(placeholder):
             st.session_state.is_bot_running = False
             st.session_state.execute_done = False
             
-        st.button("CONFIRM", key="term_bot_hidden", on_click=terminate_callback, use_container_width=True)
+        st.button("CONFIRM", key="term_bot_hidden", on_click=terminate_callback, width='stretch')
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):

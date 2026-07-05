@@ -90,7 +90,7 @@ if "Auto Compare" in adj_mode:
                     """, unsafe_allow_html=True)
                     with st.container():
                         st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-                        if st.button("Hapus File Upload Stock Distributor", type="secondary", use_container_width=True, icon=":material/delete:"):
+                        if st.button("Hapus File Upload Stock Distributor", type="secondary", width='stretch', icon=":material/delete:"):
                             st.session_state.f2_key += 1
                             st.rerun()
                 else:
@@ -121,12 +121,12 @@ if "Auto Compare" in adj_mode:
     if st.session_state.np_df is not None:
         with st.container():
             st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-            if st.button("Clear Data Extracted Inventory Master", type="primary", use_container_width=True, icon=":material/delete:"):
+            if st.button("Clear Data Extracted Inventory Master", type="primary", width='stretch', icon=":material/delete:"):
                 st.session_state.np_df = None
                 st.rerun()
     else:
         btn_label = "Extracting..." if st.session_state.is_bot_running else "Extract Stock"
-        extract_btn = st.button(btn_label, type="primary", use_container_width=True, disabled=st.session_state.is_bot_running, icon=":material/download:")
+        extract_btn = st.button(btn_label, type="primary", width='stretch', disabled=st.session_state.is_bot_running, icon=":material/download:")
 
     if st.session_state.np_df is not None:
         st.markdown(make_solid_box(f"Extracted — {len(st.session_state.np_df)} items loaded from server", "#0068C9", "#0068C9"), unsafe_allow_html=True)
@@ -161,7 +161,7 @@ if "Auto Compare" in adj_mode:
     
     if np_source_ready and file2:
         st.markdown("<div style='margin-bottom: 24px;'></div>", unsafe_allow_html=True)
-        if st.button("PROSES FILE & BANDINGKAN", type="primary", use_container_width=True, icon=":material/compare_arrows:"):
+        if st.button("PROSES FILE & BANDINGKAN", type="primary", width='stretch', icon=":material/compare_arrows:"):
             st.session_state.show_comparison = True
             
     if st.session_state.get('show_comparison') and np_source_ready and file2:
@@ -197,7 +197,7 @@ if "Auto Compare" in adj_mode:
                 sku_col2 = st.selectbox("SKU column (Dist)", df2.columns, index=idx_sku2)
                 qty_col2 = st.selectbox("Qty column (Dist)", df2.columns, index=idx_qty2)
 
-        if st.button("Start Adjustment", type="primary", use_container_width=True, icon=":material/play_arrow:"):
+        if st.button("Start Adjustment", type="primary", width='stretch', icon=":material/play_arrow:"):
             TARGET_SKUS = database.get_target_skus(supabase)
             multipliers = database.get_multiplier_rules(supabase, st.session_state.current_np_user_id)
         
@@ -294,14 +294,14 @@ elif "Manual Entry" in adj_mode:
                 
             with st.container():
                 st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-                if st.button("Hapus File Upload Stock Distributor", type="secondary", icon=":material/delete:", use_container_width=True):
+                if st.button("Hapus File Upload Stock Distributor", type="secondary", icon=":material/delete:", width='stretch'):
                     st.session_state.manual_uploader_key += 1
                     st.session_state.manual_uploaded_df = None
                     st.rerun()
 
         if st.session_state.get("manual_uploaded_df") is not None:
             df_up = st.session_state.manual_uploaded_df
-            st.dataframe(df_up.head(5), use_container_width=True)
+            st.dataframe(df_up.head(5), width='stretch')
             
             st.markdown("<div style='margin-bottom:10px;'><b>Mapping Kolom:</b></div>", unsafe_allow_html=True)
             mcol1, mcol2, mcol3, mcol4 = st.columns(4)
@@ -315,7 +315,7 @@ elif "Manual Entry" in adj_mode:
             with mcol4:
                 sel_ea  = st.selectbox("EA Column", cols, index=0)
                 
-            if st.button("Apply Mapping ke Tabel", type="primary", use_container_width=True, icon=":material/done_all:"):
+            if st.button("Apply Mapping ke Tabel", type="primary", width='stretch', icon=":material/done_all:"):
                 if sel_sku == "-":
                     st.error("SKU Column harus dipilih.")
                 else:
@@ -411,21 +411,77 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
         st.markdown("""
         <div style="background-color: #dbeafe; color: #1e3a8a; padding: 12px 16px; border-radius: 0px; font-size: 0.85rem; font-weight: 700; border: 3px solid #0F172A; margin-bottom: 24px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; align-items: center; gap: 12px; margin-top: 12px;">
             <span style="font-size: 1.2rem;">ℹ</span>
-            <span>Pekerjaan selesai! Silakan unduh bukti transaksi di bawah ini untuk dikirimkan secara manual.</span>
+            <span>Pekerjaan selesai! Klik tombol "Kirim ke WhatsApp" di bawah untuk menyalin bukti transaksi dan membukanya di browser Anda.</span>
         </div>
         """, unsafe_allow_html=True)
         
         if os.path.exists(screenshot_path):
+            import base64
+            with open(screenshot_path, "rb") as file:
+                img_bytes = file.read()
+                b64_data = base64.b64encode(img_bytes).decode("utf-8")
+            
+            # Inject JavaScript to handle Clipboard Copy + Redirect to WhatsApp Web
+            js_script = """
+            <script>
+            if (typeof window.shareToWA !== 'function') {
+                window.shareToWA = async function(b64) {
+                    try {
+                        const resp = await fetch("data:image/png;base64," + b64);
+                        const blob = await resp.blob();
+                        const item = new ClipboardItem({"image/png": blob});
+                        await navigator.clipboard.write([item]);
+                        window.open("https://web.whatsapp.com/", "_blank");
+                        alert("Bukti transaksi telah disalin ke clipboard! Silakan pilih chat di WhatsApp Web lalu tekan Ctrl+V untuk mengirim.");
+                    } catch (e) {
+                        console.error("Auto copy failed, falling back to redirect:", e);
+                        window.open("https://web.whatsapp.com/", "_blank");
+                        alert("Gagal menyalin otomatis. Silakan klik kanan gambar di bawah lalu 'Copy Image', lalu paste di WhatsApp Web.");
+                    }
+                };
+            }
+            </script>
+            """
+            st.markdown(js_script, unsafe_allow_html=True)
+            
+            # Custom Neo-Brutalist HTML Share Button
+            button_html = f"""
+            <button onclick="window.shareToWA('{b64_data}')" style="
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+              padding: 12px;
+              background-color: #0068C9;
+              color: #FFFFFF;
+              border: 3px solid #0F172A;
+              border-radius: 0px;
+              font-family: 'Source Sans 3', sans-serif;
+              font-weight: 800;
+              font-size: 0.85rem;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+              box-shadow: 6px 6px 0px 0px #0F172A;
+              cursor: pointer;
+              margin-bottom: 16px;
+              transition: transform 0.1s, box-shadow 0.1s;
+            " onmouseover="this.style.transform='translate(2px, 2px)'; this.style.boxShadow='4px 4px 0px 0px #0F172A';" onmouseout="this.style.transform='none'; this.style.boxShadow='6px 6px 0px 0px #0F172A';">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px;"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.69-4.98c-.203-.101-1.2-.591-1.386-.658-.186-.067-.322-.101-.456.101-.134.202-.518.657-.636.793-.118.135-.235.151-.438.051-2.002-1.002-3.102-2.784-3.591-3.624-.118-.2-.018-.308.082-.408.091-.09.203-.243.304-.364.102-.122.135-.203.203-.339.067-.136.034-.254-.017-.356-.05-.102-.456-1.1-.625-1.507-.164-.4-.345-.346-.47-.352-.12-.006-.258-.007-.396-.007a.78.78 0 0 0-.568.264c-.188.204-.715.7-.715 1.7 0 2 .013 4.024.137 4.2.124.177 3.86 5.886 9.349 8.25a31.306 31.306 0 0 0 3.12 1.132c1.31.378 2.502.321 3.447.18 1.054-.158 2.202-.9 2.505-1.77.303-.87.303-1.618.213-1.77-.09-.15-.323-.251-.526-.351z"/></svg>
+              KIRIM KE WHATSAPP
+            </button>
+            """
+            st.markdown(button_html, unsafe_allow_html=True)
+            
             with open(screenshot_path, "rb") as file:
                 st.download_button(
                     label="Unduh Screenshot (PNG)",
                     data=file,
                     file_name=os.path.basename(screenshot_path),
                     mime="image/png",
-                    use_container_width=True,
+                    width='stretch',
                     icon=":material/download:"
                 )
-            st.image(screenshot_path, use_container_width=True)
+            st.image(screenshot_path, width='stretch')
             st.markdown("<p style='text-align: center; font-weight: 800; font-family: \"Source Sans 3\", sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; color: #0F172A; margin-top: 8px;'>BUKTI TRANSAKSI</p>", unsafe_allow_html=True)
         else:
             st.error(f"Screenshot tidak ditemukan di {screenshot_path}.")
