@@ -65,7 +65,7 @@ def show_user_guide():
     """)
 
 st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
-if st.button(":material/help: Panduan", type="secondary"):
+if st.button(":material/help: Panduan", type="secondary", disabled=st.session_state.get("is_bot_running", False)):
     show_user_guide()
 
 adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")

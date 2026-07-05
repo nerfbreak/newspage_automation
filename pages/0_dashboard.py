@@ -164,7 +164,7 @@ def show_user_guide():
     """)
 
 st.markdown("<div class='guide-anchor'></div>", unsafe_allow_html=True)
-if st.button(":material/help: Panduan", type="secondary"):
+if st.button(":material/help: Panduan", type="secondary", disabled=st.session_state.get("is_bot_running", False)):
     show_user_guide()
 
 # --- DATABASE CONNECTION ---
