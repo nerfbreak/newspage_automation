@@ -470,6 +470,7 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
                 color: #FFFFFF;
                 border: 2px solid #0F172A;
                 border-radius: 0px;
+                font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif;
                 font-weight: 800;
                 font-size: 0.85rem;
                 letter-spacing: 0.04em;
