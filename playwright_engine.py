@@ -1045,7 +1045,9 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 alert_callback(alert_msg, success_shot)
                 st.toast('System override complete!')
                 st.session_state.reconcile_result = None
-
+                
+            st.session_state.last_success_shot = success_shot
+            st.session_state.execute_done = True
             st.session_state.is_bot_running = False
 
     except Exception as e:
@@ -1378,8 +1380,11 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     st.markdown(box_html, unsafe_allow_html=True)
                 alert_callback(alert_msg, success_shot)
                 st.toast('System override complete!')
-                st.session_state.is_bot_running = False
-                return success_count, failed_count, elapsed
+                
+            st.session_state.last_success_shot = success_shot
+            st.session_state.execute_done = True
+            st.session_state.is_bot_running = False
+            return success_count, failed_count, elapsed
 
     except PlaywrightTimeoutError: 
         st.session_state.is_bot_running = False

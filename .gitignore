@@ -79,3 +79,6 @@ scripts/refactor.py
 # Local Only Features
 pages/7_element_crawler.py
 screenshots/
+
+# Playwright Local Profiles
+.playwright/
