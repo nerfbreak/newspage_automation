@@ -1,13 +1,13 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.2.0 → 1.3.0 (Expanded Security-First Credential Handling with Session Protection, Execution Sanitization, and RLS)
+Version change: 1.4.0 → 1.4.1 (Refined User Documentation pattern to mandate scrollable modal dialogs)
 Added sections: None
-Modified sections: Core Principles -> II. Security-First Credential Handling & Session Protection
+Modified sections: Core Principles -> VII. User Documentation
 Removed sections: None
 Templates requiring updates:
   ✅ .specify/memory/constitution.md (Updated)
-Follow-up TODOs: Run /speckit-specify to write the feature specification for implementing cookie signing and subprocess execution sanitization.
+Follow-up TODOs: Run /speckit-specify to write the feature specification for migrating existing expander-based user guides to the new @st.dialog pattern.
 -->
 
 # Optimize Newspage Automation Constitution
@@ -75,8 +75,8 @@ All new external integrations or messaging bridges (e.g., forwarding Telegram sc
 **Rationale**: To maintain the project's low-overhead operating model, auxiliary features like notification forwarding should not introduce new monthly server expenses. Separating the heavy engine from the lightweight logic (relay) ensures better stability and resource utilization.
 
 ### VII. User Documentation
-All modules MUST be accompanied by a clear, accessible user guide tailored for non-technical operations staff.
-**Rationale**: The system is used by distributor staff who may not understand technical error messages or complex workflows. Guides prevent operational blockage and reduce support overhead.
+All modules MUST be accompanied by a clear, accessible user guide tailored for non-technical operations staff. To optimize screen real estate and adhere to the project's design system, these guides MUST be implemented as clickable icon buttons that open a Scrollable Modal Dialog (`@st.dialog`). The dialog MUST feature strict Neo-Brutalist styling (solid borders, sharp corners, solid drop shadows, offset close button) inspired by the `neobrutalism.dev/docs/dialog` pattern. They MUST NOT be implemented as space-consuming expanders or hover-only tooltips.
+**Rationale**: The system is used by distributor staff who may not understand technical error messages or complex workflows. A scrollable modal dialog provides ample space for rich documentation without cluttering the main UI, while strictly conforming to the Neo-Brutalism aesthetic.
 
 
 ## Security & Credential Standards
@@ -125,4 +125,4 @@ Amendments require:
 All AI coding agents working on this project MUST read this constitution at the
 start of each session alongside `.agents/MEMORY.md`.
 
-**Version**: 1.3.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05
+**Version**: 1.4.1 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05

@@ -48,7 +48,8 @@ bot_status = "RUNNING" if st.session_state.is_bot_running else "STANDBY"
 render_indicators(db_status, bot_status)
 render_header("Inventory Adjustment", st.session_state.current_user)
 
-with st.expander(":material/menu_book: Panduan Pengguna - Inventory Adjustment"):
+@st.dialog("Panduan Pengguna - Inventory Adjustment")
+def show_user_guide():
     st.markdown("""
     **Cara Penggunaan:**
     1. Pilih mode penyesuaian: **Auto Compare** (menarik stok server lalu membandingkan dengan file distributor) atau **Manual Entry** (mengetik SKU secara langsung).
@@ -62,6 +63,9 @@ with st.expander(":material/menu_book: Panduan Pengguna - Inventory Adjustment")
        - Pilih distributor, lalu masukkan detail SKU beserta qty secara manual ke dalam tabel input.
     4. Klik **EXECUTE** untuk menjalankan bot otomatis. **Tunggu hingga proses selesai dan jangan tutup browser.**
     """)
+
+if st.button(":material/menu_book: Panduan Pengguna - Inventory Adjustment", type="primary"):
+    show_user_guide()
 
 adj_mode_sel = st.segmented_control("Adjustment Mode", ["Auto Compare", "Manual Entry"], default="Auto Compare", selection_mode="single", label_visibility="collapsed")
 adj_mode = adj_mode_sel if adj_mode_sel else "Auto Compare"

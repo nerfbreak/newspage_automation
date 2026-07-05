@@ -41,7 +41,8 @@ bot_status = "RUNNING" if st.session_state.is_promo_bot_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="PROMO ENGINE")
 render_header("Promotion Comparison", st.session_state.current_user)
 
-with st.expander(":material/menu_book: Panduan Pengguna - Promotion Comparison"):
+@st.dialog("Panduan Pengguna - Promotion Comparison")
+def show_user_guide():
     st.markdown("""
     **Cara Penggunaan:**
     1. Unggah file tracker promosi dari SharePoint (BDP Tracker).
@@ -50,6 +51,9 @@ with st.expander(":material/menu_book: Panduan Pengguna - Promotion Comparison")
     4. Klik **Run Analysis** untuk menjalankan analisis kecocokan data antara SharePoint dan Newspage.
     5. Periksa status (MATCH/CONFLICT/MISSING) pada tabel hasil.
     """)
+
+if st.button(":material/menu_book: Panduan Pengguna - Promotion Comparison", type="primary"):
+    show_user_guide()
 
 # --- FILE UPLOADER SECTION ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
@@ -117,8 +121,12 @@ promo_log_placeholder = st.empty()
 
 # --- PREVIEW DATA ---
 if st.session_state.uploaded_mdm_data is not None:
-    with st.expander("Preview SharePoint Data (MDM)"):
+    @st.dialog("Preview SharePoint Data (MDM)")
+def show_user_guide():
         utils.render_neo_table(st.session_state.uploaded_mdm_data.head(50))
+
+if st.button("Preview SharePoint Data (MDM)", type="primary"):
+    show_user_guide()
 
 # --- TRIGGER EXTRACTION ---
 if promo_btn:

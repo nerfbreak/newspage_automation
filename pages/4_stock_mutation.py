@@ -41,7 +41,8 @@ bot_status = "RUNNING" if st.session_state.is_mutasi_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="MUTASI ENGINE")
 render_header("Mutasi Stock", st.session_state.current_user)
 
-with st.expander(":material/menu_book: Panduan Pengguna - Mutasi Stock"):
+@st.dialog("Panduan Pengguna - Mutasi Stock")
+def show_user_guide():
     st.markdown("""
     **Cara Penggunaan:**
     1. Pilih **Distributor Pengirim** dan **Distributor Penerima**. Keduanya harus berbeda.
@@ -51,6 +52,9 @@ with st.expander(":material/menu_book: Panduan Pengguna - Mutasi Stock"):
     5. Pilih **Reason Adjustment** dan tambahkan **Remark** opsional.
     6. Klik **Execute** untuk memproses mutasi. Pastikan Anda tidak menutup browser hingga log eksekusi pada pengirim maupun penerima telah selesai 100%.
     """)
+
+if st.button(":material/menu_book: Panduan Pengguna - Mutasi Stock", type="primary"):
+    show_user_guide()
 
 # --- DISTRIBUTOR SELECTION ---
 col1, col2 = st.columns(2)

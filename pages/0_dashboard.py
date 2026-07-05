@@ -153,7 +153,8 @@ with col2:
 
     st.button("CONFIRM", key="signout_confirm_hidden", on_click=signout_callback, use_container_width=True)
 
-with st.expander(":material/menu_book: Panduan Pengguna - Automation Tool (Dashboard)"):
+@st.dialog("Panduan Pengguna - Automation Tool (Dashboard)")
+def show_user_guide():
     st.markdown("""
     **Cara Penggunaan Dashboard:**
     1. **Overview:** Halaman ini menyajikan ringkasan seluruh aktivitas bot otomasi (Extract, Adjust, Mutasi, Clearance, dll) hari ini.
@@ -161,6 +162,9 @@ with st.expander(":material/menu_book: Panduan Pengguna - Automation Tool (Dashb
     3. **Ping Server:** Gunakan tombol **Ping** di bagian *Recent Activity* untuk mengetes koneksi server Newspage dengan kredensial Superuser.
     4. **Activity Report:** Di bagian bawah, Anda dapat memantau log aktivitas harian dari seluruh distributor.
     """)
+
+if st.button(":material/menu_book: Panduan Pengguna - Automation Tool (Dashboard)", type="primary"):
+    show_user_guide()
 
 # --- DATABASE CONNECTION ---
 supabase = database.init_supabase()

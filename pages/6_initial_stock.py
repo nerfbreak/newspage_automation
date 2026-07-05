@@ -40,7 +40,8 @@ bot_status = "RUNNING" if st.session_state.is_initial_running else "STANDBY"
 render_indicators(db_status, bot_status, bot_type="INITIAL STOCK ENGINE")
 render_header("Initial Stock", st.session_state.current_user)
 
-with st.expander(":material/menu_book: Panduan Pengguna - Initial Stock"):
+@st.dialog("Panduan Pengguna - Initial Stock")
+def show_user_guide():
     st.markdown("""
     **Cara Penggunaan:**
     1. Pilih **Distributor** yang akan diisi saldo awal stoknya (Initial Stock).
@@ -50,6 +51,9 @@ with st.expander(":material/menu_book: Panduan Pengguna - Initial Stock"):
     5. Periksa kesesuaian data pada tabel **Initial Stock Review**. SKU dengan Qty 0 atau negatif akan otomatis dilewati.
     6. Klik **Execute** untuk memasukkan data stok ke sistem Newspage. Jangan tutup browser selama proses berlangsung.
     """)
+
+if st.button(":material/menu_book: Panduan Pengguna - Initial Stock", type="primary"):
+    show_user_guide()
 
 # --- DISTRIBUTOR SELECTION ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)

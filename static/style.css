@@ -1200,8 +1200,15 @@ div.element-container:has(.neo-container-marker) + div > div[data-testid="stVert
     height: 100% !important;
 }
 
+/* Ensure the column itself is a flex container to allow children to stretch */
+[data-testid="column"] {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
 /* Ensure the column's inner structure stretches */
 [data-testid="column"] > div[data-testid="stVerticalBlock"] {
+    flex-grow: 1 !important;
     height: 100% !important;
     display: flex !important;
     flex-direction: column !important;

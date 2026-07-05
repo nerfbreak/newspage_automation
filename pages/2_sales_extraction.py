@@ -28,7 +28,8 @@ bot_status = "RUNNING" if st.session_state.is_bot_running else "STANDBY"
 render_indicators(db_status, bot_status)
 render_header("Sales Data Extraction", st.session_state.current_user)
 
-with st.expander(":material/menu_book: Panduan Pengguna - Sales Data Extraction"):
+@st.dialog("Panduan Pengguna - Sales Data Extraction")
+def show_user_guide():
     st.markdown("""
     **Cara Penggunaan:**
     1. Pilih **Nama Distributor** yang data penjualannya ingin ditarik.
@@ -37,6 +38,9 @@ with st.expander(":material/menu_book: Panduan Pengguna - Sales Data Extraction"
     4. Tunggu hingga proses bot selesai berjalan. Log proses akan muncul pada layar.
     5. Setelah berhasil, akan muncul tombol **Download Extracted Data (ZIP)** untuk mengunduh hasil ekstraksi.
     """)
+
+if st.button(":material/menu_book: Panduan Pengguna - Sales Data Extraction", type="primary"):
+    show_user_guide()
 
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
