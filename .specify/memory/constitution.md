@@ -1,13 +1,13 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 2.0.0 → 2.1.0 (Added Action Button Consolidation principle)
-Added sections: Core Principles -> VII. Action Button Consolidation
-Modified sections: None
+Version change: 2.2.0 → 2.2.1 (Refined Mandatory Remark Input for Adjustments principle to include auto-filling from uploaded filename)
+Added sections: None
+Modified sections: Core Principles -> VIII. Mandatory Remark Input for Adjustments
 Removed sections: None
 Templates requiring updates:
   ✅ .specify/memory/constitution.md (Updated)
-Follow-up TODOs: Run /speckit-specify to write the feature specification for consolidating the Clear Data and Extract buttons across the app.
+Follow-up TODOs: Run /speckit-specify to write the feature specification for adding the Remark column to Inventory Adjustment, including the auto-fill behavior.
 -->
 
 # Optimize Newspage Automation Constitution
@@ -79,6 +79,11 @@ To prevent UI clutter and maintain a clean interface, post-execution actions (e.
 
 **Rationale**: A clean, uncluttered interface is crucial for non-technical users. Stacking multiple action buttons creates confusion about the current state of the application. Reusing the primary button slot for state-dependent actions clarifies the available next steps and reduces visual noise.
 
+### VIII. Mandatory Remark Input for Adjustments
+Before executing the Inventory Adjustment module, there MUST be a "Remark" input column provided to the user, formatted exactly like the one present in the Stock Mutation module. If the user uploads a data file (e.g., CSV/Excel) to populate the grid, this Remark column MUST be automatically pre-filled with the name of the uploaded file to reduce manual entry effort, while remaining fully editable. The adjustment process MUST NOT proceed if this step is bypassed.
+
+**Rationale**: Ensures traceability and accountability for inventory adjustments by forcing operators to provide a contextual reason or reference note before data is submitted to the system, while automating repetitive tasks like copy-pasting filenames.
+
 ## Security & Credential Standards
 
 - All secrets MUST be stored in `.streamlit/secrets.toml` — this file is gitignored.
@@ -125,4 +130,4 @@ Amendments require:
 All AI coding agents working on this project MUST read this constitution at the
 start of each session alongside `.agents/MEMORY.md`.
 
-**Version**: 2.1.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05
+**Version**: 2.2.1 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05

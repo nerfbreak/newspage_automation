@@ -887,7 +887,7 @@ def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty'
             pass
 
 
-def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, current_user=None, dry_run=None):
+def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, current_user=None, dry_run=None, remark_text=""):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     global_start_time = time.time(); success_count, failed_count = 0, 0
@@ -909,7 +909,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             target_whs = exception_dict.get(bot_user)
             actual_warehouse = target_whs if target_whs and WAREHOUSE == "GOOD_WHS" else WAREHOUSE
             
-            _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log)
+            _navigate_to_stock_adjustment(page, TIMEOUT_MS, actual_warehouse, REASON_CODE, ui_log, remark_text=remark_text)
 
             _update_progress_text(text_ph, 0, total_rows)
             

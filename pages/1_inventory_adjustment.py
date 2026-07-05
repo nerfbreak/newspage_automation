@@ -233,10 +233,16 @@ if "Auto Compare" in adj_mode:
     
         log_label_placeholder = st.empty()
         log_placeholder = st.empty()
+        
+        auto_remark = file2.name if (file2 is not None and hasattr(file2, 'name')) else ""
+        remark_text = st.text_input("Remark", value=auto_remark, max_chars=50, key="auto_remark")
+        
         btn_placeholder = st.empty()
             
         if btn_placeholder.button("EXECUTE", type="primary", width="stretch", icon=":material/play_arrow:"):
-            if not bot_user or not bot_pass: 
+            if not remark_text.strip():
+                st.warning("Kolom 'Remark' wajib diisi sebelum eksekusi.")
+            elif not bot_user or not bot_pass: 
                 st.error("Access Denied: Kredensial tidak ditemukan di Database!")
             else:
                 st.session_state.is_bot_running = True
@@ -249,7 +255,7 @@ if "Auto Compare" in adj_mode:
                 playwright_engine.run_execution(
                     df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
                     REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase,
-                    current_user=st.session_state.current_user
+                    current_user=st.session_state.current_user, remark_text=remark_text
                 )
 
 elif "Manual Entry" in adj_mode:
@@ -342,13 +348,19 @@ elif "Manual Entry" in adj_mode:
         )
 
     st.markdown("<br>", unsafe_allow_html=True)
+    
+    manual_auto_remark = uploaded_manual.name if (uploaded_manual is not None and hasattr(uploaded_manual, 'name')) else ""
+    manual_remark_text = st.text_input("Remark", value=manual_auto_remark, max_chars=50, key="manual_remark")
+    
     log_label_placeholder = st.empty()
     log_placeholder = st.empty()
     btn_placeholder = st.empty()
     table_placeholder = st.empty()
 
     if btn_placeholder.button("EXECUTE MANUAL ADJUSTMENT", type="primary", width="stretch", icon=":material/play_arrow:"):
-        if not bot_user or not bot_pass: 
+        if not manual_remark_text.strip():
+            st.warning("Kolom 'Remark' wajib diisi sebelum eksekusi.")
+        elif not bot_user or not bot_pass: 
             st.error("Access Denied: Kredensial tidak ditemukan di Database!")
         else:
             # Clean dataframe
@@ -380,7 +392,7 @@ elif "Manual Entry" in adj_mode:
                 playwright_engine.run_execution_manual(
                     df_exec, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, 
                     REASON_CODE, TABLE_UPDATE_INTERVAL, bot_ui_log, send_telegram_alert, table_placeholder, log_label_placeholder, supabase,
-                    current_user=st.session_state.current_user
+                    remark_text=manual_remark_text, current_user=st.session_state.current_user
                 )
 
 if st.session_state.get("execute_done") and st.session_state.get("last_success_shot"):
