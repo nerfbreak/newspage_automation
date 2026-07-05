@@ -3,8 +3,8 @@ import time
 from playwright.sync_api import sync_playwright, TimeoutError
 
 # Konfigurasi Path
-PROFILE_DIR = os.path.join(os.getcwd(), ".playwright", "whatsapp_profile")
-QR_CODE_PATH = os.path.join(os.getcwd(), "screenshots", "qr_code.png")
+PROFILE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".playwright", "whatsapp_profile")
+QR_CODE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screenshots", "qr_code.png")
 
 def forward_screenshot_to_whatsapp(group_name: str, screenshot_path: str):
     """
@@ -12,8 +12,10 @@ def forward_screenshot_to_whatsapp(group_name: str, screenshot_path: str):
     Returns:
         dict: {"status": "success" | "needs_qr" | "error", "message": "...", "qr_path": "..."}
     """
+    abs_path = os.path.abspath(screenshot_path)
+    cwd = os.getcwd()
     if not os.path.exists(screenshot_path):
-        return {"status": "error", "message": f"Screenshot tidak ditemukan di {screenshot_path}"}
+        return {"status": "error", "message": f"Screenshot tidak ditemukan di {screenshot_path}. (CWD: {cwd}, AbsPath: {abs_path})"}
 
     try:
         with sync_playwright() as p:

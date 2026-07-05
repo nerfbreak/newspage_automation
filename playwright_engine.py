@@ -44,8 +44,9 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
             yield page, browser
         except Exception as e:
             try:
-                os.makedirs("screenshots", exist_ok=True)
-                sp = f"screenshots/error_{int(time.time())}.png"
+                screenshots_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screenshots")
+                os.makedirs(screenshots_dir, exist_ok=True)
+                sp = os.path.join(screenshots_dir, f"error_{int(time.time())}.png")
                 page.screenshot(path=sp, timeout=2000)
                 e.screenshot_path = sp
             except Exception:
@@ -344,8 +345,9 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
                 # [T001] Capture success screenshot before browser closes
                 success_shot = None
                 try:
-                    os.makedirs("screenshots", exist_ok=True)
-                    success_shot = f"screenshots/success_extract_{int(time.time())}.png"
+                    screenshots_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screenshots")
+                    os.makedirs(screenshots_dir, exist_ok=True)
+                    success_shot = os.path.join(screenshots_dir, f"success_extract_{int(time.time())}.png")
                     page.screenshot(path=success_shot, timeout=3000)
                     ext_ui_log("SYS", "Success screenshot captured.")
                 except Exception:
@@ -538,8 +540,9 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
             # [T002] Capture success screenshot before browser closes
             success_shot = None
             try:
-                os.makedirs("screenshots", exist_ok=True)
-                success_shot = f"screenshots/success_sales_{int(time.time())}.png"
+                screenshots_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screenshots")
+                os.makedirs(screenshots_dir, exist_ok=True)
+                success_shot = os.path.join(screenshots_dir, f"success_sales_{int(time.time())}.png")
                 page.screenshot(path=success_shot, timeout=3000)
                 ext_ui_log("SYS", "Success screenshot captured.")
             except Exception:
@@ -694,15 +697,17 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
             _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj detail")
             
             # Capture screenshot
-            os.makedirs("screenshots", exist_ok=True)
-            success_shot = f"screenshots/{prefix}_{int(time.time())}.png"
+            screenshots_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screenshots")
+            os.makedirs(screenshots_dir, exist_ok=True)
+            success_shot = os.path.join(screenshots_dir, f"{prefix}_{int(time.time())}.png")
             page.screenshot(path=success_shot, timeout=3000)
             ui_log("SYS", "Transaction success screenshot captured.")
             return success_shot
         except Exception as err:
             ui_log("WARN", f"Grid row not found. Capturing List View instead. {str(err)}")
-            os.makedirs("screenshots", exist_ok=True)
-            fallback_shot = f"screenshots/{prefix}_list_fallback_{int(time.time())}.png"
+            screenshots_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screenshots")
+            os.makedirs(screenshots_dir, exist_ok=True)
+            fallback_shot = os.path.join(screenshots_dir, f"{prefix}_list_fallback_{int(time.time())}.png")
             page.screenshot(path=fallback_shot, timeout=3000)
             return fallback_shot
     except Exception as shot_err:

@@ -218,3 +218,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 
 - [2026-07-05] Added 'Kirim ke WhatsApp' feature to forward automation screenshots locally using a headless Playwright Chromium session, bypassing the need for a PaaS backend or paid Telegram gateways.
 
+- **2026-07-05**: **Bug Fix**: Changed screenshot saving and loading in WhatsApp forwarder to use absolute paths based on script location (__file__) to prevent file-not-found errors caused by mismatched current working directories across Streamlit sessions.
