@@ -31,9 +31,11 @@ if "database" not in sys.modules:
 from data_processor import clean_sku_column, load_data, process_compare
 from error_taxonomy import format_log_error, format_user_error, get_error
 from utils import (
+    clean_html,
     decode_param,
     encode_param,
     make_terminal_logger,
+    render_metric_card,
     render_responsive_dataframe,
     safe_parse_numeric,
 )
@@ -165,6 +167,18 @@ class CoreSmokeTests(unittest.TestCase):
         self.assertNotIn("<b>danger</b>", history[0])
         self.assertIn("terminal-box", target.html)
         self.assertTrue(target.unsafe_allow_html)
+
+    def test_clean_html_compacts_multiline_markup(self):
+        raw = "\n  <div>\n    Hello\n  </div>\n"
+
+        self.assertEqual(clean_html(raw), " <div> Hello </div>")
+
+    def test_render_metric_card_escapes_title_and_value(self):
+        html = render_metric_card("<admin>", "<script>alert(1)</script>", accent=True)
+
+        self.assertIn("&lt;admin&gt;", html)
+        self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", html)
+        self.assertNotIn("<script>alert(1)</script>", html)
 
     def test_error_taxonomy_formats_safe_user_and_log_messages(self):
         self.assertEqual(get_error("NOPE").code, "UNK-001")

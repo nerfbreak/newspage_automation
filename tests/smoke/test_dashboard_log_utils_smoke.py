@@ -88,6 +88,37 @@ class DashboardLogUtilsSmokeTests(unittest.TestCase):
         self.assertEqual(rows[1]["Module"], "Stock Mutation")
         self.assertEqual(rows[1]["Status"], "SUCCESS")
 
+    def test_full_activity_table_rows_honor_cutoff_date(self):
+        df_adj = pd.DataFrame(
+            [
+                {
+                    "created_at": "2026-07-01T10:00:00+00:00",
+                    "np_user": "NP01",
+                    "run_by": "Reckitt",
+                    "qty": "1",
+                    "status": "Success",
+                },
+                {
+                    "created_at": "2026-07-06T10:00:00+00:00",
+                    "np_user": "NP02",
+                    "run_by": "Nadia",
+                    "qty": "PAC: 1",
+                    "status": "Success",
+                },
+            ]
+        )
+
+        rows = build_full_activity_table_rows(
+            df_adj,
+            pd.DataFrame(),
+            {"NP01": "Dist A", "NP02": "Dist B"},
+            cutoff_date="2026-07-05T00:00:00+00:00",
+        )
+
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["Distributor"], "Dist B")
+        self.assertEqual(rows[0]["Module"], "Stock Mutation")
+
     def test_timestamp_formatter_uses_jakarta_time(self):
         self.assertEqual(
             format_dashboard_timestamp("2026-07-06T10:00:00+00:00", include_seconds=True),
@@ -97,4 +128,3 @@ class DashboardLogUtilsSmokeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
