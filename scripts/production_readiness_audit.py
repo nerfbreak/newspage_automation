@@ -30,6 +30,8 @@ REQUIRED_FILES = (
     "docs/production_readiness_status.md",
     "scripts/supabase_schema_check.py",
     "docs/supabase_live_schema_check_2026-07-07.md",
+    "docs/dependency_pruning_review.md",
+    "docs/antigravity_handoff.md",
 )
 
 LOCAL_SECRET_PATHS = (
