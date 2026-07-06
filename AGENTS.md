@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/017-mobile-responsive/plan.md
+at .specify/memory/plan.md
 <!-- SPECKIT END -->
 
 # Project AI Rules: Newspage Automation (Optimize)
