@@ -8,7 +8,7 @@
 
 | Area | Status | Evidence | Remaining live gate |
 |---|---|---|---|
-| Security audit baseline | Complete for offline/static scope | `SECURITY_AUDIT_REPORT.md`, `scripts/production_readiness_audit.py` | Run live Supabase/RLS review and deployment secret review |
+| Security audit baseline | Complete for offline/static scope | `SECURITY_AUDIT_REPORT.md`, `scripts/production_readiness_audit.py`, `.github/workflows/security-audit.yml` | Run live Supabase/RLS review and deployment secret review |
 | Secrets hygiene | Guarded | `.gitignore`, static audit secret tracking check | Rotate secrets if workspace/repo exposure is suspected |
 | Session cookie review | Documented risk | `SECURITY_AUDIT_REPORT.md` SEC-001 | Validate deployed cookie attributes and lifetime policy |
 | Subprocess review | Guarded | Static audit rejects `shell=True`; dashboard ping uses env arguments | Re-review any future subprocess helper before merge |
