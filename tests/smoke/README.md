@@ -13,7 +13,7 @@ Use the same Python environment that runs the app dependencies (`pandas`, `strea
 Coverage focus:
 
 - Login lockout and reset behavior using a fake Supabase client.
-- Database config, distributor list/credential vault fallback, SKU rules, multiplier, and warehouse exception helpers using a fake Supabase client.
+- Database auth, Supabase/env bootstrap helpers, log inserts, distributor list/credential vault fallback, SKU rules, multiplier, and warehouse exception helpers using a fake Supabase client.
 - Dashboard activity log shaping without live Supabase or Streamlit rendering.
 - CSV and ZIP upload parsing with in-memory files.
 - URL parameter encoding/decoding and terminal log escaping.

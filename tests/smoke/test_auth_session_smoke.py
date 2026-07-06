@@ -52,6 +52,7 @@ class FakeTable:
         self.filters = {}
         self.pending_upsert = None
         self.pending_update = None
+        self.pending_insert = None
 
     def select(self, *args, **kwargs):
         return self
@@ -68,6 +69,10 @@ class FakeTable:
         self.pending_update = data
         return self
 
+    def insert(self, data):
+        self.pending_insert = data
+        return self
+
     def execute(self):
         table = self.store.setdefault(self.name, {})
         if self.pending_upsert is not None:
@@ -76,6 +81,13 @@ class FakeTable:
             return FakeResult([table[username]])
 
         rows = list(table.values()) if isinstance(table, dict) else list(table)
+        if self.pending_insert is not None:
+            if isinstance(table, dict):
+                key = len(table)
+                table[key] = dict(self.pending_insert)
+                return FakeResult([dict(table[key])])
+            table.append(dict(self.pending_insert))
+            return FakeResult([dict(table[-1])])
         if self.pending_update is not None:
             updated_rows = []
             for row in rows:
@@ -98,6 +110,69 @@ class FakeSupabase:
 
 
 class AuthSessionSmokeTests(unittest.TestCase):
+    def test_init_supabase_uses_environment_fallback_and_caches_client(self):
+        original_client = database._supabase_client
+        original_create_client = database.create_client
+        original_env_url = database.os.environ.get("SUPABASE_URL")
+        original_env_key = database.os.environ.get("SUPABASE_KEY")
+        database._supabase_client = None
+        database.os.environ["SUPABASE_URL"] = "https://env.example"
+        database.os.environ["SUPABASE_KEY"] = "env-key"
+        calls = []
+        database.create_client = lambda url, key: calls.append((url, key)) or {"url": url, "key": key}
+        try:
+            first = database.init_supabase()
+            second = database.init_supabase()
+        finally:
+            database._supabase_client = original_client
+            database.create_client = original_create_client
+            if original_env_url is None:
+                database.os.environ.pop("SUPABASE_URL", None)
+            else:
+                database.os.environ["SUPABASE_URL"] = original_env_url
+            if original_env_key is None:
+                database.os.environ.pop("SUPABASE_KEY", None)
+            else:
+                database.os.environ["SUPABASE_KEY"] = original_env_key
+
+        self.assertEqual(first, {"url": "https://env.example", "key": "env-key"})
+        self.assertEqual(second, first)
+        self.assertEqual(calls, [("https://env.example", "env-key")])
+
+    def test_get_encryption_key_uses_environment_when_streamlit_secret_missing(self):
+        original_master_key = database.os.environ.get("MASTER_KEY")
+        database.os.environ["MASTER_KEY"] = "env-master-key"
+        try:
+            key = database.get_encryption_key()
+        finally:
+            if original_master_key is None:
+                database.os.environ.pop("MASTER_KEY", None)
+            else:
+                database.os.environ["MASTER_KEY"] = original_master_key
+
+        self.assertEqual(key, b"env-master-key")
+
+    def test_encrypt_and_decrypt_return_empty_string_for_empty_input(self):
+        self.assertEqual(database.encrypt_data(""), "")
+        self.assertEqual(database.decrypt_data(""), "")
+
+    def test_authenticate_user_returns_true_for_matching_password(self):
+        supabase = FakeSupabase(
+            {
+                "users_auth": [
+                    {"username": "alice", "password": "hashed-pass"},
+                ]
+            }
+        )
+        original_checkpw = database.bcrypt.checkpw
+        database.bcrypt.checkpw = lambda plain, hashed: plain == b"secret" and hashed == b"hashed-pass"
+        try:
+            authenticated = database.authenticate_user(supabase, "alice", "secret")
+        finally:
+            database.bcrypt.checkpw = original_checkpw
+
+        self.assertTrue(authenticated)
+
     def test_get_system_config_casts_numeric_values_and_keeps_defaults(self):
         supabase = FakeSupabase(
             {
@@ -221,6 +296,107 @@ class AuthSessionSmokeTests(unittest.TestCase):
         self.assertEqual(bot_user, "NP01")
         self.assertEqual(bot_pass, "plain-secret")
         self.assertEqual(store["distributor_vault"][0]["np_password"], "enc::plain-secret")
+
+    def test_get_distributor_creds_returns_blank_password_when_encrypted_value_cannot_decrypt(self):
+        supabase = FakeSupabase(
+            {
+                "distributor_vault": [
+                    {
+                        "nama_distributor": "Distributor A",
+                        "np_user_id": "NP01",
+                        "np_password": "gAAAAdifferentkey",
+                    }
+                ]
+            }
+        )
+        original_decrypt = database.decrypt_data
+        database.decrypt_data = lambda value: ""
+        try:
+            bot_user, bot_pass = database.get_distributor_creds(supabase, "Distributor A")
+        finally:
+            database.decrypt_data = original_decrypt
+
+        self.assertEqual(bot_user, "NP01")
+        self.assertEqual(bot_pass, "")
+
+    def test_log_extraction_history_inserts_expected_payload(self):
+        store = {"extraction_history": []}
+        supabase = FakeSupabase(store)
+
+        database.log_extraction_history(supabase, "Distributor A", "alice", status="Sales")
+
+        self.assertEqual(
+            store["extraction_history"],
+            [
+                {
+                    "distributor_name": "Distributor A",
+                    "extracted_by": "alice",
+                    "status": "Sales",
+                }
+            ],
+        )
+
+    def test_log_adjustment_normalizes_qty_and_keeps_run_by(self):
+        store = {"adjustment_logs": []}
+        supabase = FakeSupabase(store)
+
+        database.log_adjustment(
+            supabase,
+            sku="SKU-1",
+            qty="12.0",
+            status="Success",
+            keterangan="checked",
+            bot_user="NP01",
+            run_by="alice",
+        )
+
+        self.assertEqual(
+            store["adjustment_logs"],
+            [
+                {
+                    "sku": "SKU-1",
+                    "qty": 12,
+                    "status": "Success",
+                    "keterangan": "checked",
+                    "np_user": "NP01",
+                    "run_by": "alice",
+                }
+            ],
+        )
+
+    def test_log_adjustment_defaults_invalid_qty_to_zero(self):
+        store = {"adjustment_logs": []}
+        supabase = FakeSupabase(store)
+
+        database.log_adjustment(
+            supabase,
+            sku="SKU-2",
+            qty="not-a-number",
+            status="Failed",
+            keterangan="bad input",
+            bot_user="NP02",
+        )
+
+        self.assertEqual(store["adjustment_logs"][0]["qty"], 0)
+
+    def test_reset_failed_login_clears_attempts_and_lockout(self):
+        store = {
+            "login_attempts": {
+                "User": {
+                    "username": "User",
+                    "attempts": 3,
+                    "lockout_until": "2026-01-01T00:00:00+00:00",
+                }
+            }
+        }
+        supabase = FakeSupabase(store)
+
+        database.reset_failed_login(supabase, "User")
+
+        row = store["login_attempts"]["User"]
+        self.assertEqual(row["attempts"], 0)
+        self.assertIsNone(row["lockout_until"])
+        self.assertIn("last_attempt", row)
 
     def test_check_login_lockout_returns_remaining_seconds_for_active_lockout(self):
         lockout_until = datetime.now(timezone.utc) + timedelta(minutes=5)
