@@ -1,6 +1,8 @@
 import unittest
 import sys
 import types
+import io
+import zipfile
 
 import pandas as pd
 
@@ -26,7 +28,7 @@ if "database" not in sys.modules:
     database_stub = types.SimpleNamespace(EXCLUDE_PREFIX=["8021803", "8021804"])
     sys.modules["database"] = database_stub
 
-from data_processor import clean_sku_column, process_compare
+from data_processor import clean_sku_column, load_data, process_compare
 from error_taxonomy import format_log_error, format_user_error, get_error
 from utils import render_responsive_dataframe, safe_parse_numeric
 
@@ -41,7 +43,34 @@ class FakeMarkdownTarget:
         self.unsafe_allow_html = unsafe_allow_html
 
 
+class NamedBytesIO(io.BytesIO):
+    def __init__(self, content: bytes, name: str):
+        super().__init__(content)
+        self.name = name
+
+
 class CoreSmokeTests(unittest.TestCase):
+    def test_load_data_reads_comma_csv_after_tab_fallback(self):
+        csv_file = NamedBytesIO(b"SKU,Qty\n100,5\n200,7\n", "stock.csv")
+
+        df = load_data(csv_file)
+
+        self.assertEqual(df.columns.tolist(), ["SKU", "Qty"])
+        self.assertEqual(df["SKU"].tolist(), ["100", "200"])
+        self.assertEqual(df["Qty"].tolist(), ["5", "7"])
+
+    def test_load_data_reads_invt_master_csv_from_zip(self):
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, "w") as archive:
+            archive.writestr("folder/INVT_MASTER_EXPORT.csv", "SKU\tQty\n100\t5\n")
+            archive.writestr("folder/other.csv", "Other\tValue\nx\t1\n")
+        zip_file = NamedBytesIO(zip_buffer.getvalue(), "export.zip")
+
+        df = load_data(zip_file)
+
+        self.assertEqual(df.columns.tolist(), ["SKU", "Qty"])
+        self.assertEqual(df.iloc[0].to_dict(), {"SKU": "100", "Qty": "5"})
+
     def test_safe_parse_numeric_handles_common_distributor_formats(self):
         cases = {
             "1,234": 1234.0,
