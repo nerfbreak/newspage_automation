@@ -30,7 +30,13 @@ if "database" not in sys.modules:
 
 from data_processor import clean_sku_column, load_data, process_compare
 from error_taxonomy import format_log_error, format_user_error, get_error
-from utils import render_responsive_dataframe, safe_parse_numeric
+from utils import (
+    decode_param,
+    encode_param,
+    make_terminal_logger,
+    render_responsive_dataframe,
+    safe_parse_numeric,
+)
 
 
 class FakeMarkdownTarget:
@@ -50,6 +56,14 @@ class NamedBytesIO(io.BytesIO):
 
 
 class CoreSmokeTests(unittest.TestCase):
+    def test_param_encoding_round_trip_and_invalid_decode_fallback(self):
+        raw = "Distributor A / 2026-07-06"
+        encoded = encode_param(raw)
+
+        self.assertNotEqual(encoded, raw)
+        self.assertEqual(decode_param(encoded), raw)
+        self.assertEqual(decode_param("%%%not-base64%%%"), "%%%not-base64%%%")
+
     def test_load_data_reads_comma_csv_after_tab_fallback(self):
         csv_file = NamedBytesIO(b"SKU,Qty\n100,5\n200,7\n", "stock.csv")
 
@@ -139,6 +153,18 @@ class CoreSmokeTests(unittest.TestCase):
         self.assertNotIn("<script>alert(1)</script>", target.html)
         self.assertIn("desktop-only-table", target.html)
         self.assertIn("mobile-only-cards", target.html)
+
+    def test_terminal_logger_escapes_messages(self):
+        target = FakeMarkdownTarget()
+        ui_log, history = make_terminal_logger(target)
+
+        ui_log("BOT", "<b>danger</b>")
+
+        self.assertEqual(len(history), 1)
+        self.assertIn("&lt;b&gt;danger&lt;/b&gt;", history[0])
+        self.assertNotIn("<b>danger</b>", history[0])
+        self.assertIn("terminal-box", target.html)
+        self.assertTrue(target.unsafe_allow_html)
 
     def test_error_taxonomy_formats_safe_user_and_log_messages(self):
         self.assertEqual(get_error("NOPE").code, "UNK-001")

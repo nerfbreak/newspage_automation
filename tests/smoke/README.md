@@ -15,6 +15,7 @@ Coverage focus:
 - Login lockout and reset behavior using a fake Supabase client.
 - Dashboard activity log shaping without live Supabase or Streamlit rendering.
 - CSV and ZIP upload parsing with in-memory files.
+- URL parameter encoding/decoding and terminal log escaping.
 - Core numeric parsing used by upload and comparison flows.
 - SKU cleanup and comparison output shape.
 - Responsive dataframe HTML escaping.
