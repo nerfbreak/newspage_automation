@@ -12,6 +12,7 @@ Use the same Python environment that runs the app dependencies (`pandas`, `strea
 
 Coverage focus:
 
+- Login lockout and reset behavior using a fake Supabase client.
 - Core numeric parsing used by upload and comparison flows.
 - SKU cleanup and comparison output shape.
 - Responsive dataframe HTML escaping.
