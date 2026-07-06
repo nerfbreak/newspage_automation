@@ -34,9 +34,14 @@ from utils import (
     clean_html,
     decode_param,
     encode_param,
+    make_error_box,
+    make_solid_box,
+    make_success_box,
     make_terminal_logger,
+    render_neo_table,
     render_metric_card,
     render_responsive_dataframe,
+    resolve_distributor_url,
     safe_parse_numeric,
 )
 
@@ -55,6 +60,10 @@ class NamedBytesIO(io.BytesIO):
     def __init__(self, content: bytes, name: str):
         super().__init__(content)
         self.name = name
+
+
+class FakeQueryParams(dict):
+    pass
 
 
 class CoreSmokeTests(unittest.TestCase):
@@ -144,6 +153,68 @@ class CoreSmokeTests(unittest.TestCase):
         self.assertEqual(status_by_sku["200"], "Mismatch")
         self.assertEqual(mismatches["SKU"].tolist(), ["200"])
 
+    def test_process_compare_filters_inactive_and_non_main_warehouse_rows(self):
+        newspage = pd.DataFrame(
+            {
+                "SKU": ["100"],
+                "Description": ["Item A"],
+                "Qty": ["10"],
+            }
+        )
+        distributor = pd.DataFrame(
+            {
+                "SKU Dist": ["100", "100", "100"],
+                "Qty Dist": ["10", "99", "88"],
+                "Aktif": [1, 0, 1],
+                "Nama Gudang": ["GUDANG UTAMA", "GUDANG UTAMA", "GUDANG RETUR"],
+            }
+        )
+
+        merged, mismatches = process_compare(
+            newspage,
+            distributor,
+            "SKU",
+            "Description",
+            "Qty",
+            "SKU Dist",
+            "Qty Dist",
+            TARGET_SKUS=[],
+            multipliers=[],
+        )
+
+        self.assertEqual(merged.loc[merged["SKU"] == "100", "Distributor"].iloc[0], 10)
+        self.assertTrue(mismatches.empty)
+
+    def test_process_compare_applies_multiplier_rules_before_matching(self):
+        newspage = pd.DataFrame(
+            {
+                "SKU": ["SKU-1"],
+                "Description": ["Item A"],
+                "Qty": ["20"],
+            }
+        )
+        distributor = pd.DataFrame(
+            {
+                "SKU Dist": ["SKU-1"],
+                "Qty Dist": ["10"],
+            }
+        )
+
+        merged, mismatches = process_compare(
+            newspage,
+            distributor,
+            "SKU",
+            "Description",
+            "Qty",
+            "SKU Dist",
+            "Qty Dist",
+            TARGET_SKUS=[],
+            multipliers=[{"sku_target": "SKU-1", "multiplier_value": 2}],
+        )
+
+        self.assertEqual(merged.loc[merged["SKU"] == "SKU-1", "Distributor"].iloc[0], 20)
+        self.assertTrue(mismatches.empty)
+
     def test_responsive_dataframe_escapes_dynamic_values(self):
         target = FakeMarkdownTarget()
         df = pd.DataFrame({"Name": ["<script>alert(1)</script>"], "Qty": [1]})
@@ -179,6 +250,45 @@ class CoreSmokeTests(unittest.TestCase):
         self.assertIn("&lt;admin&gt;", html)
         self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", html)
         self.assertNotIn("<script>alert(1)</script>", html)
+
+    def test_alert_boxes_escape_dynamic_text(self):
+        for factory in (make_solid_box, make_success_box, make_error_box):
+            with self.subTest(factory=factory.__name__):
+                if factory is make_solid_box:
+                    rendered = factory("<script>alert(1)</script>", "#0068C9", "#0068C9")
+                else:
+                    rendered = factory("<script>alert(1)</script>")
+
+                self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", rendered)
+                self.assertNotIn("<script>alert(1)</script>", rendered)
+
+    def test_render_neo_table_escapes_values_and_formats_integral_float(self):
+        target = FakeMarkdownTarget()
+        df = pd.DataFrame({"Name": ["<b>bad</b>"], "Qty": [2.0]})
+
+        render_neo_table(target, df)
+
+        self.assertTrue(target.unsafe_allow_html)
+        self.assertIn("&lt;b&gt;bad&lt;/b&gt;", target.html)
+        self.assertNotIn("<b>bad</b>", target.html)
+        self.assertIn("<td>2</td>", target.html)
+
+    def test_resolve_distributor_url_handles_encoded_and_plain_params(self):
+        original_query_params = sys.modules["streamlit"].query_params if hasattr(sys.modules["streamlit"], "query_params") else None
+        encoded_params = FakeQueryParams({"d": encode_param("Distributor B")})
+        plain_params = FakeQueryParams({"distributor": "Distributor A"})
+        try:
+            sys.modules["streamlit"].query_params = encoded_params
+            self.assertEqual(resolve_distributor_url(["Distributor A", "Distributor B"]), ("Distributor B", 1))
+
+            sys.modules["streamlit"].query_params = plain_params
+            self.assertEqual(resolve_distributor_url(["Distributor A", "Distributor B"]), ("Distributor A", 0))
+            self.assertNotIn("distributor", plain_params)
+        finally:
+            if original_query_params is None:
+                delattr(sys.modules["streamlit"], "query_params")
+            else:
+                sys.modules["streamlit"].query_params = original_query_params
 
     def test_error_taxonomy_formats_safe_user_and_log_messages(self):
         self.assertEqual(get_error("NOPE").code, "UNK-001")

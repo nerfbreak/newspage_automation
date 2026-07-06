@@ -18,8 +18,8 @@ Coverage focus:
 - CSV and ZIP upload parsing with in-memory files.
 - URL parameter encoding/decoding and terminal log escaping.
 - Core numeric parsing used by upload and comparison flows.
-- SKU cleanup and comparison output shape.
-- Responsive dataframe HTML escaping.
+- SKU cleanup, warehouse filtering, multiplier handling, and comparison output shape.
+- Responsive dataframe, alert box, and neo table HTML escaping.
 - Error taxonomy formatting and fallback behavior.
 
 These tests do not log in to Newspage, open Playwright, call Supabase, send Telegram messages, or execute frozen automation workflows.
