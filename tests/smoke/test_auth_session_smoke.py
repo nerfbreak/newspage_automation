@@ -70,10 +70,10 @@ class FakeTable:
             table[username] = dict(self.pending_upsert)
             return FakeResult([table[username]])
 
-        username = self.filters.get("username")
-        if username is None or username not in table:
-            return FakeResult([])
-        return FakeResult([dict(table[username])])
+        rows = list(table.values()) if isinstance(table, dict) else list(table)
+        for column, value in self.filters.items():
+            rows = [row for row in rows if row.get(column) == value]
+        return FakeResult([dict(row) for row in rows])
 
 
 class FakeSupabase:
@@ -85,6 +85,64 @@ class FakeSupabase:
 
 
 class AuthSessionSmokeTests(unittest.TestCase):
+    def test_get_system_config_casts_numeric_values_and_keeps_defaults(self):
+        supabase = FakeSupabase(
+            {
+                "system_config": [
+                    {"config_key": "URL_LOGIN", "config_value": "https://example.test"},
+                    {"config_key": "TIMEOUT_MS", "config_value": "90000"},
+                    {"config_key": "TABLE_UPDATE_INTERVAL", "config_value": "12"},
+                ]
+            }
+        )
+
+        cfg = database.get_system_config(supabase)
+
+        self.assertEqual(cfg["URL_LOGIN"], "https://example.test")
+        self.assertEqual(cfg["TIMEOUT_MS"], 90000)
+        self.assertEqual(cfg["TABLE_UPDATE_INTERVAL"], 12)
+        self.assertEqual(cfg["REASON_CODE"], "SA2")
+
+    def test_get_target_skus_uses_supabase_rows_when_available(self):
+        supabase = FakeSupabase(
+            {
+                "sku_formatting_rules": [
+                    {"sku_code": "111"},
+                    {"sku_code": "222"},
+                ]
+            }
+        )
+
+        self.assertEqual(database.get_target_skus(supabase), ["111", "222"])
+
+    def test_get_multiplier_rules_filters_by_np_user(self):
+        supabase = FakeSupabase(
+            {
+                "distributor_sku_multiplier": [
+                    {"np_user_id": "NP01", "sku_target": "SKU1", "multiplier_value": 2},
+                    {"np_user_id": "NP02", "sku_target": "SKU2", "multiplier_value": 3},
+                ]
+            }
+        )
+
+        rules = database.get_multiplier_rules(supabase, "NP01")
+
+        self.assertEqual(rules, [{"np_user_id": "NP01", "sku_target": "SKU1", "multiplier_value": 2}])
+
+    def test_get_distributor_warehouse_exceptions_builds_mapping(self):
+        supabase = FakeSupabase(
+            {
+                "distributor_exceptions": [
+                    {"distributor_id": "NP01", "target_warehouse": "GOOD_WHS"},
+                    {"distributor_id": "NP02", "target_warehouse": "BAD_WHS"},
+                ]
+            }
+        )
+
+        mapping = database.get_distributor_warehouse_exceptions(supabase)
+
+        self.assertEqual(mapping, {"NP01": "GOOD_WHS", "NP02": "BAD_WHS"})
+
     def test_check_login_lockout_returns_remaining_seconds_for_active_lockout(self):
         lockout_until = datetime.now(timezone.utc) + timedelta(minutes=5)
         supabase = FakeSupabase(
@@ -148,4 +206,3 @@ class AuthSessionSmokeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
