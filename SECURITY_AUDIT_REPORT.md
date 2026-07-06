@@ -47,20 +47,26 @@ The main remaining risks are procedural/session hardening and auditability:
 
 ## Dependency CVE Status
 
-Not completed in this run.
+Completed on 2026-07-07 using `pip-audit` in pinned/no-dependency-resolution mode because the full resolver timed out on the large requirements set.
 
-Attempts:
-
-- `rtk python -m pip_audit --version` failed because `pip_audit` is not installed.
-- `rtk python -m pip list --format=freeze` failed because the active Hermes runtime has no `pip` module.
-- Codex bundled Python has `pip`, but not `pip_audit`; installing/running CVE tooling would require network access.
-
-Recommended command in a network-enabled environment:
+Command:
 
 ```powershell
-python -m pip install pip-audit
-python -m pip_audit -r requirements.txt
+python -m pip_audit -r requirements.txt --no-deps --disable-pip --progress-spinner off
 ```
+
+Findings remediated by bumping pinned versions in `requirements.txt`:
+
+- `langchain` 1.3.1 -> 1.3.9
+- `langgraph-checkpoint` 4.1.0 -> 4.1.1
+- `langgraph-sdk` 0.3.14 -> 0.3.15
+- `langsmith` 0.8.5 -> 0.8.18
+- `msgpack` 1.1.2 -> 1.2.1
+- `pypdf` 6.11.0 -> 6.13.3
+
+Remaining documented exception:
+
+- `torch` 2.12.0 / `CVE-2025-3000`: `pip-audit` reported no fix version. The CI dependency audit ignores only this specific CVE while the project owner decides whether to remove Torch-dependent packages or move to a later safe Torch release when one is available.
 
 ## Suggested Follow-Up Order
 
