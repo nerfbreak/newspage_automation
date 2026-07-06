@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime
 import pandas as pd
 import html
-from utils import check_auth, render_header, render_footer, clean_html, render_metric_card
+from utils import check_auth, render_header, render_footer, clean_html, render_metric_card, render_responsive_dataframe
 import database
 
 @st.cache_data(ttl=60)
@@ -454,7 +454,7 @@ if db_connected:
     elif period_option == "Last 30 Days": cutoff_date = now_utc - timedelta(days=30)
     else: cutoff_date = None
     
-    # Process the large table exactly as before, with updated styling
+    # Process the large table exactly as before, then render through the responsive helper.
     full_rows = []
     if not df_adj.empty:
         f_adj = df_adj[df_adj["created_at"] >= cutoff_date] if cutoff_date else df_adj.copy()
@@ -475,28 +475,22 @@ if db_connected:
     full_rows = full_rows[:30]
     
     if full_rows:
-        tbl = ""
+        table_rows = []
         for r in full_rows:
             try:
                 t = r["ts"]
                 ts_str = t.tz_convert('Asia/Jakarta').strftime("%Y-%m-%d %H:%M:%S") if t.tzinfo else (t + timedelta(hours=7)).strftime("%Y-%m-%d %H:%M:%S")
             except: ts_str = str(r["ts"])[:19]
             
-            s_val = str(r["status"])
-            if s_val == "Success": s_bg = "#4ADE80"
-            elif s_val in ["Failed","Invalid"]: s_bg = "#F87171"
-            else: s_bg = "#FBBF24"
-            sb = f"<span style='background: {s_bg}; color: #0F172A; padding: 4px 10px; border-radius: 0px; font-size: 0.75rem; font-weight: 800; border: 2px solid #0F172A; display: inline-block; white-space: nowrap; box-shadow: 2px 2px 0px 0px #0F172A; letter-spacing: 0.05em;'>{html.escape(s_val.upper())}</span>"
-            
-            mod = r["mod"]
-            mc = {"Inventory Adjustment": "#4CC9F0", "Sales Extraction": "#FFDE59", "Stock Mutation": "#4ADE80", "Promotion Comparison": "#FF90E8", "Clearance Stock": "#FF9F1C", "Initial Stock": "#A78BFA"}
-            m_bg = mc.get(mod, "#E2E8F0")
-            mb = f"<span style='background: {m_bg}; color: #0F172A; padding: 4px 10px; border-radius: 0px; font-size: 0.75rem; font-weight: 800; border: 2px solid #0F172A; display: inline-block; white-space: nowrap; box-shadow: 2px 2px 0px 0px #0F172A;'>{html.escape(mod.upper())}</span>"
-            
-            rb = f"<span style='background: #FFFFFF; color: #0F172A; font-family: monospace; padding: 4px 8px; border: 2px solid #0F172A; font-size: 0.75rem; font-weight: 700; box-shadow: 2px 2px 0px 0px #0F172A;'>{html.escape(str(r['by']).upper())}</span>"
-            tbl += f"<tr><td style='white-space:nowrap; font-weight: 600;'>{ts_str}</td><td>{html.escape(str(r['dist']))}</td><td>{mb}</td><td style='text-align:center;'>{sb}</td><td>{rb}</td></tr>"
-            
-        st.markdown(clean_html(f"<div class='table-container'><table class='custom-table'><thead><tr><th>Timestamp</th><th>Distributor</th><th>Module</th><th style='text-align:center;'>Status</th><th>Run By</th></tr></thead><tbody>{tbl}</tbody></table></div>"), unsafe_allow_html=True)
+            table_rows.append({
+                "Timestamp": ts_str,
+                "Distributor": str(r["dist"]),
+                "Module": str(r["mod"]),
+                "Status": str(r["status"]).upper(),
+                "Run By": str(r["by"]).upper(),
+            })
+
+        render_responsive_dataframe(pd.DataFrame(table_rows))
     else:
         st.info("No execution records found.")
 

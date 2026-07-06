@@ -1737,7 +1737,18 @@ div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid=
     div[data-testid="stDownloadButton"] button,
     div[data-testid="stLinkButton"] button {
         width: 100% !important;
+        min-height: 44px !important;
         padding: 12px 16px !important;
+    }
+
+    div[data-testid="stSelectbox"],
+    div[data-testid="stTextInput"],
+    div[data-testid="stTextArea"],
+    div[data-testid="stDateInput"],
+    div[data-testid="stFileUploader"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     /* Stacked mobile cards for dataframes (Neo-Brutalism) */
@@ -1781,4 +1792,4 @@ div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid=
         word-break: break-word !important;
     }
 }
-
+
