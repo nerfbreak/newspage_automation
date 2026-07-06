@@ -18,6 +18,8 @@
 | Manual regression checklist | Complete | `tests/manual/REGRESSION_CHECKLIST.md` | Execute before major releases |
 | Spec Kit ignored artifacts | Documented | `docs/spec_artifact_policy.md`, `.gitignore` | Force-add only specific durable artifacts |
 | Database migration docs | Complete baseline | `docs/database_migrations.md` | Compare against live Supabase schema before deployment |
+| Supabase live schema check | Ran read-only; one live gap found | `scripts/supabase_schema_check.py`, `docs/supabase_live_schema_check_2026-07-07.md` | Create live `uploaded_files` table, then rerun schema check |
+| Supabase live schema check | Ran read-only; one live gap found | `scripts/supabase_schema_check.py`, `docs/supabase_live_schema_check_2026-07-07.md` | Create live `uploaded_files` table, then rerun schema check |
 | Observability/error taxonomy | Foundation complete | `error_taxonomy.py`, `docs/error_taxonomy.md`, smoke tests | Gradually wire taxonomy into non-frozen runtime paths |
 
 ## Operational Definition Of Done
@@ -29,5 +31,7 @@ For a release candidate:
 3. `python -m pip_audit -r requirements.txt --no-deps --disable-pip --progress-spinner off --ignore-vuln CVE-2025-3000` in a network-enabled environment
 4. Manual regression checklist in `tests/manual/REGRESSION_CHECKLIST.md`
 5. Supabase schema/RLS comparison against `docs/database_migrations.md`
+6. `python scripts/supabase_schema_check.py` from a trusted environment with Supabase credentials configured
+6. `python scripts/supabase_schema_check.py` from a trusted environment with Supabase credentials configured
 
 The project should not be called production-ready for a new deployment until all five gates are either passing or explicitly accepted by the owner.
