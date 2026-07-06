@@ -41,8 +41,10 @@ from utils import (
     render_neo_table,
     render_metric_card,
     render_responsive_dataframe,
+    resolve_date_url,
     resolve_distributor_url,
     safe_parse_numeric,
+    init_session_state,
 )
 
 
@@ -95,6 +97,18 @@ class CoreSmokeTests(unittest.TestCase):
 
         self.assertEqual(df.columns.tolist(), ["SKU", "Qty"])
         self.assertEqual(df.iloc[0].to_dict(), {"SKU": "100", "Qty": "5"})
+
+    def test_load_data_returns_none_for_missing_or_unsupported_files(self):
+        self.assertIsNone(load_data(None))
+        self.assertIsNone(load_data(NamedBytesIO(b"hello", "notes.txt")))
+
+    def test_load_data_returns_none_when_zip_has_no_csv(self):
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, "w") as archive:
+            archive.writestr("readme.txt", "no csv here")
+        zip_file = NamedBytesIO(zip_buffer.getvalue(), "export.zip")
+
+        self.assertIsNone(load_data(zip_file))
 
     def test_safe_parse_numeric_handles_common_distributor_formats(self):
         cases = {
@@ -289,6 +303,36 @@ class CoreSmokeTests(unittest.TestCase):
                 delattr(sys.modules["streamlit"], "query_params")
             else:
                 sys.modules["streamlit"].query_params = original_query_params
+
+    def test_resolve_date_url_handles_encoded_and_plain_dates(self):
+        original_query_params = sys.modules["streamlit"].query_params if hasattr(sys.modules["streamlit"], "query_params") else None
+        encoded_params = FakeQueryParams({"sd": encode_param("2026-07-01"), "ed": encode_param("2026-07-07")})
+        plain_params = FakeQueryParams({"start_date": "2026-06-01", "end_date": "2026-06-30"})
+        try:
+            sys.modules["streamlit"].query_params = encoded_params
+            self.assertEqual([str(value) for value in resolve_date_url()], ["2026-07-01", "2026-07-07"])
+
+            sys.modules["streamlit"].query_params = plain_params
+            self.assertEqual([str(value) for value in resolve_date_url()], ["2026-06-01", "2026-06-30"])
+            self.assertNotIn("start_date", plain_params)
+            self.assertNotIn("end_date", plain_params)
+        finally:
+            if original_query_params is None:
+                delattr(sys.modules["streamlit"], "query_params")
+            else:
+                sys.modules["streamlit"].query_params = original_query_params
+
+    def test_init_session_state_preserves_existing_values_and_sets_missing_defaults(self):
+        original_session_state = sys.modules["streamlit"].session_state if hasattr(sys.modules["streamlit"], "session_state") else None
+        sys.modules["streamlit"].session_state = {"existing": "keep"}
+        try:
+            init_session_state(existing="replace", missing="created")
+            self.assertEqual(sys.modules["streamlit"].session_state, {"existing": "keep", "missing": "created"})
+        finally:
+            if original_session_state is None:
+                delattr(sys.modules["streamlit"], "session_state")
+            else:
+                sys.modules["streamlit"].session_state = original_session_state
 
     def test_error_taxonomy_formats_safe_user_and_log_messages(self):
         self.assertEqual(get_error("NOPE").code, "UNK-001")

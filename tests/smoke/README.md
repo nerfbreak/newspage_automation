@@ -15,8 +15,8 @@ Coverage focus:
 - Login lockout and reset behavior using a fake Supabase client.
 - Database auth, Supabase/env bootstrap helpers, log inserts, distributor list/credential vault fallback, SKU rules, multiplier, and warehouse exception helpers using a fake Supabase client.
 - Dashboard activity log shaping without live Supabase or Streamlit rendering.
-- CSV and ZIP upload parsing with in-memory files.
-- URL parameter encoding/decoding and terminal log escaping.
+- CSV and ZIP upload parsing, including unsupported and empty-archive fallbacks, with in-memory files.
+- URL/date parameter resolution, session-state initialization, and terminal log escaping.
 - Core numeric parsing used by upload and comparison flows.
 - SKU cleanup, warehouse filtering, multiplier handling, and comparison output shape.
 - Responsive dataframe, alert box, and neo table HTML escaping.
