@@ -29,6 +29,7 @@ fix_*
 
 # Test & debug files (may contain credentials)
 test_*.py
+!tests/smoke/test_*.py
 test_*.html
 dump_html.py
 default_page.html
