@@ -51,6 +51,7 @@ class FakeTable:
         self.name = name
         self.filters = {}
         self.pending_upsert = None
+        self.pending_update = None
 
     def select(self, *args, **kwargs):
         return self
@@ -63,6 +64,10 @@ class FakeTable:
         self.pending_upsert = data
         return self
 
+    def update(self, data):
+        self.pending_update = data
+        return self
+
     def execute(self):
         table = self.store.setdefault(self.name, {})
         if self.pending_upsert is not None:
@@ -71,6 +76,14 @@ class FakeTable:
             return FakeResult([table[username]])
 
         rows = list(table.values()) if isinstance(table, dict) else list(table)
+        if self.pending_update is not None:
+            updated_rows = []
+            for row in rows:
+                if all(row.get(column) == value for column, value in self.filters.items()):
+                    row.update(self.pending_update)
+                    updated_rows.append(dict(row))
+            return FakeResult(updated_rows)
+
         for column, value in self.filters.items():
             rows = [row for row in rows if row.get(column) == value]
         return FakeResult([dict(row) for row in rows])
@@ -142,6 +155,72 @@ class AuthSessionSmokeTests(unittest.TestCase):
         mapping = database.get_distributor_warehouse_exceptions(supabase)
 
         self.assertEqual(mapping, {"NP01": "GOOD_WHS", "NP02": "BAD_WHS"})
+
+    def test_get_distributor_list_returns_names_and_empty_state_fallback(self):
+        populated = FakeSupabase(
+            {
+                "distributor_vault": [
+                    {"nama_distributor": "Distributor A"},
+                    {"nama_distributor": "Distributor B"},
+                ]
+            }
+        )
+
+        self.assertEqual(
+            database.get_distributor_list(populated),
+            ["Distributor A", "Distributor B"],
+        )
+        self.assertEqual(
+            database.get_distributor_list(FakeSupabase({"distributor_vault": []})),
+            ["Belum ada data di Database"],
+        )
+
+    def test_get_distributor_creds_decrypts_stored_password(self):
+        supabase = FakeSupabase(
+            {
+                "distributor_vault": [
+                    {
+                        "nama_distributor": "Distributor A",
+                        "np_user_id": "NP01",
+                        "np_password": "gAAAAencrypted",
+                    }
+                ]
+            }
+        )
+        original_decrypt = database.decrypt_data
+        database.decrypt_data = lambda value: "secret-pass"
+        try:
+            bot_user, bot_pass = database.get_distributor_creds(supabase, "Distributor A")
+        finally:
+            database.decrypt_data = original_decrypt
+
+        self.assertEqual(bot_user, "NP01")
+        self.assertEqual(bot_pass, "secret-pass")
+
+    def test_get_distributor_creds_auto_encrypts_plaintext_password(self):
+        store = {
+            "distributor_vault": [
+                {
+                    "nama_distributor": "Distributor A",
+                    "np_user_id": "NP01",
+                    "np_password": "plain-secret",
+                }
+            ]
+        }
+        supabase = FakeSupabase(store)
+        original_decrypt = database.decrypt_data
+        original_encrypt = database.encrypt_data
+        database.decrypt_data = lambda value: ""
+        database.encrypt_data = lambda value: f"enc::{value}"
+        try:
+            bot_user, bot_pass = database.get_distributor_creds(supabase, "Distributor A")
+        finally:
+            database.decrypt_data = original_decrypt
+            database.encrypt_data = original_encrypt
+
+        self.assertEqual(bot_user, "NP01")
+        self.assertEqual(bot_pass, "plain-secret")
+        self.assertEqual(store["distributor_vault"][0]["np_password"], "enc::plain-secret")
 
     def test_check_login_lockout_returns_remaining_seconds_for_active_lockout(self):
         lockout_until = datetime.now(timezone.utc) + timedelta(minutes=5)
