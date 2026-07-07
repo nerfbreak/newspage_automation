@@ -19,9 +19,10 @@
 | Spec Kit ignored artifacts | Documented | `docs/spec_artifact_policy.md`, `.gitignore` | Force-add only specific durable artifacts |
 | Database migration docs | Complete baseline | `docs/database_migrations.md` | Compare against live Supabase schema before deployment |
 | Supabase live schema check | Complete; all required tables PASS | `scripts/supabase_schema_check.py`, `docs/supabase_live_schema_check_2026-07-07.md` | None (live schema gap resolved) |
+| Supabase RLS & Index check | Automated read-only check script ready | `scripts/supabase_rls_index_check.py`, `tests/smoke/test_supabase_rls_index_check.py` | Run one-time setup SQL (`--print-sql`) in live Supabase SQL Editor |
 | Dependency pruning review | Documented | `docs/dependency_pruning_review.md` | Prune heavy unused packages in a separate deployment-tested checkpoint |
 | Antigravity handoff | Documented | `docs/antigravity_handoff.md` | Use if work continues outside Codex |
-| Observability/error taxonomy | Foundation complete | `error_taxonomy.py`, `docs/error_taxonomy.md`, smoke tests | Gradually wire taxonomy into non-frozen runtime paths |
+| Observability/error taxonomy | Integrated across all UI modules | `error_taxonomy.py`, `docs/error_taxonomy.md`, smoke tests | None (all UI modules wired) |
 
 ## Operational Definition Of Done
 

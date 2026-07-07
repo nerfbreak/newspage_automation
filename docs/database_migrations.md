@@ -169,3 +169,18 @@ Minimum review checklist:
 4. Confirm dashboard history still loads after schema changes.
 5. Update `.agents/MEMORY.md` after the migration documentation or code change is complete.
 
+## Automated RLS & Index Inspection
+
+To verify RLS activation status and index integrity read-only without exposing secrets or row data, use the automated check script:
+
+```powershell
+python scripts\supabase_rls_index_check.py
+```
+
+To set up the inspection RPC in Supabase (one-time setup in SQL Editor):
+
+```powershell
+python scripts\supabase_rls_index_check.py --print-sql
+```
+
+

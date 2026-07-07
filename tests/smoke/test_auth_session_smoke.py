@@ -23,11 +23,19 @@ if "cryptography" not in sys.modules:
         def __init__(self, key):
             self.key = key
 
+        @classmethod
+        def generate_key(cls):
+            return b"k_3XzV9vT8wP2qR7yL5mN1jH4gF6dD0sA="
+
         def encrypt(self, value):
-            return b"encrypted"
+            val_bytes = value.encode("utf-8") if isinstance(value, str) else value
+            return b"gAAAA_" + val_bytes
 
         def decrypt(self, value):
-            return b"decrypted"
+            val_str = value.decode("utf-8") if isinstance(value, bytes) else str(value)
+            if not val_str.startswith("gAAAA_"):
+                raise Exception("Invalid token")
+            return val_str[6:].encode("utf-8")
 
     fernet_stub.Fernet = FakeFernet
     sys.modules["cryptography"] = cryptography_stub

@@ -12,6 +12,8 @@ from utils import (
     make_terminal_logger,
     resolve_distributor_url, safe_parse_numeric,
 )
+from error_taxonomy import format_user_error
+
 
 # --- AUTH CHECK ---
 check_auth()
@@ -82,7 +84,7 @@ if extract_btn:
 if st.session_state.get("_pending_clearance_extract", False):
     st.session_state._pending_clearance_extract = False
     if not bot_user or not bot_pass:
-        st.error("Kredensial untuk distributor ini tidak ditemukan.")
+        st.error(format_user_error("CRED-001"))
         st.session_state.is_clearance_running = False
         st.stop()
 
@@ -145,7 +147,7 @@ if st.session_state.get("np_df") is not None and st.session_state.clearance_df i
         st.session_state.np_df = None
         st.rerun()
     else:
-        st.error(f"Could not identify Product Code or Stock columns. Found: {list(np_df.columns)}")
+        st.error(format_user_error("UPLOAD-001", "Could not identify Product Code or Stock columns."))
 
 # --- REVIEW TABLE ---
 if st.session_state.clearance_df is not None and len(st.session_state.clearance_df) > 0:
@@ -165,7 +167,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
     # --- EXECUTE ---
     if st.button("Execute", type="primary", width='stretch', icon=":material/play_arrow:"):
         if not bot_user or not bot_pass:
-            st.error("Kredensial tidak ditemukan!")
+            st.error(format_user_error("CRED-001"))
         else:
             st.session_state.is_clearance_running = True
 

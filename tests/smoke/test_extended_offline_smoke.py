@@ -209,6 +209,22 @@ class ExtendedOfflineSmokeTests(unittest.TestCase):
         self.assertIn("margin-top: 12px;", box_html)
         self.assertIn("Test Text", box_html)
 
+    def test_all_ui_pages_use_error_taxonomy(self):
+        import glob
+        import os
+        import re
+        pages_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "pages")
+        page_files = glob.glob(os.path.join(pages_dir, "*.py"))
+        self.assertGreaterEqual(len(page_files), 6, "Must find at least 6 page files in pages/ directory")
+        for filepath in page_files:
+            with open(filepath, "r", encoding="utf-8") as f:
+                content = f.read()
+            self.assertIn("format_user_error", content, f"{os.path.basename(filepath)} must import and use format_user_error")
+            # Verify no raw st.error("string") or st.error(f"string") calls exist
+            raw_errors = re.findall(r'st\.error\((?!format_user_error)[^)]+\)', content)
+            self.assertEqual(len(raw_errors), 0, f"Found unstandardized st.error calls in {os.path.basename(filepath)}: {raw_errors}")
+
 
 if __name__ == "__main__":
     unittest.main()
+

@@ -11,6 +11,8 @@ from utils import (
     send_telegram_alert, init_session_state, render_wakelock,
     safe_parse_numeric,
 )
+from error_taxonomy import format_user_error
+
 
 # --- AUTH CHECK ---
 check_auth()
@@ -147,7 +149,7 @@ if uploaded_file is not None:
         else:
             st.warning("Tidak ada SKU valid di file yang diupload.")
     else:
-        st.error("Gagal memuat file. Pastikan format Excel/CSV benar.")
+        st.error(format_user_error("UPLOAD-001"))
 
 # --- EXECUTE ---
 review_ready = st.session_state.mutasi_review_df is not None and len(st.session_state.mutasi_review_df) > 0

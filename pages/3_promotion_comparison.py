@@ -16,6 +16,8 @@ from utils import (
     encode_param, decode_param, init_session_state,
     make_terminal_logger, resolve_date_url,
 )
+from error_taxonomy import format_user_error
+
 
 # --- AUTH CHECK ---
 check_auth()
@@ -78,7 +80,7 @@ with st.container(border=True):
                     st.session_state.uploaded_bdp_data = pd.read_excel(xl, sheet_name="BDP")
                     st.success("Sheet 'BDP' berhasil dibaca!")
         except Exception as e:
-            st.error(f"Error reading file: {e}")
+            st.error(format_user_error("UPLOAD-001"))
 
 # --- EXTRACTION CONTROLS ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
@@ -101,7 +103,7 @@ with st.container(border=True):
     st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
     if start_date > end_date:
-        st.error("Start date must be before or equal to end date.")
+        st.error(format_user_error("INPUT-001", "Start date must be before or equal to end date."))
         st.stop()
 
     btn_label = "Syncing & Comparing..." if st.session_state.is_promo_bot_running else "Start Sync"
@@ -126,7 +128,7 @@ if promo_btn:
     bot_pass = st.secrets.get("NP_PASS_SUPER")
     
     if not bot_user or not bot_pass:
-        st.error("Kredensial SUPERUSER tidak ditemukan di secrets.toml!")
+        st.error(format_user_error("CONFIG-001", "SUPERUSER credentials missing."))
         st.stop()
 
     st.session_state.is_promo_bot_running = True
@@ -173,7 +175,7 @@ if st.session_state.promo_zip_data:
                                 all_np_rows.append(df_temp)
                 
                 if not all_np_rows:
-                    st.error("Tidak ditemukan data CSV di dalam ZIP hasil ekstraksi.")
+                    st.error(format_user_error("UPLOAD-001", "CSV data missing in ZIP archive."))
                     st.stop()
                     
                 df_np_total = pd.concat(all_np_rows, ignore_index=True)
@@ -249,7 +251,7 @@ if st.session_state.promo_zip_data:
                 conflict_count = len(df_merge[df_merge['MATCH_STATUS'] == 'CONFLICT'])
                 st.success(f"Analisis Selesai! {match_count} Match, {conflict_count} Conflict ditemukan.")
             except Exception as e:
-                st.error(f"Error during comparison: {e}")
+                st.error(format_user_error("UNK-001", "Error during comparison."))
 
     # Display Results
     if st.session_state.comparison_results is not None:

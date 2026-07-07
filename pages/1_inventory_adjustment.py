@@ -1,6 +1,9 @@
 import time
 import io
 import os
+import time
+import io
+import os
 import streamlit as st
 import utils
 import database
@@ -13,6 +16,7 @@ from utils import (
     encode_param, decode_param, send_telegram_alert,
     init_session_state, render_wakelock, make_terminal_logger, resolve_distributor_url,
 )
+from error_taxonomy import format_user_error
 
 # --- AUTH CHECK ---
 check_auth()
@@ -137,7 +141,7 @@ if "Auto Compare" in adj_mode:
     # --- TRIGGER EXTRACTION ---
     if extract_btn:
         if not bot_user or not bot_pass:
-            st.error("Gagal! Kredensial untuk distributor ini tidak ditemukan di Supabase.")
+            st.error(format_user_error("CRED-001"))
             st.stop()
 
         st.session_state.is_bot_running = True
@@ -170,7 +174,7 @@ if "Auto Compare" in adj_mode:
         df2 = data_processor.load_data(file2)
     
         if df1 is None or df2 is None:
-            st.error("Gagal memuat data dari file.")
+            st.error(format_user_error("UPLOAD-001"))
             st.stop()
         
         st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>RESULTS</span></div>", unsafe_allow_html=True)
@@ -247,7 +251,7 @@ if "Auto Compare" in adj_mode:
             if not remark_text.strip():
                 st.warning("Kolom 'Remark' wajib diisi sebelum eksekusi.")
             elif not bot_user or not bot_pass: 
-                st.error("Access Denied: Kredensial tidak ditemukan di Database!")
+                st.error(format_user_error("CRED-001"))
             else:
                 st.session_state.is_bot_running = True
                 st.session_state.execute_done = False
@@ -289,7 +293,7 @@ elif "Manual Entry" in adj_mode:
                 
                 st.session_state.manual_uploaded_df = df_up
             except Exception as e:
-                st.error(f"Error parsing file: {e}")
+                st.error(format_user_error("UPLOAD-001"))
                 st.session_state.manual_uploaded_df = None
                 
             with st.container():
@@ -317,7 +321,7 @@ elif "Manual Entry" in adj_mode:
                 
             if st.button("Apply Mapping ke Tabel", type="primary", width='stretch', icon=":material/done_all:"):
                 if sel_sku == "-":
-                    st.error("SKU Column harus dipilih.")
+                    st.error(format_user_error("INPUT-001", "SKU Column harus dipilih."))
                 else:
                     new_df = pd.DataFrame()
                     new_df["SKU"] = df_up[sel_sku].astype(str)
@@ -370,7 +374,7 @@ elif "Manual Entry" in adj_mode:
         if not manual_remark_text.strip():
             st.warning("Kolom 'Remark' wajib diisi sebelum eksekusi.")
         elif not bot_user or not bot_pass: 
-            st.error("Access Denied: Kredensial tidak ditemukan di Database!")
+            st.error(format_user_error("CRED-001"))
         else:
             # Clean dataframe
             df_exec = edited_df.copy()
@@ -583,6 +587,6 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
             st.image(screenshot_path, width='stretch')
             st.markdown("<p style='text-align: center; font-weight: 800; font-family: \"Source Sans 3\", sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; color: #0F172A; margin-top: 8px;'>BUKTI TRANSAKSI</p>", unsafe_allow_html=True)
         else:
-            st.error(f"Screenshot tidak ditemukan di {screenshot_path}.")
+            st.error(format_user_error("NOTIFY-001", "Screenshot file missing."))
 
 render_footer()

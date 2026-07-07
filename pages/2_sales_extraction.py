@@ -9,6 +9,8 @@ from utils import (
     encode_param, decode_param, send_telegram_alert,
     init_session_state, make_terminal_logger, resolve_distributor_url,
 )
+from error_taxonomy import format_user_error
+
 
 # --- AUTH CHECK ---
 check_auth()
@@ -61,7 +63,7 @@ with st.container(border=True):
     st.markdown("<div style='margin-bottom: 12px;'></div>", unsafe_allow_html=True)
 
     if start_date > end_date:
-        st.error("Start date must be before or equal to end date.")
+        st.error(format_user_error("INPUT-001", "Start date must be before or equal to end date."))
         st.stop()
         
 st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
@@ -94,7 +96,7 @@ ext_log_placeholder = st.empty()
 # --- TRIGGER EXTRACTION ---
 if extract_btn:
     if not bot_user or not bot_pass:
-        st.error("Gagal! Kredensial untuk distributor ini tidak ditemukan di Supabase.")
+        st.error(format_user_error("CRED-001"))
         st.stop()
  
     st.session_state.is_bot_running = True

@@ -12,6 +12,8 @@ from utils import (
     make_terminal_logger,
     resolve_distributor_url, safe_parse_numeric,
 )
+from error_taxonomy import format_user_error
+
 
 # --- AUTH CHECK ---
 check_auth()
@@ -92,7 +94,7 @@ if uploaded_file is not None and st.session_state.initial_stock_raw is None and 
         st.session_state.initial_stock_raw = df_raw
         st.rerun()
     except Exception as e:
-        st.error(f"Failed to parse file: {e}")
+        st.error(format_user_error("UPLOAD-001"))
 
 # --- COLUMN SELECTION ---
 if st.session_state.initial_stock_raw is not None and st.session_state.initial_stock_df is None:
@@ -202,7 +204,7 @@ if st.session_state.initial_stock_df is not None and len(st.session_state.initia
     else:
         if st.button("Execute", type="primary", width='stretch', icon=":material/play_arrow:"):
             if not bot_user or not bot_pass:
-                st.error("Kredensial tidak ditemukan!")
+                st.error(format_user_error("CRED-001"))
             else:
                 st.session_state.is_initial_running = True
                 st.rerun()
