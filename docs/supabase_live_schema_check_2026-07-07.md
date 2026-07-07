@@ -21,11 +21,11 @@ python scripts/supabase_schema_check.py
 | `distributor_exceptions` | PASS | Required columns reachable |
 | `adjustment_logs` | PASS | Includes `run_by` |
 | `extraction_history` | PASS | Includes `status` |
-| `uploaded_files` | FAIL | Table missing from live Supabase schema cache |
+| `uploaded_files` | PASS | Required columns reachable |
 
-## Required Migration
+## Required Migration (Resolved)
 
-Run this in the Supabase SQL Editor for the live project:
+The following migration SQL was executed in the Supabase SQL Editor on 2026-07-07, resolving the missing `uploaded_files` table:
 
 ```sql
 create table if not exists uploaded_files (
@@ -42,10 +42,8 @@ create table if not exists uploaded_files (
 alter table uploaded_files enable row level security;
 ```
 
-After applying the migration, rerun:
+After applying the migration, rerunning the check confirmed all required tables PASS:
 
 ```powershell
 python scripts/supabase_schema_check.py
 ```
-
-Expected result: all tables PASS.

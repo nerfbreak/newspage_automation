@@ -18,7 +18,7 @@
 | Manual regression checklist | Complete | `tests/manual/REGRESSION_CHECKLIST.md` | Execute before major releases |
 | Spec Kit ignored artifacts | Documented | `docs/spec_artifact_policy.md`, `.gitignore` | Force-add only specific durable artifacts |
 | Database migration docs | Complete baseline | `docs/database_migrations.md` | Compare against live Supabase schema before deployment |
-| Supabase live schema check | Ran read-only; one live gap found | `scripts/supabase_schema_check.py`, `docs/supabase_live_schema_check_2026-07-07.md` | Create live `uploaded_files` table, then rerun schema check |
+| Supabase live schema check | Complete; all required tables PASS | `scripts/supabase_schema_check.py`, `docs/supabase_live_schema_check_2026-07-07.md` | None (live schema gap resolved) |
 | Dependency pruning review | Documented | `docs/dependency_pruning_review.md` | Prune heavy unused packages in a separate deployment-tested checkpoint |
 | Antigravity handoff | Documented | `docs/antigravity_handoff.md` | Use if work continues outside Codex |
 | Observability/error taxonomy | Foundation complete | `error_taxonomy.py`, `docs/error_taxonomy.md`, smoke tests | Gradually wire taxonomy into non-frozen runtime paths |
