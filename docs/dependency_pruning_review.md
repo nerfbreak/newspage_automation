@@ -54,8 +54,8 @@ On 2026-07-07, dependency pruning was executed on branch `chore/dependency-pruni
 - **Staging / Streamlit Cloud Live Regression**: PASS (Verified Playwright headless automation and app startup on 2026-07-07).
 - **Status**: Successfully merged into `main` (commit `3cc1ffe`).
 
-### Second Round Pruning (Streamlit Cloud Python Runtime Compatibility)
-On 2026-07-07, during Streamlit Cloud deployment, `litellm==1.86.2` caused a fatal installation error due to Python runtime restrictions (`Requires-Python <3.14,>=3.10`). Following **Principle XII (Minimal & Clean Dependency Architecture)** added to `constitution.md` v2.6.0, a second pruning round was executed. Exactly 37 additional unused packages (`litellm`, `mcp`, `fastapi`, `fastuuid`, `google*`, `huggingface_hub`, `lark-oapi`, `openai`, `opentelemetry-*`, `openviking*`, `redis`, `scikit-learn`, `scipy`, `SQLAlchemy`, `sympy`, `tiktoken`, `tokenizers`, `tree-sitter*`, `volcengine*`, `uvicorn`, etc.) were removed from `requirements.txt`.
-- `python -m unittest discover -s tests/smoke`: PASS (68/68 tests in 1.301s)
+### Second Round Pruning (Streamlit Cloud Linux & Python Runtime Compatibility)
+On 2026-07-07, during Streamlit Cloud Linux deployment, `litellm==1.86.2` caused a Python version incompatibility, and `pywin32==312` caused a fatal platform error (`No matching distribution found for pywin32==312`) because `pywin32` is Windows-only while Streamlit Cloud runs on Linux. Following **Principle XII (Minimal & Clean Dependency Architecture)** in `constitution.md` v2.6.0, a comprehensive second pruning round was executed. Exactly 77 additional unused and OS-incompatible packages (`pywin32`, `win32_setctime`, `litellm`, `mcp`, `fastapi`, `google*`, `huggingface_hub`, `openai`, `opentelemetry-*`, `openviking*`, `tree-sitter*`, `volcengine*`, `grpcio*`, `protobuf`, etc.) were removed from `requirements.txt`.
+- `python -m unittest discover -s tests/smoke`: PASS (68/68 tests in 1.113s)
 - `python scripts/production_readiness_audit.py`: PASS (21/21 rules)
-- **Status**: Pruned from 243 down to 206 essential deployment requirements, resolving the Streamlit Cloud build failure.
+- **Status**: Pruned from 243 down to 166 clean, cross-platform essential requirements, fully resolving the Streamlit Cloud Linux build failure.
