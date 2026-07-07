@@ -1,8 +1,8 @@
 # Production Readiness Status
 
 **Project**: Optimize Newspage Automation  
-**Last reviewed**: 2026-07-07  
-**Status**: Production-readiness baseline and live operational gates complete across Options 1 to 5. Ready for final release hand-off.
+**Last reviewed**: 2026-07-08  
+**Status**: Production-readiness baseline and live operational gates complete across Options 1 to 5, including live Streamlit Cloud authenticated smoke test and Supabase RLS/index verification. Ready for final release hand-off.
 
 ## Coverage Matrix
 
@@ -19,7 +19,7 @@
 | Spec Kit ignored artifacts | Documented | `docs/spec_artifact_policy.md`, `.gitignore` | Force-add only specific durable artifacts |
 | Database migration docs | Complete baseline | `docs/database_migrations.md` | Compare against live Supabase schema before deployment |
 | Supabase live schema check | Complete; all 10 required tables PASS | `scripts/supabase_schema_check.py`, `docs/supabase_live_schema_check_2026-07-07.md` | None (live schema gap resolved) |
-| Supabase RLS & Index check | Automated read-only check script ready | `scripts/supabase_rls_index_check.py`, `tests/smoke/test_supabase_rls_index_check.py` | Run one-time setup SQL (`--print-sql`) in live Supabase SQL Editor |
+| Supabase RLS & Index check | Complete; all 20 live RLS/index checks PASS | `scripts/supabase_rls_index_check.py`, `tests/smoke/test_supabase_rls_index_check.py` | None (inspection RPC installed and all required tables verified) |
 | Dependency pruning review | Complete (166 cross-platform requirements) | `docs/dependency_pruning_review.md`, `constitution.md` v2.6.0 | None (removed 32 ML packages + 77 unused/Windows-only bloat packages like `pywin32` & `litellm`) |
 | Antigravity handoff | Documented & Updated | `docs/antigravity_handoff.md` | Use if work continues outside Codex |
 | Observability/error taxonomy | 100% Integrated across all UI modules | `error_taxonomy.py`, `docs/error_taxonomy.md`, smoke tests | None (all UI modules wired) |
@@ -38,3 +38,14 @@ For a release candidate:
 8. `python -m scripts.check_invalid_creds` (PASS - 100% stored passwords decrypt cleanly)
 
 The project is now fully verified and ready for production release deployment.
+
+## Live Deployment Smoke Test
+
+On 2026-07-08, the live Streamlit Cloud deployment at `https://newspage.streamlit.app` was verified:
+
+- `/healthz` returned `200 {"status":"ok"}`.
+- Login page rendered successfully with the locked Neo-Brutalist design.
+- Authenticated login with a provided test user succeeded.
+- Dashboard rendered with DB connection, KPI cards, recent activity, and application modules.
+- Inventory Adjustment module routing succeeded, with dry-run/simulate-only mode visible.
+- No mutating workflow actions were executed during the smoke test.

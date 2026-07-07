@@ -183,4 +183,11 @@ To set up the inspection RPC in Supabase (one-time setup in SQL Editor):
 python scripts\supabase_rls_index_check.py --print-sql
 ```
 
+Live production status as of 2026-07-08:
+
+- The `verify_rls_and_indexes()` inspection RPC has been installed in Supabase.
+- `python scripts\supabase_rls_index_check.py` passes all required checks.
+- All 10 required tables have RLS enabled.
+- All 10 required tables have at least one index.
+
 

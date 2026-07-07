@@ -15,8 +15,9 @@ Use this when continuing the production-readiness flow outside Codex.
   - `python scripts/production_readiness_audit.py`: PASS (21/21 rules pass)
   - `python -m unittest discover -s tests/smoke`: 68 tests OK (in < 2s)
   - `python scripts/supabase_schema_check.py`: PASS (10/10 required tables reachable)
-  - `python scripts/supabase_rls_index_check.py`: PASS (Automated RLS & index validator ready)
+  - `python scripts/supabase_rls_index_check.py`: PASS (all 20 live RLS/index checks pass; inspection RPC installed)
   - `python -m scripts.check_invalid_creds`: PASS (100% stored distributor passwords decrypt cleanly)
+- Live Streamlit Cloud smoke test: PASS on `https://newspage.streamlit.app` (`/healthz`, login, dashboard, authenticated Inventory Adjustment routing, dry-run visible; no mutating action executed)
 - Error Taxonomy: 100% adopted across all UI modules (`app.py`, `utils.py`, `pages/0_dashboard.py` through `pages/6_initial_stock.py`) using Neo-Brutalist containers without touching frozen business logic.
 
 ## Continue Commands
@@ -36,6 +37,8 @@ python -m scripts.check_invalid_creds
 
 - Table `uploaded_files` has been created and verified in live Supabase.
 - All 10 required tables now pass live schema verification.
+- The `verify_rls_and_indexes()` inspection RPC has been installed in live Supabase.
+- All 10 required tables now pass live RLS verification and index presence checks.
 
 ## Do Not Miss
 
