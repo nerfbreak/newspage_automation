@@ -1,6 +1,6 @@
 # Dependency Pruning Review
 
-**Status**: Executed on branch `chore/dependency-pruning`  
+**Status**: Pruned, verified on staging, and merged to main  
 **Last reviewed**: 2026-07-07
 
 This document tracks the remaining dependency-risk item from the production-readiness work: `torch` is currently ignored in `pip-audit` for `CVE-2025-3000` because the scanner does not report a fix version.
@@ -51,3 +51,5 @@ On 2026-07-07, dependency pruning was executed on branch `chore/dependency-pruni
 - `python scripts/production_readiness_audit.py`: PASS
 - `python -m unittest discover -s tests/smoke`: 48 tests OK
 - `python -m pip_audit -r requirements.txt --no-deps --disable-pip`: PASS (No known vulnerabilities found, resolving the ignored `CVE-2025-3000` exception).
+- **Staging / Streamlit Cloud Live Regression**: PASS (Verified Playwright headless automation and app startup on 2026-07-07).
+- **Status**: Successfully merged into `main` (commit `3cc1ffe`).
