@@ -53,3 +53,9 @@ On 2026-07-08, the live Streamlit Cloud deployment at `https://newspage.streamli
 ## Session Invalidation
 
 As of 2026-07-08, remembered login cookies and active Streamlit session state are tied to `users_auth.session_version`. Password rotation must update `session_version` so older persistent cookies are rejected on app load and already logged-in tabs are cleared on rerun. Legacy username-only cookies are treated as stale and cleared before access is granted.
+
+Live verification after Streamlit Cloud reboot confirmed:
+
+- Test user login reached an authenticated Streamlit session.
+- `users_auth.session_version` was rotated for the test user through Supabase.
+- Reloading the same authenticated tab returned the app to the sign-in form, confirming active session invalidation.
