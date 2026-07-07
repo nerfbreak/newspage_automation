@@ -95,7 +95,9 @@ def ensure_user_session_version(supabase, username):
             "session_version": new_version,
             "password_changed_at": datetime.now(timezone.utc).isoformat(),
         }).eq("username", username).execute()
-        return new_version
+        persisted_version = get_user_session_version(supabase, username)
+        if persisted_version == new_version:
+            return persisted_version
     except Exception as e:
         logging.error(f"Error ensuring session version for user {username}: {e}")
     return ""

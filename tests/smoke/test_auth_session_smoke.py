@@ -231,6 +231,14 @@ class AuthSessionSmokeTests(unittest.TestCase):
         self.assertEqual(database.ensure_user_session_version(supabase, "Rizki"), "version-1")
         self.assertNotIn("password_changed_at", store["users_auth"][0])
 
+    def test_ensure_user_session_version_returns_empty_when_update_does_not_persist(self):
+        store = {"users_auth": [{"username": "Other", "password": "hashed", "session_version": None}]}
+        supabase = FakeSupabase(store)
+
+        self.assertEqual(database.ensure_user_session_version(supabase, "Rizki"), "")
+        self.assertIsNone(store["users_auth"][0]["session_version"])
+        self.assertNotIn("password_changed_at", store["users_auth"][0])
+
     def test_authenticate_user_returns_true_for_matching_password(self):
         supabase = FakeSupabase(
             {
