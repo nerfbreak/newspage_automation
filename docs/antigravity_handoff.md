@@ -4,14 +4,16 @@ Use this when continuing the production-readiness flow outside Codex.
 
 ## Current State
 
-- Branch: `chore/error-taxonomy-expansion` (ready to merge to `main`)
-- Latest completed checkpoint: run `git log -1 --oneline`
+- Branch: `main` (fully merged, pushed, and up-to-date with `origin/main`)
+- Latest completed checkpoint: run `git log -1 --oneline` (Commit `17b7777` or later)
+- Constitution: `v2.6.0` (includes Principle XII: Minimal & Clean Dependency Architecture)
+- Requirements: Pruned down to 166 clean, cross-platform requirements (removed Windows-only `pywin32` and unused AI/ML/cloud bloat like `litellm`, `mcp`, `opentelemetry`, etc.)
 - GitHub Actions on latest checkpoint:
   - `Smoke Tests`: success (68/68 tests passing)
   - `Security Audit`: success (0 vulnerabilities found after dependency pruning)
 - Local & Live production gates:
   - `python scripts/production_readiness_audit.py`: PASS (21/21 rules pass)
-  - `python -m unittest discover -s tests/smoke`: 68 tests OK (in < 3s)
+  - `python -m unittest discover -s tests/smoke`: 68 tests OK (in < 2s)
   - `python scripts/supabase_schema_check.py`: PASS (10/10 required tables reachable)
   - `python scripts/supabase_rls_index_check.py`: PASS (Automated RLS & index validator ready)
   - `python -m scripts.check_invalid_creds`: PASS (100% stored distributor passwords decrypt cleanly)

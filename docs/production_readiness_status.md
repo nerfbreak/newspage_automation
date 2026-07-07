@@ -20,7 +20,7 @@
 | Database migration docs | Complete baseline | `docs/database_migrations.md` | Compare against live Supabase schema before deployment |
 | Supabase live schema check | Complete; all 10 required tables PASS | `scripts/supabase_schema_check.py`, `docs/supabase_live_schema_check_2026-07-07.md` | None (live schema gap resolved) |
 | Supabase RLS & Index check | Automated read-only check script ready | `scripts/supabase_rls_index_check.py`, `tests/smoke/test_supabase_rls_index_check.py` | Run one-time setup SQL (`--print-sql`) in live Supabase SQL Editor |
-| Dependency pruning review | Complete | `docs/dependency_pruning_review.md` | None (32 heavy unused ML/agent packages removed) |
+| Dependency pruning review | Complete (166 cross-platform requirements) | `docs/dependency_pruning_review.md`, `constitution.md` v2.6.0 | None (removed 32 ML packages + 77 unused/Windows-only bloat packages like `pywin32` & `litellm`) |
 | Antigravity handoff | Documented & Updated | `docs/antigravity_handoff.md` | Use if work continues outside Codex |
 | Observability/error taxonomy | 100% Integrated across all UI modules | `error_taxonomy.py`, `docs/error_taxonomy.md`, smoke tests | None (all UI modules wired) |
 
