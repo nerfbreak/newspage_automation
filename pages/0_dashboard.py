@@ -1,7 +1,9 @@
 import streamlit as st
+import logging
 from datetime import datetime
 import pandas as pd
 import html
+from error_taxonomy import format_user_error, format_log_error
 from utils import check_auth, render_header, render_footer, clean_html, render_metric_card, render_responsive_dataframe
 import database
 
@@ -18,7 +20,8 @@ def load_historical_logs(_supabase):
             df_adj = pd.DataFrame(res_adj.data)
             df_adj["created_at"] = pd.to_datetime(df_adj["created_at"])
     except Exception as e:
-        st.error(f"Error loading adjustment logs: {e}")
+        logging.exception(format_log_error("DB-001", "load_historical_logs (adjustment_logs)"))
+        st.error(format_user_error("DB-001"))
         
     try:
         res_ext = _supabase.table("extraction_history").select("distributor_name, status, extracted_by, created_at").order("created_at", desc=True).execute()
@@ -26,7 +29,8 @@ def load_historical_logs(_supabase):
             df_ext = pd.DataFrame(res_ext.data)
             df_ext["created_at"] = pd.to_datetime(df_ext["created_at"])
     except Exception as e:
-        st.error(f"Error loading extraction history: {e}")
+        logging.exception(format_log_error("DB-001", "load_historical_logs (extraction_history)"))
+        st.error(format_user_error("DB-001"))
 
     return df_adj, df_ext
 
@@ -291,7 +295,7 @@ with right_col:
                 bot_pass = st.secrets.get("NP_PASS_SUPER", "")
                 
                 if not url or not bot_user or not bot_pass:
-                    st.toast("Missing URL/Credentials", icon=":material/error:")
+                    st.toast(format_user_error("CONFIG-001", "(Missing URL/Credentials)"), icon=":material/error:")
                 else:
                     st.toast("Initiating ping test...", icon=":material/hourglass_empty:")
                     start_t = time.time()
@@ -301,7 +305,8 @@ with right_col:
                     try:
                         ensure_playwright()
                     except Exception as e:
-                        st.toast(f"Failed to install browser dependencies: {e}", icon=":material/error:")
+                        logging.exception(format_log_error("AUTO-001", "Ping browser setup"))
+                        st.toast(format_user_error("AUTO-001"), icon=":material/error:")
                     script = """
 import os, asyncio, time
 from playwright.async_api import async_playwright
@@ -358,15 +363,18 @@ asyncio.run(main())
                         if out == 'OK':
                             st.toast(f"Superuser Login OK ({elapsed:.1f}s)", icon=":material/check_circle:")
                         elif out == 'FAIL':
-                            st.toast(f"Login Failed (Check Credentials)", icon=":material/warning:")
+                            st.toast(format_user_error("AUTH-001", "(Ping login failed)"), icon=":material/warning:")
                         else:
-                            st.toast(f"Ping err: {out} {err}", icon=":material/error:")
+                            logging.error(format_log_error("AUTO-002", f"Ping error: {out} {err}"))
+                            st.toast(format_user_error("AUTO-002"), icon=":material/error:")
                     except subprocess.TimeoutExpired:
-                        st.toast("Ping timeout", icon=":material/error:")
+                        st.toast(format_user_error("AUTO-002", "(Ping timeout)"), icon=":material/error:")
                     except Exception as e:
-                        st.toast(f"Ping error: {e}", icon=":material/error:")
+                        logging.exception(format_log_error("AUTO-001", "Ping subprocess execution"))
+                        st.toast(format_user_error("AUTO-001"), icon=":material/error:")
             except Exception as e:
-                st.toast(f"Ping Failed: {e}", icon=":material/error:")
+                logging.exception(format_log_error("UNK-001", "Ping outer exception"))
+                st.toast(format_user_error("UNK-001"), icon=":material/error:")
                 
     st.markdown("""
     <style>

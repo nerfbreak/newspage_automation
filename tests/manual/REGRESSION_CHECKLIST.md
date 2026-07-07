@@ -31,6 +31,8 @@
 - [ ] Invalid login increments failed-attempt handling.
 - [ ] Lockout activates after configured failed-attempt threshold.
 - [ ] Logout clears the current session.
+- [ ] Login failure/lockout messages display standardized error codes ([AUTH-001], [AUTH-002]) without stack traces.
+- [ ] Session expiration toasts display standardized error code ([SESSION-001]).
 - [ ] Dashboard loads after login.
 - [ ] Sidebar/header remains hidden according to design rules.
 - [ ] Main navigation cards route to each module.
@@ -41,6 +43,8 @@
 
 - [ ] System health card renders database and engine status.
 - [ ] Ping button handles success, failure, and missing credential states without exposing credentials.
+- [ ] Ping button failure/missing credential toasts display standardized error codes ([CONFIG-001], [AUTO-001], [AUTO-002], [AUTH-001], [UNK-001]).
+- [ ] Dashboard log loading errors display standardized error code ([DB-001]).
 - [ ] Recent Activity renders inventory, sales, and adjustment records with correct module labels.
 - [ ] Full Activity Report renders without broken HTML.
 - [ ] Reporting Period filter changes visible rows as expected.

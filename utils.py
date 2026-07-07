@@ -4,6 +4,7 @@ import base64
 import logging
 import requests
 import streamlit as st
+from error_taxonomy import format_log_error
 
 logger = logging.getLogger(__name__)
 
@@ -39,14 +40,14 @@ def _send_sync(url, payload, files=None, local_path_to_delete=None):
         else:
             requests.post(url, json=payload, timeout=5)
     except Exception as e:
-        logger.warning(f"Telegram alert failed: {e}")
+        logger.warning(format_log_error("NOTIFY-001", f"Telegram alert failed: {e}"))
     finally:
         if local_path_to_delete and os.path.exists(local_path_to_delete):
             try:
                 os.remove(local_path_to_delete)
                 logger.info(f"Deleted local screenshot: {local_path_to_delete}")
             except Exception as delete_err:
-                logger.warning(f"Failed to delete local screenshot {local_path_to_delete}: {delete_err}")
+                logger.warning(format_log_error("NOTIFY-001", f"Failed to delete local screenshot {local_path_to_delete}: {delete_err}"))
 
 def send_telegram_alert(message: str, photo_path: str = None, delete_after: bool = True):
     bot_token = st.secrets.get("TELEGRAM_BOT_TOKEN", "")
@@ -64,7 +65,7 @@ def send_telegram_alert(message: str, photo_path: str = None, delete_after: bool
                 path_to_delete = photo_path if delete_after else None
                 threading.Thread(target=_send_sync, args=(url, payload, files, path_to_delete), daemon=True).start()
             except Exception as e:
-                logger.warning(f"Failed to read photo: {e}")
+                logger.warning(format_log_error("NOTIFY-001", f"Failed to read photo: {e}"))
         else:
             url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
             payload = {"chat_id": chat_id, "text": message, "parse_mode": "HTML"}

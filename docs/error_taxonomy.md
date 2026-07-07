@@ -97,3 +97,7 @@ Rules:
 3. Keep existing business behavior intact: taxonomy should change presentation and triage, not execution decisions.
 4. Add regression checklist rows when a visible error message changes.
 
+**Status:**
+- [x] Adopted in non-frozen support paths (`app.py`, `utils.py`, `pages/0_dashboard.py`) for login authentication, session timeouts, Telegram alert notifications, dashboard log loading, and superuser ping tests.
+- [ ] Frozen business logic modules remain untouched per Freeze Rule (pending password unlock or bugfix tasks).
+
