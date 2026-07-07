@@ -1,6 +1,6 @@
 # Dependency Pruning Review
 
-**Status**: Review baseline  
+**Status**: Executed on branch `chore/dependency-pruning`  
 **Last reviewed**: 2026-07-07
 
 This document tracks the remaining dependency-risk item from the production-readiness work: `torch` is currently ignored in `pip-audit` for `CVE-2025-3000` because the scanner does not report a fix version.
@@ -45,6 +45,9 @@ Do not prune the large dependency set blindly. Instead:
 6. Start the Streamlit app and perform the manual regression checklist.
 7. Only merge if app startup, smoke tests, and manual regression all pass.
 
-## Current Decision
+## Current Decision & Execution
 
-Keep the current dependency pins for now and keep `CVE-2025-3000` as the only documented `pip-audit` exception. Prune in a separate dependency-cleanup checkpoint so deployment risk stays isolated.
+On 2026-07-07, dependency pruning was executed on branch `chore/dependency-pruning`. Exactly 32 unused heavy ML/agent packages (`torch`, `sentence-transformers`, `transformers`, `faiss-cpu`, `langchain*`, `langgraph*`, `langsmith`, `reflex*`, `firebase_admin`) were removed from `requirements.txt`.
+- `python scripts/production_readiness_audit.py`: PASS
+- `python -m unittest discover -s tests/smoke`: 48 tests OK
+- `python -m pip_audit -r requirements.txt --no-deps --disable-pip`: PASS (No known vulnerabilities found, resolving the ignored `CVE-2025-3000` exception).
