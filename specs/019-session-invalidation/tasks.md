@@ -107,6 +107,13 @@
 - [X] T021 Run `python scripts\supabase_rls_index_check.py` if schema docs changed or live metadata verification is needed (depends on T017)
 - [X] T022 Update task checkboxes in `specs/019-session-invalidation/tasks.md` after implementation and verification (depends on T018, T019)
 
+**Bugfix**: 2026-07-08 - [BUG-001] Active Streamlit sessions must be invalidated when credential-version metadata changes.
+
+- [X] T023 [US1] Store the accepted credential-version marker in `st.session_state.current_session_version` for password login and remembered-cookie auto-login (depends on T008, T012)
+- [X] T024 [US1] Revalidate logged-in Streamlit sessions against `users_auth.session_version` on rerun and clear stale sessions/cookies in `app.py` (depends on T023)
+- [X] T025 [US3] Add smoke coverage proving active-session revalidation is present in `app.py` without exposing secrets (depends on T024)
+- [X] T026 Run `python -m unittest discover -s tests\smoke` and `python scripts\production_readiness_audit.py` after BUG-001 implementation (depends on T025)
+
 ---
 
 ## Dependencies & Execution Order

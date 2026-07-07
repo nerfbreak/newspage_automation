@@ -45,20 +45,43 @@ init_session_state(
     last_activity=0,
     logout_requested=False,
     ignore_cookie=False,
+    current_session_version="",
 )
+
+def clear_auth_session():
+    if "auth_user" in cookies:
+        cookie_manager.delete("auth_user")
+        cookies.pop("auth_user", None)
+    st.session_state.logged_in = False
+    st.session_state.current_user = "unknown"
+    st.session_state.current_session_version = ""
+    st.session_state.login_attempts = 0
+    st.session_state.ignore_cookie = True
 
 # --- SESSION TIMEOUT ---
 if st.session_state.logged_in and st.session_state.last_activity > 0:
     idle = time.time() - st.session_state.last_activity
     if idle > SESSION_TIMEOUT_SECONDS:
-        st.session_state.logged_in = False
-        st.session_state.current_user = "unknown"
-        st.session_state.login_attempts = 0
-        st.session_state.ignore_cookie = True
+        clear_auth_session()
         st.toast(format_user_error("SESSION-001"))
         st.rerun()
     else:
         st.session_state.last_activity = time.time()
+
+if st.session_state.logged_in:
+    active_user = st.session_state.get("current_user")
+    active_session_version = st.session_state.get("current_session_version")
+    current_session_version = database.get_user_session_version(supabase, active_user)
+    if (
+        not active_user
+        or active_user == "unknown"
+        or not active_session_version
+        or not current_session_version
+        or active_session_version != current_session_version
+    ):
+        clear_auth_session()
+        st.toast(format_user_error("SESSION-001"))
+        st.rerun()
 
 if not st.session_state.logged_in:
     auth_cookie = cookies.get("auth_user") if cookies else None
@@ -67,12 +90,11 @@ if not st.session_state.logged_in:
         if remembered_user:
             st.session_state.logged_in = True
             st.session_state.current_user = remembered_user
+            st.session_state.current_session_version = database.get_user_session_version(supabase, remembered_user)
             st.session_state.last_activity = time.time()
             st.rerun()
         else:
-            if "auth_user" in cookies:
-                cookie_manager.delete("auth_user")
-                cookies.pop("auth_user", None)
+            clear_auth_session()
 
 if not st.session_state.logged_in:
     inject_css("login.css")
@@ -87,8 +109,7 @@ if not st.session_state.logged_in:
         st.session_state.logged_in = True
         st.session_state.ignore_cookie = False
         del st.session_state["login_success"]
-        if "current_session_version" in st.session_state:
-            del st.session_state["current_session_version"]
+        st.session_state.current_session_version = session_version
         st.rerun()
     else:
         with st.form("login_form"):

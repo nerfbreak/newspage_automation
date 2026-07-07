@@ -85,6 +85,9 @@ Maintainers need clear, repeatable evidence that session invalidation works with
 - **FR-010**: The system MUST NOT modify frozen Newspage automation workflows, Playwright selectors, or module execution logic.
 - **FR-011**: The system MUST provide repeatable smoke/regression evidence for stale-session rejection and valid-session acceptance.
 - **FR-012**: The system MUST document the required credential metadata migration and the operational password-rotation process.
+- **FR-013**: The system MUST revalidate an already authenticated Streamlit session against the current user credential-version metadata on rerun, not only remembered-cookie auto-login.
+
+**Bugfix**: 2026-07-08 - [BUG-001] Added active Streamlit session revalidation so password rotation can revoke sessions that are already logged in.
 
 ### Key Entities
 
@@ -101,6 +104,7 @@ Maintainers need clear, repeatable evidence that session invalidation works with
 - **SC-003**: Existing users can recover from pre-feature remembered sessions by signing in again within one normal login attempt.
 - **SC-004**: The smoke suite includes at least one stale-session rejection test and one valid-session acceptance test.
 - **SC-005**: No test output, documentation example, or user-facing message reveals raw passwords, password hashes, raw cookie tokens, or secrets.
+- **SC-006**: An already logged-in Streamlit session with a stale or missing credential-version marker is cleared and returned to sign-in in 100% of tested cases.
 
 ## Assumptions
 

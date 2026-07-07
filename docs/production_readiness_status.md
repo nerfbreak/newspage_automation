@@ -10,11 +10,11 @@
 |---|---|---|---|
 | Security audit baseline | Complete (Spec Kit 018 verified 14/14 tasks) | `SECURITY_AUDIT_REPORT.md`, `scripts/production_readiness_audit.py`, `.github/workflows/security-audit.yml` | None |
 | Secrets hygiene | Guarded | `.gitignore`, static audit secret tracking check | Rotate secrets if workspace/repo exposure is suspected |
-| Session cookie review | Complete; remembered sessions are credential-version validated | `SECURITY_AUDIT_REPORT.md` SEC-001, `database.py`, `app.py`, `tests/smoke/test_auth_session_smoke.py` | None |
+| Session cookie review | Complete; remembered and active Streamlit sessions are credential-version validated | `SECURITY_AUDIT_REPORT.md` SEC-001, `database.py`, `app.py`, `tests/smoke/test_auth_session_smoke.py`, `tests/smoke/test_security_audit_smoke.py` | None |
 | Subprocess review | Guarded | Static audit rejects `shell=True`; dashboard ping uses env arguments | Re-review any future subprocess helper before merge |
 | HTML injection review | Guarded by tests for shared helpers | `tests/smoke/test_core_smoke.py`, `test_security_audit_smoke.py` | Audit future `unsafe_allow_html=True` changes during review |
 | Dependency CVE scan | Complete (0 vulnerabilities found) | `.github/workflows/security-audit.yml`, local `pip-audit --no-deps --disable-pip` run | None (`torch` removed during dependency pruning) |
-| Automated smoke tests | Complete (68/68 passing) | `tests/smoke/`, `.github/workflows/smoke-tests.yml` | None |
+| Automated smoke tests | Complete (77/77 passing) | `tests/smoke/`, `.github/workflows/smoke-tests.yml` | None |
 | Manual regression checklist | Complete | `tests/manual/REGRESSION_CHECKLIST.md` | Execute before major releases |
 | Spec Kit ignored artifacts | Documented | `docs/spec_artifact_policy.md`, `.gitignore` | Force-add only specific durable artifacts |
 | Database migration docs | Complete baseline | `docs/database_migrations.md` | Compare against live Supabase schema before deployment |
@@ -29,7 +29,7 @@
 For a release candidate:
 
 1. `python scripts/production_readiness_audit.py` (PASS - 21/21 rules)
-2. `python -m unittest discover -s tests/smoke` (PASS - 68/68 tests in < 3s)
+2. `python -m unittest discover -s tests/smoke` (PASS - 77/77 tests in < 3s)
 3. `python -m pip_audit -r requirements.txt --no-deps --disable-pip` (PASS - 0 vulnerabilities)
 4. Manual regression checklist in `tests/manual/REGRESSION_CHECKLIST.md`
 5. Supabase schema/RLS comparison against `docs/database_migrations.md`
@@ -52,4 +52,4 @@ On 2026-07-08, the live Streamlit Cloud deployment at `https://newspage.streamli
 
 ## Session Invalidation
 
-As of 2026-07-08, remembered login cookies are tied to `users_auth.session_version`. Password rotation must update `session_version` so older persistent sessions are rejected on the next app load. Legacy username-only cookies are treated as stale and cleared before access is granted.
+As of 2026-07-08, remembered login cookies and active Streamlit session state are tied to `users_auth.session_version`. Password rotation must update `session_version` so older persistent cookies are rejected on app load and already logged-in tabs are cleared on rerun. Legacy username-only cookies are treated as stale and cleared before access is granted.

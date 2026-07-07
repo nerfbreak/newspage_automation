@@ -9,7 +9,7 @@ Use this when continuing the production-readiness flow outside Codex.
 - Constitution: `v2.6.0` (includes Principle XII: Minimal & Clean Dependency Architecture)
 - Requirements: Pruned down to 166 clean, cross-platform requirements (removed Windows-only `pywin32` and unused AI/ML/cloud bloat like `litellm`, `mcp`, `opentelemetry`, etc.)
 - GitHub Actions on latest checkpoint:
-  - `Smoke Tests`: success (68/68 tests passing)
+  - `Smoke Tests`: success (77/77 tests passing)
   - `Security Audit`: success (0 vulnerabilities found after dependency pruning)
 - Local & Live production gates:
   - `python scripts/production_readiness_audit.py`: PASS (21/21 rules pass)

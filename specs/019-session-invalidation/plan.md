@@ -16,7 +16,7 @@
 
 ## Summary
 
-Harden remembered-login behavior so password rotation invalidates previously issued persistent cookies. The implementation will add user credential-version metadata, issue encrypted remembered-session payloads that include that version, verify the payload against the current user row before auto-login, and fail closed when validation cannot be completed. Existing locked Newspage automation workflows remain untouched.
+Harden remembered-login behavior so password rotation invalidates previously issued persistent cookies. The implementation will add user credential-version metadata, issue encrypted remembered-session payloads that include that version, verify the payload against the current user row before auto-login, revalidate active Streamlit session state against the same metadata on rerun, and fail closed when validation cannot be completed. Existing locked Newspage automation workflows remain untouched.
 
 ## Technical Context
 
@@ -32,7 +32,7 @@ Harden remembered-login behavior so password rotation invalidates previously iss
 
 **Project Type**: Streamlit web app
 
-**Performance Goals**: Auto-login validation should add only one lightweight user lookup per remembered-session app load.
+**Performance Goals**: Auto-login validation should add only one lightweight user lookup per remembered-session app load. Active logged-in reruns may perform one lightweight user metadata lookup to detect password rotation without waiting for manual logout.
 
 **Constraints**: No hardcoded secrets; no raw passwords, password hashes, or raw cookies in logs; preserve Neo-Brutalist UI; do not modify frozen automation logic or Playwright selectors.
 
@@ -81,6 +81,8 @@ tests/smoke/test_security_audit_smoke.py
 ```
 
 **Structure Decision**: Keep the change in the existing auth boundary: `database.py` owns Supabase user/session helper reads and `app.py` owns CookieManager/session-state decisions. Tests remain in the existing smoke suite. Documentation updates stay in the existing production readiness and migration docs.
+
+**Bugfix**: 2026-07-08 - [BUG-001] Active Streamlit sessions must store and re-check the accepted session version, so a rotated password invalidates logged-in tabs on rerun as well as remembered-cookie auto-login.
 
 ## Complexity Tracking
 
