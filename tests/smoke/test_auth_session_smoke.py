@@ -118,6 +118,16 @@ class FakeSupabase:
 
 
 class AuthSessionSmokeTests(unittest.TestCase):
+    def setUp(self):
+        self._original_master_key = database.os.environ.get("MASTER_KEY")
+        database.os.environ["MASTER_KEY"] = database.Fernet.generate_key().decode()
+
+    def tearDown(self):
+        if self._original_master_key is None:
+            database.os.environ.pop("MASTER_KEY", None)
+        else:
+            database.os.environ["MASTER_KEY"] = self._original_master_key
+
     def test_init_supabase_uses_environment_fallback_and_caches_client(self):
         original_client = database._supabase_client
         original_create_client = database.create_client
@@ -163,6 +173,63 @@ class AuthSessionSmokeTests(unittest.TestCase):
     def test_encrypt_and_decrypt_return_empty_string_for_empty_input(self):
         self.assertEqual(database.encrypt_data(""), "")
         self.assertEqual(database.decrypt_data(""), "")
+
+    def test_remembered_session_payload_roundtrip_uses_structured_payload(self):
+        payload = database.create_remembered_session_payload("Rizki", "version-1")
+
+        self.assertTrue(payload)
+        self.assertNotEqual(payload, '{"username":"Rizki","session_version":"version-1"}')
+        self.assertEqual(
+            database.parse_remembered_session_payload(payload),
+            {"username": "Rizki", "session_version": "version-1"},
+        )
+
+    def test_legacy_username_only_cookie_is_rejected(self):
+        legacy_cookie = database.encrypt_data("Rizki")
+
+        self.assertEqual(database.parse_remembered_session_payload(legacy_cookie), {})
+        self.assertEqual(
+            database.validate_remembered_session(
+                FakeSupabase({"users_auth": [{"username": "Rizki", "session_version": "version-1"}]}),
+                legacy_cookie,
+            ),
+            "",
+        )
+
+    def test_valid_remembered_session_is_accepted_when_version_matches(self):
+        supabase = FakeSupabase({"users_auth": [{"username": "Rizki", "session_version": "version-1"}]})
+        cookie = database.create_remembered_session_payload("Rizki", "version-1")
+
+        self.assertEqual(database.validate_remembered_session(supabase, cookie), "Rizki")
+
+    def test_stale_remembered_session_is_rejected_when_version_changes(self):
+        supabase = FakeSupabase({"users_auth": [{"username": "Rizki", "session_version": "version-2"}]})
+        old_cookie = database.create_remembered_session_payload("Rizki", "version-1")
+
+        self.assertEqual(database.validate_remembered_session(supabase, old_cookie), "")
+
+    def test_missing_user_remembered_session_is_rejected(self):
+        supabase = FakeSupabase({"users_auth": [{"username": "Other", "session_version": "version-1"}]})
+        cookie = database.create_remembered_session_payload("Rizki", "version-1")
+
+        self.assertEqual(database.validate_remembered_session(supabase, cookie), "")
+
+    def test_ensure_user_session_version_bootstraps_missing_metadata(self):
+        store = {"users_auth": [{"username": "Rizki", "password": "hashed", "session_version": None}]}
+        supabase = FakeSupabase(store)
+
+        version = database.ensure_user_session_version(supabase, "Rizki")
+
+        self.assertTrue(version)
+        self.assertEqual(store["users_auth"][0]["session_version"], version)
+        self.assertIn("password_changed_at", store["users_auth"][0])
+
+    def test_ensure_user_session_version_reuses_existing_metadata(self):
+        store = {"users_auth": [{"username": "Rizki", "password": "hashed", "session_version": "version-1"}]}
+        supabase = FakeSupabase(store)
+
+        self.assertEqual(database.ensure_user_session_version(supabase, "Rizki"), "version-1")
+        self.assertNotIn("password_changed_at", store["users_auth"][0])
 
     def test_authenticate_user_returns_true_for_matching_password(self):
         supabase = FakeSupabase(

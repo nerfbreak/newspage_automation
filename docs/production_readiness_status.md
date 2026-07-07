@@ -10,7 +10,7 @@
 |---|---|---|---|
 | Security audit baseline | Complete (Spec Kit 018 verified 14/14 tasks) | `SECURITY_AUDIT_REPORT.md`, `scripts/production_readiness_audit.py`, `.github/workflows/security-audit.yml` | None |
 | Secrets hygiene | Guarded | `.gitignore`, static audit secret tracking check | Rotate secrets if workspace/repo exposure is suspected |
-| Session cookie review | Complete | `SECURITY_AUDIT_REPORT.md` SEC-001, lockout & session toasts standardized | None |
+| Session cookie review | Complete; remembered sessions are credential-version validated | `SECURITY_AUDIT_REPORT.md` SEC-001, `database.py`, `app.py`, `tests/smoke/test_auth_session_smoke.py` | None |
 | Subprocess review | Guarded | Static audit rejects `shell=True`; dashboard ping uses env arguments | Re-review any future subprocess helper before merge |
 | HTML injection review | Guarded by tests for shared helpers | `tests/smoke/test_core_smoke.py`, `test_security_audit_smoke.py` | Audit future `unsafe_allow_html=True` changes during review |
 | Dependency CVE scan | Complete (0 vulnerabilities found) | `.github/workflows/security-audit.yml`, local `pip-audit --no-deps --disable-pip` run | None (`torch` removed during dependency pruning) |
@@ -49,3 +49,7 @@ On 2026-07-08, the live Streamlit Cloud deployment at `https://newspage.streamli
 - Dashboard rendered with DB connection, KPI cards, recent activity, and application modules.
 - Inventory Adjustment module routing succeeded, with dry-run/simulate-only mode visible.
 - No mutating workflow actions were executed during the smoke test.
+
+## Session Invalidation
+
+As of 2026-07-08, remembered login cookies are tied to `users_auth.session_version`. Password rotation must update `session_version` so older persistent sessions are rejected on the next app load. Legacy username-only cookies are treated as stale and cleared before access is granted.

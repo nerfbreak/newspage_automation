@@ -50,6 +50,8 @@ class SecurityAuditSmokeTests(unittest.TestCase):
         self.assertIn("LOCKOUT_SECONDS = 300", content)
         self.assertIn("SESSION_TIMEOUT_SECONDS =", content)
         self.assertIn("cookie_manager.set(\"auth_user\"", content)
+        self.assertIn("database.validate_remembered_session", content)
+        self.assertIn("database.create_remembered_session_payload", content)
 
     def test_input_sanitization_and_html_escaping(self):
         """US3: Verify HTML escaping behavior against XSS payloads."""

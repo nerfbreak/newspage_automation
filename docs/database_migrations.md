@@ -12,7 +12,7 @@ The application currently accesses Supabase through `database.py` and `pages/0_d
 
 | Table | Current application usage | Required by |
 |---|---|---|
-| `users_auth` | Login lookup by `username`, reads `password` bcrypt hash | `database.authenticate_user()` |
+| `users_auth` | Login lookup by `username`, reads `password` bcrypt hash, validates remembered-session metadata | `database.authenticate_user()`, `database.validate_remembered_session()` |
 | `login_attempts` | Tracks failed login count, last attempt, and lockout expiry | `database.check_login_lockout()`, `record_failed_login()`, `reset_failed_login()` |
 | `distributor_vault` | Lists distributors and fetches Newspage credentials | `database.get_distributor_list()`, `get_distributor_creds()`, dashboard counts |
 | `system_config` | Runtime config values such as URL, timeout, reason code, warehouse | `database.get_system_config()` |
@@ -32,6 +32,8 @@ create table if not exists users_auth (
   id bigserial primary key,
   username text not null unique,
   password text not null,
+  session_version text,
+  password_changed_at timestamptz,
   created_at timestamptz not null default now()
 );
 
@@ -122,6 +124,10 @@ alter table adjustment_logs
 alter table extraction_history
   add column if not exists status text not null default 'Success';
 
+alter table users_auth
+  add column if not exists session_version text,
+  add column if not exists password_changed_at timestamptz;
+
 create table if not exists uploaded_files (
   id bigserial primary key,
   distributor_name text,
@@ -154,6 +160,7 @@ alter table uploaded_files enable row level security;
 Minimum review checklist:
 
 - `users_auth.password` contains bcrypt hashes only, never plain text.
+- `users_auth.session_version` changes whenever an application password is rotated.
 - `distributor_vault.np_password` contains Fernet ciphertext (`gAAAA...`) after credential migration.
 - `adjustment_logs.run_by` exists so dashboard history can attribute runs to the Streamlit user.
 - `extraction_history.status` exists so dashboard can distinguish inventory extraction from sales extraction.
@@ -168,6 +175,27 @@ Minimum review checklist:
 3. Test migrations in a non-production Supabase project first.
 4. Confirm dashboard history still loads after schema changes.
 5. Update `.agents/MEMORY.md` after the migration documentation or code change is complete.
+
+## Password Rotation With Session Revocation
+
+Remembered login cookies are tied to `users_auth.session_version`. When rotating an application user's password, update the password hash and `session_version` together so existing persistent sessions are invalidated on the next app load.
+
+```sql
+create extension if not exists pgcrypto;
+
+alter table users_auth
+  add column if not exists session_version text,
+  add column if not exists password_changed_at timestamptz;
+
+update users_auth
+set password = crypt('REPLACE_WITH_NEW_PASSWORD', gen_salt('bf', 12)),
+    session_version = gen_random_uuid()::text,
+    password_changed_at = now()
+where lower(username) = lower('REPLACE_WITH_USERNAME')
+returning username, password like '$2%' as bcrypt_hash, session_version is not null as session_version_set;
+```
+
+Do not paste real passwords into tickets, commits, docs, or chat logs. Run the SQL directly in the Supabase SQL Editor or trusted admin tooling.
 
 ## Automated RLS & Index Inspection
 
