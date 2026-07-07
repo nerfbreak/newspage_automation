@@ -53,3 +53,9 @@ On 2026-07-07, dependency pruning was executed on branch `chore/dependency-pruni
 - `python -m pip_audit -r requirements.txt --no-deps --disable-pip`: PASS (No known vulnerabilities found, resolving the ignored `CVE-2025-3000` exception).
 - **Staging / Streamlit Cloud Live Regression**: PASS (Verified Playwright headless automation and app startup on 2026-07-07).
 - **Status**: Successfully merged into `main` (commit `3cc1ffe`).
+
+### Second Round Pruning (Streamlit Cloud Python Runtime Compatibility)
+On 2026-07-07, during Streamlit Cloud deployment, `litellm==1.86.2` caused a fatal installation error due to Python runtime restrictions (`Requires-Python <3.14,>=3.10`). Following **Principle XII (Minimal & Clean Dependency Architecture)** added to `constitution.md` v2.6.0, a second pruning round was executed. Exactly 37 additional unused packages (`litellm`, `mcp`, `fastapi`, `fastuuid`, `google*`, `huggingface_hub`, `lark-oapi`, `openai`, `opentelemetry-*`, `openviking*`, `redis`, `scikit-learn`, `scipy`, `SQLAlchemy`, `sympy`, `tiktoken`, `tokenizers`, `tree-sitter*`, `volcengine*`, `uvicorn`, etc.) were removed from `requirements.txt`.
+- `python -m unittest discover -s tests/smoke`: PASS (68/68 tests in 1.301s)
+- `python scripts/production_readiness_audit.py`: PASS (21/21 rules)
+- **Status**: Pruned from 243 down to 206 essential deployment requirements, resolving the Streamlit Cloud build failure.

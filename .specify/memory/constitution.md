@@ -1,13 +1,14 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 2.4.1 → 2.5.0 (Added Principle XI: Mobile-First Responsive Design)
-Added sections: Core Principles -> XI. Mobile-First Responsive Design
-Modified sections: Governance (Version bump)
+Version change: 2.5.0 → 2.6.0 (Added Principle XII: Minimal & Clean Dependency Architecture)
+Added sections: Core Principles -> XII. Minimal & Clean Dependency Architecture (No Unused Bloat)
+Modified sections: Governance (Version bump to 2.6.0, Last Amended: 2026-07-07)
 Removed sections: None
 Templates requiring updates:
   ✅ .specify/memory/constitution.md (Updated)
-Follow-up TODOs: Run /speckit-specify to detail the responsive design features.
+  ✅ requirements.txt (Pruning unused deployment bloat like litellm to fix Python version incompatibility)
+Follow-up TODOs: None.
 -->
 
 # Optimize Newspage Automation Constitution
@@ -101,6 +102,11 @@ All new features, UI components, and pages MUST be designed with dynamic respons
 
 **Rationale**: Users often access the application via mobile devices in on-the-go scenarios. Non-responsive UI elements that overlap or overflow the screen bounds create a frustrating user experience and prevent successful task execution.
 
+### XII. Minimal & Clean Dependency Architecture (No Unused Bloat)
+All packages listed in `requirements.txt` MUST be directly required by the application's runtime imports (e.g., Streamlit, Playwright, Supabase, Pandas, Cryptography, Requests) or their direct transitive dependencies. Unused heavyweight AI/ML frameworks, agent SDKs, or external API libraries (such as `litellm`, `mcp`, `fastapi`, `google-cloud-*`, `huggingface_hub`, `lark-oapi`) MUST NOT be included in production deployment requirements.
+
+**Rationale**: Including unused packages bloating the dependency tree causes Python runtime version conflicts (such as `litellm==1.86.2` requiring Python >=3.10 while deployment environments like Streamlit Cloud may run Python 3.9), inflates build and startup times, and unnecessarily expands the CVE vulnerability attack surface.
+
 ## Security & Credential Standards
 
 - All secrets MUST be stored in `.streamlit/secrets.toml` — this file is gitignored.
@@ -147,4 +153,4 @@ Amendments require:
 All AI coding agents working on this project MUST read this constitution at the
 start of each session alongside `.agents/MEMORY.md`.
 
-**Version**: 2.5.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-05
+**Version**: 2.6.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-07
