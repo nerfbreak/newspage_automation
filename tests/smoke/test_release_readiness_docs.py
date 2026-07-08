@@ -16,6 +16,7 @@ class ReleaseReadinessDocsSmokeTests(unittest.TestCase):
             "python scripts/supabase_rls_index_check.py",
             "https://newspage.streamlit.app/healthz",
             "Release Readiness",
+            "Live Health Probe",
             "Session And Credential Gates",
             "Rollback Plan",
             "Manual Regression Gates",

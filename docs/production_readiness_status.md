@@ -24,7 +24,7 @@
 | Antigravity handoff | Documented & Updated | `docs/antigravity_handoff.md` | Use if work continues outside Codex |
 | Observability/error taxonomy | 100% Integrated across all UI modules | `error_taxonomy.py`, `docs/error_taxonomy.md`, smoke tests | None (all UI modules wired) |
 | Workspace hygiene gate | Guarded | `scripts/production_readiness_audit.py`, `.gitignore` | Root-level scratch/debug Python files must not be left in the workspace |
-| Release readiness gate | Guarded | `docs/release_readiness_checklist.md`, `.github/workflows/release-readiness.yml`, smoke tests | Run manual `Release Readiness` workflow after Streamlit Cloud deploys the intended release commit |
+| Release readiness gate | Guarded | `docs/release_readiness_checklist.md`, `.github/workflows/release-readiness.yml`, smoke tests | Runs automatically on `main`; manual dispatch remains available after Streamlit Cloud deploys the intended release commit |
 
 ## Operational Definition Of Done
 
@@ -38,7 +38,7 @@ For a release candidate:
 6. `python scripts/supabase_schema_check.py` (PASS - 10/10 tables)
 7. `python scripts/supabase_rls_index_check.py` (PASS)
 8. `python -m scripts.check_invalid_creds` (PASS - 100% stored passwords decrypt cleanly)
-9. GitHub Actions `Release Readiness` workflow (manual gate) passes on the release commit.
+9. GitHub Actions `Release Readiness` workflow passes on the release commit.
 10. Live `/healthz`, sign-in, dashboard, and module-routing smoke tests pass after Streamlit Cloud deploys the release commit.
 
 The project is now fully verified and ready for production release deployment.
@@ -49,7 +49,7 @@ As of commit `d19fb34`, GitHub Actions reports:
 
 - `Smoke Tests`: success
 - `Security Audit`: success
-- `Release Readiness`: available as a manual `workflow_dispatch` gate
+- `Release Readiness`: automated on `main` and pull requests; manual `workflow_dispatch` remains available
 
 Earlier failures on `30b70ef` and `ad10715` were resolved by adding the missing CI smoke dependency (`openpyxl`), making the security smoke test self-contained, and pruning unused vulnerable direct requirements.
 

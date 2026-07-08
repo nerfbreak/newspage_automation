@@ -39,7 +39,7 @@ The following workflows must be green on the release commit:
 - `Security Audit`
 - `Release Readiness`
 
-The `Release Readiness` workflow is a manual `workflow_dispatch` gate. Run it after Streamlit Cloud has deployed the intended commit.
+The `Release Readiness` workflow runs automatically on pushes and pull requests targeting `main`. It can also be run manually with `workflow_dispatch` after Streamlit Cloud has deployed the intended commit.
 
 ## Live Deployment Gates
 
@@ -108,5 +108,6 @@ A release can be marked ready only when:
 - Supabase schema and RLS/index checks pass.
 - GitHub `Smoke Tests`, `Security Audit`, and `Release Readiness` are green on the release commit.
 - Live Streamlit Cloud smoke passes after deployment.
+- The automated `Live Health Probe` job passes for the release commit on `main`.
 - Manual regression checklist has no blocking issue.
 - Rollback plan is understood by the release owner.
