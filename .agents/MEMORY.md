@@ -309,3 +309,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 
 
 - **2026-07-08**: **Spec-024 Finalization & Cleanup**: Verified the implementation of Spec 024 (Clear Sales Btn Color). Pushed updates to AGENTS.md to point to the consolidated memory plan and committed the cross-agent handoff state.
+- **2026-07-09**: **Hermes Plugins & Skills Installation**: Added `plugin.yaml` files to root directories of `spec-kit`, `superpowers`, `ecc`, and `rtk` within `AppData/Local/hermes/plugins/`. Enabled all 4 plugins via `hermes plugins enable` and ran a mass-installation script (`install_skills.sh`) to autonomously register 291 custom skills into the active Hermes profile.

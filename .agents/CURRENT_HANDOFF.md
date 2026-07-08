@@ -8,17 +8,17 @@
  - Active Spec Kit pointer from `AGENTS.md`: `.specify/memory/plan.md`
  
  ## Current Status
- 
- - Spec 024 (Clear Sales Btn Color) implementation complete and archived.
- - Cleaned up AGENTS.md to point to consolidated memory plan.
- - Uncommitted Spec-Kit archival changes and `.agents/MEMORY.md` updates staged for commit.
- - No active feature development block.
- 
+
+ - Diinstruksikan menginstall plugin spec-kit, superpowers, ecc, dan rtk.
+ - Berhasil menambahkan plugin.yaml ke plugin yang di-clone sehingga terbaca oleh sistem.
+ - Berhasil mengaktifkan (enable) seluruh 4 plugins dan menginstal 291 skills dari repositori plugin tersebut menggunakan CLI Hermes.
+ - Tidak ada instalasi manual yang tertunda, instalasi skill berjalan otonom di background.
+
  ## Last Completed Work
- 
- - Re-ran tests across the workspace. All 89/89 tests passing offline.
- - Archived Spec 024 and updated `AGENTS.md` context.
- - Ready for next user request.
+
+ - Menambahkan dummy `plugin.yaml` di root `spec-kit`, `superpowers`, `ecc`, dan `rtk` di direktori `AppData/Local/hermes/plugins/`.
+ - Menjalankan perintah enable plugin via `hermes plugins enable`.
+ - Menggunakan skrip shell (`install_skills.sh`) untuk melakukan iterasi dan memanggil `hermes skills install` ke 291 folder skill di dalam repo-repo tersebut.
  
  ## Next Recommended Step
  
