@@ -175,13 +175,13 @@ class AuthSessionSmokeTests(unittest.TestCase):
         self.assertEqual(database.decrypt_data(""), "")
 
     def test_remembered_session_payload_roundtrip_uses_structured_payload(self):
-        payload = database.create_remembered_session_payload("Rizki", "version-1")
+        payload = database.create_remembered_session_payload("Rizki", "version-1", "run-id")
 
         self.assertTrue(payload)
-        self.assertNotEqual(payload, '{"username":"Rizki","session_version":"version-1"}')
+        self.assertNotEqual(payload, '{"username":"Rizki","session_version":"version-1","server_run_id":"run-id"}')
         self.assertEqual(
             database.parse_remembered_session_payload(payload),
-            {"username": "Rizki", "session_version": "version-1"},
+            {"username": "Rizki", "session_version": "version-1", "server_run_id": "run-id"},
         )
 
     def test_legacy_username_only_cookie_is_rejected(self):
@@ -192,27 +192,34 @@ class AuthSessionSmokeTests(unittest.TestCase):
             database.validate_remembered_session(
                 FakeSupabase({"users_auth": [{"username": "Rizki", "session_version": "version-1"}]}),
                 legacy_cookie,
+                "run-id"
             ),
             "",
         )
 
     def test_valid_remembered_session_is_accepted_when_version_matches(self):
         supabase = FakeSupabase({"users_auth": [{"username": "Rizki", "session_version": "version-1"}]})
-        cookie = database.create_remembered_session_payload("Rizki", "version-1")
+        cookie = database.create_remembered_session_payload("Rizki", "version-1", "run-id")
 
-        self.assertEqual(database.validate_remembered_session(supabase, cookie), "Rizki")
+        self.assertEqual(database.validate_remembered_session(supabase, cookie, "run-id"), "Rizki")
 
     def test_stale_remembered_session_is_rejected_when_version_changes(self):
         supabase = FakeSupabase({"users_auth": [{"username": "Rizki", "session_version": "version-2"}]})
-        old_cookie = database.create_remembered_session_payload("Rizki", "version-1")
+        old_cookie = database.create_remembered_session_payload("Rizki", "version-1", "run-id")
 
-        self.assertEqual(database.validate_remembered_session(supabase, old_cookie), "")
+        self.assertEqual(database.validate_remembered_session(supabase, old_cookie, "run-id"), "")
 
     def test_missing_user_remembered_session_is_rejected(self):
         supabase = FakeSupabase({"users_auth": [{"username": "Other", "session_version": "version-1"}]})
-        cookie = database.create_remembered_session_payload("Rizki", "version-1")
+        cookie = database.create_remembered_session_payload("Rizki", "version-1", "run-id")
 
-        self.assertEqual(database.validate_remembered_session(supabase, cookie), "")
+        self.assertEqual(database.validate_remembered_session(supabase, cookie, "run-id"), "")
+
+    def test_remembered_session_is_rejected_when_server_run_id_changes(self):
+        supabase = FakeSupabase({"users_auth": [{"username": "Rizki", "session_version": "version-1"}]})
+        cookie = database.create_remembered_session_payload("Rizki", "version-1", "old-run-id")
+
+        self.assertEqual(database.validate_remembered_session(supabase, cookie, "new-run-id"), "")
 
     def test_ensure_user_session_version_bootstraps_missing_metadata(self):
         store = {"users_auth": [{"username": "Rizki", "password": "hashed", "session_version": None}]}

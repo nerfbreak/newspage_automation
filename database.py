@@ -102,12 +102,12 @@ def ensure_user_session_version(supabase, username):
         logging.error(f"Error ensuring session version for user {username}: {e}")
     return ""
 
-def create_remembered_session_payload(username, session_version):
+def create_remembered_session_payload(username, session_version, server_run_id):
     """Create an encrypted structured remembered-session payload."""
-    if not username or not session_version:
+    if not username or not session_version or not server_run_id:
         return ""
     payload = json.dumps(
-        {"username": username, "session_version": session_version},
+        {"username": username, "session_version": session_version, "server_run_id": server_run_id},
         separators=(",", ":"),
     )
     return encrypt_data(payload)
@@ -125,14 +125,17 @@ def parse_remembered_session_payload(encrypted_payload):
         return {}
     username = str(payload.get("username") or "")
     session_version = str(payload.get("session_version") or "")
-    if not username or not session_version:
+    server_run_id = str(payload.get("server_run_id") or "")
+    if not username or not session_version or not server_run_id:
         return {}
-    return {"username": username, "session_version": session_version}
+    return {"username": username, "session_version": session_version, "server_run_id": server_run_id}
 
-def validate_remembered_session(supabase, encrypted_payload):
-    """Return username only when the remembered session matches current user metadata."""
+def validate_remembered_session(supabase, encrypted_payload, current_server_run_id):
+    """Return username only when the remembered session matches current user metadata and server run ID."""
     payload = parse_remembered_session_payload(encrypted_payload)
     if not payload:
+        return ""
+    if payload.get("server_run_id") != current_server_run_id:
         return ""
     current_version = get_user_session_version(supabase, payload["username"])
     if current_version and current_version == payload["session_version"]:

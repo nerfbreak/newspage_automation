@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    Streamlit Design System (Community) Theme - Light Mode
    Primary: Streamlit Brand Blue (#0068C9)
    Secondary/Hover: Streamlit Light Blue (#83C9FF)
@@ -671,7 +671,7 @@ div[data-testid="stNotificationContent"] div {
     line-height: 1.5 !important;
 }
 
-/* Success — Streamlit Lime/Green */
+/* Success â€” Streamlit Lime/Green */
 div[data-testid="stNotification"][aria-label="Success"],
 div[role="alert"][aria-label="Success"],
 div[data-testid="stNotification"]:has(svg[aria-label="Success"]) {
@@ -685,7 +685,7 @@ div[data-testid="stNotification"][aria-label="Success"] div {
     font-weight: 600 !important;
 }
 
-/* Error — Streamlit Red */
+/* Error â€” Streamlit Red */
 div[data-testid="stNotification"][aria-label="Error"],
 div[role="alert"][aria-label="Error"],
 div[data-testid="stNotification"]:has(svg[aria-label="Error"]) {
@@ -699,7 +699,7 @@ div[data-testid="stNotification"][aria-label="Error"] div {
     font-weight: 600 !important;
 }
 
-/* Warning — Streamlit Orange */
+/* Warning â€” Streamlit Orange */
 div[data-testid="stNotification"][aria-label="Warning"],
 div[role="alert"][aria-label="Warning"],
 div[data-testid="stNotification"]:has(svg[aria-label="Warning"]) {
@@ -713,7 +713,7 @@ div[data-testid="stNotification"][aria-label="Warning"] div {
     font-weight: 600 !important;
 }
 
-/* Info — Streamlit Blue */
+/* Info â€” Streamlit Blue */
 div[data-testid="stNotification"][aria-label="Info"],
 div[role="alert"][aria-label="Info"],
 div[data-testid="stNotification"]:has(svg[aria-label="Info"]) {
@@ -825,7 +825,7 @@ div[data-testid="stDataFrame"] {
     -ms-overflow-style: none !important;
 }
 
-/* ── Section Headers ─────────────────────────────────────── */
+/* â”€â”€ Section Headers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .section-header {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
     font-size: 0.85rem;
@@ -852,7 +852,7 @@ div[data-testid="stDataFrame"] {
     display: inline-block;
 }
 
-/* ── Section Header Wrappers ─────────────────────────────── */
+/* â”€â”€ Section Header Wrappers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .header-wrapper-center {
     text-align: center;
     margin-top: 32px !important;
@@ -1667,9 +1667,10 @@ div[data-testid="stElementContainer"]:has(.orange-btn-marker) * {
 /* RED BUTTON */
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button,
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"],
+div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="secondary"],
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[data-testid="stBaseButton-primary"],
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[data-testid="stBaseButton-secondary"] {
-    background-color: #E63946 !important;
+    background-color: #ef4444 !important;
     color: #FFFFFF !important;
     border: 2px solid #0F172A !important;
 }
@@ -1677,14 +1678,16 @@ div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="st
     color: #FFFFFF !important;
 }
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button:hover,
-div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:hover {
-    background-color: #E63946 !important;
+div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:hover,
+div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="secondary"]:hover {
+    background-color: #ef4444 !important;
     box-shadow: 4px 4px 0px 0px #0F172A !important;
     transform: translate(2px, 2px) !important;
 }
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button:active,
-div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:active {
-    background-color: #E63946 !important;
+div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:active,
+div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="secondary"]:active {
+    background-color: #ef4444 !important;
     box-shadow: 2px 2px 0px 0px #0F172A !important;
     transform: translate(4px, 4px) !important;
 }
