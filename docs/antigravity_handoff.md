@@ -5,9 +5,9 @@ Use this when continuing the production-readiness flow outside Codex.
 ## Current State
 
 - Branch: `main` (fully merged, pushed, and up-to-date with `origin/main`)
-- Latest completed checkpoint: run `git log -1 --oneline` (Commit `17b7777` or later)
+- Latest completed checkpoint: run `git log -1 --oneline` (Commit `aaa9d00` or later)
 - Constitution: `v2.6.0` (includes Principle XII: Minimal & Clean Dependency Architecture)
-- Requirements: Pruned down to 166 clean, cross-platform requirements (removed Windows-only `pywin32` and unused AI/ML/cloud bloat like `litellm`, `mcp`, `opentelemetry`, etc.)
+- Requirements: Pruned down to 163 clean, cross-platform requirements (removed Windows-only `pywin32`, unused AI/ML/cloud bloat like `litellm`, `mcp`, `opentelemetry`, and unused vulnerable direct requirements `ecdsa`, `python-jose`, `PyPDF2`).
 - GitHub Actions on latest checkpoint:
   - `Smoke Tests`: success (77/77 tests passing)
   - `Security Audit`: success (0 vulnerabilities found after dependency pruning)

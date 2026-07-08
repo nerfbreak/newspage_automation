@@ -39,6 +39,15 @@ For a release candidate:
 
 The project is now fully verified and ready for production release deployment.
 
+## Remote CI Status
+
+As of commit `aaa9d00`, GitHub Actions reports:
+
+- `Smoke Tests`: success
+- `Security Audit`: success
+
+Earlier failures on `30b70ef` and `ad10715` were resolved by adding the missing CI smoke dependency (`openpyxl`), making the security smoke test self-contained, and pruning unused vulnerable direct requirements.
+
 ## Live Deployment Smoke Test
 
 On 2026-07-08, the live Streamlit Cloud deployment at `https://newspage.streamlit.app` was verified:
