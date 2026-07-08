@@ -8,6 +8,7 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 
 ### ✨ Fitur Baru
 
+- **Dukungan Upload CSV, XLSX, dan XLS di Semua Modul**: Semua area upload file utama kini menerima format `.csv`, `.xlsx`, dan `.xls`, termasuk Inventory Adjustment, Promotion Comparison, Stock Mutation, dan Initial Stock.
 - **Skrip Otomatisasi Pemeriksaan RLS & Indeks Database**: Menambahkan utilitas baru (`scripts/supabase_rls_index_check.py`) untuk memvalidasi status Row Level Security (RLS) dan integritas indeks seluruh tabel Supabase secara otomatis dan read-only tanpa mengekspos data atau kredensial rahasia.
 - **File Uploader Manual Entry**: Tambahkan opsi komponen pengunggah file (.csv, .xlsx, .xls) di modul *Manual Entry* beserta pratinjau tabel dan pemetaan (*mapping*) kolom secara otomatis, untuk mempercepat input data stok.
 - **Mode Dry Run (Simulasi)**: Tambahkan toggle global di tampilan utama untuk menjalankan semua alur otomasi secara penuh tanpa menekan tombol *Save* di portal Newspage. Berguna untuk menguji konfigurasi sebelum eksekusi nyata.
