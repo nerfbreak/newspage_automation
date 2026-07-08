@@ -213,6 +213,42 @@ button[data-testid="stBaseButton-primaryFormSubmit"] {
     font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
 }
 
+/* Capture all possible secondary button variants in Streamlit (Destructive / Red) */
+button[kind="secondary"],
+button[kind="secondaryFormSubmit"],
+button[data-testid="stBaseButton-secondary"],
+button[data-testid="stBaseButton-secondaryFormSubmit"] {
+    background-color: #ef4444 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #0F172A !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.04em !important;
+    transition: all 0.15s ease !important;
+    border-radius: 0px !important;
+    box-shadow: 6px 6px 0px 0px #0F172A !important;
+    font-family: "Source Sans 3", "Source Sans Pro", sans-serif !important;
+}
+
+button[kind="secondary"]:hover,
+button[kind="secondaryFormSubmit"]:hover,
+button[data-testid="stBaseButton-secondary"]:hover,
+button[data-testid="stBaseButton-secondaryFormSubmit"]:hover {
+    background-color: #ef4444 !important;
+    box-shadow: 4px 4px 0px 0px #0F172A !important;
+    transform: translate(2px, 2px) !important;
+    color: #FFFFFF !important;
+    border-color: #0F172A !important;
+}
+
+button[kind="secondary"]:active,
+button[kind="secondaryFormSubmit"]:active,
+button[data-testid="stBaseButton-secondary"]:active,
+button[data-testid="stBaseButton-secondaryFormSubmit"]:active {
+    background-color: #ef4444 !important;
+    box-shadow: 2px 2px 0px 0px #0F172A !important;
+    transform: translate(4px, 4px) !important;
+}
+
 /* --- Dialog / Modal Components --- */
 
 div[role="dialog"] {
