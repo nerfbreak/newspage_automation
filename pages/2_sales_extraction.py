@@ -70,22 +70,18 @@ st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
 extract_btn = False
 
 if st.session_state.get('sales_csv_data'):
-    col_dl, col_clr = st.columns(2)
-    with col_dl:
-        st.download_button(
-            label="Download Extracted Data (ZIP)",
-            data=st.session_state.sales_csv_data,
-            file_name=st.session_state.sales_csv_filename,
-            mime="application/zip",
-            width='stretch',
-            type="primary"
-        )
-    with col_clr:
-        with st.container():
-            st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-            if st.button("Clear Data Extracted Sales", type="primary", width='stretch', icon=":material/delete:"):
-                st.session_state.sales_csv_data = None
-                st.rerun()
+    st.download_button(
+        label="Download Extracted Data (ZIP)",
+        data=st.session_state.sales_csv_data,
+        file_name=st.session_state.sales_csv_filename,
+        mime="application/zip",
+        width='stretch',
+        type="primary"
+    )
+    st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
+    if st.button("Clear Data Extracted Sales", type="secondary", width='stretch', icon=":material/delete:"):
+        st.session_state.sales_csv_data = None
+        st.rerun()
 else:
     btn_label = "Extracting…" if st.session_state.is_bot_running else "Extract Invoice"
     extract_btn = st.button(btn_label, type="primary", width='stretch', disabled=st.session_state.is_bot_running, icon=":material/download:")
