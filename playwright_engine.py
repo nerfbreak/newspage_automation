@@ -10,6 +10,7 @@ import pandas as pd
 import streamlit as st
 import database
 import utils
+import psutil
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
 def _setup_event_loop():
@@ -17,8 +18,22 @@ def _setup_event_loop():
     except RuntimeError: asyncio.set_event_loop(asyncio.new_event_loop())
 
 
+def force_kill_playwright_processes(current_user):
+    """Forcefully kills Chromium processes spawned by Playwright for the specific user."""
+    if not current_user:
+        return
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        try:
+            name = proc.info.get('name', '').lower()
+            if name in ('chrome.exe', 'chromium.exe', 'node.exe'):
+                cmdline = proc.info.get('cmdline', [])
+                if cmdline and any(f"--bot-user={current_user}" in arg for arg in cmdline):
+                    proc.kill()
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+
 @contextmanager
-def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar=None):
+def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar=None, current_user=None):
     ensure_playwright()
     _setup_event_loop()
     from playwright.sync_api import sync_playwright
@@ -26,16 +41,21 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
     with sync_playwright() as p:
         ui_log("SYS", "Spawning browser context with isolated session...")
         if progress_bar: progress_bar.progress(0.05)
+        
+        args = [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu",
+            "--no-zygote",
+            "--disable-software-rasterizer"
+        ]
+        if current_user:
+            args.append(f"--bot-user={current_user}")
+            
         browser = p.chromium.launch(
             headless=True,
-            args=[
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu",
-                "--no-zygote",
-                "--disable-software-rasterizer"
-            ]
+            args=args
         )
         context = browser.new_context(viewport={"width": 1920, "height": 1080})
         page = context.new_page()
@@ -293,7 +313,7 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
         _setup_terminate_button(term_ph)
         text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
 
-        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log, progress_bar) as (page, browser):
+        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log, progress_bar, current_user=current_user) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log, progress_bar)
             
             # Fetch distributor exception from DB
@@ -524,7 +544,7 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
         _setup_terminate_button(term_ph)
         text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
 
-        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log, progress_bar) as (page, browser):
+        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log, progress_bar, current_user=current_user) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log, progress_bar)
             real_filename, file_path = _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run, progress_bar, text_ph)
 
@@ -903,7 +923,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
         total_rows = len(df_view)
         text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
 
-        with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar) as (page, browser):
+        with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar, current_user=current_user) as (page, browser):
             # Fetch distributor exception from DB
             exception_dict = database.get_distributor_warehouse_exceptions(supabase)
             target_whs = exception_dict.get(bot_user)
@@ -1175,7 +1195,7 @@ def run_promotion_sync(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIM
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     try:
-        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
+        with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log, current_user=current_user) as (page, browser):
             _navigate_to_import_export(page, TIMEOUT_MS, ext_ui_log)
             real_filename, file_path = _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ext_ui_log, browser, dry_run)
             if dry_run:
@@ -1251,7 +1271,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         total_rows = len(df_view)
         text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user) if show_status_box else None
 
-        with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar) as (page, browser):
+        with managed_browser_session(bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar, current_user=current_user) as (page, browser):
             # Resolve actual warehouse from distributor_exceptions
             exception_dict = database.get_distributor_warehouse_exceptions(supabase)
             target_whs = exception_dict.get(bot_user)

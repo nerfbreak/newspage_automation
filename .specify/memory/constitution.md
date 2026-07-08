@@ -1,11 +1,11 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 2.6.0 -> 2.7.0 (Aligned Principle IV with locked Neo-Brutalism)
-Added sections: None
+Version change: 2.7.0 -> 2.8.0 (Added Principle XIII for Human-Readable Terminal Logs)
+Added sections:
+  - Principle XIII: Human-Readable Terminal UI Logs
 Modified sections:
-  - Principle IV: UI Consistency - Flat & Premium Design -> UI Consistency - Locked Neo-Brutalism
-  - Governance (Version bump to 2.7.0, Last Amended: 2026-07-08)
+  - Governance (Version bump to 2.8.0, Last Amended: 2026-07-09)
 Removed sections: None
 Templates requiring updates:
   - .specify/memory/constitution.md: updated
@@ -153,6 +153,17 @@ included in production deployment requirements.
 **Rationale**: Unused dependency bloat causes runtime version conflicts, increases
 build time, and expands the CVE attack surface.
 
+### XIII. Human-Readable Terminal UI Logs
+All terminal UI logs, system messages, and terminal-based feedback presented to the user
+MUST be human-readable, friendly, and properly formatted. Avoid dumping raw JSON, internal
+variable states, or overly technical stack traces unless explicitly requested in a debug mode.
+Messages should clearly state what action is occurring, what input is required, or what
+error occurred in plain, accessible language.
+
+**Rationale**: The primary users of the automation tools are operations staff. Overly
+technical or raw terminal outputs cause confusion, decrease trust, and increase the
+likelihood of user error during execution or troubleshooting.
+
 ## Security & Credential Standards
 
 - All secrets MUST be stored in `.streamlit/secrets.toml` or deployment secrets; local
@@ -201,4 +212,4 @@ Amendments require:
 All AI coding agents working on this project MUST read this constitution at the start
 of each session alongside `.agents/MEMORY.md`.
 
-**Version**: 2.7.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-08
+**Version**: 2.8.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-09
