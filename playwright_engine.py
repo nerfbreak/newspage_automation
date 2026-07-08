@@ -1423,7 +1423,8 @@ def run_mutasi_execution(
     prog_a_ph, prog_b_ph,
     log_a_ph, log_b_ph,
     supabase,
-    remark_text="",
+    remark_text_a="",
+    remark_text_b="",
     current_user=None,
     dry_run=None
 ):
@@ -1442,7 +1443,7 @@ def run_mutasi_execution(
         WAREHOUSE=whs_a, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_a, alert_callback=alert_callback, 
         table_placeholder=table_a_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text, progress_placeholder=prog_a_ph, show_status_box=False, current_user=current_user, dry_run=dry_run
+        remark_text=remark_text_a, progress_placeholder=prog_a_ph, show_status_box=False, current_user=current_user, dry_run=dry_run
     )
     success_a, failed_a, elapsed_a = res_a if res_a else (0, len(df_deduct), 0)
     
@@ -1458,7 +1459,7 @@ def run_mutasi_execution(
         WAREHOUSE=whs_b, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_b, alert_callback=alert_callback, 
         table_placeholder=table_b_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text, progress_placeholder=prog_b_ph, show_status_box=False, current_user=current_user, dry_run=dry_run
+        remark_text=remark_text_b, progress_placeholder=prog_b_ph, show_status_box=False, current_user=current_user, dry_run=dry_run
     )
     success_b, failed_b, elapsed_b = res_b if res_b else (0, len(df_add), 0)
 

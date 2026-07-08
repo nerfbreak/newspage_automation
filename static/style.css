@@ -1646,7 +1646,10 @@ div[data-testid="stProgress"] div[role="progressbar"] > div[style*="width: 100%"
    ============================================================ */
 div[data-testid="stElementContainer"]:has(.red-btn-marker),
 div[data-testid="stElementContainer"]:has(.green-btn-marker),
-div[data-testid="stElementContainer"]:has(.orange-btn-marker) {
+div[data-testid="stElementContainer"]:has(.orange-btn-marker),
+.element-container:has(.red-btn-marker),
+.element-container:has(.green-btn-marker),
+.element-container:has(.orange-btn-marker) {
     height: 0 !important;
     min-height: 0 !important;
     margin: 0 !important;
@@ -1656,7 +1659,10 @@ div[data-testid="stElementContainer"]:has(.orange-btn-marker) {
 
 div[data-testid="stElementContainer"]:has(.red-btn-marker) *,
 div[data-testid="stElementContainer"]:has(.green-btn-marker) *,
-div[data-testid="stElementContainer"]:has(.orange-btn-marker) * {
+div[data-testid="stElementContainer"]:has(.orange-btn-marker) *,
+.element-container:has(.red-btn-marker) *,
+.element-container:has(.green-btn-marker) *,
+.element-container:has(.orange-btn-marker) * {
     height: 0 !important;
     min-height: 0 !important;
     margin: 0 !important;
@@ -1669,24 +1675,36 @@ div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="st
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"],
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="secondary"],
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[data-testid="stBaseButton-primary"],
-div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[data-testid="stBaseButton-secondary"] {
+div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[data-testid="stBaseButton-secondary"],
+.element-container:has(.red-btn-marker) + .element-container button,
+.element-container:has(.red-btn-marker) + .element-container button[kind="primary"],
+.element-container:has(.red-btn-marker) + .element-container button[kind="secondary"],
+.element-container:has(.red-btn-marker) + .element-container button[data-testid="stBaseButton-primary"],
+.element-container:has(.red-btn-marker) + .element-container button[data-testid="stBaseButton-secondary"] {
     background-color: #ef4444 !important;
     color: #FFFFFF !important;
     border: 2px solid #0F172A !important;
 }
-div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button p {
+div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button p,
+.element-container:has(.red-btn-marker) + .element-container button p {
     color: #FFFFFF !important;
 }
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button:hover,
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:hover,
-div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="secondary"]:hover {
+div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="secondary"]:hover,
+.element-container:has(.red-btn-marker) + .element-container button:hover,
+.element-container:has(.red-btn-marker) + .element-container button[kind="primary"]:hover,
+.element-container:has(.red-btn-marker) + .element-container button[kind="secondary"]:hover {
     background-color: #ef4444 !important;
     box-shadow: 4px 4px 0px 0px #0F172A !important;
     transform: translate(2px, 2px) !important;
 }
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button:active,
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:active,
-div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="secondary"]:active {
+div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="secondary"]:active,
+.element-container:has(.red-btn-marker) + .element-container button:active,
+.element-container:has(.red-btn-marker) + .element-container button[kind="primary"]:active,
+.element-container:has(.red-btn-marker) + .element-container button[kind="secondary"]:active {
     background-color: #ef4444 !important;
     box-shadow: 2px 2px 0px 0px #0F172A !important;
     transform: translate(4px, 4px) !important;
@@ -1695,22 +1713,30 @@ div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="st
 /* GREEN BUTTON */
 div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button,
 div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"],
-div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button[data-testid="stBaseButton-primary"] {
+div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button[data-testid="stBaseButton-primary"],
+.element-container:has(.green-btn-marker) + .element-container button,
+.element-container:has(.green-btn-marker) + .element-container button[kind="primary"],
+.element-container:has(.green-btn-marker) + .element-container button[data-testid="stBaseButton-primary"] {
     background-color: #10B981 !important;
     color: #FFFFFF !important;
     border: 2px solid #0F172A !important;
 }
-div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button p {
+div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button p,
+.element-container:has(.green-btn-marker) + .element-container button p {
     color: #FFFFFF !important;
 }
 div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button:hover,
-div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:hover {
+div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:hover,
+.element-container:has(.green-btn-marker) + .element-container button:hover,
+.element-container:has(.green-btn-marker) + .element-container button[kind="primary"]:hover {
     background-color: #10B981 !important;
     box-shadow: 4px 4px 0px 0px #0F172A !important;
     transform: translate(2px, 2px) !important;
 }
 div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button:active,
-div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:active {
+div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:active,
+.element-container:has(.green-btn-marker) + .element-container button:active,
+.element-container:has(.green-btn-marker) + .element-container button[kind="primary"]:active {
     background-color: #10B981 !important;
     box-shadow: 2px 2px 0px 0px #0F172A !important;
     transform: translate(4px, 4px) !important;
@@ -1719,22 +1745,30 @@ div[data-testid="stElementContainer"]:has(.green-btn-marker) + div[data-testid="
 /* ORANGE BUTTON */
 div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button,
 div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"],
-div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button[data-testid="stBaseButton-primary"] {
+div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button[data-testid="stBaseButton-primary"],
+.element-container:has(.orange-btn-marker) + .element-container button,
+.element-container:has(.orange-btn-marker) + .element-container button[kind="primary"],
+.element-container:has(.orange-btn-marker) + .element-container button[data-testid="stBaseButton-primary"] {
     background-color: #F59E0B !important;
-    color: #0F172A !important;
+    color: #FFFFFF !important;
     border: 2px solid #0F172A !important;
 }
-div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button p {
-    color: #0F172A !important;
+div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button p,
+.element-container:has(.orange-btn-marker) + .element-container button p {
+    color: #FFFFFF !important;
 }
 div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button:hover,
-div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:hover {
+div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:hover,
+.element-container:has(.orange-btn-marker) + .element-container button:hover,
+.element-container:has(.orange-btn-marker) + .element-container button[kind="primary"]:hover {
     background-color: #F59E0B !important;
     box-shadow: 4px 4px 0px 0px #0F172A !important;
     transform: translate(2px, 2px) !important;
 }
 div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button:active,
-div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:active {
+div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"]:active,
+.element-container:has(.orange-btn-marker) + .element-container button:active,
+.element-container:has(.orange-btn-marker) + .element-container button[kind="primary"]:active {
     background-color: #F59E0B !important;
     box-shadow: 2px 2px 0px 0px #0F172A !important;
     transform: translate(4px, 4px) !important;

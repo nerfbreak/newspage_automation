@@ -31,7 +31,8 @@ init_session_state(
     mutasi_review_df=None,
     mutasi_file_id=None,
     selected_reason_code="",
-    remark_text=""
+    remark_a="",
+    remark_b=""
 )
 
 render_wakelock()
@@ -57,6 +58,7 @@ with col1:
     with st.container(border=True):
         dist_a = st.selectbox("Pilih Distributor Pengirim", list_dist, key="mutasi_dist_a")
         bot_user_a, bot_pass_a = database.get_distributor_creds(supabase, dist_a)
+        remark_a = st.text_input("Remark Pengirim", max_chars=50, key="mutasi_remark_a")
 
 with col2:
     st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
@@ -65,6 +67,7 @@ with col2:
         list_dist_b = [d for d in list_dist if d != dist_a]
         dist_b = st.selectbox("Pilih Distributor Penerima", list_dist_b, key="mutasi_dist_b")
         bot_user_b, bot_pass_b = database.get_distributor_creds(supabase, dist_b)
+        remark_b = st.text_input("Remark Penerima", max_chars=50, key="mutasi_remark_b")
 
 # --- FILE UPLOAD + COLUMN MAPPING ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
@@ -170,7 +173,6 @@ with st.container(border=True):
             break
     selected_reason_label = st.selectbox("Reason Adjustment", list(reason_options.values()), index=default_reason_idx, key="mutasi_reason")
     selected_reason_code = [k for k, v in reason_options.items() if v == selected_reason_label][0]
-    remark_text = st.text_input("Remark", max_chars=50, key="mutasi_remark")
     
 st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
 execute_clicked = st.button("Execute", type="primary", width='stretch', disabled=not can_execute, icon=":material/play_arrow:")
@@ -178,7 +180,8 @@ execute_clicked = st.button("Execute", type="primary", width='stretch', disabled
 if execute_clicked:
     st.session_state.is_mutasi_running = True
     st.session_state.selected_reason_code = selected_reason_code
-    st.session_state.remark_text = remark_text
+    st.session_state.remark_a = remark_a
+    st.session_state.remark_b = remark_b
     st.rerun()
 
 if st.session_state.is_mutasi_running:
@@ -243,7 +246,8 @@ if st.session_state.is_mutasi_running:
             prog_a_ph, prog_b_ph,
             log_a_ph, log_b_ph,
             supabase,
-            remark_text=st.session_state.remark_text,
+            remark_text_a=st.session_state.remark_a,
+            remark_text_b=st.session_state.remark_b,
             current_user=st.session_state.current_user,
         )
     finally:
