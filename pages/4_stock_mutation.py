@@ -69,7 +69,7 @@ with col2:
 # --- FILE UPLOAD + COLUMN MAPPING ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
-    uploaded_file = st.file_uploader("Upload file Excel berisi SKU yang akan dimutasi", type=['csv', 'xlsx'], key="mutasi_file_uploader")
+    uploaded_file = st.file_uploader("Upload file Excel berisi SKU yang akan dimutasi", type=['csv', 'xlsx', 'xls'], key="mutasi_file_uploader")
 
     # Track file changes to reset state
     curr_file_id = getattr(uploaded_file, "file_id", uploaded_file.name if uploaded_file else None) if uploaded_file else None

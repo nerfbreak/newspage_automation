@@ -9,6 +9,7 @@ import streamlit as st
 import utils
 
 import database
+import data_processor
 import playwright_engine
 from utils import (
     make_solid_box, render_terminal, render_footer,
@@ -52,16 +53,15 @@ st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True
 with st.container(border=True):
 
     
-    uploaded_file = st.file_uploader("Drag & Drop Newspage BDP Tracker.xlsx here", type=["xlsx"])
+    uploaded_file = st.file_uploader("Drag & Drop Newspage BDP Tracker here", type=["csv", "xlsx", "xls"])
     
     if uploaded_file:
         try:
-            with st.spinner("Membaca data dari Excel..."):
-                xl = pd.ExcelFile(uploaded_file)
-                available_sheets = xl.sheet_names
-                
-                if "tracker MDM" in available_sheets:
-                    st.session_state.uploaded_mdm_data = pd.read_excel(xl, sheet_name="tracker MDM")
+            with st.spinner("Membaca data dari file..."):
+                if uploaded_file.name.lower().endswith(".csv"):
+                    st.session_state.uploaded_mdm_data = data_processor.load_data(uploaded_file)
+                    if st.session_state.uploaded_mdm_data is None:
+                        raise ValueError("CSV tracker file could not be parsed.")
                     from utils import make_solid_box
                     st.markdown(f"""
                         <style>
@@ -73,12 +73,30 @@ with st.container(border=True):
                     with st.container():
                         st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
                         if st.button("Hapus File Upload", type="secondary", width='stretch', icon=":material/delete:"):
-                            # Just force rerun to clear
                             st.rerun()
+                else:
+                    xl = pd.ExcelFile(uploaded_file)
+                    available_sheets = xl.sheet_names
                 
-                if "BDP" in available_sheets:
-                    st.session_state.uploaded_bdp_data = pd.read_excel(xl, sheet_name="BDP")
-                    st.success("Sheet 'BDP' berhasil dibaca!")
+                    if "tracker MDM" in available_sheets:
+                        st.session_state.uploaded_mdm_data = pd.read_excel(xl, sheet_name="tracker MDM")
+                        from utils import make_solid_box
+                        st.markdown(f"""
+                            <style>
+                                div[data-testid="stFileUploader"] section {{ display: none !important; }}
+                                div[data-testid="stFileUploader"] {{ margin-bottom: -1rem !important; padding-bottom: 0px !important; }}
+                            </style>
+                            {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
+                        """, unsafe_allow_html=True)
+                        with st.container():
+                            st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
+                            if st.button("Hapus File Upload", type="secondary", width='stretch', icon=":material/delete:"):
+                                # Just force rerun to clear
+                                st.rerun()
+                    
+                    if "BDP" in available_sheets:
+                        st.session_state.uploaded_bdp_data = pd.read_excel(xl, sheet_name="BDP")
+                        st.success("Sheet 'BDP' berhasil dibaca!")
         except Exception as e:
             st.error(format_user_error("UPLOAD-001"))
 

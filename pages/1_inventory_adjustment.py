@@ -82,7 +82,7 @@ if "Auto Compare" in adj_mode:
         with st.container(border=True):
             def handle_fragment_upload():
                 if "f2_key" not in st.session_state: st.session_state.f2_key = 0
-                f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx'], key=f"file2_uploader_{st.session_state.f2_key}")
+                f = st.file_uploader("Upload Distributor stock file", type=['csv', 'xlsx', 'xls'], key=f"file2_uploader_{st.session_state.f2_key}")
                 if f:
                     from utils import make_solid_box
                     st.markdown(f"""
@@ -286,10 +286,9 @@ elif "Manual Entry" in adj_mode:
         if uploaded_manual:
             st.markdown(make_solid_box(f"FILE LOADED: {uploaded_manual.name}", "#FFDE59", "#0F172A"), unsafe_allow_html=True)
             try:
-                if uploaded_manual.name.endswith('.csv'):
-                    df_up = pd.read_csv(uploaded_manual)
-                else:
-                    df_up = pd.read_excel(uploaded_manual)
+                df_up = data_processor.load_data(uploaded_manual)
+                if df_up is None:
+                    raise ValueError("Uploaded manual adjustment file could not be parsed.")
                 
                 st.session_state.manual_uploaded_df = df_up
             except Exception as e:

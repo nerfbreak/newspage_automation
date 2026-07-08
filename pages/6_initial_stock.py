@@ -61,8 +61,8 @@ with st.container(border=True):
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
     uploaded_file = st.file_uploader(
-        "Upload file with SKU and Qty columns (csv, xlsx)",
-        type=['csv', 'xlsx'],
+        "Upload file with SKU and Qty columns (csv, xlsx, xls)",
+        type=['csv', 'xlsx', 'xls'],
         key="init_stock_file"
     )
 
@@ -86,10 +86,9 @@ if uploaded_file is not None:
     
 if uploaded_file is not None and st.session_state.initial_stock_raw is None and st.session_state.initial_stock_df is None:
     try:
-        if uploaded_file.name.endswith('.csv'):
-            df_raw = pd.read_csv(uploaded_file, dtype=str, on_bad_lines='skip')
-        else:
-            df_raw = pd.read_excel(uploaded_file, dtype=str)
+        df_raw = data_processor.load_data(uploaded_file)
+        if df_raw is None:
+            raise ValueError("Initial stock upload file could not be parsed.")
         df_raw.columns = [str(c).strip() for c in df_raw.columns]
         st.session_state.initial_stock_raw = df_raw
         st.rerun()
