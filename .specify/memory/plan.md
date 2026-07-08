@@ -72,6 +72,12 @@ Optimize/
 - Confirmed input sanitization (XSS) via `html.escape()` and RCE prevention in subprocess invocations across all modules.
 - Generated `audit_report.md` capturing the secure state of the application.
 
+### 024-clear-sales-btn-color (2026-07-08)
+[Source: specs/024-clear-sales-btn-color]
+- Added `.red-btn-marker` CSS logic to apply specific Neo-Brutalism compliant red styling.
+- Bound wrapper logic to Streamlit native element to differentiate the destructive "CLEAR DATA EXTRACTED SALES" button from primary action buttons.
+- No new dependencies, modules, or database modifications introduced.
+
 ## Testing Strategy
 
 - Manual validation: Navigate all 7 page modules, verify no deprecation warnings, confirm layout integrity.

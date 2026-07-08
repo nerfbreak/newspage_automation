@@ -49,3 +49,16 @@
 - None — audit validated existing components and generated `audit_report.md`
 
 **Tasks Completed:** 14/14 tasks
+
+### Clear Sales Button Color - 2026-07-08
+**Branch:** `024-clear-sales-btn-color`
+**Spec:** specs/024-clear-sales-btn-color
+
+**What was added:**
+- Styled the "Clear Data Extracted Sales" button with a red color to visually signify its destructive action.
+- Ensured full adherence to the global Neo-Brutalism design rules (hard borders, solid shadows, sharp edges).
+
+**New Components:**
+- None — modified `static/style.css` and injected a wrapping marker in the Streamlit page layout.
+
+**Tasks Completed:** 4/4 tasks

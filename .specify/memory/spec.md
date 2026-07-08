@@ -70,6 +70,15 @@ Sebagai pengelola aplikasi, saya ingin setiap temuan audit memiliki status tinda
 1. **Given** laporan audit memiliki temuan, **When** laporan ditinjau, **Then** setiap temuan memiliki rekomendasi, prioritas, dan kriteria penyelesaian.
 2. **Given** temuan sudah diperbaiki, **When** audit ulang dilakukan, **Then** status temuan berubah menjadi selesai hanya jika bukti validasi tersedia.
 
+### US-008: Clear Data Extracted Sales Button Color (Priority: P1)
+[Source: specs/024-clear-sales-btn-color]
+
+As a user, I want the "Clear Data Extracted Sales" button to be colored red, so that I can easily identify it as a destructive action and distinguish it from other buttons.
+
+**Acceptance Scenarios**:
+1. **Given** the user is viewing the page with the extracted sales data, **When** the page renders, **Then** the "Clear Data Extracted Sales" button must have a red background color.
+2. **Given** the user hovers over the red "Clear Data Extracted Sales" button, **When** hovered, **Then** it must exhibit the appropriate hover effects according to the global design system.
+
 ## Functional Requirements
 
 ### FR-001: Layout Width Parameter Migration — `use_container_width=True` → `width='stretch'`
@@ -124,6 +133,18 @@ Sistem MUST memverifikasi bahwa sesi pengguna berakhir sesuai kebijakan tidak ak
 [Source: specs/018-security-audit]
 Sistem MUST memverifikasi bahwa input teks, file unggahan, dan nilai konfigurasi yang berisiko ditolak atau dinetralkan sebelum diproses atau di-render ulang.
 
+### FR-014: Clear Sales Button Red Styling
+[Source: specs/024-clear-sales-btn-color]
+System MUST style the "Clear Data Extracted Sales" button with a red color.
+
+### FR-015: Clear Sales Button Neo-Brutalism Styling
+[Source: specs/024-clear-sales-btn-color]
+System MUST ensure the button's styling adheres to the locked Neo-Brutalism design system (e.g., hard borders, sharp corners, solid shadow).
+
+### FR-016: Preserved Functionality
+[Source: specs/024-clear-sales-btn-color]
+System MUST NOT alter the existing functionality of the button.
+
 ## Key Entities
 
 - **Viewport** [Source: specs/017-mobile-responsive]: The visible browser area that determines mobile, tablet, or desktop layout behavior.
@@ -141,6 +162,8 @@ Sistem MUST memverifikasi bahwa input teks, file unggahan, dan nilai konfigurasi
 - **Audit Access Limitation** [Source: specs/018-security-audit]: Jika audit tidak dapat memeriksa satu area karena konfigurasi atau akses, laporan harus mencatatnya secara eksplisit.
 - **Secret Spill Detection** [Source: specs/018-security-audit]: Jika data rahasia bocor di log atau unduhan, hal tersebut diangkat sebagai temuan berisiko. Laporan yang dihasilkan harus diedit agar tidak memuat ulang bukti bocornya secara mentah.
 
+- **Design System Constraint** [Source: specs/024-clear-sales-btn-color]: What happens if the global design system dictates a specific hover color for red buttons? It should be applied correctly.
+
 ## Success Criteria
 
 - **SC-001**: 100% of files containing `use_container_width` are successfully migrated to use the `width` parameter.
@@ -153,7 +176,11 @@ Sistem MUST memverifikasi bahwa input teks, file unggahan, dan nilai konfigurasi
 - **SC-008** [Source: specs/018-security-audit]: 0 rahasia mentah muncul dalam laporan audit, log audit, atau artefak.
 - **SC-009** [Source: specs/018-security-audit]: 100% skenario sesi kedaluwarsa, pencegahan input (XSS/RCE), dan enkripsi AES memiliki hasil verifikasi yang terdokumentasi dan aman.
 
+- **SC-010** [Source: specs/024-clear-sales-btn-color]: 100% of page loads display the "Clear Data Extracted Sales" button in red.
+- **SC-011** [Source: specs/024-clear-sales-btn-color]: The button maintains existing click functionality with 0 regressions.
+
 ## Revision Notes
 
 - **2026-07-06**: Archived mobile-first responsive design from `specs/017-mobile-responsive`, adding US-002, US-003, FR-005 through FR-009, SC-004 through SC-006, responsive entities, and mobile edge cases.
 - **2026-07-06**: Archived System Security Audit from `specs/018-security-audit`, adding US-004 through US-007, FR-010 through FR-013, Audit entities, SC-007 through SC-009, and security edge cases.
+- **2026-07-08**: Archived Clear Sales Button Color from `specs/024-clear-sales-btn-color`, adding US-008, FR-014 through FR-016, and SC-010, SC-011.
