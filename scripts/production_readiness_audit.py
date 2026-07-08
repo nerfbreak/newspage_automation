@@ -33,6 +33,8 @@ REQUIRED_FILES = (
     "docs/dependency_pruning_review.md",
     "docs/antigravity_handoff.md",
     "docs/release_readiness_checklist.md",
+    "docs/live_operations_runbook.md",
+    ".github/dependabot.yml",
 )
 
 LOCAL_SECRET_PATHS = (

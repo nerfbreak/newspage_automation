@@ -10,6 +10,7 @@ This checklist is the release gate for Optimize Newspage Automation before the a
 - Required app entry point: `app.py`
 - Required database baseline: `docs/database_migrations.md`
 - Required manual regression scope: `tests/manual/REGRESSION_CHECKLIST.md`
+- Required live operations runbook: `docs/live_operations_runbook.md`
 
 ## Automated Gates
 
@@ -110,4 +111,5 @@ A release can be marked ready only when:
 - Live Streamlit Cloud smoke passes after deployment.
 - The automated `Live Health Probe` job passes for the release commit on `main`.
 - Manual regression checklist has no blocking issue.
+- Live operators have reviewed `docs/live_operations_runbook.md`.
 - Rollback plan is understood by the release owner.

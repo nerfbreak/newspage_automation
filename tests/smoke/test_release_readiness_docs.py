@@ -17,6 +17,7 @@ class ReleaseReadinessDocsSmokeTests(unittest.TestCase):
             "https://newspage.streamlit.app/healthz",
             "Release Readiness",
             "Live Health Probe",
+            "live_operations_runbook.md",
             "Session And Credential Gates",
             "Rollback Plan",
             "Manual Regression Gates",

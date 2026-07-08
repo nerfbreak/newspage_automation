@@ -25,6 +25,7 @@
 | Observability/error taxonomy | 100% Integrated across all UI modules | `error_taxonomy.py`, `docs/error_taxonomy.md`, smoke tests | None (all UI modules wired) |
 | Workspace hygiene gate | Guarded | `scripts/production_readiness_audit.py`, `.gitignore` | Root-level scratch/debug Python files must not be left in the workspace |
 | Release readiness gate | Guarded | `docs/release_readiness_checklist.md`, `.github/workflows/release-readiness.yml`, smoke tests | Runs automatically on `main`; manual dispatch remains available after Streamlit Cloud deploys the intended release commit |
+| Live operations runbook | Guarded | `docs/live_operations_runbook.md`, `.github/dependabot.yml`, smoke tests | Operators should follow daily health, onboarding, revocation, incident, and rollback procedures |
 
 ## Operational Definition Of Done
 
@@ -40,6 +41,7 @@ For a release candidate:
 8. `python -m scripts.check_invalid_creds` (PASS - 100% stored passwords decrypt cleanly)
 9. GitHub Actions `Release Readiness` workflow passes on the release commit.
 10. Live `/healthz`, sign-in, dashboard, and module-routing smoke tests pass after Streamlit Cloud deploys the release commit.
+11. Live operators review `docs/live_operations_runbook.md` before broad access rollout.
 
 The project is now fully verified and ready for production release deployment.
 
