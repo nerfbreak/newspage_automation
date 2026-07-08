@@ -17,6 +17,7 @@ class ProductionReadinessAuditSmokeTests(unittest.TestCase):
         self.assertIn("| Check | Status | Detail |", rendered)
         self.assertIn("required-artifact", rendered)
         self.assertIn("root-debug-artifacts", rendered)
+        self.assertIn("docs/release_readiness_checklist.md exists", rendered)
 
 
 if __name__ == "__main__":

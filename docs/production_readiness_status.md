@@ -2,7 +2,7 @@
 
 **Project**: Optimize Newspage Automation  
 **Last reviewed**: 2026-07-08  
-**Status**: Production-readiness baseline and live operational gates complete across Options 1 to 5, including live Streamlit Cloud authenticated smoke test and Supabase RLS/index verification. Ready for final release hand-off.
+**Status**: Production-readiness baseline and live operational gates complete across Options 1 to 5, including live Streamlit Cloud authenticated smoke test, Supabase RLS/index verification, and a repeatable release readiness gate. Ready for final release hand-off.
 
 ## Coverage Matrix
 
@@ -24,6 +24,7 @@
 | Antigravity handoff | Documented & Updated | `docs/antigravity_handoff.md` | Use if work continues outside Codex |
 | Observability/error taxonomy | 100% Integrated across all UI modules | `error_taxonomy.py`, `docs/error_taxonomy.md`, smoke tests | None (all UI modules wired) |
 | Workspace hygiene gate | Guarded | `scripts/production_readiness_audit.py`, `.gitignore` | Root-level scratch/debug Python files must not be left in the workspace |
+| Release readiness gate | Guarded | `docs/release_readiness_checklist.md`, `.github/workflows/release-readiness.yml`, smoke tests | Run manual `Release Readiness` workflow after Streamlit Cloud deploys the intended release commit |
 
 ## Operational Definition Of Done
 
@@ -37,6 +38,8 @@ For a release candidate:
 6. `python scripts/supabase_schema_check.py` (PASS - 10/10 tables)
 7. `python scripts/supabase_rls_index_check.py` (PASS)
 8. `python -m scripts.check_invalid_creds` (PASS - 100% stored passwords decrypt cleanly)
+9. GitHub Actions `Release Readiness` workflow (manual gate) passes on the release commit.
+10. Live `/healthz`, sign-in, dashboard, and module-routing smoke tests pass after Streamlit Cloud deploys the release commit.
 
 The project is now fully verified and ready for production release deployment.
 
