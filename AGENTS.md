@@ -12,6 +12,13 @@ Whenever the user asks you to implement a new feature, fix a bug, or make archit
 1. **READ FIRST**: Always read `.agents/MEMORY.md` and `product_requirements_document.md` to understand the current context and prevent hallucinations.
 2. **UPDATE MEMORY**: After successfully completing a task, you MUST append a brief summary of what you did to `.agents/MEMORY.md` under the "Changelog & Decisions" section. Keep it concise.
 3. **DO NOT GUESS**: Rely on the existing codebase files and the `elements_yang_dipakai_dinewspage_sebagai_otomasi.md` for UI selectors instead of guessing.
+4. **CROSS-AGENT HANDOFF**: When work may continue in Codex, Antigravity, or Hermes, also read `.agents/WORKFLOW.md` and `.agents/CURRENT_HANDOFF.md` before making changes, then update `.agents/CURRENT_HANDOFF.md` before ending the session.
+
+## Cross-Agent Coordination
+- The repository is the official shared memory for Codex, Antigravity, and Hermes. Tool-specific persistent memory is secondary.
+- Before starting work, follow `.agents/WORKFLOW.md` and use `.agents/templates/START_SESSION.md` as the preferred readiness format when needed.
+- Before handing work to another tool, update `.agents/CURRENT_HANDOFF.md` and use `.agents/templates/FINISH_HANDOFF.md` as the preferred handoff format.
+- If tool memory conflicts with `AGENTS.md`, `.agents/MEMORY.md`, `.agents/WORKFLOW.md`, or active Spec Kit files, the repository files win.
 
 ## 🔒 MANDATORY DESIGN SYSTEM — Neo-Brutalism (LOCKED FOREVER)
 
@@ -83,4 +90,3 @@ You may **only** skip a step if the user explicitly says to skip it (e.g., "skip
 For bug fixes or trivial one-line corrections that do NOT introduce new behavior:
 - Use `/speckit-bugfix-report` → `/speckit-bugfix-patch` → `/speckit-bugfix-verify` instead of the full feature workflow.
 - Then `/speckit-checkpoint-commit` to save the fix.
-

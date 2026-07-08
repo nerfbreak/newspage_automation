@@ -69,6 +69,7 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 
 ## Changelog & Decisions
 
+- **2026-07-08**: Added cross-agent coordination documentation for Codex, Antigravity, and Hermes. Created `.agents/WORKFLOW.md`, `.agents/CURRENT_HANDOFF.md`, and start/finish handoff templates, then adjusted `.gitignore` so those shared-memory docs can be tracked while other `.agents` internals remain ignored.
 - **2026-06-24**: Reverted the Bento Box UI as it broke Streamlit's layout engine. Implemented a **Streamlit-Native Premium UI** instead: set elegant colors in `config.toml`, stripped destructive CSS overrides from `style.css` and `login.css`, and updated `utils.py` to use flat, safe, inline-styled HTML components.
 - **2026-06-24**: Rolled back UI to original state per user request. Enabled global font antialiasing.
 - **2026-06-25**: Critical security fixes â€” added `html.escape()` to all HTML injection points in `utils.py` (XSS prevention), enabled CORS in `config.toml`, pinned all dependency versions in `requirements.txt`, moved orphaned `refactor.py` to `scripts/`, added `EXCLUDE_PREFIX` constant to `database.py`, fixed misleading docstring in `database.py`, removed dead `style_status()` function from `utils.py`.

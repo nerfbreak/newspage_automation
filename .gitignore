@@ -60,7 +60,12 @@ figma_file.json
 .states/
 
 # AI Agent internal files (not part of the app)
-.agents/
+.agents/*
+!.agents/MEMORY.md
+!.agents/WORKFLOW.md
+!.agents/CURRENT_HANDOFF.md
+!.agents/templates/
+!.agents/templates/*.md
 brain/
 ponytail/
 spec-kit/
