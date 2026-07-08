@@ -8,6 +8,7 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 
 ### ✨ Fitur Baru
 
+- **Tombol Force Terminate**: Menambahkan tombol "FORCE KILL" yang secara instan mematikan proses bot Playwright jika terjadi hang atau error, tanpa mengganggu eksekusi bot milik pengguna lain di server yang sama.
 - **Dukungan Upload CSV, XLSX, dan XLS di Semua Modul**: Semua area upload file utama kini menerima format `.csv`, `.xlsx`, dan `.xls`, termasuk Inventory Adjustment, Promotion Comparison, Stock Mutation, dan Initial Stock.
 - **Skrip Otomatisasi Pemeriksaan RLS & Indeks Database**: Menambahkan utilitas baru (`scripts/supabase_rls_index_check.py`) untuk memvalidasi status Row Level Security (RLS) dan integritas indeks seluruh tabel Supabase secara otomatis dan read-only tanpa mengekspos data atau kredensial rahasia.
 - **File Uploader Manual Entry**: Tambahkan opsi komponen pengunggah file (.csv, .xlsx, .xls) di modul *Manual Entry* beserta pratinjau tabel dan pemetaan (*mapping*) kolom secara otomatis, untuk mempercepat input data stok.
