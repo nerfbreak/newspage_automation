@@ -202,7 +202,7 @@ def _navigate_to_import_export(page, TIMEOUT_MS, ui_log, progress_bar=None):
 
 def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_run=False, progress_bar=None):
     if progress_bar: progress_bar.progress(0.1)
-    ui_log("INJECT", "Setting job type: Export [E], desc: Text Inventory Master...")
+    ui_log("INJECT", "Menyiapkan jenis extract: Inventory Master.")
     page.locator("id=pag_FW_SYS_INTF_JOB_NewGeneral_JOB_TYPE_Value").select_option("E")
     page.wait_for_timeout(1000)
     page.locator("id=pag_FW_SYS_INTF_JOB_NewGeneral_JOB_DESC_Value").fill("Text Inventory Master")
@@ -211,25 +211,25 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     page.wait_for_timeout(1000)
     
     if progress_bar: progress_bar.progress(0.2)
-    ui_log("NAV", "Proceeding to next step...")
+    ui_log("NAV", "Melanjutkan ke pengaturan extract.")
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "extraction Next")
     page.wait_for_timeout(1000)
     
     if progress_bar: progress_bar.progress(0.3)
-    ui_log("SYS", "Bypassing disclaimer prompt...")
+    ui_log("SYS", "Mengonfirmasi pesan awal Newspage.")
     ok_btn = page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value")
     ok_btn.wait_for(state="visible", timeout=TIMEOUT_MS)
     ok_btn.click(force=True)
     page.wait_for_timeout(500)
     
     if progress_bar: progress_bar.progress(0.4)
-    ui_log("NAV", "Opening interface selection popup...")
+    ui_log("NAV", "Membuka daftar pilihan data yang akan di-extract.")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
     page.wait_for_timeout(1000)
     
     if progress_bar: progress_bar.progress(0.5)
-    ui_log("INJECT", "Searching target interface: E_20150315090000028...")
+    ui_log("INJECT", "Mencari template data Inventory Master.")
     search_field = page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value")
     # Popups are extremely heavy and slow to load on the Newspage server. Increase search field wait timeout to 180s.
     search_field.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
@@ -238,40 +238,40 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     page.wait_for_timeout(800)
     
     if progress_bar: progress_bar.progress(0.6)
-    ui_log("INJECT", "Selecting target interface from results...")
+    ui_log("INJECT", "Memilih template Inventory Master dari hasil pencarian.")
     target_text = page.get_by_text("E_20150315090000028", exact=True)
     target_text.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
     target_text.click(force=True)
     page.wait_for_timeout(800)
     
     if progress_bar: progress_bar.progress(0.7)
-    ui_log("INJECT", "Setting file type: Delimited [D], separator: standard...")
+    ui_log("INJECT", "Menyiapkan format file hasil extract.")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0").check()
     page.wait_for_timeout(2000)
     
     if progress_bar: progress_bar.progress(0.8)
-    ui_log("INJECT", f"Applying warehouse filter: [{WAREHOUSE}]...")
+    ui_log("INJECT", f"Menggunakan filter gudang: {WAREHOUSE}.")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_grd_DynamicFilter_ctl02_dyn_Field_txt_Value").fill(WAREHOUSE)
     page.wait_for_timeout(1500)
     
     if progress_bar: progress_bar.progress(0.9)
-    ui_log("SYS", "Committing parameters to job definition...")
+    ui_log("SYS", "Menyimpan pengaturan extract sementara.")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_btn_Add_Value").click(force=True)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "extraction Add commit")
     page.wait_for_timeout(2000)
     
-    ui_log("SERVER", "Saving job and dispatching execution to server...")
+    ui_log("SERVER", "Mengirim permintaan extract ke Newspage.")
     if dry_run:
         ui_log("DRY_RUN", "Dry run active - bypassed save click")
         return None, None
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Save_Value").click(force=True)
     
-    ui_log("SERVER", "Awaiting server confirmation prompt...")
+    ui_log("SERVER", "Menunggu konfirmasi dari Newspage.")
     page.locator("id=TF_Prompt_btn_Ok_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
     page.locator("id=TF_Prompt_btn_Ok_Value").click(force=True)
     
-    ui_log("SERVER", "Intercepting download link — this may take up to 4 minutes...")
+    ui_log("SERVER", "Menunggu Newspage menyiapkan file. Proses ini bisa beberapa menit.")
     with page.expect_download(timeout=240000) as download_info:
         download_btn = page.locator("id=pag_FW_SYS_INTF_STATUS_JOB_btn_Download_Value")
         download_btn.wait_for(state="visible", timeout=240000)
@@ -280,7 +280,7 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     download = download_info.value
     real_filename = download.suggested_filename
     file_path = f"temp_ext_{real_filename}"
-    ui_log("SUCCESS", f"Download captured: {real_filename}. Saving to environment...")
+    ui_log("SUCCESS", f"File extract berhasil diterima: {real_filename}.")
     download.save_as(file_path)
     
     return real_filename, file_path
@@ -307,10 +307,10 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
             if progress_bar: progress_bar.progress(1.0)
             
             if dry_run:
-                ext_ui_log("DRY_RUN", "Dry run complete - extraction skipped.")
+                ext_ui_log("DRY_RUN", "Dry run selesai. Extract tidak disimpan karena mode simulasi aktif.")
                 return pd.DataFrame(), ""
                 
-            ext_ui_log("SYS", f"Parsing payload file: {real_filename}...")
+            ext_ui_log("SYS", f"Membaca isi file extract: {real_filename}.")
             
             df_ext = None
             if real_filename.lower().endswith('.zip'):
@@ -318,7 +318,7 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
                     target = next((n for n in z.namelist() if "INVT_MASTER" in n and n.lower().endswith((".csv", ".txt"))), None)
                     if not target: target = next((n for n in z.namelist() if n.lower().endswith((".csv", ".txt"))), None)
                     if target:
-                        ext_ui_log("SYS", f"ZIP target identified: {target}")
+                        ext_ui_log("SYS", f"File data ditemukan di dalam ZIP: {target}.")
                         with z.open(target) as f:
                             df_ext = pd.read_csv(f, sep='\t', dtype=str, on_bad_lines='skip')
                             if df_ext.shape[1] <= 1: f.seek(0); df_ext = pd.read_csv(f, sep=',', dtype=str, on_bad_lines='skip')
@@ -341,7 +341,7 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
 
             if df_ext is not None and not df_ext.empty and df_ext.shape[1] > 1:
                 df_ext.columns = [str(c).strip() for c in df_ext.columns]
-                ext_ui_log("SUCCESS", f"Payload Secured! {len(df_ext)} items loaded. Flushing to session...")
+                ext_ui_log("SUCCESS", f"Extract selesai. {len(df_ext)} item berhasil dimuat.")
                 # [T001] Capture success screenshot before browser closes
                 success_shot = None
                 try:
@@ -349,7 +349,7 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
                     os.makedirs(screenshots_dir, exist_ok=True)
                     success_shot = os.path.join(screenshots_dir, f"success_extract_{int(time.time())}.png")
                     page.screenshot(path=success_shot, timeout=3000)
-                    ext_ui_log("SYS", "Success screenshot captured.")
+                    ext_ui_log("SYS", "Bukti screenshot berhasil disimpan.")
                 except Exception:
                     success_shot = None
                 alert_callback(
@@ -362,23 +362,23 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
                 st.rerun()
             else: 
                 st.session_state.is_bot_running = False
-                ext_ui_log("ERROR", "DataFrame validation failed.")
+                ext_ui_log("ERROR", "File dari Newspage tidak berisi data yang bisa dibaca.")
                 st.error("Gagal membaca file dari server.")
                 alert_callback(f"[WARN] <b>EXTRACT FAILED</b>\nUser: {current_user}\nDist: {selected_distributor}\nReason: Invalid DataFrame")
                 
     except PlaywrightTimeoutError: 
         st.session_state.is_bot_running = False
-        ext_ui_log("ERROR", "TIMEOUT: Server tidak merespon.")
+        ext_ui_log("ERROR", "Newspage terlalu lama merespon. Silakan coba lagi beberapa saat lagi.")
         st.error("Operation Timeout.")
         alert_callback(f"[ALERT] <b>EXTRACT TIMEOUT</b>\nUser: {current_user}\nDist: {selected_distributor}\nReason: Playwright Timeout")
     except Exception as e: 
         st.session_state.is_bot_running = False
-        ext_ui_log("ERROR", f"SYSTEM FAILURE: {str(e).split(chr(10))[0]}")
+        ext_ui_log("ERROR", f"Extract gagal: {str(e).split(chr(10))[0]}")
         st.error(f"System error: {e}")
         alert_callback(f"[ALERT] <b>SYSTEM ERROR (EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
 
 def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser, dry_run=False, progress_bar=None, text_ph=None):
-    ui_log("NAV", "Initiating sales export job sequence...")
+    ui_log("NAV", "Menyiapkan proses extract sales.")
     # The _navigate_to_import_export function already clicked Add Job, so we are now on the New General page.
     page.locator("id=pag_FW_SYS_INTF_JOB_NewGeneral_JOB_TYPE_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
     
@@ -415,10 +415,10 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
         intf_id = intf["id"]
         status_val = intf["status"]
         
-        ui_log("INJECT", f"Binding interface target {idx+1}/{total_steps}: {intf_id}")
+        ui_log("INJECT", f"Menyiapkan bagian data sales {idx+1}/{total_steps}.")
         
         if idx > 0:
-            ui_log("SYS", "Triggering NEW interface formulation...")
+            ui_log("SYS", "Membuka slot data sales berikutnya.")
             page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_btn_New_Value").click(force=True)
             page.wait_for_timeout(2000)
             
@@ -434,7 +434,7 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"sales intf select {intf_id}")
         page.wait_for_timeout(2000)
         
-        ui_log("INJECT", f"Applying parameters for {intf_id}")
+        ui_log("INJECT", f"Mengatur format data sales {idx+1}/{total_steps}.")
         page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
         page.wait_for_timeout(1500)
         page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0").check()
@@ -452,12 +452,12 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
                 except:
                     pass
             if success:
-                ui_log("SYS", f"Waiting for server to apply {status_val} filter (PostBack)...")
+                ui_log("SYS", f"Menunggu Newspage menerapkan filter status {status_val}.")
                 page.wait_for_timeout(3500)
         
         # Use JavaScript to directly set dates via CalendarExtender API
         # By querying suffix '_dyn_Field_dat_Value', we don't need to hardcode ctl15/ctl16
-        ui_log("INJECT", f"Setting date range: {start_date} to {end_date}")
+        ui_log("INJECT", f"Menggunakan periode sales: {start_date} sampai {end_date}.")
         sd_d, sd_m, sd_y = start_date.split('/')
         ed_d, ed_m, ed_y = end_date.split('/')
         
@@ -491,18 +491,18 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
         page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_btn_Add_Value").click(force=True)
         page.wait_for_timeout(2000)
         
-    ui_log("SERVER", "Executing multi-interface job sequence...")
+    ui_log("SERVER", "Mengirim permintaan extract sales ke Newspage.")
     if dry_run:
         ui_log("DRY_RUN", "Dry run active - bypassed save click")
         return None, None
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Save_Value").click(force=True)
     page.wait_for_timeout(2000)
     
-    ui_log("SERVER", "Awaiting server confirmation prompt...")
+    ui_log("SERVER", "Menunggu konfirmasi dari Newspage.")
     page.locator("id=TF_Prompt_btn_Ok_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
     page.locator("id=TF_Prompt_btn_Ok_Value").click(force=True)
     
-    ui_log("SERVER", "Awaiting file synthesis...")
+    ui_log("SERVER", "Menunggu Newspage menyiapkan file sales.")
     with page.expect_download(timeout=240000) as download_info:
         download_btn = page.locator("id=pag_FW_SYS_INTF_STATUS_JOB_btn_Download_Value")
         download_btn.wait_for(state="visible", timeout=240000)
@@ -511,7 +511,7 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
     download = download_info.value
     real_filename = download.suggested_filename
     file_path = f"temp_sales_{real_filename}"
-    ui_log("SUCCESS", f"Download captured: {real_filename}. Saving to environment...")
+    ui_log("SUCCESS", f"File sales berhasil diterima: {real_filename}.")
     download.save_as(file_path)
     
     return real_filename, file_path
@@ -531,12 +531,12 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
             if progress_bar: progress_bar.progress(1.0)
             
             if dry_run:
-                ext_ui_log("DRY_RUN", "Dry run complete - extraction skipped.")
+                ext_ui_log("DRY_RUN", "Dry run selesai. Extract sales tidak disimpan karena mode simulasi aktif.")
                 st.session_state.sales_csv_data = None
                 st.session_state.sales_csv_name = ""
                 return True
             
-            ext_ui_log("SYS", "Browser closed. Ready for download.")
+            ext_ui_log("SYS", "Extract sales selesai. File siap diunduh.")
             # [T002] Capture success screenshot before browser closes
             success_shot = None
             try:
@@ -544,7 +544,7 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
                 os.makedirs(screenshots_dir, exist_ok=True)
                 success_shot = os.path.join(screenshots_dir, f"success_sales_{int(time.time())}.png")
                 page.screenshot(path=success_shot, timeout=3000)
-                ext_ui_log("SYS", "Success screenshot captured.")
+                ext_ui_log("SYS", "Bukti screenshot berhasil disimpan.")
             except Exception:
                 success_shot = None
             alert_callback(
@@ -568,12 +568,12 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
                 
     except PlaywrightTimeoutError: 
         st.session_state.is_bot_running = False
-        ext_ui_log("ERROR", "TIMEOUT: Server tidak merespon.")
+        ext_ui_log("ERROR", "Newspage terlalu lama merespon. Silakan coba lagi beberapa saat lagi.")
         st.error("Operation Timeout.")
         alert_callback(f"[ALERT] <b>SALES EXTRACT TIMEOUT</b>\nUser: {current_user}\nDist: {selected_distributor}")
     except Exception as e: 
         st.session_state.is_bot_running = False
-        ext_ui_log("ERROR", f"SYSTEM FAILURE: {str(e).split(chr(10))[0]}")
+        ext_ui_log("ERROR", f"Extract sales gagal: {str(e).split(chr(10))[0]}")
         st.error(f"System error: {e}")
         alert_callback(f"[ALERT] <b>SYSTEM ERROR (SALES EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
 
