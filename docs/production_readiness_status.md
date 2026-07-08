@@ -45,10 +45,11 @@ The project is now fully verified and ready for production release deployment.
 
 ## Remote CI Status
 
-As of commit `aaa9d00`, GitHub Actions reports:
+As of commit `d19fb34`, GitHub Actions reports:
 
 - `Smoke Tests`: success
 - `Security Audit`: success
+- `Release Readiness`: available as a manual `workflow_dispatch` gate
 
 Earlier failures on `30b70ef` and `ad10715` were resolved by adding the missing CI smoke dependency (`openpyxl`), making the security smoke test self-contained, and pruning unused vulnerable direct requirements.
 
