@@ -1263,8 +1263,8 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             
             for i, (idx, row) in enumerate(df_view.iterrows()):
                 _update_progress_text(text_ph, i + 1, total_rows)
-                if progress_placeholder:
-                    progress_placeholder.progress((i + 1) / total_rows)
+                if progress_bar:
+                    progress_bar.progress((i + 1) / total_rows)
                 def fmt(v):
                     try:
                         if pd.isna(v): return ''
@@ -1383,6 +1383,8 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 return success_count, failed_count, elapsed
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
+                if progress_bar:
+                    progress_bar.progress(1.0)
                 box_html = utils.make_success_box(f"SUCCESS — Processed: {success_count} | Time: {elapsed//60}m {elapsed%60}s")
                 alert_msg = f"<b>STOCK ADJUSTMENT REPORT</b>\nDistributor : {selected_distributor}\nTotal SKU Mismatch : {success_count + failed_count}"
                 if file_name:

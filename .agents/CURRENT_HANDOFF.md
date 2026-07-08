@@ -9,14 +9,15 @@
 
 ## Current Status
 
-- Cross-agent workflow documentation has been introduced so every tool reads and writes the same project memory.
-- No application business logic is being changed by this handoff.
+- Manual Entry progress-bar regression has been fixed after the user provided the unlock password.
+- The patch is UI-only: `run_execution_manual()` now updates/finalizes the active Streamlit progress object, without changing Playwright selectors, row injection, save behavior, credentials, or Newspage transaction logic.
 - Locked automation modules remain protected by the existing freeze rule.
 
 ## Last Completed Work
 
-- Created the repo-level coordination plan for working across Codex, Antigravity, and Hermes.
-- Selected the "structured but lightweight" workflow: shared workflow file, current handoff file, and start/finish templates.
+- Added `tests/smoke/test_manual_progress_smoke.py` to reproduce and guard the default Manual Entry progress bug.
+- Patched `playwright_engine.py` so default Manual Entry progress reaches `1.0` on successful completion.
+- Added Spec Kit bug trace `specs/019-session-invalidation/bugs/BUG-002.md` and BUG-002 notes/tasks in the active Spec Kit artifacts.
 
 ## Next Recommended Step
 
@@ -31,11 +32,10 @@ When starting any new task in any AI tool:
 
 ## Files to Watch
 
-- `AGENTS.md`
 - `.agents/MEMORY.md`
-- `.agents/WORKFLOW.md`
 - `.agents/CURRENT_HANDOFF.md`
-- `product_requirements_document.md`
+- `playwright_engine.py`
+- `tests/smoke/test_manual_progress_smoke.py`
 - `specs/019-session-invalidation/`
 
 ## Blockers
@@ -44,6 +44,7 @@ When starting any new task in any AI tool:
 
 ## Verification Notes
 
-- This is a documentation/process change only.
-- Verified by reading the created workflow, handoff, and template files.
-- No Streamlit or Playwright runtime tests are required unless later code changes are made.
+- Focused regression: `python -m unittest tests.smoke.test_manual_progress_smoke` passed.
+- Full smoke suite: `python -m unittest discover -s tests\smoke` passed, 81 tests.
+- Production readiness audit: `python scripts\production_readiness_audit.py` passed.
+- Smoke output includes expected logged fake decryption errors from existing tests; suite result was OK.

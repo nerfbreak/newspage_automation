@@ -88,6 +88,7 @@ Maintainers need clear, repeatable evidence that session invalidation works with
 - **FR-013**: The system MUST revalidate an already authenticated Streamlit session against the current user credential-version metadata on rerun, not only remembered-cookie auto-login.
 
 **Bugfix**: 2026-07-08 - [BUG-001] Added active Streamlit session revalidation so password rotation can revoke sessions that are already logged in.
+**Bugfix**: 2026-07-08 - [BUG-002] Captured a cross-feature Manual Entry UI progress regression; the fix must preserve frozen automation behavior and only correct progress feedback.
 
 ### Key Entities
 

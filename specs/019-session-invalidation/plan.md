@@ -83,6 +83,7 @@ tests/smoke/test_security_audit_smoke.py
 **Structure Decision**: Keep the change in the existing auth boundary: `database.py` owns Supabase user/session helper reads and `app.py` owns CookieManager/session-state decisions. Tests remain in the existing smoke suite. Documentation updates stay in the existing production readiness and migration docs.
 
 **Bugfix**: 2026-07-08 - [BUG-001] Active Streamlit sessions must store and re-check the accepted session version, so a rotated password invalidates logged-in tabs on rerun as well as remembered-cookie auto-login.
+**Bugfix**: 2026-07-08 - [BUG-002] Manual Entry progress feedback is a cross-feature frozen-module UI patch; implementation is limited to `run_execution_manual()` progress rendering plus smoke coverage, with no Playwright selector or transaction-flow changes.
 
 ## Complexity Tracking
 

@@ -114,6 +114,12 @@
 - [X] T025 [US3] Add smoke coverage proving active-session revalidation is present in `app.py` without exposing secrets (depends on T024)
 - [X] T026 Run `python -m unittest discover -s tests\smoke` and `python scripts\production_readiness_audit.py` after BUG-001 implementation (depends on T025)
 
+**Bugfix**: 2026-07-08 - [BUG-002] Manual Entry progress bar must reach 100% after successful completion.
+
+- [X] T027 Add smoke coverage in `tests/smoke/test_manual_progress_smoke.py` proving default Manual Entry progress reaches `1.0` on success
+- [X] T028 Patch `playwright_engine.py` so `run_execution_manual()` updates the active progress bar object and finalizes it at success
+- [X] T029 Run focused smoke test, full smoke suite, and production readiness audit after BUG-002 implementation
+
 ---
 
 ## Dependencies & Execution Order
