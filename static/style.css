@@ -1644,6 +1644,26 @@ div[data-testid="stProgress"] div[role="progressbar"] > div[style*="width: 100%"
 /* ============================================================
    BUTTON MARKERS FOR VARIATIONS
    ============================================================ */
+div[data-testid="stElementContainer"]:has(.red-btn-marker),
+div[data-testid="stElementContainer"]:has(.green-btn-marker),
+div[data-testid="stElementContainer"]:has(.orange-btn-marker) {
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+div[data-testid="stElementContainer"]:has(.red-btn-marker) *,
+div[data-testid="stElementContainer"]:has(.green-btn-marker) *,
+div[data-testid="stElementContainer"]:has(.orange-btn-marker) * {
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 0 !important;
+}
+
 /* RED BUTTON */
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button,
 div[data-testid="stElementContainer"]:has(.red-btn-marker) + div[data-testid="stElementContainer"] button[kind="primary"],

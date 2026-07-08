@@ -224,6 +224,24 @@ class ExtendedOfflineSmokeTests(unittest.TestCase):
             raw_errors = re.findall(r'st\.error\((?!format_user_error)[^)]+\)', content)
             self.assertEqual(len(raw_errors), 0, f"Found unstandardized st.error calls in {os.path.basename(filepath)}: {raw_errors}")
 
+    def test_button_color_markers_do_not_add_layout_height(self):
+        import os
+        css_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "static", "style.css")
+        with open(css_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        for marker in ("red-btn-marker", "green-btn-marker", "orange-btn-marker"):
+            with self.subTest(marker=marker):
+                marker_selector = f"div[data-testid=\"stElementContainer\"]:has(.{marker})"
+                self.assertIn(marker_selector, content)
+                marker_start = content.index(marker_selector)
+                rule_start = content.index("{", marker_start)
+                rule_end = content.index("}", rule_start)
+                marker_rule = content[rule_start:rule_end]
+                self.assertIn("height: 0 !important;", marker_rule)
+                self.assertIn("margin: 0 !important;", marker_rule)
+                self.assertIn("overflow: hidden !important;", marker_rule)
+
 
 if __name__ == "__main__":
     unittest.main()
