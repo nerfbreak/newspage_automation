@@ -39,7 +39,7 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
     from playwright.sync_api import sync_playwright
 
     with sync_playwright() as p:
-        ui_log("SYS", "Spawning browser context with isolated session...")
+        ui_log("SYS", "Membuka browser untuk memulai sesi aman...")
         if progress_bar: progress_bar.progress(0.05)
         
         args = [
@@ -73,7 +73,7 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
                 pass
             raise
         finally:
-            ui_log("SYS", "Closing browser context and releasing memory...")
+            ui_log("SYS", "Menutup browser dan membersihkan memori sistem...")
             try:
                 context.close()
             except:
@@ -102,7 +102,7 @@ def ensure_playwright():
             st.error(f"Failed to install browser engine: {e2}")
 
 def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar=None):
-    ui_log("AUTH", f"Connecting to {URL_LOGIN}...")
+    ui_log("AUTH", f"Menghubungkan ke portal Newspage...")
     if progress_bar: progress_bar.progress(0.1)
     
     # Check if this is superuser based on secrets
@@ -113,7 +113,7 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
     account_desc = "SUPERUSER" if is_super else f"[{selected_distributor}]"
     
     page.goto(URL_LOGIN, wait_until="networkidle")
-    ui_log("AUTH", f"DOM ready. Injecting {account_desc} credentials...")
+    ui_log("AUTH", f"Halaman siap. Memasukkan akses kredensial {account_desc}...")
     if progress_bar: progress_bar.progress(0.15)
     page.locator("id=txtUserid").fill(user_id_np)
     page.locator("id=txtPasswd").fill(pass_np)
@@ -124,13 +124,13 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
     start_time = time.time()
     while time.time() - start_time < (TIMEOUT_MS / 1000.0):
         if "Default.aspx" in page.url:
-            ui_log("SYS", "No interceptor detected. Clean session acquired.")
+            ui_log("SYS", "Tidak ada sesi gantung. Sesi bersih berhasil didapatkan.")
             break
             
         try:
             btn = page.locator("id=SYS_ASCX_btnContinue")
             if btn.is_visible():
-                ui_log("AUTH", "Active session interceptor detected. Bypassing...")
+                ui_log("AUTH", "Sesi sebelumnya masih nyangkut. Sedang mengambil alih sesi...")
                 btn.click(force=True)
                 break
         except Exception:
@@ -145,8 +145,8 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
     # Harus menggunakan networkidle agar semua JS click handler (actionpath) terpasang sebelum _navigate_to_stock_adjustment dijalankan.
     if progress_bar: progress_bar.progress(0.25)
     page.wait_for_url("**/Default.aspx", timeout=TIMEOUT_MS, wait_until="networkidle")
-    ui_log("AUTH", "Login successful. Session established.")
-    ui_log("SUCCESS", "Handshake verified.")
+    ui_log("AUTH", "Login berhasil. Sesi telah terhubung.")
+    ui_log("SUCCESS", "Koneksi ke Newspage stabil dan siap digunakan.")
     if progress_bar: progress_bar.progress(0.3)
 
 def _wait_for_page_ready(page, timeout_ms, ui_log=None, context=""):
@@ -157,17 +157,17 @@ def _wait_for_page_ready(page, timeout_ms, ui_log=None, context=""):
     wait_timeout = min(timeout_ms, 30_000)
     label = f" [{context}]" if context else ""
     if ui_log:
-        ui_log("WAIT", f"Waiting for page to settle{label}...")
+        ui_log("WAIT", f"Menunggu halaman selesai dimuat{label}...")
     try:
         page.wait_for_load_state("networkidle", timeout=wait_timeout)
     except Exception:
         # Jika networkidle timeout (mis. server punya background polling ringan),
         # lanjutkan saja — error nyata akan ditangkap oleh wait_for(state=...) berikutnya.
         if ui_log:
-            ui_log("WAIT", f"Networkidle timeout{label} — proceeding cautiously.")
+            ui_log("WAIT", f"Halaman agak lambat{label} — mencoba melanjutkan dengan hati-hati.")
 
 def _navigate_to_import_export(page, TIMEOUT_MS, ui_log, progress_bar=None):
-    ui_log("NAV", "Navigating to System module...")
+    ui_log("NAV", "Membuka menu System...")
     if progress_bar: progress_bar.progress(0.35)
     page.wait_for_timeout(1000)
     
@@ -181,7 +181,7 @@ def _navigate_to_import_export(page, TIMEOUT_MS, ui_log, progress_bar=None):
     except:
         pass
 
-    ui_log("NAV", "Searching for Import/Export Job module in DOM...")
+    ui_log("NAV", "Mencari menu Import/Export Job...")
     if progress_bar: progress_bar.progress(0.4)
     
     target_id = "pag_Sys_Root_tab_Detail_itm_Job"
@@ -189,7 +189,7 @@ def _navigate_to_import_export(page, TIMEOUT_MS, ui_log, progress_bar=None):
     # Wait for it to be attached (doesn't have to be visible)
     try:
         page.wait_for_selector(f"id={target_id}", state="attached", timeout=TIMEOUT_MS)
-        ui_log("NAV", "Module found in DOM. Executing JS click bypass...")
+        ui_log("NAV", "Menu ditemukan. Membuka halaman Import/Export...")
         
         # JS Click bypass: ignores visibility and parent menu states
         page.evaluate(f"document.getElementById('{target_id}').click()")
@@ -197,7 +197,7 @@ def _navigate_to_import_export(page, TIMEOUT_MS, ui_log, progress_bar=None):
         page.wait_for_timeout(1500)
         
     except Exception as e:
-        ui_log("WARN", "ID-based JS click failed, trying brute-force...")
+        ui_log("WARN", "Cara pertama gagal, mencoba alternatif untuk klik menu...")
         try:
             # Try clicking the parent SysAdminSetup if we can find it
             parent_menu = page.locator("td:has-text('SysAdminSetup')").first
@@ -214,7 +214,7 @@ def _navigate_to_import_export(page, TIMEOUT_MS, ui_log, progress_bar=None):
 
     page.wait_for_timeout(1000)
     
-    ui_log("NAV", "Opening new job [Add Value]...")
+    ui_log("NAV", "Membuat tugas baru (Add Job)...")
     btn_add = page.locator("id=pag_FW_SYS_INTF_JOB_btn_Add_Value")
     btn_add.wait_for(state="visible", timeout=TIMEOUT_MS)
     btn_add.click(force=True)
@@ -310,7 +310,7 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
     try:
         progress_bar = st.progress(0)
         term_ph = st.empty()
-        _setup_terminate_button(term_ph)
+        _setup_terminate_button(term_ph, current_user=current_user)
         text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log, progress_bar, current_user=current_user) as (page, browser):
@@ -393,7 +393,7 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
         alert_callback(f"[ALERT] <b>EXTRACT TIMEOUT</b>\nUser: {current_user}\nDist: {selected_distributor}\nReason: Playwright Timeout")
     except Exception as e: 
         st.session_state.is_bot_running = False
-        ext_ui_log("ERROR", f"Extract gagal: {str(e).split(chr(10))[0]}")
+        ext_ui_log("ERROR", f"Sistem gagal mengekstrak data karena kendala tidak terduga: {str(e).split(chr(10))[0]}")
         st.error(f"System error: {e}")
         alert_callback(f"[ALERT] <b>SYSTEM ERROR (EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
 
@@ -541,7 +541,7 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
     try:
         progress_bar = st.progress(0)
         term_ph = st.empty()
-        _setup_terminate_button(term_ph)
+        _setup_terminate_button(term_ph, current_user=current_user)
         text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log, progress_bar, current_user=current_user) as (page, browser):
@@ -593,12 +593,12 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
         alert_callback(f"[ALERT] <b>SALES EXTRACT TIMEOUT</b>\nUser: {current_user}\nDist: {selected_distributor}")
     except Exception as e: 
         st.session_state.is_bot_running = False
-        ext_ui_log("ERROR", f"Extract sales gagal: {str(e).split(chr(10))[0]}")
+        ext_ui_log("ERROR", f"Sistem gagal mengekstrak data sales karena kendala tidak terduga: {str(e).split(chr(10))[0]}")
         st.error(f"System error: {e}")
         alert_callback(f"[ALERT] <b>SYSTEM ERROR (SALES EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
 
 def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_log, remark_text=""):
-    ui_log("NAV", "Navigating to Stock Adjustment module...")
+    ui_log("NAV", "Membuka halaman Stock Adjustment...")
     page.wait_for_timeout(3000)
     page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "StockAdj menu")
@@ -622,13 +622,13 @@ def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_l
         if remark_input.is_enabled():
             remark_input.fill(remark_text[:50])
             
-    ui_log("SYS", "Ready. Opening data stream for payload injection...")
+    ui_log("SYS", "Halaman siap. Mulai memasukkan data adjustment...")
 
 def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     sku_input = page.locator("id=pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value")
-    ui_log("INJECT", f"Locking target node for SKU [{sku}]...")
+    ui_log("INJECT", f"Mencari barang dengan kode SKU [{sku}]...")
     sku_input.fill(sku)
-    ui_log("INJECT", "Triggering system lookup (Tab event)...")
+    ui_log("INJECT", "Menunggu sistem Newspage mengenali kode SKU...")
     sku_input.press("Tab")
     page.wait_for_timeout(1500)
     
@@ -638,7 +638,7 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     # For negative adjustments, cross-check live available stock on screen
     if qty.startswith('-'):
         try:
-            ui_log("INJECT", "Negative adjustment detected. Verifying live screen stock...")
+            ui_log("INJECT", "Adjustment minus terdeteksi. Memeriksa sisa stok di layar...")
             stock_lbl = page.locator("id=pag_I_StkAdj_NewGeneral_lbl_Adjustable_Qty_Value")
             stock_lbl.wait_for(state="visible", timeout=5000)
             stock_text = stock_lbl.inner_text().strip().upper()
@@ -663,16 +663,16 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
             if "Insufficient" in str(e):
                 raise e
             
-    ui_log("INJECT", f"Node resolved. Assigning adjustment quantity: {qty} EA")
+    ui_log("INJECT", f"Barang ditemukan. Memasukkan jumlah adjustment: {qty} EA")
     qty_input.fill(qty)
     page.wait_for_timeout(500)
     page.locator("id=pag_I_StkAdj_NewGeneral_btn_Add_Value").click(force=True)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj add")
-    ui_log("SYS", "Awaiting DOM form reset confirmation...")
+    ui_log("SYS", "Data dimasukkan. Menunggu form kembali kosong untuk item berikutnya...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
 def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
-    ui_log("SYS", "Navigating to List view to capture transaction screenshot...")
+    ui_log("SYS", "Membuka daftar riwayat untuk mengambil screenshot bukti transaksi...")
     try:
         # Go to List View by clicking the side menu
         page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
@@ -686,13 +686,13 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("A")
         
         # Click Search
-        ui_log("SYS", "Clicking search...")
+        ui_log("SYS", "Mencari transaksi terakhir...")
         page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").click(force=True)
         page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj search")
         
         # Sort by Stock Adjustment No descending via direct ASP.NET JS PostBack
-        ui_log("SYS", "Sorting transactions descending...")
+        ui_log("SYS", "Mengurutkan data agar transaksi terbaru ada di paling atas...")
         page.evaluate("__doPostBack('pag_I_StkAdj_grd_List','Sort$TXN_NO')")
         page.wait_for_timeout(3000)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 1")
@@ -702,7 +702,7 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj sort 2")
         
         # Open details of the top record via CSS wildcard and JavaScript href execution
-        ui_log("SYS", "Opening transaction detail...")
+        ui_log("SYS", "Membuka rincian transaksi...")
         try:
             row_link = page.locator("a[id*='grs_TXN_NO_Value']").first
             row_link.wait_for(state="attached", timeout=15000)
@@ -721,17 +721,17 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
             os.makedirs(screenshots_dir, exist_ok=True)
             success_shot = os.path.join(screenshots_dir, f"{prefix}_{int(time.time())}.png")
             page.screenshot(path=success_shot, timeout=3000)
-            ui_log("SYS", "Transaction success screenshot captured.")
+            ui_log("SYS", "Screenshot bukti transaksi berhasil disimpan.")
             return success_shot
         except Exception as err:
-            ui_log("WARN", f"Grid row not found. Capturing List View instead. {str(err)}")
+            ui_log("WARN", f"Data detail tidak ditemukan. Menyimpan screenshot halaman daftar saja. {str(err)}")
             screenshots_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screenshots")
             os.makedirs(screenshots_dir, exist_ok=True)
             fallback_shot = os.path.join(screenshots_dir, f"{prefix}_list_fallback_{int(time.time())}.png")
             page.screenshot(path=fallback_shot, timeout=3000)
             return fallback_shot
     except Exception as shot_err:
-        ui_log("WARN", f"Failed to capture transaction screenshot: {shot_err}")
+        ui_log("WARN", f"Gagal mengambil screenshot: {shot_err}")
         return None
 
 def _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user, show_processed=True):
@@ -764,7 +764,7 @@ def _update_progress_text(text_ph, current, total):
             </script>
         """, unsafe_allow_javascript=True)
 
-def _setup_terminate_button(placeholder):
+def _setup_terminate_button(placeholder, current_user=None):
     """Renders the terminate button and custom Neo-Brutalist confirmation modal using Pure CSS."""
     with placeholder.container():
         st.markdown("""
@@ -854,6 +854,34 @@ def _setup_terminate_button(placeholder):
                     font-weight: 900 !important;
                     line-height: 1 !important;
                 }
+                
+                /* Style the Force Kill button */
+                div.element-container:has(#term-modal-toggle) + div.element-container + div.element-container {
+                    display: block !important;
+                    margin-top: 8px !important;
+                }
+                div.element-container:has(#term-modal-toggle) + div.element-container + div.element-container button {
+                    background-color: #FFFFFF !important;
+                    color: #E63946 !important;
+                    font-family: 'Source Sans 3', sans-serif !important;
+                    font-weight: 900 !important;
+                    font-size: 0.65rem !important;
+                    text-transform: uppercase !important;
+                    border: 2px dashed #E63946 !important;
+                    box-shadow: none !important;
+                    border-radius: 0px !important;
+                    transition: all 0.1s ease !important;
+                    padding: 4px 8px !important;
+                    width: 100% !important;
+                    min-height: 0 !important;
+                }
+                div.element-container:has(#term-modal-toggle) + div.element-container + div.element-container button:hover {
+                    background-color: #E63946 !important;
+                    color: #FFFFFF !important;
+                }
+                div.element-container:has(#term-modal-toggle) + div.element-container + div.element-container button p {
+                    margin: 0 !important; padding: 0 !important; font-weight: 900 !important; line-height: 1 !important;
+                }
             </style>
 <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 0px; margin-top: 0px;">
 <label for="term-modal-toggle" class="neo-btn-terminate" style="width: 100%; text-align: center; box-sizing: border-box; font-size: 0.85rem; padding: 6px 12px;">TERMINATE</label>
@@ -874,7 +902,13 @@ def _setup_terminate_button(placeholder):
             st.session_state.is_bot_running = False
             st.session_state.execute_done = False
             
+        def force_kill_callback():
+            force_kill_playwright_processes(current_user)
+            st.session_state.is_bot_running = False
+            st.session_state.execute_done = False
+            
         st.button("CONFIRM", key="term_bot_hidden", on_click=terminate_callback, width='stretch')
+        st.button("FORCE KILL", key="term_bot_force", on_click=force_kill_callback, width='stretch')
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):
@@ -919,7 +953,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
     try:
         progress_bar = st.progress(0)
         term_ph = st.empty()
-        _setup_terminate_button(term_ph)
+        _setup_terminate_button(term_ph, current_user=current_user)
         total_rows = len(df_view)
         text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
 
@@ -967,11 +1001,11 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     if "Insufficient" in err_msg:
                         df_view.at[idx, 'Keterangan'] = 'Insufficient Stock'
                         failed_count += 1
-                        ui_log("ERROR", f"Failed on SKU [{sku}]: {err_msg}. Skipping.")
+                        ui_log("ERROR", f"Gagal memasukkan SKU [{sku}] karena {err_msg}. Dilewati untuk saat ini.")
                     else:
                         df_view.at[idx, 'Keterangan'] = 'Node Timeout'
                         failed_count += 1
-                        ui_log("ERROR", f"Timeout on SKU [{sku}]. Node unresponsive. Skipping.")
+                        ui_log("ERROR", f"Proses terlalu lama untuk SKU [{sku}]. Sistem Newspage tidak merespon. Dilewati.")
                     
                 progress_bar.progress((i+1)/total_rows)
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
@@ -1048,14 +1082,14 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 page.wait_for_timeout(2000)
                 ui_log("SUCCESS", "Logged out successfully.")
             except Exception as e:
-                ui_log("ERROR", "Logout button not found or timeout.")
+                ui_log("ERROR", "Gagal menemukan tombol keluar atau halaman lambat.")
                 
             ui_log("SYS", "Closing browser and releasing memory...")
             browser.close()
             elapsed = int(time.time() - global_start_time)
             
             if failed_count > 0:
-                ui_log("ERROR", f"Aborted. Total runtime: {elapsed//60}m {elapsed%60}s")
+                ui_log("ERROR", f"Proses dihentikan paksa. Waktu yang berjalan: {elapsed//60}m {elapsed%60}s")
                 box_html = utils.make_error_box(f"ABORTED — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m {elapsed%60}s")
                 st.markdown(box_html, unsafe_allow_html=True)
                 failed_skus = df_view[df_view["Status"] == "Failed"]["SKU"].tolist()
@@ -1082,7 +1116,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
     except Exception as e:
         st.session_state.is_bot_running = False
         st.error("System halted.")
-        ui_log("ERROR", f"FAILURE: {e}")
+        ui_log("ERROR", f"Terjadi masalah pada sistem: {e}")
         alert_callback(f"[ALERT] <b>FATAL ERROR (EXECUTE)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
 
 # --- PROMOTION SYNC ENGINE ---
@@ -1222,7 +1256,7 @@ def run_promotion_sync(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIM
         st.error("Operation Timeout.")
     except Exception as e: 
         st.session_state.is_promo_bot_running = False
-        ext_ui_log("ERROR", f"SYSTEM FAILURE: {str(e)}")
+        ext_ui_log("ERROR", f"Kegagalan sistem tidak terduga: {str(e)}")
         st.error(f"System error: {e}")
 
 
@@ -1267,7 +1301,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         
         progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
         term_ph = st.empty()
-        _setup_terminate_button(term_ph)
+        _setup_terminate_button(term_ph, current_user=current_user)
         total_rows = len(df_view)
         text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user) if show_status_box else None
 
@@ -1316,7 +1350,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     df_view.at[idx, 'Status'] = 'Failed'
                     df_view.at[idx, 'Keterangan'] = 'Node Timeout'
                     failed_count += 1
-                    ui_log("ERROR", f"Timeout on SKU [{sku}]. Node unresponsive. Skipping.")
+                    ui_log("ERROR", f"Proses terlalu lama untuk SKU [{sku}]. Sistem Newspage tidak merespon. Dilewati.")
                     
                 if i % TABLE_UPDATE_INTERVAL == 0 or i == total_rows-1: 
                     utils.render_responsive_dataframe(table_placeholder, df_view)
@@ -1384,14 +1418,14 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 page.wait_for_timeout(2000)
                 ui_log("SUCCESS", "Logged out successfully.")
             except Exception as e:
-                ui_log("ERROR", "Logout button not found or timeout.")
+                ui_log("ERROR", "Gagal menemukan tombol keluar atau halaman lambat.")
                 
             ui_log("SYS", "Closing browser and releasing memory...")
             browser.close()
             elapsed = int(time.time() - global_start_time)
             
             if failed_count > 0:
-                ui_log("ERROR", f"Aborted. Total runtime: {elapsed//60}m {elapsed%60}s")
+                ui_log("ERROR", f"Proses dihentikan paksa. Waktu yang berjalan: {elapsed//60}m {elapsed%60}s")
                 box_html = utils.make_error_box(f"ABORTED — Success: {success_count} | Failed: {failed_count} | Time: {elapsed//60}m {elapsed%60}s")
                 if show_status_box:
                     st.markdown(box_html, unsafe_allow_html=True)
@@ -1428,7 +1462,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         return 0, len(df_view), 0
     except Exception as e: 
         st.session_state.is_bot_running = False
-        ui_log("ERROR", f"SYSTEM FAILURE: {str(e).split(chr(10))[0]}")
+        ui_log("ERROR", f"Kegagalan sistem tidak terduga: {str(e).split(chr(10))[0]}")
         st.error(f"System error: {e}")
         return 0, len(df_view), 0
 def run_mutasi_execution(
@@ -1524,7 +1558,7 @@ def run_element_crawler(user_id_np, pass_np, selected_distributor, URL_LOGIN, ta
             ext_ui_log("SUCCESS", f"Found {len(elements)} elements.")
             return elements
     except Exception as e:
-        ext_ui_log("ERROR", f"Crawler failed: {e}")
+        ext_ui_log("ERROR", f"Proses pengecekan gagal: {e}")
         raise e
 
 def run_interactive_inspector(user_id_np, pass_np, selected_distributor, URL_LOGIN, target_path, ext_ui_log):
@@ -1611,7 +1645,7 @@ def run_interactive_inspector(user_id_np, pass_np, selected_distributor, URL_LOG
                 pass
                 
         except Exception as e:
-            ext_ui_log("ERROR", f"Inspector failed: {e}")
+            ext_ui_log("ERROR", f"Proses inspeksi gagal: {e}")
             raise e
         finally:
             try:
