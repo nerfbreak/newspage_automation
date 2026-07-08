@@ -26,6 +26,32 @@ if "supabase" not in sys.modules:
     supabase_stub = types.SimpleNamespace(create_client=lambda *args, **kwargs: None, Client=object)
     sys.modules["supabase"] = supabase_stub
 
+if "cryptography" not in sys.modules:
+    cryptography_stub = types.ModuleType("cryptography")
+    fernet_stub = types.ModuleType("cryptography.fernet")
+
+    class FakeFernet:
+        def __init__(self, key):
+            self.key = key
+
+        @classmethod
+        def generate_key(cls):
+            return b"k_3XzV9vT8wP2qR7yL5mN1jH4gF6dD0sA="
+
+        def encrypt(self, value):
+            val_bytes = value.encode("utf-8") if isinstance(value, str) else value
+            return b"gAAAA_" + val_bytes
+
+        def decrypt(self, value):
+            val_str = value.decode("utf-8") if isinstance(value, bytes) else str(value)
+            if not val_str.startswith("gAAAA_"):
+                raise Exception("Invalid token")
+            return val_str[6:].encode("utf-8")
+
+    fernet_stub.Fernet = FakeFernet
+    sys.modules["cryptography"] = cryptography_stub
+    sys.modules["cryptography.fernet"] = fernet_stub
+
 import database
 from error_taxonomy import format_user_error
 

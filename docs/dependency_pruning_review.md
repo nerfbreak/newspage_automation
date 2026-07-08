@@ -59,3 +59,8 @@ On 2026-07-07, during Streamlit Cloud Linux deployment, `litellm==1.86.2` caused
 - `python -m unittest discover -s tests/smoke`: PASS (68/68 tests in 1.113s)
 - `python scripts/production_readiness_audit.py`: PASS (21/21 rules)
 - **Status**: Pruned from 243 down to 166 clean, cross-platform essential requirements, fully resolving the Streamlit Cloud Linux build failure.
+
+On 2026-07-08, GitHub Actions dependency scanning found newly reported vulnerabilities in unused direct requirements `ecdsa==0.19.2` and `PyPDF2==3.0.1`. Static search found no application or smoke-test imports for `ecdsa`, `python-jose`, or `PyPDF2`; the project already keeps `pypdf` and `pypdfium2` for PDF-related capability. Removed `ecdsa`, `python-jose`, and `PyPDF2`, reducing the deployment dependency set from 166 to 163 pinned requirements.
+- `python -m pip_audit -r requirements.txt --no-deps --disable-pip --progress-spinner off --ignore-vuln CVE-2025-3000`: PASS (No known vulnerabilities found)
+- `python -m unittest discover -s tests/smoke`: PASS (77/77 tests)
+- `python scripts/production_readiness_audit.py`: PASS
