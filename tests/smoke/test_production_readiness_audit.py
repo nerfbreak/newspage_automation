@@ -16,6 +16,7 @@ class ProductionReadinessAuditSmokeTests(unittest.TestCase):
         self.assertIn("# Production Readiness Audit", rendered)
         self.assertIn("| Check | Status | Detail |", rendered)
         self.assertIn("required-artifact", rendered)
+        self.assertIn("root-debug-artifacts", rendered)
 
 
 if __name__ == "__main__":

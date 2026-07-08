@@ -23,6 +23,7 @@
 | Dependency pruning review | Complete (163 cross-platform requirements) | `docs/dependency_pruning_review.md`, `constitution.md` v2.6.0 | None (removed unused ML, Windows-only, PDF/JWT helper bloat, and vulnerable unused packages) |
 | Antigravity handoff | Documented & Updated | `docs/antigravity_handoff.md` | Use if work continues outside Codex |
 | Observability/error taxonomy | 100% Integrated across all UI modules | `error_taxonomy.py`, `docs/error_taxonomy.md`, smoke tests | None (all UI modules wired) |
+| Workspace hygiene gate | Guarded | `scripts/production_readiness_audit.py`, `.gitignore` | Root-level scratch/debug Python files must not be left in the workspace |
 
 ## Operational Definition Of Done
 
