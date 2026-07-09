@@ -62,3 +62,16 @@
 - None — modified `static/style.css` and injected a wrapping marker in the Streamlit page layout.
 
 **Tasks Completed:** 4/4 tasks
+
+### Remove Force Kill Feature - 2026-07-09
+**Branch:** `028-remove-force-kill`
+**Spec:** specs/028-remove-force-kill
+
+**What was added:**
+- Completely removed the "FORCE KILL" button and its underlying OS-level process termination logic (`psutil`) from `playwright_engine.py` (reverting changes from Spec 025).
+- Removed the `psutil` dependency from the project.
+
+**New Components:**
+- None (feature removal).
+
+**Tasks Completed:** 4/4 tasks

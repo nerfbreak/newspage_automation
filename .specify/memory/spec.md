@@ -79,6 +79,15 @@ As a user, I want the "Clear Data Extracted Sales" button to be colored red, so 
 1. **Given** the user is viewing the page with the extracted sales data, **When** the page renders, **Then** the "Clear Data Extracted Sales" button must have a red background color.
 2. **Given** the user hovers over the red "Clear Data Extracted Sales" button, **When** hovered, **Then** it must exhibit the appropriate hover effects according to the global design system.
 
+### US-009: Remove the FORCE KILL button and functionality (Priority: P1)
+[Source: specs/028-remove-force-kill]
+
+The user wants to remove the "FORCE KILL" feature from the automation UI so that it can no longer be triggered to instantly kill Playwright OS-level processes. This reverses the changes introduced in Spec 025.
+
+**Acceptance Scenarios**:
+1. **Given** an active execution in the `playwright_engine.py`, **When** the execution is running, **Then** the "FORCE KILL" button does not appear in the Streamlit UI.
+2. **Given** the codebase, **When** checking for `psutil` integration related to force killing browsers, **Then** all code related to `force_kill_callback` and `psutil` should be removed.
+
 ## Functional Requirements
 
 ### FR-001: Layout Width Parameter Migration — `use_container_width=True` → `width='stretch'`
@@ -145,6 +154,14 @@ System MUST ensure the button's styling adheres to the locked Neo-Brutalism desi
 [Source: specs/024-clear-sales-btn-color]
 System MUST NOT alter the existing functionality of the button.
 
+### FR-017: Remove Force Kill Button UI
+[Source: specs/028-remove-force-kill]
+System MUST NOT display the "FORCE KILL" button during any browser automation execution.
+
+### FR-018: Remove Force Kill Logic
+[Source: specs/028-remove-force-kill]
+System MUST remove the underlying logic (`psutil` integration and session state flags) associated with the Force Kill feature.
+
 ## Key Entities
 
 - **Viewport** [Source: specs/017-mobile-responsive]: The visible browser area that determines mobile, tablet, or desktop layout behavior.
@@ -178,9 +195,12 @@ System MUST NOT alter the existing functionality of the button.
 
 - **SC-010** [Source: specs/024-clear-sales-btn-color]: 100% of page loads display the "Clear Data Extracted Sales" button in red.
 - **SC-011** [Source: specs/024-clear-sales-btn-color]: The button maintains existing click functionality with 0 regressions.
+- **SC-012** [Source: specs/028-remove-force-kill]: The "FORCE KILL" button is absent from the execution UI in 100% of automation runs.
+- **SC-013** [Source: specs/028-remove-force-kill]: The `psutil` dependency or specific usage for force-killing Playwright browsers is removed from `playwright_engine.py`.
 
 ## Revision Notes
 
 - **2026-07-06**: Archived mobile-first responsive design from `specs/017-mobile-responsive`, adding US-002, US-003, FR-005 through FR-009, SC-004 through SC-006, responsive entities, and mobile edge cases.
 - **2026-07-06**: Archived System Security Audit from `specs/018-security-audit`, adding US-004 through US-007, FR-010 through FR-013, Audit entities, SC-007 through SC-009, and security edge cases.
 - **2026-07-08**: Archived Clear Sales Button Color from `specs/024-clear-sales-btn-color`, adding US-008, FR-014 through FR-016, and SC-010, SC-011.
+- **2026-07-09**: Archived Remove Force Kill Feature from `specs/028-remove-force-kill`, adding US-009, FR-017, FR-018, SC-012, SC-013.

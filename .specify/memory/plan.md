@@ -78,6 +78,12 @@ Optimize/
 - Bound wrapper logic to Streamlit native element to differentiate the destructive "CLEAR DATA EXTRACTED SALES" button from primary action buttons.
 - No new dependencies, modules, or database modifications introduced.
 
+### 028-remove-force-kill (2026-07-09)
+[Source: specs/028-remove-force-kill]
+- Completely removed the "FORCE KILL" button and its underlying OS-level process termination logic (`psutil`) from `playwright_engine.py`.
+- Reverted the changes introduced in Spec 025 to ensure the automation environment relies solely on standard "Terminate" procedures or system timeouts.
+- Removed `psutil` dependency from the project.
+
 ## Testing Strategy
 
 - Manual validation: Navigate all 7 page modules, verify no deprecation warnings, confirm layout integrity.
@@ -89,3 +95,4 @@ Optimize/
 
 - **2026-07-06**: Archived `017-mobile-responsive` implementation details, responsive helper architecture, and mobile validation strategy.
 - **2026-07-06**: Archived `018-security-audit` confirming secure configurations for sessions, inputs, and credentials.
+- **2026-07-09**: Archived `028-remove-force-kill` implementation details confirming the removal of `psutil` and the Force Kill feature.
