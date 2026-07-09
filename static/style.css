@@ -1242,6 +1242,19 @@ div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBl
     height: 100% !important;
 }
 
+/* Neutralize the outer border if the container actually holds an input widget, 
+   because input widgets have their own inner borders styled. This prevents 
+   the label from looking like it's trapped in a floating white box. */
+div.element-container:has(.neo-container-marker) + div:has(div[data-testid="stFileUploader"]),
+div.element-container:has(.neo-container-marker) + div:has(div[data-testid="stSelectbox"]),
+div.element-container:has(.neo-container-marker) + div:has(div[data-testid="stTextInput"]),
+div.element-container:has(.neo-container-marker) + div:has(div[data-testid="stDateInput"]),
+div.element-container:has(.neo-container-marker) + div:has(div[data-testid="stNumberInput"]) {
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
 div.element-container:has(.neo-container-marker) + div:hover,
 div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBlock"]:hover {
     
