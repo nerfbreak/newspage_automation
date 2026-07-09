@@ -1239,7 +1239,7 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
-def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None, dry_run=None, file_name=None):
+def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None, dry_run=None, file_name=None, term_ph=None):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     try:
@@ -1247,7 +1247,8 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         success_count, failed_count = 0, 0
         
         progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
-        term_ph = st.empty()
+        if term_ph is None:
+            term_ph = st.empty()
         _setup_terminate_button(term_ph, current_user=current_user, key_suffix=f"exec_manual_{bot_user}")
         total_rows = len(df_view)
         text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user) if show_status_box else None
@@ -1432,6 +1433,8 @@ def run_mutasi_execution(
     ui_log_a, _ = utils.make_terminal_logger(log_a_ph)
     ui_log_b, _ = utils.make_terminal_logger(log_b_ph)
     
+    term_ph = st.empty()
+    
     ui_log_a('SYS', 'Memulai Deduct Mutasi untuk Pengirim...')
     df_deduct = df_mutasi.copy()
     df_deduct['Qty'] = -abs(df_deduct['Qty'].astype(float))
@@ -1444,7 +1447,7 @@ def run_mutasi_execution(
         WAREHOUSE=whs_a, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_a, alert_callback=alert_callback, 
         table_placeholder=table_a_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text_a, progress_placeholder=prog_a_ph, show_status_box=False, current_user=current_user, dry_run=dry_run
+        remark_text=remark_text_a, progress_placeholder=prog_a_ph, show_status_box=False, current_user=current_user, dry_run=dry_run, term_ph=term_ph
     )
     success_a, failed_a, elapsed_a = res_a if res_a else (0, len(df_deduct), 0)
     
@@ -1460,7 +1463,7 @@ def run_mutasi_execution(
         WAREHOUSE=whs_b, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_b, alert_callback=alert_callback, 
         table_placeholder=table_b_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text_b, progress_placeholder=prog_b_ph, show_status_box=False, current_user=current_user, dry_run=dry_run
+        remark_text=remark_text_b, progress_placeholder=prog_b_ph, show_status_box=False, current_user=current_user, dry_run=dry_run, term_ph=term_ph
     )
     success_b, failed_b, elapsed_b = res_b if res_b else (0, len(df_add), 0)
 

@@ -1410,6 +1410,7 @@ div[data-testid="stAlert"] {
     border-radius: 0px !important;
     box-shadow: 6px 6px 0px 0px #0F172A !important;
     margin-bottom: 24px !important;
+    padding: 16px 20px !important;
 }
 div[data-testid="stAlertContainer"] {
     background: transparent !important;
