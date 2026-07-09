@@ -91,11 +91,11 @@ div[data-testid="stFileUploader"] label p {
     text-align: center !important;
     width: auto !important;
     display: inline-block !important;
-    background-color: #FFFFFF !important;
-    border: 2px solid #0F172A !important;
-    box-shadow: 3px 3px 0px 0px #0F172A !important;
-    padding: 6px 12px !important;
-    margin-bottom: 12px !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0px 0px !important;
+    margin-bottom: 4px !important;
 }
 
 .inline-neo-label {
@@ -1298,10 +1298,14 @@ table.neo-table {
     border-collapse: collapse;
 }
 table.neo-table th, table.neo-table td {
-    border: 2px solid #0F172A;
+    border: 1px solid #e2e8f0;
     padding: 10px 14px;
     color: #0F172A;
 }
+table.neo-table tr:first-child th { border-top: none; }
+table.neo-table tr:last-child td { border-bottom: none; }
+table.neo-table th:first-child, table.neo-table td:first-child { border-left: none; }
+table.neo-table th:last-child, table.neo-table td:last-child { border-right: none; }
 table.neo-table td {
     font-size: 1rem;
 }
@@ -1493,10 +1497,14 @@ table.neo-table {
     border-collapse: collapse;
 }
 table.neo-table th, table.neo-table td {
-    border: 2px solid #0F172A;
+    border: 1px solid #e2e8f0;
     padding: 10px 14px;
     color: #0F172A;
 }
+table.neo-table tr:first-child th { border-top: none; }
+table.neo-table tr:last-child td { border-bottom: none; }
+table.neo-table th:first-child, table.neo-table td:first-child { border-left: none; }
+table.neo-table th:last-child, table.neo-table td:last-child { border-right: none; }
 table.neo-table td {
     font-size: 1rem;
 }

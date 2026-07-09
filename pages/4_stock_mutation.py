@@ -71,11 +71,16 @@ with col2:
 
 # --- FILE UPLOAD + COLUMN MAPPING ---
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-with st.container(border=True):
-    uploaded_file = st.file_uploader("Upload file Excel berisi SKU yang akan dimutasi", type=['csv', 'xlsx', 'xls'], key="mutasi_file_uploader")
+uploaded_file = st.file_uploader("Upload file Excel berisi SKU yang akan dimutasi", type=['csv', 'xlsx', 'xls'], key="mutasi_file_uploader")
 
-    # Track file changes to reset state
-    curr_file_id = getattr(uploaded_file, "file_id", uploaded_file.name if uploaded_file else None) if uploaded_file else None
+st.session_state.mutasi_file_uploader = uploaded_file
+
+if uploaded_file is None:
+    if st.session_state.mutasi_file_id is not None:
+        st.session_state.mutasi_file_id = None
+        st.session_state.mutasi_review_df = None
+else:
+    curr_file_id = uploaded_file.file_id
     if curr_file_id != st.session_state.mutasi_file_id:
         st.session_state.mutasi_file_id = curr_file_id
         st.session_state.mutasi_review_df = None
@@ -91,12 +96,11 @@ if uploaded_file is not None:
             </style>
             {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
         """, unsafe_allow_html=True)
-        with st.container():
-            st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-            if st.button("Hapus File Upload", type="secondary", width='stretch', icon=":material/delete:"):
-                st.session_state.mutasi_file_uploader = None
-                st.session_state.mutasi_file_id = None
-                st.rerun()
+        st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
+        if st.button("Hapus File Upload", type="secondary", width='stretch', icon=":material/delete:"):
+            st.session_state.mutasi_file_uploader = None
+            st.session_state.mutasi_file_id = None
+            st.rerun()
 
         # --- COLUMN MAPPING ---
         st.subheader("Column Mapping")
@@ -192,9 +196,8 @@ if st.session_state.is_mutasi_running:
 
     with exec_col1:
         st.markdown(f"""
-            <div style='border-left: 4px solid #FF2B2B; padding-left: 10px; margin-bottom: 14px; margin-top: 10px;'>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.85rem; font-weight: 700; color: #FF2B2B; letter-spacing: 0.05em; text-transform: uppercase; display: block; line-height: 1.2;'>Deduct</span>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; font-weight: 600; color: #808495; text-transform: uppercase; letter-spacing: 0.02em;'>{dist_a} ({bot_user_a})</span>
+            <div style='background-color: #FF2B2B; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; margin-top: 10px; display: inline-block;'>
+                DEDUCT &nbsp;|&nbsp; <span style='font-size: 0.72rem; opacity: 0.9;'>{dist_a} ({bot_user_a})</span>
             </div>
         """, unsafe_allow_html=True)
         table_a_ph = st.empty()
@@ -202,9 +205,8 @@ if st.session_state.is_mutasi_running:
 
     with exec_col2:
         st.markdown(f"""
-            <div style='border-left: 4px solid #09A53C; padding-left: 10px; margin-bottom: 14px; margin-top: 10px;'>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.85rem; font-weight: 700; color: #09A53C; letter-spacing: 0.05em; text-transform: uppercase; display: block; line-height: 1.2;'>Add</span>
-                <span style='font-family: "Source Sans 3", "Source Sans Pro", sans-serif; font-size: 0.72rem; font-weight: 600; color: #808495; text-transform: uppercase; letter-spacing: 0.02em;'>{dist_b} ({bot_user_b})</span>
+            <div style='background-color: #09A53C; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; margin-top: 10px; display: inline-block;'>
+                ADD &nbsp;|&nbsp; <span style='font-size: 0.72rem; opacity: 0.9;'>{dist_b} ({bot_user_b})</span>
             </div>
         """, unsafe_allow_html=True)
         table_b_ph = st.empty()
