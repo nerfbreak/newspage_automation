@@ -70,7 +70,6 @@ with col2:
         remark_b = st.text_input("Remark Penerima", max_chars=50, key="mutasi_remark_b")
 
 # --- FILE UPLOAD + COLUMN MAPPING ---
-st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 uploaded_file = st.file_uploader("Upload file Excel berisi SKU yang akan dimutasi", type=['csv', 'xlsx', 'xls'], key="mutasi_file_uploader")
 
 # Track file changes to reset state
@@ -190,7 +189,7 @@ if st.session_state.is_mutasi_running:
 
     with exec_col1:
         st.markdown(f"""
-            <div style='background-color: #FF2B2B; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; margin-top: 10px; display: inline-block;'>
+            <div style='background-color: #FF2B2B; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; margin-top: 10px; display: flex; align-items: center; justify-content: center; min-height: 52px; text-align: center;'>
                 DEDUCT &nbsp;|&nbsp; <span style='font-size: 0.72rem; opacity: 0.9;'>{dist_a} ({bot_user_a})</span>
             </div>
         """, unsafe_allow_html=True)
@@ -199,7 +198,7 @@ if st.session_state.is_mutasi_running:
 
     with exec_col2:
         st.markdown(f"""
-            <div style='background-color: #09A53C; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; margin-top: 10px; display: inline-block;'>
+            <div style='background-color: #09A53C; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; margin-top: 10px; display: flex; align-items: center; justify-content: center; min-height: 52px; text-align: center;'>
                 ADD &nbsp;|&nbsp; <span style='font-size: 0.72rem; opacity: 0.9;'>{dist_b} ({bot_user_b})</span>
             </div>
         """, unsafe_allow_html=True)
