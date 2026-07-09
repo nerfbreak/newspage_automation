@@ -428,7 +428,7 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
             
             import re
             import urllib.parse
-            import streamlit.components.v1 as components
+
             
             # Convert HTML tags from telegram message to WhatsApp markdown
             alert_msg = st.session_state.get("last_alert_msg", "")
@@ -582,7 +582,7 @@ if st.session_state.get("execute_done") and st.session_state.get("last_success_s
             </html>
             """
             
-            components.html(button_html, height=60)
+            st.iframe(button_html, height=60)
             st.image(screenshot_path, width='stretch')
             st.markdown("<p style='text-align: center; font-weight: 800; font-family: \"Source Sans 3\", sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; color: #0F172A; margin-top: 8px;'>BUKTI TRANSAKSI</p>", unsafe_allow_html=True)
         else:

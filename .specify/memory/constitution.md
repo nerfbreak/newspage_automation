@@ -1,11 +1,11 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 2.7.0 -> 2.8.0 (Added Principle XIII for Human-Readable Terminal Logs)
-Added sections:
-  - Principle XIII: Human-Readable Terminal UI Logs
+Version change: 2.8.0 -> 2.9.0 (Expanded Principle X for general Streamlit deprecation compliance)
+Added sections: None
 Modified sections:
-  - Governance (Version bump to 2.8.0, Last Amended: 2026-07-09)
+  - Principle X: Streamlit Deprecation Compliance (Expanded to include st.components.v1.html deprecation)
+  - Governance (Version bump to 2.9.0, Last Amended: 2026-07-09)
 Removed sections: None
 Templates requiring updates:
   - .specify/memory/constitution.md: updated
@@ -126,15 +126,12 @@ window redirect, over backend headless bots.
 **Rationale**: Users already maintain authenticated messaging sessions locally. Browser
 delegation avoids server-side credential management and protects user privacy.
 
-### X. Streamlit Deprecation Compliance - Layout Widths
-All Streamlit widget and layout container calls MUST use the `width` parameter instead
-of the deprecated `use_container_width` parameter, which will be removed after
-2025-12-31.
-- For `use_container_width=True`, replace with `width='stretch'`.
-- For `use_container_width=False`, replace with `width='content'`.
+### X. Streamlit Deprecation Compliance
+All code MUST proactively adhere to updated Streamlit APIs to avoid runtime crashes and deprecation warnings.
+- **Layout Widths**: All Streamlit widget and layout container calls MUST use the `width` parameter instead of the deprecated `use_container_width` parameter, which will be removed after 2025-12-31. For `use_container_width=True`, replace with `width='stretch'`. For `use_container_width=False`, replace with `width='content'`.
+- **HTML Components**: All `st.components.v1.html` calls MUST be replaced with `st.iframe` or supported alternatives, as the former will be removed after 2026-06-01.
 
-**Rationale**: Adhering to updated Streamlit layout APIs avoids runtime crashes and
-deprecation warnings.
+**Rationale**: Adhering to updated Streamlit layout APIs and component recommendations avoids runtime crashes, unappealing deprecation warnings in the UI, and sudden breakage.
 
 ### XI. Mobile-First Responsive Design
 All new features, UI components, and pages MUST be designed with dynamic responsiveness
@@ -212,4 +209,4 @@ Amendments require:
 All AI coding agents working on this project MUST read this constitution at the start
 of each session alongside `.agents/MEMORY.md`.
 
-**Version**: 2.8.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-09
+**Version**: 2.9.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-09
