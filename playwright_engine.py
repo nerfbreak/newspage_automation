@@ -10,28 +10,11 @@ import pandas as pd
 import streamlit as st
 import database
 import utils
-import psutil
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
 def _setup_event_loop():
     try: asyncio.get_event_loop()
     except RuntimeError: asyncio.set_event_loop(asyncio.new_event_loop())
-
-
-def force_kill_playwright_processes(current_user):
-    """Forcefully kills Chromium processes spawned by Playwright for the specific user."""
-    if not current_user:
-        return
-    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
-        try:
-            name = proc.info.get('name', '').lower()
-            if name in ('chrome.exe', 'chromium.exe', 'node.exe'):
-                cmdline = proc.info.get('cmdline', [])
-                if cmdline and any(f"--bot-user={current_user}" in arg for arg in cmdline):
-                    proc.kill()
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            pass
-
 @contextmanager
 def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar=None, current_user=None):
     ensure_playwright()
@@ -50,8 +33,6 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
             "--no-zygote",
             "--disable-software-rasterizer"
         ]
-        if current_user:
-            args.append(f"--bot-user={current_user}")
             
         browser = p.chromium.launch(
             headless=True,
@@ -854,34 +835,6 @@ def _setup_terminate_button(placeholder, current_user=None):
                     font-weight: 900 !important;
                     line-height: 1 !important;
                 }
-                
-                /* Style the Force Kill button */
-                div.element-container:has(#term-modal-toggle) + div.element-container + div.element-container {
-                    display: block !important;
-                    margin-top: 8px !important;
-                }
-                div.element-container:has(#term-modal-toggle) + div.element-container + div.element-container button {
-                    background-color: #FFFFFF !important;
-                    color: #E63946 !important;
-                    font-family: 'Source Sans 3', sans-serif !important;
-                    font-weight: 900 !important;
-                    font-size: 0.65rem !important;
-                    text-transform: uppercase !important;
-                    border: 2px dashed #E63946 !important;
-                    box-shadow: none !important;
-                    border-radius: 0px !important;
-                    transition: all 0.1s ease !important;
-                    padding: 4px 8px !important;
-                    width: 100% !important;
-                    min-height: 0 !important;
-                }
-                div.element-container:has(#term-modal-toggle) + div.element-container + div.element-container button:hover {
-                    background-color: #E63946 !important;
-                    color: #FFFFFF !important;
-                }
-                div.element-container:has(#term-modal-toggle) + div.element-container + div.element-container button p {
-                    margin: 0 !important; padding: 0 !important; font-weight: 900 !important; line-height: 1 !important;
-                }
             </style>
 <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 0px; margin-top: 0px;">
 <label for="term-modal-toggle" class="neo-btn-terminate" style="width: 100%; text-align: center; box-sizing: border-box; font-size: 0.85rem; padding: 6px 12px;">TERMINATE</label>
@@ -902,13 +855,7 @@ def _setup_terminate_button(placeholder, current_user=None):
             st.session_state.is_bot_running = False
             st.session_state.execute_done = False
             
-        def force_kill_callback():
-            force_kill_playwright_processes(current_user)
-            st.session_state.is_bot_running = False
-            st.session_state.execute_done = False
-            
         st.button("CONFIRM", key="term_bot_hidden", on_click=terminate_callback, width='stretch')
-        st.button("FORCE KILL", key="term_bot_force", on_click=force_kill_callback, width='stretch')
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):
