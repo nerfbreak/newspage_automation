@@ -291,7 +291,7 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
     try:
         progress_bar = st.progress(0)
         term_ph = st.empty()
-        _setup_terminate_button(term_ph, current_user=current_user)
+        _setup_terminate_button(term_ph, current_user=current_user, key_suffix=f"extract_{user_id_np}")
         text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log, progress_bar, current_user=current_user) as (page, browser):
@@ -522,7 +522,7 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
     try:
         progress_bar = st.progress(0)
         term_ph = st.empty()
-        _setup_terminate_button(term_ph, current_user=current_user)
+        _setup_terminate_button(term_ph, current_user=current_user, key_suffix=f"sales_extract_{user_id_np}")
         text_ph = _setup_progress_layout(ext_label_placeholder, selected_distributor, user_id_np, show_processed=False)
 
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log, progress_bar, current_user=current_user) as (page, browser):
@@ -745,7 +745,7 @@ def _update_progress_text(text_ph, current, total):
             </script>
         """, unsafe_allow_javascript=True)
 
-def _setup_terminate_button(placeholder, current_user=None):
+def _setup_terminate_button(placeholder, current_user=None, key_suffix="default"):
     """Renders the terminate button and custom Neo-Brutalist confirmation modal using Pure CSS."""
     with placeholder.container():
         st.markdown("""
@@ -855,7 +855,7 @@ def _setup_terminate_button(placeholder, current_user=None):
             st.session_state.is_bot_running = False
             st.session_state.execute_done = False
             
-        st.button("CONFIRM", key="term_bot_hidden", on_click=terminate_callback, width='stretch')
+        st.button("CONFIRM", key=f"term_bot_hidden_{key_suffix}", on_click=terminate_callback, width='stretch')
 
 
 def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty', pack_mode=False):
@@ -900,7 +900,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
     try:
         progress_bar = st.progress(0)
         term_ph = st.empty()
-        _setup_terminate_button(term_ph, current_user=current_user)
+        _setup_terminate_button(term_ph, current_user=current_user, key_suffix=f"exec_{bot_user}")
         total_rows = len(df_view)
         text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user)
 
@@ -1248,7 +1248,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
         
         progress_bar = progress_placeholder if progress_placeholder else st.progress(0)
         term_ph = st.empty()
-        _setup_terminate_button(term_ph, current_user=current_user)
+        _setup_terminate_button(term_ph, current_user=current_user, key_suffix=f"exec_manual_{bot_user}")
         total_rows = len(df_view)
         text_ph = _setup_progress_layout(log_label_placeholder, selected_distributor, bot_user) if show_status_box else None
 

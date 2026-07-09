@@ -69,6 +69,7 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 
 ## Changelog & Decisions
 
+- **2026-07-09**: **DuplicateWidgetID Error Fix**: Fixed a Streamlit `DuplicateWidgetID` error occurring during Stock Mutation execution ("Memulai Add Mutasi untuk Penerima"). Modified `_setup_terminate_button` in `playwright_engine.py` to accept a dynamic `key_suffix`, preventing key collisions when `run_execution_manual` is called sequentially in the same Streamlit script run.
 - **2026-07-09**: **Remove Force Kill**: Removed the "FORCE KILL" feature and its underlying `psutil` logic from `playwright_engine.py`. This reverts the changes introduced in Spec 025 and ensures the automation environment relies solely on standard "Terminate" procedures. Also removed `psutil` dependency from `requirements.txt`. Execution followed the complete Spec Kit workflow (Spec 028).
 - **2026-07-09**: **Force Terminate Playwright**: Implemented a "FORCE KILL" UI button backed by `psutil` in `playwright_engine.py` to instantly destroy runaway Playwright OS-level processes. Modified `managed_browser_session` to isolate execution tags via `--bot-user` Chromium arg so only the current user's stuck bot is terminated, preventing multi-user collisions (Spec 025).
 - **2026-07-09**: **Friendly Terminal Logs**: Completed implementation of Spec 026 to humanize terminal logs and exception messages in `playwright_engine.py` using plain Indonesian, adhering to Principle XIII. Execution followed the complete Spec Kit workflow (plan, tasks, implement, commit).
