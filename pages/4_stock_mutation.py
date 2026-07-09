@@ -73,17 +73,11 @@ with col2:
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 uploaded_file = st.file_uploader("Upload file Excel berisi SKU yang akan dimutasi", type=['csv', 'xlsx', 'xls'], key="mutasi_file_uploader")
 
-st.session_state.mutasi_file_uploader = uploaded_file
-
-if uploaded_file is None:
-    if st.session_state.mutasi_file_id is not None:
-        st.session_state.mutasi_file_id = None
-        st.session_state.mutasi_review_df = None
-else:
-    curr_file_id = uploaded_file.file_id
-    if curr_file_id != st.session_state.mutasi_file_id:
-        st.session_state.mutasi_file_id = curr_file_id
-        st.session_state.mutasi_review_df = None
+# Track file changes to reset state
+curr_file_id = getattr(uploaded_file, "file_id", uploaded_file.name if uploaded_file else None) if uploaded_file else None
+if curr_file_id != st.session_state.mutasi_file_id:
+    st.session_state.mutasi_file_id = curr_file_id
+    st.session_state.mutasi_review_df = None
 
 if uploaded_file is not None:
     df_raw = data_processor.load_data(uploaded_file)
