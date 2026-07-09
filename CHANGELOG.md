@@ -43,6 +43,7 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 - **Perbaikan Race Condition Login**: Mengganti jeda statis 5 detik dengan polling dinamis hingga 60 detik untuk menangani popup "Same User Already Logged On" yang muncul terlambat.
 - **Akurasi Kuantitas Mutasi Stok**: Memperbaiki bug input angka saat mutasi yang menyebabkan kekosongan data di portal Newspage.
 - **Desain UI Neo-Brutalism**: Tampilan keseluruhan diubah menjadi gaya *Neo-Brutalism* premium — kotak bersudut 90 derajat, garis tepi hitam tebal, dan efek bayangan blok hitam di semua komponen UI.
+- **Perbaikan Layout Neo-Brutalism**: Memperbaiki bug visual di komponen File Uploader, dropdown Selectbox, tabel Dataframe, dan header Stock Mutation yang mengalami penumpukan border (*double border*) akibat bentrok dengan CSS internal Streamlit.
 - **Perbaikan Modal Terminate & Sign Out**: Mengganti popup bawaan Streamlit dengan modal CSS murni Neo-Brutalist yang pixel-perfect dan konsisten di seluruh aplikasi.
 - **Responsivitas Mobile**: Memperbaiki label tabel di Dashboard agar tidak terpotong di layar HP.
 - **Indikator Loading Real-Time**: Loading bar di modul Mutasi Stok kini berjalan real-time, tidak lagi macet di tengah jalan.
