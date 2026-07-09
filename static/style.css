@@ -1227,9 +1227,12 @@ div[data-testid="stVerticalBlock"]:has(> div[data-testid="stElementContainer"] s
 }
 
 /* --- BULLETPROOF NEO-BRUTALIST CONTAINERS --- */
-/* Marker-based targeting is 100% reliable across all Streamlit versions */
+/* Marker-based targeting for both legacy and current Streamlit wrappers. */
 div.element-container:has(.neo-container-marker) + div,
-div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBlock"] {
+div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBlock"],
+div[data-testid="stElementContainer"]:has(.neo-container-marker) + div,
+div[data-testid="stElementContainer"]:has(.neo-container-marker) + div[data-testid="stVerticalBlock"],
+div[data-testid="stElementContainer"]:has(.neo-container-marker) + div[data-testid="stElementContainer"] {
     border-radius: 0px !important;
     border: 3px solid #0F172A !important;
     box-shadow: 6px 6px 0px 0px #0F172A !important;
@@ -1239,27 +1242,18 @@ div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBl
     height: 100% !important;
 }
 
-/* Neutralize the outer border if the container actually holds an input widget, 
-   because input widgets have their own inner borders styled. This prevents 
-   the label from looking like it's trapped in a floating white box. */
-div.element-container:has(.neo-container-marker) + div:has(div[data-testid="stFileUploader"]),
-div.element-container:has(.neo-container-marker) + div:has(div[data-testid="stSelectbox"]),
-div.element-container:has(.neo-container-marker) + div:has(div[data-testid="stTextInput"]),
-div.element-container:has(.neo-container-marker) + div:has(div[data-testid="stDateInput"]),
-div.element-container:has(.neo-container-marker) + div:has(div[data-testid="stNumberInput"]) {
-    border: none !important;
-    box-shadow: none !important;
-    background-color: transparent !important;
-}
-
 div.element-container:has(.neo-container-marker) + div:hover,
-div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBlock"]:hover {
+div.element-container:has(.neo-container-marker) + div[data-testid="stVerticalBlock"]:hover,
+div[data-testid="stElementContainer"]:has(.neo-container-marker) + div:hover,
+div[data-testid="stElementContainer"]:has(.neo-container-marker) + div[data-testid="stVerticalBlock"]:hover,
+div[data-testid="stElementContainer"]:has(.neo-container-marker) + div[data-testid="stElementContainer"]:hover {
     
     
 }
 
 /* Strip inner borders to avoid double borders */
-div.element-container:has(.neo-container-marker) + div > div[data-testid="stVerticalBlock"] {
+div.element-container:has(.neo-container-marker) + div > div[data-testid="stVerticalBlock"],
+div[data-testid="stElementContainer"]:has(.neo-container-marker) + div > div[data-testid="stVerticalBlock"] {
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
@@ -1281,14 +1275,16 @@ div.element-container:has(.neo-container-marker) + div > div[data-testid="stVert
 }
 
 /* Ensure the element-container holding the container flex-grows */
-div.element-container:has(.neo-container-marker) + div {
+div.element-container:has(.neo-container-marker) + div,
+div[data-testid="stElementContainer"]:has(.neo-container-marker) + div {
     flex-grow: 1 !important;
     display: flex !important;
     flex-direction: column !important;
 }
 
 /* Ensure the border wrapper inside the element-container also stretches */
-div.element-container:has(.neo-container-marker) + div > div[data-testid="stVerticalBlockBorderWrapper"] {
+div.element-container:has(.neo-container-marker) + div > div[data-testid="stVerticalBlockBorderWrapper"],
+div[data-testid="stElementContainer"]:has(.neo-container-marker) + div > div[data-testid="stVerticalBlockBorderWrapper"] {
     flex-grow: 1 !important;
     display: flex !important;
     flex-direction: column !important;
