@@ -8,22 +8,22 @@
 
 ## Current Status
 
-- Hermes completed BUG-010 (Terminate Restarts Playwright) — `terminate_callback` now resets `is_mutasi_running`.
+- Hermes completed BUG-011 (Asymmetrical Table Column Widths) — applied `table-layout: fixed` and strict percentage widths to `.neo-table`.
 - All artifacts finalized, committed, and pushed.
 
 ## Last Completed Work
 
-- **BUG-010**: Added `is_mutasi_running = False` and `mutasi_review_df = None` to `terminate_callback()` in `playwright_engine.py`. The mutation page gates on `is_mutasi_running`, not `is_bot_running`, so CONFIRM was causing a rerun that re-entered the execution block.
-- Pushed commit `a39f3d6` to remote `main`.
+- **BUG-011**: Added `table-layout: fixed;` and `th:nth-child(1..5) { width: ...% }` to `table.neo-table` in `static/style.css` so that the DEDUCT and ADD tables have exactly identical column proportions, regardless of negative signs or text lengths inside the data.
+- Pushed commit `3cb0744` to remote `main`.
 
 ## Next Recommended Step
 
-1. **Reboot Streamlit Cloud app** to deploy BUG-010.
-2. Test: start a Stock Mutation execution → click TERMINATE → CONFIRM → verify bot stops and does NOT restart.
+1. **Reboot Streamlit Cloud app** to deploy BUG-011.
+2. Test: Check the Stock Mutation execution preview. The left and right tables will now look 100% symmetrical (column widths perfectly mirror each other).
 
 ## Files to Watch
 
-- `playwright_engine.py` (line 854-858, terminate_callback)
+- `static/style.css`
 
 ## Blockers
 
@@ -31,6 +31,5 @@
 
 ## Verification Notes
 
-- Passed (2026-07-10): Python compilation.
+- Passed (2026-07-10): CSS braces balanced (293/293).
 - Passed (2026-07-10): Full offline smoke suite 94/94.
-- Passed (2026-07-10): Ad-hoc verification script confirming callback resets all 3 state keys.
