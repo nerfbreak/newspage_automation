@@ -85,6 +85,14 @@
 
 **Bugfix**: 2026-07-10 - [BUG-003] Added T016-T018 to align Stock Mutation execution tables and progress indicators on desktop while preserving mobile cards and frozen execution behavior.
 
+### BUG-004 - Stock Mutation Upload Reset Runtime Error
+
+- [x] T019 [US1] Add source-level regression coverage proving the delete button uses a reset callback and direct post-instantiation assignment to `st.session_state.mutasi_file_uploader` is absent; confirm the focused test fails before implementation.
+- [x] T020 [US1] Implement a lifecycle-safe uploader reset callback that removes the uploader key and clears `mutasi_file_id` plus `mutasi_review_df`, then bind it through `on_click` without changing parsing or automation behavior (depends on T019).
+- [x] T021 [US1] Run focused container/reset tests, Python compilation, full offline smoke tests, readiness audit, and BUG-004 artifact verification (depends on T020).
+
+**Bugfix**: 2026-07-10 - [BUG-004] Added T019-T021 to eliminate the Streamlit widget-state mutation crash while preserving uploader and mutation behavior.
+
 ---
 
 ## Dependencies & Execution Order
@@ -97,6 +105,7 @@
 - **Wave 4 (Polish)**: T010, T011, T012
 - **Wave 5 (BUG-002)**: T013 -> T014 -> T015
 - **Wave 6 (BUG-003)**: T016 -> T017 -> T018
+- **Wave 7 (BUG-004)**: T019 -> T020 -> T021
 
 ### Phase Dependencies
 

@@ -30,6 +30,7 @@ As a mobile user, I want the application layout to dynamically adapt to my small
 2. **Given** a user is viewing a page with multiple action buttons, **When** the viewport is narrow, **Then** the buttons adjust their width to fit the screen or stack cleanly without squishing the text.
 3. **Given** a user uploads a Stock Mutation file, **When** upload feedback and column mappings are displayed, **Then** the upload controls remain inside one outer Neo-Brutalist group container and each mapping dropdown remains grouped with its corresponding summary metric inside a white bordered card.
 4. **Given** a Stock Mutation is running in the two-column desktop execution view, **When** table cell content wraps to different line counts in DEDUCT and ADD, **Then** both table viewports and their following progress bars remain vertically aligned.
+5. **Given** a Stock Mutation file is loaded, **When** the user clicks **Hapus File Upload**, **Then** the uploader and upload-derived review state reset without modifying an already-instantiated widget key or raising a Streamlit runtime exception.
 
 ---
 
@@ -62,6 +63,7 @@ As a mobile user viewing reports or data grids, I want to be able to read the da
 - **FR-005**: System MUST handle wide data grids on mobile by transforming each row into a vertical stacked card-based layout to ensure readability without horizontal scrolling.
 - **FR-006**: The Stock Mutation upload controls and each column-mapping dropdown/metric pair MUST retain their outer `st.container(border=True)` group structure and locked Neo-Brutalist card styling without changing upload or execution behavior.
 - **FR-007**: On desktop, the paired Stock Mutation DEDUCT and ADD execution table viewports MUST use equal heights so their progress indicators remain vertically aligned regardless of content wrapping; mobile stacked-card behavior MUST remain unchanged.
+- **FR-008**: Stock Mutation upload reset MUST execute before widget re-instantiation through a callback or equivalent lifecycle-safe mechanism and MUST clear the uploader value, `mutasi_file_id`, and `mutasi_review_df` without direct post-instantiation assignment to the widget-owned key.
 
 ### Key Entities
 
@@ -76,6 +78,7 @@ As a mobile user viewing reports or data grids, I want to be able to read the da
 - **SC-002**: Zero instances of UI elements visually overlapping or overflowing their parent containers on screens down to 320px width.
 - **SC-003**: The Neo-Brutalism aesthetic (borders, shadows, colors) remains 100% consistent between desktop and mobile views.
 - **SC-004**: Source-level regression coverage confirms the Stock Mutation uploader and all three mapping groups emit explicit bordered container wrappers.
+- **SC-005**: Regression coverage confirms **Hapus File Upload** uses lifecycle-safe reset handling and contains no direct assignment to `st.session_state.mutasi_file_uploader` after widget creation.
 
 ## Assumptions
 
@@ -89,3 +92,5 @@ As a mobile user viewing reports or data grids, I want to be able to read the da
 **Bugfix**: 2026-07-10 - [BUG-002] Added explicit Stock Mutation upload and mapping group-container requirements after the page structure drifted away from the locked Neo-Brutalist card layout.
 
 **Bugfix**: 2026-07-10 - [BUG-003] Added desktop alignment requirements for paired Stock Mutation execution tables and progress bars when cell content wraps differently.
+
+**Bugfix**: 2026-07-10 - [BUG-004] Added lifecycle-safe Stock Mutation uploader reset requirements after Streamlit 1.58 rejected inline mutation of the instantiated uploader key.

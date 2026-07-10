@@ -35,6 +35,13 @@ init_session_state(
     remark_b=""
 )
 
+
+def _clear_mutasi_upload():
+    st.session_state.pop("mutasi_file_uploader", None)
+    st.session_state.mutasi_file_id = None
+    st.session_state.mutasi_review_df = None
+
+
 render_wakelock()
 
 # --- MAIN UI ---
@@ -93,10 +100,13 @@ with st.container(border=True):
             {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
         """, unsafe_allow_html=True)
         st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
-        if st.button("Hapus File Upload", type="secondary", width='stretch', icon=":material/delete:"):
-            st.session_state.mutasi_file_uploader = None
-            st.session_state.mutasi_file_id = None
-            st.rerun()
+        st.button(
+            "Hapus File Upload",
+            type="secondary",
+            width='stretch',
+            icon=":material/delete:",
+            on_click=_clear_mutasi_upload,
+        )
     elif uploaded_file is not None:
         st.error(format_user_error("UPLOAD-001"))
 

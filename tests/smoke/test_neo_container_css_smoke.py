@@ -69,6 +69,32 @@ class NeoContainerCssSmokeTests(unittest.TestCase):
         for metric_placeholder in ("sku_metric_ph", "deduct_metric_ph", "add_metric_ph"):
             self.assertIn(f"{metric_placeholder}.markdown(", content)
 
+    def test_stock_mutation_upload_reset_uses_pre_rerun_callback(self):
+        content = self._read_repo_file("pages", "4_stock_mutation.py")
+
+        self.assertNotIn(
+            "st.session_state.mutasi_file_uploader = None",
+            content,
+        )
+        self.assertRegex(
+            content,
+            re.compile(
+                r"def _clear_mutasi_upload\(\):.*"
+                r"st\.session_state\.pop\([\"']mutasi_file_uploader[\"'], None\).*"
+                r"st\.session_state\.mutasi_file_id = None.*"
+                r"st\.session_state\.mutasi_review_df = None",
+                re.DOTALL,
+            ),
+        )
+        self.assertRegex(
+            content,
+            re.compile(
+                r"st\.button\(\s*[\"']Hapus File Upload[\"'].*"
+                r"on_click=_clear_mutasi_upload",
+                re.DOTALL,
+            ),
+        )
+
     def test_stock_mutation_execution_tables_share_desktop_height(self):
         page_content = self._read_repo_file("pages", "4_stock_mutation.py")
         css_content = self._read_repo_file("static", "style.css")

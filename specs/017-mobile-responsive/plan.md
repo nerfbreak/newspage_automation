@@ -27,6 +27,8 @@ Implement dynamic responsive design for mobile viewports across the application,
 
 **Bugfix**: 2026-07-10 - [BUG-003] Equalize the two Stock Mutation desktop execution table viewports with a page-scoped marker and CSS rule using the existing 400px table cap. Keep `render_responsive_dataframe()`, mobile cards, progress updates, and automation behavior unchanged.
 
+**Bugfix**: 2026-07-10 - [BUG-004] Move Stock Mutation upload reset into a button callback that runs before the next script body. The callback removes the uploader-owned key and clears only `mutasi_file_id` plus `mutasi_review_df`; uploader parsing, mapping, container structure, and automation behavior remain unchanged.
+
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
@@ -69,6 +71,8 @@ utils.py                 # Potential responsive helper functions for Streamlit c
 **Bugfix implementation note**: BUG-002 is a page-structure correction rather than a CSS redesign. The uploader feedback belongs inside one marker-backed bordered container. Each of the three mapping columns must create one marker-backed bordered container containing its dropdown and a metric placeholder that is populated after review data is calculated. Regression coverage must inspect the page structure so CSS-only assertions cannot report a false pass.
 
 **Bugfix implementation note**: BUG-003 uses a marker immediately before the dual execution columns so the CSS selector remains local to Stock Mutation. Under desktop widths, both `.neo-table-wrapper` elements reserve the existing 400px table viewport; under mobile widths the responsive card layout remains unchanged.
+
+**Bugfix implementation note**: BUG-004 replaces the inline `if st.button(...): st.session_state.mutasi_file_uploader = None` branch with a named `on_click` callback. This keeps the stable uploader key while ensuring reset occurs before widget instantiation on the rerun. The callback also clears upload-derived identifiers and review data so stale rows cannot remain executable.
 
 ## Complexity Tracking
 
