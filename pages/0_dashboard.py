@@ -310,6 +310,74 @@ with right_col:
                     script = """
 import os, asyncio, time
 from playwright.async_api import async_playwright
+
+def render_active_tasks(supabase):
+    tasks = get_active_tasks(supabase)
+    st.markdown("<div class='header-wrapper-left'><div class='section-header-underline'>ACTIVE BOT TASKS</div></div>", unsafe_allow_html=True)
+    
+    col_refresh, _ = st.columns([1, 4])
+    with col_refresh:
+        if st.button("REFRESH TASKS", type="secondary", use_container_width=True):
+            st.rerun()
+
+    if not tasks:
+        st.info("No active bot tasks running right now.")
+    else:
+        st.markdown('''
+            <style>
+            .task-card {
+                background-color: #FFFFFF;
+                border: 3px solid #0F172A;
+                border-radius: 0px;
+                box-shadow: 6px 6px 0px 0px #0F172A;
+                padding: 15px;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .task-title {
+                font-family: 'Source Sans 3', sans-serif;
+                font-weight: 900;
+                font-size: 1.1rem;
+                color: #0F172A;
+                margin-bottom: 5px;
+            }
+            .task-detail {
+                font-family: 'Source Sans 3', sans-serif;
+                font-size: 0.95rem;
+                color: #334155;
+            }
+            .task-badge {
+                display: inline-block;
+                background-color: #FFDE59;
+                color: #0F172A;
+                font-weight: 800;
+                padding: 4px 8px;
+                border: 2px solid #0F172A;
+                font-size: 0.8rem;
+                margin-right: 10px;
+            }
+            </style>
+        ''', unsafe_allow_html=True)
+        
+        for task in tasks:
+            task_type = str(task.get("task_type", "Unknown"))
+            dist = str(task.get("distributor_name", "Unknown"))
+            user = str(task.get("started_by", "Unknown"))
+            
+            st.markdown(f'''
+                <div class="task-card">
+                    <div>
+                        <div class="task-title"><span class="task-badge">RUNNING</span> {task_type}</div>
+                        <div class="task-detail"><b>Distributor:</b> {dist}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="task-detail"><b>Run By:</b> {user}</div>
+                    </div>
+                </div>
+            ''', unsafe_allow_html=True)
+
 async def main():
     try:
         url = os.environ.get('PING_URL', '')

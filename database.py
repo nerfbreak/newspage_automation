@@ -344,49 +344,82 @@ def record_failed_login(supabase, username, max_attempts=5, lockout_minutes=5):
             
         supabase.table("login_attempts").upsert(data).execute()
     except Exception as e:
-        def reset_failed_login(supabase, username):
-            """
-            Reset failed login counter upon successful login.
-            """
-            try:
-                supabase.table("login_attempts").upsert({
-                    "username": username,
-                    "attempts": 0,
-                    "last_attempt": datetime.now(timezone.utc).isoformat(),
-                    "lockout_until": None
-                }).execute()
-            except Exception as e:
-                print(f"Error resetting failed login: {e}")
+        print(f"Error recording failed login: {e}")
 
-        def register_active_task(supabase, task_type, distributor_name, started_by):
-            """Register a new active bot task."""
-            try:
-                res = supabase.table("active_bot_tasks").insert({
-                    "task_type": task_type,
-                    "distributor_name": distributor_name,
-                    "started_by": started_by
-                }).execute()
-                if res.data:
-                    return res.data[0].get("id")
-            except Exception as e:
-                print(f"Error registering active task: {e}")
-            return None
+def reset_failed_login(supabase, username):
+    """
+    Reset failed login counter upon successful login.
+    """
+    try:
+        supabase.table("login_attempts").upsert({
+            "username": username,
+            "attempts": 0,
+            "last_attempt": datetime.now(timezone.utc).isoformat(),
+            "lockout_until": None
+        }).execute()
+    except Exception as e:
+        print(f"Error resetting failed login: {e}")
 
-        def clear_active_task(supabase, task_id):
-            """Clear an active bot task by ID."""
-            if not task_id:
-                return
-            try:
-                supabase.table("active_bot_tasks").delete().eq("id", task_id).execute()
-            except Exception as e:
-                print(f"Error clearing active task: {e}")
+def register_active_task(supabase, task_type, distributor_name, started_by):
+    """Register a new active bot task."""
+    try:
+        res = supabase.table("active_bot_tasks").insert({
+            "task_type": task_type,
+            "distributor_name": distributor_name,
+            "started_by": started_by
+        }).execute()
+        if res.data:
+            return res.data[0].get("id")
+    except Exception as e:
+        print(f"Error registering active task: {e}")
+    return None
 
-        def get_active_tasks(supabase):
-            """Fetch all active bot tasks."""
-            try:
-                res = supabase.table("active_bot_tasks").select("*").order("started_at", desc=True).execute()
-                return res.data if res.data else []
-            except Exception as e:
-                print(f"Error fetching active tasks: {e}")
-                return []
+def clear_active_task(supabase, task_id):
+    """Clear an active bot task by ID."""
+    if not task_id:
+        return
+    try:
+        supabase.table("active_bot_tasks").delete().eq("id", task_id).execute()
+    except Exception as e:
+        print(f"Error clearing active task: {e}")
 
+def get_active_tasks(supabase):
+    """Fetch all active bot tasks."""
+    try:
+        res = supabase.table("active_bot_tasks").select("*").order("started_at", desc=True).execute()
+        return res.data if res.data else []
+    except Exception as e:
+        print(f"Error fetching active tasks: {e}")
+        return []
+
+
+
+def register_active_task(supabase, task_type, distributor_name, started_by):
+    if not supabase: return None
+    try:
+        res = supabase.table("active_bot_tasks").insert({
+            "task_type": task_type,
+            "distributor_name": distributor_name,
+            "started_by": started_by
+        }).execute()
+        if res.data:
+            return res.data[0].get("id")
+    except Exception as e:
+        logging.error(f"Error registering active task: {e}")
+    return None
+
+def clear_active_task(supabase, task_id):
+    if not supabase or not task_id: return
+    try:
+        supabase.table("active_bot_tasks").delete().eq("id", task_id).execute()
+    except Exception as e:
+        logging.error(f"Error clearing active task: {e}")
+
+def get_active_tasks(supabase):
+    if not supabase: return []
+    try:
+        res = supabase.table("active_bot_tasks").select("*").order("started_at", desc=True).execute()
+        return res.data if res.data else []
+    except Exception as e:
+        logging.error(f"Error fetching active tasks: {e}")
+        return []
