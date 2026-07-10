@@ -101,64 +101,64 @@ with st.container(border=True):
         st.error(format_user_error("UPLOAD-001"))
 
 if uploaded_file is not None and df_raw is not None and not df_raw.empty:
-        # --- COLUMN MAPPING ---
-        st.subheader("Column Mapping")
-        mc1, mc2, mc3 = st.columns(3)
+    # --- COLUMN MAPPING ---
+    st.subheader("Column Mapping")
+    mc1, mc2, mc3 = st.columns(3)
 
-        with mc1:
-            st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-            with st.container(border=True):
-                # Auto-detect SKU column
-                sku_candidates = [c for c in df_raw.columns if any(k in str(c).lower() for k in ['sku', 'code', 'kode', 'produk'])]
-                idx_sku = df_raw.columns.get_loc(sku_candidates[0]) if sku_candidates else 0
-                sku_col = st.selectbox("SKU Column", df_raw.columns, index=idx_sku, key="mutasi_sku_col")
-                sku_metric_ph = st.empty()
+    with mc1:
+        st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
+        with st.container(border=True):
+            # Auto-detect SKU column
+            sku_candidates = [c for c in df_raw.columns if any(k in str(c).lower() for k in ['sku', 'code', 'kode', 'produk'])]
+            idx_sku = df_raw.columns.get_loc(sku_candidates[0]) if sku_candidates else 0
+            sku_col = st.selectbox("SKU Column", df_raw.columns, index=idx_sku, key="mutasi_sku_col")
+            sku_metric_ph = st.empty()
 
-        with mc2:
-            st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-            with st.container(border=True):
-                # Auto-detect Description column
-                desc_candidates = [c for c in df_raw.columns if any(k in str(c).lower() for k in ['desc', 'name', 'nama', 'produk'])]
-                idx_desc = df_raw.columns.get_loc(desc_candidates[0]) if desc_candidates else (1 if len(df_raw.columns) > 1 else 0)
-                desc_col = st.selectbox("Description Column", df_raw.columns, index=idx_desc, key="mutasi_desc_col")
-                deduct_metric_ph = st.empty()
+    with mc2:
+        st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
+        with st.container(border=True):
+            # Auto-detect Description column
+            desc_candidates = [c for c in df_raw.columns if any(k in str(c).lower() for k in ['desc', 'name', 'nama', 'produk'])]
+            idx_desc = df_raw.columns.get_loc(desc_candidates[0]) if desc_candidates else (1 if len(df_raw.columns) > 1 else 0)
+            desc_col = st.selectbox("Description Column", df_raw.columns, index=idx_desc, key="mutasi_desc_col")
+            deduct_metric_ph = st.empty()
 
-        with mc3:
-            st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
-            with st.container(border=True):
-                # Auto-detect Qty column
-                qty_candidates = [c for c in df_raw.columns if any(k in str(c).lower() for k in ['qty', 'stock', 'stok', 'jumlah', 'mutasi'])]
-                idx_qty = df_raw.columns.get_loc(qty_candidates[0]) if qty_candidates else (2 if len(df_raw.columns) > 2 else 0)
-                qty_col = st.selectbox("Qty Column", df_raw.columns, index=idx_qty, key="mutasi_qty_col")
-                add_metric_ph = st.empty()
+    with mc3:
+        st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
+        with st.container(border=True):
+            # Auto-detect Qty column
+            qty_candidates = [c for c in df_raw.columns if any(k in str(c).lower() for k in ['qty', 'stock', 'stok', 'jumlah', 'mutasi'])]
+            idx_qty = df_raw.columns.get_loc(qty_candidates[0]) if qty_candidates else (2 if len(df_raw.columns) > 2 else 0)
+            qty_col = st.selectbox("Qty Column", df_raw.columns, index=idx_qty, key="mutasi_qty_col")
+            add_metric_ph = st.empty()
 
-        # --- BUILD REVIEW TABLE ---
-        df_review = df_raw[[sku_col, desc_col, qty_col]].copy()
-        df_review.columns = ['SKU', 'Description', 'Qty']
+    # --- BUILD REVIEW TABLE ---
+    df_review = df_raw[[sku_col, desc_col, qty_col]].copy()
+    df_review.columns = ['SKU', 'Description', 'Qty']
 
-        # Clean data
-        TARGET_SKUS = database.get_target_skus(supabase)
-        df_review = data_processor.clean_sku_column(df_review, 'SKU', TARGET_SKUS)
-        df_review['Qty'] = df_review['Qty'].apply(safe_parse_numeric).astype(int)
-        df_review = df_review[df_review['Qty'] != 0].reset_index(drop=True)
+    # Clean data
+    TARGET_SKUS = database.get_target_skus(supabase)
+    df_review = data_processor.clean_sku_column(df_review, 'SKU', TARGET_SKUS)
+    df_review['Qty'] = df_review['Qty'].apply(safe_parse_numeric).astype(int)
+    df_review = df_review[df_review['Qty'] != 0].reset_index(drop=True)
 
-        if len(df_review) > 0:
-            st.session_state.mutasi_review_df = df_review
+    if len(df_review) > 0:
+        st.session_state.mutasi_review_df = df_review
 
-            # Summary metrics
-            sku_metric_ph.markdown(render_metric_card("Total SKU", len(df_review)), unsafe_allow_html=True)
-            deduct_metric_ph.markdown(render_metric_card(f"Total Qty Dikurangi ({dist_a})", f"-{df_review['Qty'].sum()}"), unsafe_allow_html=True)
-            add_metric_ph.markdown(render_metric_card(f"Total Qty Ditambah ({dist_b})", f"+{df_review['Qty'].sum()}"), unsafe_allow_html=True)
+        # Summary metrics
+        sku_metric_ph.markdown(render_metric_card("Total SKU", len(df_review)), unsafe_allow_html=True)
+        deduct_metric_ph.markdown(render_metric_card(f"Total Qty Dikurangi ({dist_a})", f"-{df_review['Qty'].sum()}"), unsafe_allow_html=True)
+        add_metric_ph.markdown(render_metric_card(f"Total Qty Ditambah ({dist_b})", f"+{df_review['Qty'].sum()}"), unsafe_allow_html=True)
 
-            # Review table with deduction/addition preview
-            df_display = df_review.copy()
-            df_display[f'Deduct ({dist_a})'] = df_display['Qty'].apply(lambda x: f"-{abs(x)}")
-            df_display[f'Add ({dist_b})'] = df_display['Qty'].apply(lambda x: f"+{abs(x)}")
+        # Review table with deduction/addition preview
+        df_display = df_review.copy()
+        df_display[f'Deduct ({dist_a})'] = df_display['Qty'].apply(lambda x: f"-{abs(x)}")
+        df_display[f'Add ({dist_b})'] = df_display['Qty'].apply(lambda x: f"+{abs(x)}")
 
-            st.subheader("Stock Review")
-            utils.render_responsive_dataframe(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']])
-        else:
-            st.warning("Tidak ada SKU valid di file yang diupload.")
+        st.subheader("Stock Review")
+        utils.render_responsive_dataframe(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']])
+    else:
+        st.warning("Tidak ada SKU valid di file yang diupload.")
 
 # --- EXECUTE ---
 review_ready = st.session_state.mutasi_review_df is not None and len(st.session_state.mutasi_review_df) > 0

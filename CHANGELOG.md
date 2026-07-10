@@ -27,6 +27,8 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 
 ### 🛠️ Perbaikan & Peningkatan
 
+- **Pemulihan Container Mutasi Stok**: Area upload file serta tiga grup pemetaan kolom kembali tampil sebagai card Neo-Brutalist lengkap dengan border tebal, background putih, dan shadow datar.
+
 - **Perbaikan Alignment Mutasi Stok**: Tabel DEDUCT dan ADD beserta progress bar sekarang tetap sejajar selama eksekusi, meskipun teks deskripsi barang membungkus ke jumlah baris yang berbeda.
 - **Standarisasi Kode Error UI**: Mengganti pesan error teknis mentah pada notifikasi UI (toast login, timeout sesi, dan ping test) dengan kode taksonomi terstruktur (seperti [AUTH-001], [SESSION-001]) guna mempermudah pelaporan kendala tanpa membocorkan informasi sistem.
 - **Pembaruan Mutasi Stok**: Kolom remark (keterangan) kini dipisah untuk masing-masing distributor pengirim dan penerima untuk pelacakan transaksi yang lebih presisi, dan kolom remark global dihapus untuk menghindari redundansi.
