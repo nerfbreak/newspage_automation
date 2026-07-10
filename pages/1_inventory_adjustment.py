@@ -306,7 +306,7 @@ elif "Manual Entry" in adj_mode:
             df_up = st.session_state.manual_uploaded_df
             utils.render_responsive_dataframe(df_up.head(5))
             
-            st.markdown("<div style='margin-bottom:10px;'><b>Mapping Kolom:</b></div>", unsafe_allow_html=True)
+            st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>Column Mapping</span></div>", unsafe_allow_html=True)
             mcol1, mcol2, mcol3, mcol4 = st.columns(4)
             cols = ["-"] + list(df_up.columns)
             with mcol1:

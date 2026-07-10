@@ -113,7 +113,7 @@ with st.container(border=True):
 
 if uploaded_file is not None and df_raw is not None and not df_raw.empty:
     # --- COLUMN MAPPING ---
-    st.markdown("<div class='header-wrapper-left'><span class='section-header-underline'>Column Mapping</span></div>", unsafe_allow_html=True)
+    st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>Column Mapping</span></div>", unsafe_allow_html=True)
     mc1, mc2, mc3 = st.columns(3)
 
     with mc1:
