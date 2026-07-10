@@ -15,9 +15,9 @@
 
 ## Last Completed Work
 
-- Modified `pages/4_stock_mutation.py`, `pages/5_clearance_stock.py`, `pages/6_initial_stock.py` to use `st.markdown("<div class='header-wrapper-*'><span class='section-header-underline'>...</span></div>", unsafe_allow_html=True)`.
+- Modified `pages/4_stock_mutation.py`, `pages/5_clearance_stock.py`, `pages/6_initial_stock.py`, `pages/3_promotion_comparison.py` to use `st.markdown("<div class='header-wrapper-*'><span class='section-header-underline'>...</span></div>", unsafe_allow_html=True)`.
 - Re-verified Stock Mutation visual layout.
-- Pushed commit `e151c57` to remote `main`.
+- Pushed commit `3ee61bd` to remote `main`.
 
 ## Next Recommended Step
 
