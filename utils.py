@@ -462,10 +462,15 @@ def render_neo_table(df_or_placeholder, df=None):
     target.markdown(html_str, unsafe_allow_html=True)
 
 
-def render_responsive_dataframe(df_or_placeholder, df=None):
+def render_responsive_dataframe(df_or_placeholder, df=None, fixed_height=None):
     """
     Renders a dataframe that shows as a neo-brutalist table on desktop
     and stacks into mobile cards on screens < 768px.
+    
+    Args:
+        fixed_height: Optional int (px). When set, forces the table wrapper
+                      to exactly this height via inline style, ensuring paired
+                      tables stay aligned regardless of content.
     """
     import pandas as pd
     
@@ -486,7 +491,8 @@ def render_responsive_dataframe(df_or_placeholder, df=None):
         escape=True,
         float_format=lambda x: str(int(x)) if x.is_integer() else str(x)
     )
-    desktop_div = f'<div class="desktop-only-table"><div class="neo-table-wrapper">{desktop_html}</div></div>'
+    wrapper_style = f' style="height: {fixed_height}px"' if fixed_height else ''
+    desktop_div = f'<div class="desktop-only-table"><div class="neo-table-wrapper"{wrapper_style}>{desktop_html}</div></div>'
     
     # 2. Mobile Cards HTML
     cards_html = []

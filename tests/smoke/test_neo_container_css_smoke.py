@@ -113,8 +113,8 @@ class NeoContainerCssSmokeTests(unittest.TestCase):
         )
 
     def test_stock_mutation_execution_tables_share_desktop_height(self):
+        """BUG-009: Inline fixed_height=400 ensures paired mutation tables align."""
         page_content = self._read_repo_file("pages", "4_stock_mutation.py")
-        css_content = self._read_repo_file("static", "style.css")
 
         execution_section = page_content.split("# Dual layout", 1)[1].split(
             "# Initial table render", 1
@@ -127,14 +127,13 @@ class NeoContainerCssSmokeTests(unittest.TestCase):
             ),
         )
 
-        self.assertIn("@media (min-width: 769px)", css_content)
-        self.assertIn(":has(.mutation-execution-layout-marker)", css_content)
-        self.assertRegex(
-            css_content,
-            re.compile(
-                r":has\(\.mutation-execution-layout-marker\)[\s\S]*?\.desktop-only-table \.neo-table-wrapper[\s\S]*?height:\s*400px",
-                re.DOTALL,
-            ),
+        # Both initial table renders must pass fixed_height=400
+        render_section = page_content.split("# Initial table render", 1)[1].split(
+            "prog_a_ph.progress", 1
+        )[0]
+        self.assertEqual(
+            render_section.count("fixed_height=400"), 2,
+            "Both execution table renders must pass fixed_height=400"
         )
 
     def test_no_unsupported_subheaders_in_execution_pages(self):

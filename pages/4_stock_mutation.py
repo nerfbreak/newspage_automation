@@ -231,12 +231,12 @@ if st.session_state.is_mutasi_running:
     df_a_display['Qty'] = '-' + df_a_display['Qty'].astype(str)
     df_a_display['Status'] = 'Pending'
     df_a_display['Keterangan'] = 'Ready'
-    utils.render_responsive_dataframe(table_a_ph, df_a_display)
+    utils.render_responsive_dataframe(table_a_ph, df_a_display, fixed_height=400)
 
     df_b_display = df_mutasi[['SKU', 'Description', 'Qty']].copy()
     df_b_display['Status'] = 'Pending'
     df_b_display['Keterangan'] = 'Ready'
-    utils.render_responsive_dataframe(table_b_ph, df_b_display)
+    utils.render_responsive_dataframe(table_b_ph, df_b_display, fixed_height=400)
 
     prog_a_ph.progress(0)
     prog_b_ph.progress(0)
