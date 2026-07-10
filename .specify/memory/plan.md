@@ -84,6 +84,13 @@ Optimize/
 - Reverted the changes introduced in Spec 025 to ensure the automation environment relies solely on standard "Terminate" procedures or system timeouts.
 - Removed `psutil` dependency from the project.
 
+### 027-replace-components-html (2026-07-10)
+[Source: specs/027-replace-components-html]
+- Replaced deprecated `st.components.v1.html` with `st.iframe` in `pages/1_inventory_adjustment.py` (screenshot share buttons).
+- Removed the `import streamlit.components.v1 as components` statement.
+- No new dependencies, database changes, or Playwright selector modifications introduced.
+- Fulfills Constitution Principle X (Streamlit Deprecation Compliance).
+
 ## Testing Strategy
 
 - Manual validation: Navigate all 7 page modules, verify no deprecation warnings, confirm layout integrity.
@@ -96,3 +103,4 @@ Optimize/
 - **2026-07-06**: Archived `017-mobile-responsive` implementation details, responsive helper architecture, and mobile validation strategy.
 - **2026-07-06**: Archived `018-security-audit` confirming secure configurations for sessions, inputs, and credentials.
 - **2026-07-09**: Archived `028-remove-force-kill` implementation details confirming the removal of `psutil` and the Force Kill feature.
+- **2026-07-10**: Archived `027-replace-components-html` confirming migration from deprecated `st.components.v1.html` to `st.iframe`.
