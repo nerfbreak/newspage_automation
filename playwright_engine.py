@@ -854,6 +854,9 @@ def _setup_terminate_button(placeholder, current_user=None, key_suffix="default"
         def terminate_callback():
             st.session_state.is_bot_running = False
             st.session_state.execute_done = False
+            # BUG-010: Also reset mutation-specific gate so rerun doesn't re-enter execution
+            st.session_state.is_mutasi_running = False
+            st.session_state.mutasi_review_df = None
             
         st.button("CONFIRM", key=f"term_bot_hidden_{key_suffix}", on_click=terminate_callback, width='stretch')
 
