@@ -27,6 +27,7 @@ Berikut adalah pembaruan terbaru pada sistem otomasi Newspage:
 
 ### 🛠️ Perbaikan & Peningkatan
 
+- **Perbaikan Alignment Mutasi Stok**: Tabel DEDUCT dan ADD beserta progress bar sekarang tetap sejajar selama eksekusi, meskipun teks deskripsi barang membungkus ke jumlah baris yang berbeda.
 - **Standarisasi Kode Error UI**: Mengganti pesan error teknis mentah pada notifikasi UI (toast login, timeout sesi, dan ping test) dengan kode taksonomi terstruktur (seperti [AUTH-001], [SESSION-001]) guna mempermudah pelaporan kendala tanpa membocorkan informasi sistem.
 - **Pembaruan Mutasi Stok**: Kolom remark (keterangan) kini dipisah untuk masing-masing distributor pengirim dan penerima untuk pelacakan transaksi yang lebih presisi, dan kolom remark global dihapus untuk menghindari redundansi.
 - **Kepatuhan Depresiasi Streamlit (Layout Widths)**: Mengimigrasi parameter lebar layout `use_container_width` yang usang ke parameter baru `width='stretch'` di seluruh modul halaman dan mesin otomasi guna mencegah potensi crash sistem di masa depan tanpa mengubah fungsi yang sudah berjalan.

@@ -1480,6 +1480,25 @@ div[data-testid="stProgressBar"], div[data-testid="stProgress"] {
     margin-bottom: 0px !important;
 }
 
+/* Keep paired Stock Mutation execution tables and progress bars aligned. */
+div[data-testid="stElementContainer"]:has(.mutation-execution-layout-marker),
+.element-container:has(.mutation-execution-layout-marker) {
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+@media (min-width: 769px) {
+    div[data-testid="stElementContainer"]:has(.mutation-execution-layout-marker) + div[data-testid="stHorizontalBlock"] .desktop-only-table .neo-table-wrapper,
+    div[data-testid="stElementContainer"]:has(.mutation-execution-layout-marker) + div[data-testid="stElementContainer"]:has(div[data-testid="stHorizontalBlock"]) .desktop-only-table .neo-table-wrapper,
+    .element-container:has(.mutation-execution-layout-marker) + div[data-testid="stHorizontalBlock"] .desktop-only-table .neo-table-wrapper,
+    .element-container:has(.mutation-execution-layout-marker) + .element-container:has(div[data-testid="stHorizontalBlock"]) .desktop-only-table .neo-table-wrapper {
+        height: 400px;
+    }
+}
+
 div[data-testid="stProgressBar"] div[role="progressbar"] > div,
 div[data-testid="stProgress"] div[role="progressbar"] > div {
     background-color: #FFDE59 !important;
