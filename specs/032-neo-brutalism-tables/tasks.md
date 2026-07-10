@@ -7,4 +7,4 @@
 
 ## Tasks
 
-- [ ] **TASK 1.1**: Update `style.css` to add table `th` and `td` borders (`border: 2px solid #0F172A`). Target `.stDataFrame table` and `table` inside `[data-testid="stMarkdownContainer"]`. Add `border-collapse: collapse;` on the `table` elements.
+- [x] **TASK 1.1**: Update `style.css` to add table `th` and `td` borders (`border: 2px solid #0F172A`). Target `.stDataFrame table` and `table` inside `[data-testid="stMarkdownContainer"]`. Add `border-collapse: collapse;` on the `table` elements.
