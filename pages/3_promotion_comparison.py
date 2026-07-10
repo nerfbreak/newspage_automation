@@ -171,8 +171,8 @@ if promo_btn:
 
 # --- COMPARISON VIEW ---
 if st.session_state.promo_zip_data:
-    st.markdown("---")
-    st.markdown("<h3>Smart Comparison Engine</h3>", unsafe_allow_html=True)
+    st.markdown("<div style='border-top: 3px solid #0F172A; margin: 24px 0px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div class='header-wrapper-left'><span class='section-header-underline'>Smart Comparison Engine</span></div>", unsafe_allow_html=True)
     
     if st.session_state.uploaded_mdm_data is None:
         st.warning("Mohon upload file Excel SharePoint di atas untuk mulai membandingkan.")
