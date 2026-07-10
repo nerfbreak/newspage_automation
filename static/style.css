@@ -1978,3 +1978,17 @@ div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid=
     }
 }
 
+
+/* Ensure ALL internal grid lines exist and have high priority */
+table.neo-table th, table.neo-table td,
+.stDataFrame table th, .stDataFrame table td,
+div[data-testid="stMarkdownContainer"] table th,
+div[data-testid="stMarkdownContainer"] table td {
+    border: 2px solid #0F172A !important;
+}
+
+/* Remove the stripping rules */
+table.neo-table tr:first-child th { border-top: 2px solid #0F172A !important; }
+table.neo-table tr:last-child td { border-bottom: 2px solid #0F172A !important; }
+table.neo-table th:first-child, table.neo-table td:first-child { border-left: 2px solid #0F172A !important; }
+table.neo-table th:last-child, table.neo-table td:last-child { border-right: 2px solid #0F172A !important; }
