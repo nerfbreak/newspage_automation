@@ -1490,11 +1490,14 @@ div[data-testid="stElementContainer"]:has(.mutation-execution-layout-marker),
     overflow: hidden !important;
 }
 
+/* Keep paired Stock Mutation execution tables and progress bars aligned.
+   BUG-007: replaced fragile '+' adjacent-sibling selectors with general-sibling '~'
+   and ancestor ':has()' fallback so Streamlit wrapper depth no longer matters. */
 @media (min-width: 769px) {
-    div[data-testid="stElementContainer"]:has(.mutation-execution-layout-marker) + div[data-testid="stHorizontalBlock"] .desktop-only-table .neo-table-wrapper,
-    div[data-testid="stElementContainer"]:has(.mutation-execution-layout-marker) + div[data-testid="stElementContainer"]:has(div[data-testid="stHorizontalBlock"]) .desktop-only-table .neo-table-wrapper,
-    .element-container:has(.mutation-execution-layout-marker) + div[data-testid="stHorizontalBlock"] .desktop-only-table .neo-table-wrapper,
-    .element-container:has(.mutation-execution-layout-marker) + .element-container:has(div[data-testid="stHorizontalBlock"]) .desktop-only-table .neo-table-wrapper {
+    div[data-testid="stElementContainer"]:has(.mutation-execution-layout-marker) ~ div[data-testid="stHorizontalBlock"] .desktop-only-table .neo-table-wrapper,
+    div[data-testid="stElementContainer"]:has(.mutation-execution-layout-marker) ~ div[data-testid="stElementContainer"] .desktop-only-table .neo-table-wrapper,
+    .element-container:has(.mutation-execution-layout-marker) ~ div[data-testid="stHorizontalBlock"] .desktop-only-table .neo-table-wrapper,
+    .element-container:has(.mutation-execution-layout-marker) ~ .element-container .desktop-only-table .neo-table-wrapper {
         height: 400px;
     }
 }
