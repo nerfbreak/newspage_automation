@@ -1474,9 +1474,9 @@ def run_mutasi_execution(
     dry_run=None
 ):
     task_id = None
-    if current_user and selected_distributor:
+    if current_user and dist_a and dist_b:
         try:
-            task_id = register_active_task(supabase, "Stock Mutation", selected_distributor, current_user)
+            task_id = register_active_task(supabase, "Stock Mutation", f"{dist_a} -> {dist_b}", current_user)
         except Exception: pass
     
     ui_log_a, _ = utils.make_terminal_logger(log_a_ph)

@@ -423,3 +423,34 @@ def get_active_tasks(supabase):
     except Exception as e:
         logging.error(f"Error fetching active tasks: {e}")
         return []
+
+
+def register_active_task(supabase, task_type, distributor_name, started_by):
+    if not supabase: return None
+    try:
+        res = supabase.table("active_bot_tasks").insert({
+            "task_type": task_type,
+            "distributor_name": distributor_name,
+            "started_by": started_by
+        }).execute()
+        if res.data:
+            return res.data[0].get("id")
+    except Exception as e:
+        logging.error(f"Error registering active task: {e}")
+    return None
+
+def clear_active_task(supabase, task_id):
+    if not supabase or not task_id: return
+    try:
+        supabase.table("active_bot_tasks").delete().eq("id", task_id).execute()
+    except Exception as e:
+        logging.error(f"Error clearing active task: {e}")
+
+def get_active_tasks(supabase):
+    if not supabase: return []
+    try:
+        res = supabase.table("active_bot_tasks").select("*").order("started_at", desc=True).execute()
+        return res.data if res.data else []
+    except Exception as e:
+        logging.error(f"Error fetching active tasks: {e}")
+        return []
