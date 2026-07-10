@@ -9,26 +9,25 @@
 
 ## Current Status
 
-- Hermes completed Spec 029 (Neo-Brutalist Section Headers) replacing all 7 unstyled `st.subheader()` instances across Stock Mutation, Clearance Stock, and Initial Stock pages with the standard Neo-Brutalist `<span class='section-header-underline'>`.
-- A dedicated smoke test `test_no_unsupported_subheaders_in_execution_pages` was added to enforce the Neo-Brutalist header rule.
-- All Spec 029 artifacts (spec, plan, tasks, verify report) are finalized, archived, committed, and pushed.
+- Hermes completed Spec 030 (Center Column Mapping Headers) centering the "Column Mapping" titles on Stock Mutation and Inventory Adjustment Manual Entry using the Neo-Brutalist `header-wrapper-center` + `section-header-underline` pattern.
+- All Spec 030 artifacts (spec, plan, tasks, verify report) are finalized, committed, and pushed.
 
 ## Last Completed Work
 
-- Modified `pages/4_stock_mutation.py`, `pages/5_clearance_stock.py`, `pages/6_initial_stock.py`, `pages/3_promotion_comparison.py` to use `st.markdown("<div class='header-wrapper-*'><span class='section-header-underline'>...</span></div>", unsafe_allow_html=True)`.
-- Re-verified Stock Mutation visual layout.
-- Pushed commit `3ee61bd` to remote `main`.
+- Modified `pages/4_stock_mutation.py` line 116: `header-wrapper-left` → `header-wrapper-center`
+- Modified `pages/1_inventory_adjustment.py` line 309: raw `<div><b>Mapping Kolom:</b></div>` → `<div class='header-wrapper-center'><span class='section-header-underline'>Column Mapping</span></div>`
+- Pushed commit `c1ec796` to remote `main`.
 
 ## Next Recommended Step
 
-1. **Reboot Streamlit Cloud app** so that all recent commits (BUG-004, BUG-005, Spec 027, Spec 029) are fully deployed.
-2. Navigate to Stock Mutation, Clearance Stock, and Initial Stock to confirm all headers now have the Neo-Brutalist boxed border and shadow.
+1. **Reboot Streamlit Cloud app** to deploy Spec 030.
+2. Navigate to Stock Mutation and Inventory Adjustment Manual Entry to confirm centered headers.
 3. No pending uncommitted work remains.
 
 ## Files to Watch
 
-- `static/style.css`
-- `tests/smoke/test_neo_container_css_smoke.py`
+- `pages/4_stock_mutation.py`
+- `pages/1_inventory_adjustment.py`
 - `.agents/MEMORY.md`
 
 ## Blockers
@@ -37,7 +36,6 @@
 
 ## Verification Notes
 
-- Passed (2026-07-10): Python compilation for pages 4, 5, 6.
-- Passed (2026-07-10): Full offline smoke suite 94/94 (including new subheader rule).
-- Passed (2026-07-10): Production readiness audit 25/25 rules.
+- Passed (2026-07-10): Python compilation for pages 1, 4.
+- Passed (2026-07-10): Full offline smoke suite 94/94 (88 subtests).
 - Skipped: Live Streamlit Cloud visual confirmation (requires app reboot to deploy latest commits).
