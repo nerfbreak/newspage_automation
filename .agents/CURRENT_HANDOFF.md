@@ -9,44 +9,39 @@
 
 ## Current Status
 
-- Hermes completed verification and commit of BUG-004 (Stock Mutation upload reset lifecycle fix) left uncommitted by a prior Codex session.
-- BUG-004 replaced inline `st.session_state.mutasi_file_uploader = None` (which crashed on Streamlit 1.58 due to widget-key ownership) with a lifecycle-safe `_clear_mutasi_upload()` on_click callback.
-- All three BUG-004 tasks (T019-T021) marked complete. BUG-004.md report created.
-- Spec artifacts updated: FR-008, SC-005 in spec.md; implementation note in plan.md; Wave 7 in tasks.md.
+- Hermes completed BUG-004 (Stock Mutation upload reset lifecycle fix) — verified, committed, pushed.
+- Hermes completed Spec 027 (replace deprecated `st.components.v1.html` with `st.iframe`) — code fix, Spec-Kit artifacts finalized, archived, committed, pushed.
+- All spec artifacts for 027 are complete: spec (Completed), plan, tasks (T001-T002 done), verify-tasks-report (2/2 VERIFIED), bugfix-verify-report, `.specify/memory/plan.md` archived.
 
 ## Last Completed Work
 
-- Verified focused container/reset tests: 4/4 PASS
-- Verified Python compilation: PASS
-- Verified full offline smoke suite: 93/93 PASS
-- Verified production readiness audit: 25/25 PASS
-- Committed as `b3fca89` on `main`
-- Updated `.agents/MEMORY.md` changelog and this handoff file
+- Replaced `components.html(button_html, height=60)` with `st.iframe(button_html, height=60)` in `pages/1_inventory_adjustment.py`.
+- Removed `import streamlit.components.v1 as components`.
+- Finalized Spec 027 artifacts retroactively (status Draft→Completed, archive, verify report).
+- BUG-004 lifecycle-safe upload reset committed and pushed.
 
 ## Next Recommended Step
 
-1. Push commit `b3fca89` to remote when ready.
-2. Restart the running Streamlit app to load the updated upload reset callback.
-3. Upload a Stock Mutation file, confirm the "Hapus File Upload" button clears the file cleanly without a Streamlit runtime error.
-4. No pending uncommitted work or open bugfix tasks remain for specs/017-mobile-responsive.
+1. Reboot Streamlit Cloud app to pick up commits `b3fca89` (BUG-004) and `1104929` (Spec 027).
+2. Verify Stock Mutation "Hapus File Upload" works without `StreamlitAPIException`.
+3. Verify Inventory Adjustment screenshot share buttons render without deprecation warning.
+4. No pending uncommitted work remains.
 
 ## Files to Watch
 
+- `pages/1_inventory_adjustment.py`
 - `pages/4_stock_mutation.py`
-- `tests/smoke/test_neo_container_css_smoke.py`
-- `specs/017-mobile-responsive/`
-- `.agents/MEMORY.md`
-- `.agents/CURRENT_HANDOFF.md`
+- `specs/027-replace-components-html/`
+- `.specify/memory/plan.md`
 
 ## Blockers
 
-- None. All BUG-002, BUG-003, and BUG-004 work is committed and verified.
+- None. All work committed and pushed.
 
 ## Verification Notes
 
-- Passed (2026-07-10): Focused container/reset smoke tests 4/4.
-- Passed (2026-07-10): Python compilation for `pages/4_stock_mutation.py`.
-- Passed (2026-07-10): Full offline smoke suite 93/93 (system Python with pandas/openpyxl).
+- Passed (2026-07-10): Python compilation for `pages/1_inventory_adjustment.py`.
+- Passed (2026-07-10): Full offline smoke suite 93/93.
 - Passed (2026-07-10): Production readiness audit 25/25 rules.
-- Note: Expected decryption-error logs from negative-path tests; suite completed with OK.
-- Skipped: Authenticated end-to-end Stock Mutation preview (requires live Supabase credentials and operational upload file).
+- Passed (2026-07-10): Codebase search confirms 0 instances of `components.v1`.
+- Skipped: Live Streamlit Cloud visual confirmation (requires app reboot to deploy latest commits).
