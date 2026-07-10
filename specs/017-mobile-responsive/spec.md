@@ -64,6 +64,7 @@ As a mobile user viewing reports or data grids, I want to be able to read the da
 - **FR-006**: The Stock Mutation upload controls and each column-mapping dropdown/metric pair MUST retain their outer `st.container(border=True)` group structure and locked Neo-Brutalist card styling without changing upload or execution behavior.
 - **FR-007**: On desktop, the paired Stock Mutation DEDUCT and ADD execution table viewports MUST use equal heights so their progress indicators remain vertically aligned regardless of content wrapping; mobile stacked-card behavior MUST remain unchanged.
 - **FR-008**: Stock Mutation upload reset MUST execute before widget re-instantiation through a callback or equivalent lifecycle-safe mechanism and MUST clear the uploader value, `mutasi_file_id`, and `mutasi_review_df` without direct post-instantiation assignment to the widget-owned key.
+- **FR-009**: After Stock Mutation upload reset, the file uploader dropzone MUST visually restore to its default empty state by rotating the widget key so Streamlit creates a fresh widget instance.
 
 ### Key Entities
 
@@ -79,6 +80,7 @@ As a mobile user viewing reports or data grids, I want to be able to read the da
 - **SC-003**: The Neo-Brutalism aesthetic (borders, shadows, colors) remains 100% consistent between desktop and mobile views.
 - **SC-004**: Source-level regression coverage confirms the Stock Mutation uploader and all three mapping groups emit explicit bordered container wrappers.
 - **SC-005**: Regression coverage confirms **Hapus File Upload** uses lifecycle-safe reset handling and contains no direct assignment to `st.session_state.mutasi_file_uploader` after widget creation.
+- **SC-006**: After clicking **Hapus File Upload**, the uploader widget key rotates so Streamlit renders a fresh empty dropzone on the next rerun.
 
 ## Assumptions
 
@@ -94,3 +96,5 @@ As a mobile user viewing reports or data grids, I want to be able to read the da
 **Bugfix**: 2026-07-10 - [BUG-003] Added desktop alignment requirements for paired Stock Mutation execution tables and progress bars when cell content wraps differently.
 
 **Bugfix**: 2026-07-10 - [BUG-004] Added lifecycle-safe Stock Mutation uploader reset requirements after Streamlit 1.58 rejected inline mutation of the instantiated uploader key.
+
+**Bugfix**: 2026-07-10 - [BUG-005] Added visual dropzone restoration requirement after BUG-004 fix cleared state but did not force a fresh widget instance, leaving the uploader area visually empty.

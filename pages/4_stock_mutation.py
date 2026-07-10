@@ -30,6 +30,7 @@ init_session_state(
     is_mutasi_running=False,
     mutasi_review_df=None,
     mutasi_file_id=None,
+    mutasi_uploader_key=0,
     selected_reason_code="",
     remark_a="",
     remark_b=""
@@ -37,7 +38,7 @@ init_session_state(
 
 
 def _clear_mutasi_upload():
-    st.session_state.pop("mutasi_file_uploader", None)
+    st.session_state.mutasi_uploader_key += 1
     st.session_state.mutasi_file_id = None
     st.session_state.mutasi_review_df = None
 
@@ -80,7 +81,7 @@ with col2:
 df_raw = None
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
-    uploaded_file = st.file_uploader("Upload file Excel berisi SKU yang akan dimutasi", type=['csv', 'xlsx', 'xls'], key="mutasi_file_uploader")
+    uploaded_file = st.file_uploader("Upload file Excel berisi SKU yang akan dimutasi", type=['csv', 'xlsx', 'xls'], key=f"mutasi_file_uploader_{st.session_state.mutasi_uploader_key}")
 
     # Track file changes to reset state
     curr_file_id = getattr(uploaded_file, "file_id", uploaded_file.name if uploaded_file else None) if uploaded_file else None

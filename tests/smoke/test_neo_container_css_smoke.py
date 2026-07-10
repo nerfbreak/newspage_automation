@@ -72,20 +72,37 @@ class NeoContainerCssSmokeTests(unittest.TestCase):
     def test_stock_mutation_upload_reset_uses_pre_rerun_callback(self):
         content = self._read_repo_file("pages", "4_stock_mutation.py")
 
+        # Must not contain direct assignment to any mutasi_file_uploader key
         self.assertNotIn(
             "st.session_state.mutasi_file_uploader = None",
             content,
         )
+        # Must not pop the widget key (BUG-005: pop doesn't restore dropzone)
+        self.assertNotIn(
+            "st.session_state.pop(\"mutasi_file_uploader\"",
+            content,
+        )
+        # Callback must increment the uploader key counter
         self.assertRegex(
             content,
             re.compile(
                 r"def _clear_mutasi_upload\(\):.*"
-                r"st\.session_state\.pop\([\"']mutasi_file_uploader[\"'], None\).*"
+                r"st\.session_state\.mutasi_uploader_key \+= 1.*"
                 r"st\.session_state\.mutasi_file_id = None.*"
                 r"st\.session_state\.mutasi_review_df = None",
                 re.DOTALL,
             ),
         )
+        # Uploader must use the rotated key
+        self.assertRegex(
+            content,
+            re.compile(
+                r"st\.file_uploader\(.*"
+                r"key=f[\"']mutasi_file_uploader_\{st\.session_state\.mutasi_uploader_key\}[\"']",
+                re.DOTALL,
+            ),
+        )
+        # Button must use on_click callback
         self.assertRegex(
             content,
             re.compile(

@@ -93,6 +93,13 @@
 
 **Bugfix**: 2026-07-10 - [BUG-004] Added T019-T021 to eliminate the Streamlit widget-state mutation crash while preserving uploader and mutation behavior.
 
+### BUG-005 - Stock Mutation Upload Dropzone Does Not Restore After Reset
+
+- [x] T022 [US1] Update `_clear_mutasi_upload` to increment a `mutasi_uploader_key` counter instead of popping the widget key, and change the `st.file_uploader` key to `f"mutasi_file_uploader_{st.session_state.mutasi_uploader_key}"`. Init the counter in `init_session_state`. Update the regression test to assert counter-based key rotation. (depends on T020)
+- [x] T023 [US1] Run focused container/reset tests, Python compilation, full offline smoke suite, readiness audit, and BUG-005 artifact verification (depends on T022).
+
+**Bugfix**: 2026-07-10 - [BUG-005] Added T022-T023 to ensure the uploader dropzone visually restores after reset by rotating the widget key.
+
 ---
 
 ## Dependencies & Execution Order
@@ -106,6 +113,7 @@
 - **Wave 5 (BUG-002)**: T013 -> T014 -> T015
 - **Wave 6 (BUG-003)**: T016 -> T017 -> T018
 - **Wave 7 (BUG-004)**: T019 -> T020 -> T021
+- **Wave 8 (BUG-005)**: T022 -> T023
 
 ### Phase Dependencies
 

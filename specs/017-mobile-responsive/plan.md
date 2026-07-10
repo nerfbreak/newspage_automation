@@ -74,6 +74,8 @@ utils.py                 # Potential responsive helper functions for Streamlit c
 
 **Bugfix implementation note**: BUG-004 replaces the inline `if st.button(...): st.session_state.mutasi_file_uploader = None` branch with a named `on_click` callback. This keeps the stable uploader key while ensuring reset occurs before widget instantiation on the rerun. The callback also clears upload-derived identifiers and review data so stale rows cannot remain executable.
 
+**Bugfix implementation note**: BUG-005 changes the uploader key from a fixed string (`mutasi_file_uploader`) to a counter-rotated key (`mutasi_file_uploader_{N}`). The `_clear_mutasi_upload` callback increments `mutasi_uploader_key` instead of popping the widget key, which forces Streamlit to create a brand-new uploader widget instance on the next rerun. The `init_session_state` call initializes the counter to `0`. This guarantees the dropzone visually resets to its default empty state.
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
