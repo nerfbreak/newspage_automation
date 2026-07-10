@@ -9,30 +9,27 @@
 
 ## Current Status
 
-- Hermes completed BUG-004 (Stock Mutation upload reset lifecycle fix) — verified, committed, pushed.
-- Hermes completed Spec 027 (replace deprecated `st.components.v1.html` with `st.iframe`) — code fix, Spec-Kit artifacts finalized, archived, committed, pushed.
-- All spec artifacts for 027 are complete: spec (Completed), plan, tasks (T001-T002 done), verify-tasks-report (2/2 VERIFIED), bugfix-verify-report, `.specify/memory/plan.md` archived.
+- Hermes completed Spec 029 (Neo-Brutalist Section Headers) replacing all 7 unstyled `st.subheader()` instances across Stock Mutation, Clearance Stock, and Initial Stock pages with the standard Neo-Brutalist `<span class='section-header-underline'>`.
+- A dedicated smoke test `test_no_unsupported_subheaders_in_execution_pages` was added to enforce the Neo-Brutalist header rule.
+- All Spec 029 artifacts (spec, plan, tasks, verify report) are finalized, archived, committed, and pushed.
 
 ## Last Completed Work
 
-- Replaced `components.html(button_html, height=60)` with `st.iframe(button_html, height=60)` in `pages/1_inventory_adjustment.py`.
-- Removed `import streamlit.components.v1 as components`.
-- Finalized Spec 027 artifacts retroactively (status Draft→Completed, archive, verify report).
-- BUG-004 lifecycle-safe upload reset committed and pushed.
+- Modified `pages/4_stock_mutation.py`, `pages/5_clearance_stock.py`, `pages/6_initial_stock.py` to use `st.markdown("<div class='header-wrapper-*'><span class='section-header-underline'>...</span></div>", unsafe_allow_html=True)`.
+- Re-verified Stock Mutation visual layout.
+- Pushed commit `e151c57` to remote `main`.
 
 ## Next Recommended Step
 
-1. Reboot Streamlit Cloud app to pick up commits `b3fca89` (BUG-004) and `1104929` (Spec 027).
-2. Verify Stock Mutation "Hapus File Upload" works without `StreamlitAPIException`.
-3. Verify Inventory Adjustment screenshot share buttons render without deprecation warning.
-4. No pending uncommitted work remains.
+1. **Reboot Streamlit Cloud app** so that all recent commits (BUG-004, BUG-005, Spec 027, Spec 029) are fully deployed.
+2. Navigate to Stock Mutation, Clearance Stock, and Initial Stock to confirm all headers now have the Neo-Brutalist boxed border and shadow.
+3. No pending uncommitted work remains.
 
 ## Files to Watch
 
-- `pages/1_inventory_adjustment.py`
-- `pages/4_stock_mutation.py`
-- `specs/027-replace-components-html/`
-- `.specify/memory/plan.md`
+- `static/style.css`
+- `tests/smoke/test_neo_container_css_smoke.py`
+- `.agents/MEMORY.md`
 
 ## Blockers
 
@@ -40,8 +37,7 @@
 
 ## Verification Notes
 
-- Passed (2026-07-10): Python compilation for `pages/1_inventory_adjustment.py`.
-- Passed (2026-07-10): Full offline smoke suite 93/93.
+- Passed (2026-07-10): Python compilation for pages 4, 5, 6.
+- Passed (2026-07-10): Full offline smoke suite 94/94 (including new subheader rule).
 - Passed (2026-07-10): Production readiness audit 25/25 rules.
-- Passed (2026-07-10): Codebase search confirms 0 instances of `components.v1`.
 - Skipped: Live Streamlit Cloud visual confirmation (requires app reboot to deploy latest commits).
