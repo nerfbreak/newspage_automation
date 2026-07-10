@@ -9,26 +9,28 @@
 
 ## Current Status
 
-- Hermes completed Spec 030 (Center Column Mapping Headers) centering the "Column Mapping" titles on Stock Mutation and Inventory Adjustment Manual Entry using the Neo-Brutalist `header-wrapper-center` + `section-header-underline` pattern.
-- All Spec 030 artifacts (spec, plan, tasks, verify report) are finalized, committed, and pushed.
+- Hermes completed Spec 030 (Center Column Mapping Headers) and BUG-007 (Mutation Table/Progress Alignment CSS selector fix).
+- All artifacts finalized, committed, and pushed.
 
 ## Last Completed Work
 
-- Modified `pages/4_stock_mutation.py` line 116: `header-wrapper-left` → `header-wrapper-center`
-- Modified `pages/1_inventory_adjustment.py` line 309: raw `<div><b>Mapping Kolom:</b></div>` → `<div class='header-wrapper-center'><span class='section-header-underline'>Column Mapping</span></div>`
-- Pushed commit `c1ec796` to remote `main`.
+1. **Spec 030**: Centered "Column Mapping" headers on Stock Mutation and Inventory Adjustment using `header-wrapper-center` + `section-header-underline`.
+2. **BUG-007**: Replaced fragile `+` adjacent-sibling CSS selectors with `~` general-sibling selectors for the Stock Mutation execution table fixed-height rule, ensuring the DEDUCT/ADD tables and their progress bars align regardless of Streamlit wrapper depth.
+- Pushed commits `c1ec796`, `07de26d`, `42ef96a` to remote `main`.
 
 ## Next Recommended Step
 
-1. **Reboot Streamlit Cloud app** to deploy Spec 030.
-2. Navigate to Stock Mutation and Inventory Adjustment Manual Entry to confirm centered headers.
+1. **Reboot Streamlit Cloud app** to deploy Spec 030 + BUG-007.
+2. Navigate to Stock Mutation with a file upload to confirm:
+   - "Column Mapping" header is centered.
+   - DEDUCT/ADD tables are equal height (400px) with aligned progress bars.
 3. No pending uncommitted work remains.
 
 ## Files to Watch
 
+- `static/style.css`
 - `pages/4_stock_mutation.py`
 - `pages/1_inventory_adjustment.py`
-- `.agents/MEMORY.md`
 
 ## Blockers
 
@@ -36,6 +38,7 @@
 
 ## Verification Notes
 
-- Passed (2026-07-10): Python compilation for pages 1, 4.
-- Passed (2026-07-10): Full offline smoke suite 94/94 (88 subtests).
-- Skipped: Live Streamlit Cloud visual confirmation (requires app reboot to deploy latest commits).
+- Passed (2026-07-10): Full offline smoke suite 94/94.
+- Passed (2026-07-10): CSS brace balance 283/283.
+- Passed (2026-07-10): Ad-hoc selector verification (4 `~` selectors, 0 old `+` selectors).
+- Skipped: Live Streamlit Cloud visual confirmation (requires app reboot).
