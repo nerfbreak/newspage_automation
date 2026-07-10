@@ -156,7 +156,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
     # Summary metrics
     st.markdown(render_metric_card("Total SKU to Clear", len(df_clear)), unsafe_allow_html=True)
 
-    st.subheader("Stock Clearance Review")
+    st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>Stock Clearance Review</span></div>", unsafe_allow_html=True)
 
     # Show review table with negative qty preview
     df_display = df_clear.copy()
@@ -177,7 +177,7 @@ if st.session_state.clearance_df is not None and len(st.session_state.clearance_
             df_exec['Status'] = 'Pending'
             df_exec['Keterangan'] = 'Ready to Clear'
 
-            st.subheader("Clearance Execution")
+            st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>Clearance Execution</span></div>", unsafe_allow_html=True)
             table_placeholder = st.empty()
             utils.render_responsive_dataframe(table_placeholder, df_exec)
 

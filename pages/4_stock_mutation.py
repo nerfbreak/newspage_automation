@@ -113,7 +113,7 @@ with st.container(border=True):
 
 if uploaded_file is not None and df_raw is not None and not df_raw.empty:
     # --- COLUMN MAPPING ---
-    st.subheader("Column Mapping")
+    st.markdown("<div class='header-wrapper-left'><span class='section-header-underline'>Column Mapping</span></div>", unsafe_allow_html=True)
     mc1, mc2, mc3 = st.columns(3)
 
     with mc1:
@@ -165,8 +165,8 @@ if uploaded_file is not None and df_raw is not None and not df_raw.empty:
         df_display = df_review.copy()
         df_display[f'Deduct ({dist_a})'] = df_display['Qty'].apply(lambda x: f"-{abs(x)}")
         df_display[f'Add ({dist_b})'] = df_display['Qty'].apply(lambda x: f"+{abs(x)}")
-
-        st.subheader("Stock Review")
+        
+        st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>Stock Review</span></div>", unsafe_allow_html=True)
         utils.render_responsive_dataframe(df_display[['SKU', 'Description', 'Qty', f'Deduct ({dist_a})', f'Add ({dist_b})']])
     else:
         st.warning("Tidak ada SKU valid di file yang diupload.")

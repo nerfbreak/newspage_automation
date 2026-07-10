@@ -100,7 +100,7 @@ if st.session_state.initial_stock_raw is not None and st.session_state.initial_s
     df_raw = st.session_state.initial_stock_raw
     cols = list(df_raw.columns)
 
-    st.subheader("Map Columns")
+    st.markdown("<div class='header-wrapper-left'><span class='section-header-underline'>Map Columns</span></div>", unsafe_allow_html=True)
     mc1, mc2, mc3 = st.columns(3)
     with mc1:
         # Auto-detect SKU column
@@ -171,7 +171,7 @@ if st.session_state.initial_stock_df is not None and len(st.session_state.initia
     # Summary metrics
     st.markdown(render_metric_card("Total SKU", len(df_init)), unsafe_allow_html=True)
 
-    st.subheader("Initial Stock Review")
+    st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>Initial Stock Review</span></div>", unsafe_allow_html=True)
 
     # Warning alert if there are items with Qty <= 0
     has_invalid = (df_init['Qty'] <= 0).any()
@@ -217,7 +217,7 @@ if st.session_state.is_initial_running and st.session_state.initial_stock_df is 
     df_exec['Status'] = df_exec['Qty'].apply(lambda q: 'Invalid' if q <= 0 else 'Pending')
     df_exec['Keterangan'] = df_exec['Qty'].apply(lambda q: 'Invalid Qty (<= 0)' if q <= 0 else 'Ready to Input')
 
-    st.subheader("Initial Stock Execution")
+    st.markdown("<div class='header-wrapper-center'><span class='section-header-underline'>Initial Stock Execution</span></div>", unsafe_allow_html=True)
     table_placeholder = st.empty()
     utils.render_responsive_dataframe(table_placeholder, df_exec)
 

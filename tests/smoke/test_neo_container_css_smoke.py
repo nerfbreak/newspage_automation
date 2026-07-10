@@ -132,10 +132,18 @@ class NeoContainerCssSmokeTests(unittest.TestCase):
         self.assertRegex(
             css_content,
             re.compile(
-                r"mutation-execution-layout-marker[\s\S]*?neo-table-wrapper[\s\S]*?height:\s*400px",
+                r":has\(\.mutation-execution-layout-marker\)[\s\S]*?\.desktop-only-table \.neo-table-wrapper[\s\S]*?height:\s*400px",
+                re.DOTALL,
             ),
         )
 
+    def test_no_unsupported_subheaders_in_execution_pages(self):
+        for page_name in ["4_stock_mutation.py", "5_clearance_stock.py", "6_initial_stock.py"]:
+            content = self._read_repo_file("pages", page_name)
+            # Verify st.subheader is not used
+            self.assertNotIn("st.subheader", content, f"Unstyled st.subheader found in {page_name}")
+            # Verify section-header-underline is used instead
+            self.assertIn("section-header-underline", content, f"Missing Neo-Brutalist header in {page_name}")
 
 if __name__ == "__main__":
     unittest.main()
