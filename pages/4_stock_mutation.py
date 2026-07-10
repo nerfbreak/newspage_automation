@@ -33,7 +33,12 @@ init_session_state(
     mutasi_uploader_key=0,
     selected_reason_code="",
     remark_a="",
-    remark_b=""
+    remark_b="",
+    mutasi_execute_done=False,
+    mutasi_shot_a=None,
+    mutasi_shot_b=None,
+    mutasi_msg_a="",
+    mutasi_msg_b=""
 )
 
 
@@ -271,5 +276,39 @@ if st.session_state.is_mutasi_running:
         # Clear review state after execution
         st.session_state.mutasi_review_df = None
 
+
+
+if st.session_state.get("mutasi_execute_done"):
+    st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
+    import os
+    import base64
+    import re
+    
+    with st.expander("BUKTI TRANSAKSI (SCREENSHOT)", expanded=False):
+        st.markdown("""
+        <div style="background-color: #dbeafe; color: #1e3a8a; padding: 12px 16px; border-radius: 0px; font-size: 0.85rem; font-weight: 700; border: 3px solid #0F172A; margin-bottom: 24px; box-shadow: 6px 6px 0px 0px #0F172A; display: flex; align-items: center; gap: 12px; margin-top: 12px;">
+            <span style="font-size: 1.2rem;">ℹ</span>
+            <span>Pekerjaan selesai! Screenshot berhasil ditangkap.</span>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        c1, c2 = st.columns(2)
+        with c1:
+            st.markdown("<div class='header-wrapper-center-notop'><span class='section-header-underline'>PENGIRIM (DEDUCT)</span></div>", unsafe_allow_html=True)
+            shot_a = st.session_state.get("mutasi_shot_a")
+            if shot_a and os.path.exists(shot_a):
+                with open(shot_a, "rb") as f: b64_a = base64.b64encode(f.read()).decode("utf-8")
+                st.markdown(f'<div style="border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; padding: 4px; background: #FFF;"><img src="data:image/png;base64,{b64_a}" style="width: 100%; display: block;"/></div>', unsafe_allow_html=True)
+            else:
+                st.info("Screenshot Pengirim tidak tersedia.")
+                
+        with c2:
+            st.markdown("<div class='header-wrapper-center-notop'><span class='section-header-underline'>PENERIMA (ADD)</span></div>", unsafe_allow_html=True)
+            shot_b = st.session_state.get("mutasi_shot_b")
+            if shot_b and os.path.exists(shot_b):
+                with open(shot_b, "rb") as f: b64_b = base64.b64encode(f.read()).decode("utf-8")
+                st.markdown(f'<div style="border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; padding: 4px; background: #FFF;"><img src="data:image/png;base64,{b64_b}" style="width: 100%; display: block;"/></div>', unsafe_allow_html=True)
+            else:
+                st.info("Screenshot Penerima tidak tersedia.")
 
 render_footer()

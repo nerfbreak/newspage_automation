@@ -982,7 +982,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                     st.markdown(box_html, unsafe_allow_html=True)
                     alert_callback(f"[OK] <b>DRY RUN FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
                     st.session_state.is_bot_running = False
-                    return success_count, failed_count, elapsed
+                    return success_count, failed_count, elapsed, None, alert_msg
                 page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
                 _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj save")
                 try: 
@@ -1242,7 +1242,7 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
     ui_log("SYS", "Awaiting DOM form reset confirmation...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
-def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None, dry_run=None, file_name=None, term_ph=None):
+def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None, dry_run=None, file_name=None, term_ph=None, is_mutasi=False, dist_a=None, dist_b=None):
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     try:
@@ -1327,7 +1327,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                     st.markdown(box_html, unsafe_allow_html=True)
                     alert_callback(f"[OK] <b>DRY RUN FINISHED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s")
                     st.session_state.is_bot_running = False
-                    return success_count, failed_count, elapsed
+                    return success_count, failed_count, elapsed, None, alert_msg
                 page.locator("id=pag_I_StkAdj_NewGeneral_btn_Save_Value").click()
                 _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "manual stkadj save")
                 try: 
@@ -1385,7 +1385,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 alert_callback(f"[WARNING] <b>BOT ABORTED</b>\nDist: {selected_distributor}\nSuccess: {success_count} | Failed: {failed_count}\nRuntime: {elapsed//60}m {elapsed%60}s{sku_str}")
                 st.toast('Execution aborted due to errors!', icon="🚨")
                 st.session_state.is_bot_running = False
-                return success_count, failed_count, elapsed
+                return success_count, failed_count, elapsed, None, ""
             else:
                 ui_log("SUCCESS", f"Complete. Total runtime: {elapsed//60}m {elapsed%60}s")
                 if progress_bar:
@@ -1404,7 +1404,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             st.session_state.last_alert_msg = alert_msg
             st.session_state.execute_done = True
             st.session_state.is_bot_running = False
-            return success_count, failed_count, elapsed
+            return success_count, failed_count, elapsed, success_shot, alert_msg
 
     except PlaywrightTimeoutError: 
         st.session_state.is_bot_running = False
@@ -1450,9 +1450,10 @@ def run_mutasi_execution(
         WAREHOUSE=whs_a, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_a, alert_callback=alert_callback, 
         table_placeholder=table_a_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text_a, progress_placeholder=prog_a_ph, show_status_box=False, current_user=current_user, dry_run=dry_run, term_ph=term_ph
+        remark_text=remark_text_a, progress_placeholder=prog_a_ph, show_status_box=False, current_user=current_user, dry_run=dry_run, term_ph=term_ph,
+        is_mutasi=True, dist_a=dist_a, dist_b=dist_b
     )
-    success_a, failed_a, elapsed_a = res_a if res_a else (0, len(df_deduct), 0)
+    success_a, failed_a, elapsed_a, shot_a, msg_a = res_a if res_a else (0, len(df_deduct), 0, None, "")
     
     ui_log_b('SYS', 'Memulai Add Mutasi untuk Penerima...')
     df_add = df_mutasi.copy()
@@ -1466,9 +1467,10 @@ def run_mutasi_execution(
         WAREHOUSE=whs_b, REASON_CODE=REASON_CODE, TABLE_UPDATE_INTERVAL=TABLE_UPDATE_INTERVAL, 
         ui_log=ui_log_b, alert_callback=alert_callback, 
         table_placeholder=table_b_ph, log_label_placeholder=None, supabase=supabase,
-        remark_text=remark_text_b, progress_placeholder=prog_b_ph, show_status_box=False, current_user=current_user, dry_run=dry_run, term_ph=term_ph
+        remark_text=remark_text_b, progress_placeholder=prog_b_ph, show_status_box=False, current_user=current_user, dry_run=dry_run, term_ph=term_ph,
+        is_mutasi=True, dist_a=dist_a, dist_b=dist_b
     )
-    success_b, failed_b, elapsed_b = res_b if res_b else (0, len(df_add), 0)
+    success_b, failed_b, elapsed_b, shot_b, msg_b = res_b if res_b else (0, len(df_add), 0, None, "")
 
     # Render a single consolidated success/error box
     total_elapsed = elapsed_a + elapsed_b
@@ -1478,6 +1480,12 @@ def run_mutasi_execution(
     else:
         box_html = utils.make_success_box(f"SUCCESS — Processed: {success_a} | Time: {total_elapsed//60}m {total_elapsed%60}s")
         st.markdown(box_html, unsafe_allow_html=True)
+        
+    st.session_state.mutasi_shot_a = shot_a
+    st.session_state.mutasi_shot_b = shot_b
+    st.session_state.mutasi_msg_a = msg_a
+    st.session_state.mutasi_msg_b = msg_b
+    st.session_state.mutasi_execute_done = True
 
 def run_element_crawler(user_id_np, pass_np, selected_distributor, URL_LOGIN, target_path, ext_ui_log):
     TIMEOUT_MS = 60000

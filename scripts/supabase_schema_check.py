@@ -32,6 +32,7 @@ REQUIRED_SCHEMA: dict[str, tuple[str, ...]] = {
     "adjustment_logs": ("sku", "qty", "status", "keterangan", "np_user", "run_by", "created_at"),
     "extraction_history": ("distributor_name", "extracted_by", "status", "created_at"),
     "uploaded_files": ("distributor_name", "uploaded_by", "file_name", "file_type", "file_size_bytes", "file_content_base64", "created_at"),
+    "active_bot_tasks": ("task_type", "distributor_name", "started_by", "started_at"),
 }
 
 
