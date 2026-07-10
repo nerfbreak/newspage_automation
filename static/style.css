@@ -1316,7 +1316,23 @@ table.neo-table td {
 }
 
 table.neo-table th, table.neo-table td {
-    border: 1px solid #e2e8f0;
+    border: 3px solid #0F172A;
+    padding: 10px 14px;
+    color: #0F172A;
+}
+
+/* Apply Neo-Brutalist borders to ALL tables in the application */
+.stDataFrame table,
+div[data-testid="stMarkdownContainer"] table {
+    border-collapse: collapse;
+    border: 3px solid #0F172A;
+}
+
+.stDataFrame table th,
+.stDataFrame table td,
+div[data-testid="stMarkdownContainer"] table th,
+div[data-testid="stMarkdownContainer"] table td {
+    border: 2px solid #0F172A;
     padding: 10px 14px;
     color: #0F172A;
 }
@@ -1545,7 +1561,23 @@ table.neo-table td {
 }
 
 table.neo-table th, table.neo-table td {
-    border: 1px solid #e2e8f0;
+    border: 3px solid #0F172A;
+    padding: 10px 14px;
+    color: #0F172A;
+}
+
+/* Apply Neo-Brutalist borders to ALL tables in the application */
+.stDataFrame table,
+div[data-testid="stMarkdownContainer"] table {
+    border-collapse: collapse;
+    border: 3px solid #0F172A;
+}
+
+.stDataFrame table th,
+.stDataFrame table td,
+div[data-testid="stMarkdownContainer"] table th,
+div[data-testid="stMarkdownContainer"] table td {
+    border: 2px solid #0F172A;
     padding: 10px 14px;
     color: #0F172A;
 }
