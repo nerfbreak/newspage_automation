@@ -1302,7 +1302,19 @@ div[data-testid="stElementContainer"]:has(.neo-container-marker) + div > div[dat
 table.neo-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* BUG-011: Force identical column distribution */
 }
+/* BUG-011: Strict column proportions to ensure side-by-side symmetry */
+table.neo-table th:nth-child(1) { width: 14%; } /* SKU */
+table.neo-table th:nth-child(2) { width: 42%; } /* Desc */
+table.neo-table th:nth-child(3) { width: 12%; text-align: right; } /* Qty */
+table.neo-table th:nth-child(4) { width: 12%; } /* Status */
+table.neo-table th:nth-child(5) { width: 20%; } /* Ket */
+
+table.neo-table td {
+    word-wrap: break-word; /* Ensure long words don't overflow fixed cells */
+}
+
 table.neo-table th, table.neo-table td {
     border: 1px solid #e2e8f0;
     padding: 10px 14px;
@@ -1519,7 +1531,19 @@ div[data-testid="stProgress"] div[role="progressbar"] > div {
 table.neo-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* BUG-011: Force identical column distribution */
 }
+/* BUG-011: Strict column proportions to ensure side-by-side symmetry */
+table.neo-table th:nth-child(1) { width: 14%; } /* SKU */
+table.neo-table th:nth-child(2) { width: 42%; } /* Desc */
+table.neo-table th:nth-child(3) { width: 12%; text-align: right; } /* Qty */
+table.neo-table th:nth-child(4) { width: 12%; } /* Status */
+table.neo-table th:nth-child(5) { width: 20%; } /* Ket */
+
+table.neo-table td {
+    word-wrap: break-word; /* Ensure long words don't overflow fixed cells */
+}
+
 table.neo-table th, table.neo-table td {
     border: 1px solid #e2e8f0;
     padding: 10px 14px;
