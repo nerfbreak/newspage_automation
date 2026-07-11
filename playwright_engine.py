@@ -671,9 +671,24 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_
         target_id = "pag_InventoryRoot_tab_Main_itm_StkAdj"
         try:
             # Gunakan evaluate click untuk meminimalkan kegagalan karena element visibility / tab parent
-            page.evaluate(f"document.getElementById('{target_id}').click()")
+            # Tambahkan pengecekan null, dan coba klik tab header Inventory jika menu tidak ditemukan
+            page.evaluate(f"""
+                var el = document.getElementById('{target_id}');
+                if (!el) {{
+                    var tab = document.querySelector('[id*="InventoryRoot_tab"]');
+                    if (tab) tab.click();
+                    el = document.querySelector('[id*="itm_StkAdj"]');
+                }}
+                if (el) el.click();
+            """)
+        except Exception as eval_e:
+            ui_log("WARN", f"JS evaluate klik menu gagal: {eval_e}. Mencoba locator fallback...")
+            
+        try:
+            page.locator(f"id={target_id}").first.dispatch_event("click", timeout=5000)
         except:
-            page.locator(f"id={target_id}").first.dispatch_event("click")
+            # Fallback ekstrim: klik by text
+            page.locator("td:has-text('Stock Adjustment')").last.click(force=True, timeout=5000)
             
         # CRITICAL FIX: Wait for ASP.NET to actually begin the postback before waiting for networkidle
         page.wait_for_timeout(3000) 
@@ -684,15 +699,15 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_
             ui_log("SYS", f"Reason code [{reason_code}] terdeteksi. Memulai auto-approval...")
             
             # Select Status to O (Open / Pending)
-            page.wait_for_timeout(1000)
+            page.wait_for_timeout(2000)
             status_dropdown = page.locator("id=pag_I_StkAdj_drp_Status_Value")
             status_dropdown.wait_for(state="attached", timeout=TIMEOUT_MS)
-            page.evaluate("document.getElementById('pag_I_StkAdj_drp_Status_Value').value = 'O'")
+            page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); if(select) select.value = 'O';")
             # select_option terkadang lambat jika opsi belum sepenuhnya terisi, gunakan force/dispatch event jika perlu
             try:
                 status_dropdown.select_option("O", timeout=5000)
             except:
-                page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); select.value = 'O'; select.dispatchEvent(new Event('change'));")
+                page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); if(select) { select.value = 'O'; select.dispatchEvent(new Event('change')); }")
             
             # Click Search
             ui_log("SYS", "Mencari transaksi Open (Pending)...")
@@ -702,27 +717,30 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_
             
             # Check the first row checkbox
             ui_log("SYS", "Mencentang transaksi teratas...")
-            page.locator("id=pag_I_StkAdj_grd_List_ctl02_chkDelete").first.check()
-            page.wait_for_timeout(1000)
-            
-            # Click Approve
-            ui_log("SYS", "Mengklik Approve...")
-            # Setup handle dialog alert
-            page.once("dialog", lambda dialog: dialog.accept())
-            page.locator("id=pag_I_StkAdj_btn_Approve_Value").click(force=True)
-            page.wait_for_timeout(3000)
-            _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj approve")
-            ui_log("SUCCESS", "Auto-approval selesai.")
+            try:
+                page.locator("id=pag_I_StkAdj_grd_List_ctl02_chkDelete").first.check(timeout=5000)
+                page.wait_for_timeout(1000)
+                
+                # Click Approve
+                ui_log("SYS", "Mengklik Approve...")
+                # Setup handle dialog alert
+                page.once("dialog", lambda dialog: dialog.accept())
+                page.locator("id=pag_I_StkAdj_btn_Approve_Value").click(force=True)
+                page.wait_for_timeout(3000)
+                _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj approve")
+                ui_log("SUCCESS", "Auto-approval selesai.")
+            except Exception as app_e:
+                ui_log("WARN", f"Gagal mencentang/approve dokumen: {app_e}")
 
         # Force Status to Approved (A) with explicit JS to avoid Playwright race conditions
-        page.wait_for_timeout(1000)
+        page.wait_for_timeout(2000)
         status_dropdown = page.locator("id=pag_I_StkAdj_drp_Status_Value")
         status_dropdown.wait_for(state="attached", timeout=TIMEOUT_MS)
-        page.evaluate("document.getElementById('pag_I_StkAdj_drp_Status_Value').value = 'A'")
+        page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); if(select) select.value = 'A';")
         try:
             status_dropdown.select_option("A", timeout=5000)
         except:
-            page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); select.value = 'A'; select.dispatchEvent(new Event('change'));")
+            page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); if(select) { select.value = 'A'; select.dispatchEvent(new Event('change')); }")
         
         # Click Search
         ui_log("SYS", "Mencari transaksi terakhir...")
