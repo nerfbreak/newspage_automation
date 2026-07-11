@@ -211,32 +211,24 @@ if st.session_state.is_mutasi_running:
 
     # Dual layout
     st.markdown("<span class='mutation-execution-layout-marker'></span>", unsafe_allow_html=True)
-    header_col1, header_col2 = st.columns(2)
+    exec_col1, exec_col2 = st.columns(2)
 
-    with header_col1:
+    with exec_col1:
         st.markdown(f"""
             <div style='background-color: #FF2B2B; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; margin-top: 10px; display: flex; align-items: center; justify-content: center; min-height: 52px; text-align: center;'>
                 DEDUCT &nbsp;|&nbsp; <span style='font-size: 0.72rem; opacity: 0.9;'>{dist_a} ({bot_user_a})</span>
             </div>
         """, unsafe_allow_html=True)
+        table_a_ph = st.empty()
+        prog_a_ph = st.empty()
 
-    with header_col2:
+    with exec_col2:
         st.markdown(f"""
             <div style='background-color: #09A53C; color: #FFFFFF; font-family: "Source Sans 3", sans-serif; font-size: 0.85rem; font-weight: 800; padding: 6px 12px; border: 2px solid #0F172A; box-shadow: 2px 2px 0px 0px #0F172A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; margin-top: 10px; display: flex; align-items: center; justify-content: center; min-height: 52px; text-align: center;'>
                 ADD &nbsp;|&nbsp; <span style='font-size: 0.72rem; opacity: 0.9;'>{dist_b} ({bot_user_b})</span>
             </div>
         """, unsafe_allow_html=True)
-
-    table_col1, table_col2 = st.columns(2)
-    with table_col1:
-        table_a_ph = st.empty()
-    with table_col2:
         table_b_ph = st.empty()
-        
-    prog_col1, prog_col2 = st.columns(2)
-    with prog_col1:
-        prog_a_ph = st.empty()
-    with prog_col2:
         prog_b_ph = st.empty()
 
     # Initial table render
@@ -244,12 +236,12 @@ if st.session_state.is_mutasi_running:
     df_a_display['Qty'] = '-' + df_a_display['Qty'].astype(str)
     df_a_display['Status'] = 'Pending'
     df_a_display['Keterangan'] = 'Ready'
-    utils.render_responsive_dataframe(table_a_ph, df_a_display)
+    utils.render_responsive_dataframe(table_a_ph, df_a_display, fixed_height=400)
 
     df_b_display = df_mutasi[['SKU', 'Description', 'Qty']].copy()
     df_b_display['Status'] = 'Pending'
     df_b_display['Keterangan'] = 'Ready'
-    utils.render_responsive_dataframe(table_b_ph, df_b_display)
+    utils.render_responsive_dataframe(table_b_ph, df_b_display, fixed_height=400)
 
     prog_a_ph.progress(0)
     prog_b_ph.progress(0)
