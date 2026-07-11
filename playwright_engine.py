@@ -55,6 +55,14 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
             raise
         finally:
             ui_log("SYS", "Menutup browser dan membersihkan memori sistem...")
+            # Spec-035: Clear active tasks for this user when browser session ends
+            try:
+                from database import clear_active_tasks_for_user
+                if current_user:
+                    sb = database.init_supabase()
+                    clear_active_tasks_for_user(sb, current_user)
+            except Exception:
+                pass
             try:
                 context.close()
             except:
@@ -287,12 +295,8 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     return real_filename, file_path
 
 def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, ext_ui_log, alert_callback, supabase, current_user, dry_run=None, ext_label_placeholder=None):
-    task_id = None
-    if current_user and selected_distributor:
-        try:
-            task_id = register_active_task(supabase, "Inventory Extraction", selected_distributor, current_user)
-        except Exception: pass
-    
+    from database import register_active_task
+    _task_id = register_active_task(supabase, "Inventory Extraction", selected_distributor, current_user) if current_user else None
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
         progress_bar = st.progress(0)
@@ -524,12 +528,8 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
     return real_filename, file_path
 
 def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user, dry_run=None, ext_label_placeholder=None):
-    task_id = None
-    if current_user and selected_distributor:
-        try:
-            task_id = register_active_task(supabase, "Sales Extraction", selected_distributor, current_user)
-        except Exception: pass
-    
+    from database import register_active_task
+    _task_id = register_active_task(supabase, "Sales Extraction", selected_distributor, current_user) if current_user else None
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     try:
         progress_bar = st.progress(0)
@@ -863,15 +863,13 @@ def _setup_terminate_button(placeholder, current_user=None, key_suffix="default"
 </div>
         """, unsafe_allow_html=True)
         
-
         def terminate_callback():
+            # Spec-035: Clear active tasks for this user on terminate
             try:
-                # Clear active tasks on UI terminate
-                if "current_user" in st.session_state and "supabase" in st.session_state:
-                    from database import clear_active_task
-                    tasks = st.session_state.supabase.table("active_bot_tasks").select("id").eq("started_by", st.session_state.current_user).execute()
-                    for t in (tasks.data or []):
-                        clear_active_task(st.session_state.supabase, t["id"])
+                from database import clear_active_tasks_for_user
+                if "current_user" in st.session_state:
+                    sb = getattr(st.session_state, 'supabase', None) or database.init_supabase()
+                    clear_active_tasks_for_user(sb, st.session_state.current_user)
             except Exception:
                 pass
             st.session_state.is_bot_running = False
@@ -914,12 +912,8 @@ def _log_df_to_supabase(supabase, df_view, bot_user, current_user, qty_col='Qty'
 
 
 def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, current_user=None, dry_run=None, remark_text="", file_name=None):
-    task_id = None
-    if current_user and selected_distributor:
-        try:
-            task_id = register_active_task(supabase, "Auto Compare", selected_distributor, current_user)
-        except Exception: pass
-    
+    from database import register_active_task
+    _task_id = register_active_task(supabase, "Auto Compare", selected_distributor, current_user) if current_user else None
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     global_start_time = time.time(); success_count, failed_count = 0, 0
@@ -1204,12 +1198,8 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
     return real_filename, file_path
 
 def run_promotion_sync(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, start_date, end_date, ext_ui_log, alert_callback, supabase, current_user, dry_run=None):
-    task_id = None
-    if current_user and selected_distributor:
-        try:
-            task_id = register_active_task(supabase, "Promotion Compare", selected_distributor, current_user)
-        except Exception: pass
-    
+    from database import register_active_task
+    _task_id = register_active_task(supabase, "Promotion Compare", selected_distributor, current_user) if current_user else None
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     try:
@@ -1277,12 +1267,8 @@ def _inject_manual_adjustment_row(page, sku, pac, car, ea, TIMEOUT_MS, ui_log):
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
 def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE, REASON_CODE, TABLE_UPDATE_INTERVAL, ui_log, alert_callback, table_placeholder, log_label_placeholder, supabase, remark_text="", progress_placeholder=None, show_status_box=True, current_user=None, dry_run=None, file_name=None, term_ph=None, is_mutasi=False, dist_a=None, dist_b=None):
-    task_id = None
-    if current_user and selected_distributor:
-        try:
-            task_id = register_active_task(supabase, "Stock Adjustment", selected_distributor, current_user)
-        except Exception: pass
-    
+    from database import register_active_task
+    _task_id = register_active_task(supabase, "Stock Adjustment", selected_distributor, current_user) if current_user else None
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()
     try:
@@ -1473,12 +1459,8 @@ def run_mutasi_execution(
     current_user=None,
     dry_run=None
 ):
-    task_id = None
-    if current_user and dist_a and dist_b:
-        try:
-            task_id = register_active_task(supabase, "Stock Mutation", f"{dist_a} -> {dist_b}", current_user)
-        except Exception: pass
-    
+    from database import register_active_task
+    _task_id = register_active_task(supabase, "Stock Mutation", f"{dist_a} -> {dist_b}", current_user) if current_user else None
     ui_log_a, _ = utils.make_terminal_logger(log_a_ph)
     ui_log_b, _ = utils.make_terminal_logger(log_b_ph)
     
@@ -1534,12 +1516,6 @@ def run_mutasi_execution(
     st.session_state.mutasi_execute_done = True
 
 def run_element_crawler(user_id_np, pass_np, selected_distributor, URL_LOGIN, target_path, ext_ui_log):
-    task_id = None
-    if current_user and selected_distributor:
-        try:
-            task_id = register_active_task(supabase, "Initial Stock", selected_distributor, current_user)
-        except Exception: pass
-    
     TIMEOUT_MS = 60000
     try:
         with managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ext_ui_log) as (page, browser):
@@ -1575,12 +1551,6 @@ def run_element_crawler(user_id_np, pass_np, selected_distributor, URL_LOGIN, ta
         raise e
 
 def run_interactive_inspector(user_id_np, pass_np, selected_distributor, URL_LOGIN, target_path, ext_ui_log):
-    task_id = None
-    if current_user and selected_distributor:
-        try:
-            task_id = register_active_task(supabase, "Clearance Stock", selected_distributor, current_user)
-        except Exception: pass
-    
     TIMEOUT_MS = 60000
     if dry_run is None: dry_run = st.session_state.get('dry_run_enabled', False)
     ensure_playwright()

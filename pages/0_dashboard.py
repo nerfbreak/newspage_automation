@@ -6,6 +6,7 @@ import html
 from error_taxonomy import format_user_error, format_log_error
 from utils import check_auth, render_header, render_footer, clean_html, render_metric_card, render_responsive_dataframe
 import database
+from database import get_active_tasks
 
 @st.cache_data(ttl=60)
 def load_historical_logs(_supabase):
@@ -211,6 +212,41 @@ st.markdown(f"""
     <p style='font-size: clamp(0.85rem, 2vw, 1.05rem); color: #0F172A; margin-top: 16px; margin-bottom: 0; font-weight: 700; border-top: 3px solid #0F172A; padding-top: 12px; display: block; text-transform: uppercase;'>PANTAU RINGKASAN AKTIVITAS OTOMATISASI DISTRIBUTOR ANDA HARI INI, {datetime.now().strftime('%d %b %Y').upper()}.</p>
 </div>
 """, unsafe_allow_html=True)
+
+# --- ACTIVE BOT TASKS MONITOR (Spec-035) ---
+active_tasks = get_active_tasks(supabase)
+st.markdown("<div class='header-wrapper-left'><div class='section-header-underline'>ACTIVE BOT TASKS</div></div>", unsafe_allow_html=True)
+
+col_refresh, _ = st.columns([1, 4])
+with col_refresh:
+    if st.button(":material/refresh: REFRESH", type="secondary", use_container_width=True):
+        st.rerun()
+
+if not active_tasks:
+    st.markdown("""
+    <div style='background: #F1F5F9; border: 2px solid #0F172A; padding: 16px; text-align: center;'>
+        <span style='font-family: "Source Sans 3", sans-serif; font-weight: 700; color: #64748B; font-size: 0.9rem;'>NO ACTIVE BOT TASKS RUNNING</span>
+    </div>
+    """, unsafe_allow_html=True)
+else:
+    for task in active_tasks:
+        t_type = html.escape(str(task.get("task_type", "Unknown")))
+        t_dist = html.escape(str(task.get("distributor_name", "Unknown")))
+        t_user = html.escape(str(task.get("started_by", "Unknown")))
+        st.markdown(f"""
+        <div style='background: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 16px 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;'>
+            <div>
+                <span style='display: inline-block; background: #FFDE59; color: #0F172A; font-weight: 800; padding: 4px 10px; border: 2px solid #0F172A; font-size: 0.75rem; letter-spacing: 0.05em; margin-right: 10px;'>RUNNING</span>
+                <span style='font-family: "Source Sans 3", sans-serif; font-weight: 900; font-size: 1.05rem; color: #0F172A;'>{t_type}</span>
+                <div style='font-family: "Source Sans 3", sans-serif; font-size: 0.9rem; color: #334155; margin-top: 4px;'><b>Distributor:</b> {t_dist}</div>
+            </div>
+            <div style='text-align: right;'>
+                <div style='font-family: "Source Sans 3", sans-serif; font-size: 0.9rem; color: #334155;'><b>Run By:</b> {t_user}</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+st.markdown("<div style='margin-bottom: 24px;'></div>", unsafe_allow_html=True)
 
 # --- TOP KPI METRICS ---
 m1, m2, m3, m4 = st.columns(4)
