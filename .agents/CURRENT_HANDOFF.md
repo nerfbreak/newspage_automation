@@ -10,13 +10,12 @@ Use this before ending work in Codex, Antigravity, or Hermes.
 
 ## Summary
 
-- What changed: Further fixed BUG-004 (Receiver Remark Overwritten by SKU Postbacks). The previous fix waited for the Reason Code postback, but failed to account for subsequent SKU entry postbacks wiping the remark. Moved `remark_input.fill` to immediately before the `btn_Save_Value` click in both `run_execution` and `run_execution_manual`. This completely bypasses all intermediate ASP.NET UpdatePanel state resets.
-- Why it changed: ASP.NET UpdatePanel postbacks during SKU injection were replacing the remark field with the server's default database state because the remark field itself didn't trigger a postback.
+- What changed: Forced remark injection via `.evaluate()` before `fill()` and removed the trailing `Tab` event. This was to combat an edge case where ASP.NET server-side state overrides the client-side value for Receiver (Penerima) accounts because of a cached "TERIMA DARI [Distributor]" default remark in Newspage's database. Also ensured it triggers even if `remark_text` is empty, so it actively clears the server's cached fallback.
+- Why it changed: The user noted that "TERIMA DARI PURWOKERTO" was being saved despite typing "ABCD". This proved Newspage was actively injecting a cached default remark on Save, which Playwright's standard `fill` (if it was skipped due to emptiness or if it clashed with the Save postback) failed to overwrite.
 
 ## Files Changed
 
 - `playwright_engine.py`
-- `specs/024-update-mutasi-remark/bugs/BUG-004.md`
 
 ## Verification
 
@@ -27,11 +26,11 @@ Use this before ending work in Codex, Antigravity, or Hermes.
 ## Memory Update
 
 - `.agents/MEMORY.md` updated? Yes.
-- Important decision captured: Always inject non-postback form values at the very end of ASP.NET workflows to prevent intermediate state resets.
+- Important decision captured: Always use `.evaluate(el => el.value = val)` before `.fill()` when fighting aggressive ASP.NET WebForms cached values right before a submit button is clicked.
 
 ## Next Step
 
-- The critical fix is applied and committed. Awaiting user validation on the Receiver mutation run.
+- Fix committed. Awaiting user test.
 
 ## Do Not Touch
 
