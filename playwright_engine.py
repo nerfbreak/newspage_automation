@@ -664,7 +664,7 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
     ui_log("SYS", "Data dimasukkan. Menunggu form kembali kosong untuk item berikutnya...")
     page.wait_for_function("document.getElementById('pag_I_StkAdj_NewGeneral_sel_PRD_CD_Value').value === ''", timeout=TIMEOUT_MS)
 
-def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
+def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_code=None):
     ui_log("SYS", "Membuka daftar riwayat untuk mengambil screenshot bukti transaksi...")
     try:
         # Go to List View by clicking the side menu
@@ -672,7 +672,36 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix):
         # CRITICAL FIX: Wait for ASP.NET to actually begin the postback before waiting for networkidle
         page.wait_for_timeout(3000) 
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
-        
+
+        # Auto-approve workflow for SA3 & SA4
+        if reason_code in ["SA3", "SA4"]:
+            ui_log("SYS", f"Reason code [{reason_code}] terdeteksi. Memulai auto-approval...")
+            
+            # Select Status to O (Open / Pending)
+            page.wait_for_timeout(1000)
+            page.evaluate("document.getElementById('pag_I_StkAdj_drp_Status_Value').value = 'O'")
+            page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("O")
+            
+            # Click Search
+            ui_log("SYS", "Mencari transaksi Open (Pending)...")
+            page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").click(force=True)
+            page.wait_for_timeout(3000)
+            _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj search pending")
+            
+            # Check the first row checkbox
+            ui_log("SYS", "Mencentang transaksi teratas...")
+            page.locator("id=pag_I_StkAdj_grd_List_ctl02_chkDelete").first.check()
+            page.wait_for_timeout(1000)
+            
+            # Click Approve
+            ui_log("SYS", "Mengklik Approve...")
+            # Setup handle dialog alert
+            page.once("dialog", lambda dialog: dialog.accept())
+            page.locator("id=pag_I_StkAdj_btn_Approve_Value").click(force=True)
+            page.wait_for_timeout(3000)
+            _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj approve")
+            ui_log("SUCCESS", "Auto-approval selesai.")
+
         # Force Status to Approved (A) with explicit JS to avoid Playwright race conditions
         page.wait_for_timeout(1000)
         page.evaluate("document.getElementById('pag_I_StkAdj_drp_Status_Value').value = 'A'")
@@ -1043,7 +1072,7 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
             # [T003] Capture success screenshot before logout
             success_shot = None
             if failed_count == 0:
-                success_shot = _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, "success_exec")
+                success_shot = _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, "success_exec", REASON_CODE)
 
             ui_log("AUTH", "Initiating system logout sequence...")
             try:
@@ -1384,7 +1413,7 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
             # [T004] Capture success screenshot before logout
             success_shot = None
             if failed_count == 0:
-                success_shot = _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, "success_manual")
+                success_shot = _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, "success_manual", REASON_CODE)
 
             ui_log("AUTH", "Initiating system logout sequence...")
             try:
