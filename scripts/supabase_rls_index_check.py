@@ -33,6 +33,7 @@ REQUIRED_TABLES: tuple[str, ...] = (
     "adjustment_logs",
     "extraction_history",
     "uploaded_files",
+    "active_bot_tasks",
 )
 
 SETUP_SQL = """-- Read-only Supabase RLS & Index inspection helper
@@ -56,7 +57,7 @@ begin
       where schemaname = 'public' and tablename in (
         'users_auth', 'login_attempts', 'distributor_vault', 'system_config',
         'sku_formatting_rules', 'distributor_sku_multiplier', 'distributor_exceptions',
-        'adjustment_logs', 'extraction_history', 'uploaded_files'
+        'adjustment_logs', 'extraction_history', 'uploaded_files', 'active_bot_tasks'
       )
     ),
     'indexes', (
@@ -69,7 +70,7 @@ begin
       where schemaname = 'public' and tablename in (
         'users_auth', 'login_attempts', 'distributor_vault', 'system_config',
         'sku_formatting_rules', 'distributor_sku_multiplier', 'distributor_exceptions',
-        'adjustment_logs', 'extraction_history', 'uploaded_files'
+        'adjustment_logs', 'extraction_history', 'uploaded_files', 'active_bot_tasks'
       )
     )
   ) into result;

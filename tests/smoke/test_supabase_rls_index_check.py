@@ -5,12 +5,13 @@ from scripts.supabase_rls_index_check import REQUIRED_TABLES, SETUP_SQL, _parse_
 
 class SupabaseRLSIndexCheckSmokeTests(unittest.TestCase):
     def test_required_tables_contains_all_critical_tables(self):
-        self.assertEqual(len(REQUIRED_TABLES), 10)
+        self.assertEqual(len(REQUIRED_TABLES), 11)
         self.assertIn("users_auth", REQUIRED_TABLES)
         self.assertIn("distributor_vault", REQUIRED_TABLES)
         self.assertIn("adjustment_logs", REQUIRED_TABLES)
         self.assertIn("extraction_history", REQUIRED_TABLES)
         self.assertIn("uploaded_files", REQUIRED_TABLES)
+        self.assertIn("active_bot_tasks", REQUIRED_TABLES)
 
     def test_setup_sql_contains_required_tables_and_grants(self):
         self.assertIn("create or replace function verify_rls_and_indexes()", SETUP_SQL)
@@ -24,7 +25,7 @@ class SupabaseRLSIndexCheckSmokeTests(unittest.TestCase):
             "indexes": [{"table": t, "index_name": f"{t}_pkey", "index_def": "CREATE UNIQUE INDEX"} for t in REQUIRED_TABLES],
         }
         checks = _parse_rpc_response(payload)
-        self.assertEqual(len(checks), 20)
+        self.assertEqual(len(checks), 22)
         for check in checks:
             self.assertEqual(check.status, "PASS", f"Failed for {check.table} ({check.check_type}): {check.detail}")
 
