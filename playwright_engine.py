@@ -667,12 +667,23 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
 def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_code=None):
     ui_log("SYS", "Membuka daftar riwayat untuk mengambil screenshot bukti transaksi...")
     try:
-        # Gunakan pemaksaan URL postback secara langsung karena lebih stabil dari klik elemen UI (WebForms)
+        # PENTING: Jika dari _inject_adjustment_row, kita berada di tab NewGeneral.
+        # Kita HARUS menavigasi ke tab List sebelum bisa memanipulasi Grid.
+        # Tab List di Newspage di-render dengan id "pag_I_StkAdj_tab_Main_tab_List" 
+        # (perhatikan namespace bisa berbeda jika itu user control, tapi href-nya sama)
         ui_log("SYS", "Mengarahkan ke halaman List View...")
         try:
-            page.evaluate("__doPostBack('pag_I_StkAdj$tab_Main$tab_List','')")
+            # Mencoba mendapatkan hyperlink dari tab List dan menirukan event kliknya
+            page.evaluate("""
+                var listTabs = document.querySelectorAll('td[id*="tab_List"]');
+                if(listTabs.length > 0) {
+                    listTabs[0].click();
+                } else {
+                    __doPostBack('pag_I_StkAdj$tab_Main$tab_List','');
+                }
+            """)
         except:
-            # Fallback ke menu samping jika JS __doPostBack gagal dipanggil
+            # Fallback ke menu samping 
             target_id = "pag_InventoryRoot_tab_Main_itm_StkAdj"
             page.evaluate(f"var el = document.getElementById('{target_id}'); if(el) el.click();")
             
@@ -684,8 +695,9 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_
         try:
             page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").wait_for(state="attached", timeout=5000)
         except:
-            ui_log("SYS", "Melakukan percobaan pemaksaan navigasi kedua...")
-            page.evaluate("__doPostBack('pag_I_StkAdj$tab_Main$tab_List','')")
+            ui_log("SYS", "Melakukan percobaan navigasi ke tab List via menu samping...")
+            target_id = "pag_InventoryRoot_tab_Main_itm_StkAdj"
+            page.evaluate(f"var el = document.getElementById('{target_id}'); if(el) el.click();")
             page.wait_for_timeout(3000)
             _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list forced")
 
