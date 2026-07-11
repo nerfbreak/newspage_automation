@@ -1903,28 +1903,6 @@ div[data-testid="stElementContainer"]:has(.orange-btn-marker) + div[data-testid=
 }
 
 /* =========================================
-   16.5 LAPTOP RESPONSIVE DESIGN (1366x768)
-   ========================================= */
-@media (max-width: 1366px) and (min-width: 769px) {
-    /* Scale down Neo-Table to prevent clipping */
-    .neo-table th, .neo-table td {
-        font-size: 0.70rem !important;
-        padding: 6px 8px !important;
-    }
-    
-    /* Scale down dashboard metric cards */
-    div[data-testid="stMetricValue"] > div {
-        font-size: 1.5rem !important;
-    }
-    div[data-testid="stMetricLabel"] > div {
-        font-size: 0.75rem !important;
-    }
-    .metric-card-content p {
-        font-size: 0.8rem !important;
-    }
-}
-
-/* =========================================
    17. MOBILE-FIRST RESPONSIVE DESIGN
    ========================================= */
 @media (max-width: 768px) {
