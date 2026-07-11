@@ -16,7 +16,9 @@ def load_historical_logs(_supabase):
         return df_adj, df_ext
     
     try:
-        res_adj = _supabase.table("adjustment_logs").select("sku, qty, status, keterangan, np_user, run_by, created_at").order("created_at", desc=True).execute()
+        from datetime import datetime, timezone, timedelta
+        thirty_days_ago = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+        res_adj = _supabase.table("adjustment_logs").select("sku, qty, status, keterangan, np_user, run_by, created_at").gte("created_at", thirty_days_ago).order("created_at", desc=True).execute()
         if res_adj.data:
             df_adj = pd.DataFrame(res_adj.data)
             df_adj["created_at"] = pd.to_datetime(df_adj["created_at"])
@@ -25,7 +27,7 @@ def load_historical_logs(_supabase):
         st.error(format_user_error("DB-001"))
         
     try:
-        res_ext = _supabase.table("extraction_history").select("distributor_name, status, extracted_by, created_at").order("created_at", desc=True).execute()
+        res_ext = _supabase.table("extraction_history").select("distributor_name, status, extracted_by, created_at").gte("created_at", thirty_days_ago).order("created_at", desc=True).execute()
         if res_ext.data:
             df_ext = pd.DataFrame(res_ext.data)
             df_ext["created_at"] = pd.to_datetime(df_ext["created_at"])
@@ -173,22 +175,11 @@ total_logs = 0
 user_to_dist = {}
 
 if db_connected:
-    try:
-        res_ext = supabase.table("extraction_history").select("id", count="exact").execute()
-        total_extractions = res_ext.count if res_ext.count is not None else 0
-    except: pass
-    try:
-        res_dist = supabase.table("distributor_vault").select("id", count="exact").execute()
-        total_distributors = res_dist.count if res_dist.count is not None else 0
-    except: pass
-    try:
-        res_logs = supabase.table("adjustment_logs").select("id", count="exact").execute()
-        total_logs = res_logs.count if res_logs.count is not None else 0
-    except: pass
-    try:
-        res_nodes = supabase.table("distributor_vault").select("np_user_id, nama_distributor").execute()
-        user_to_dist = {r["np_user_id"]: r["nama_distributor"] for r in res_nodes.data if r.get("np_user_id")}
-    except: pass
+    kpis = database.get_dashboard_kpis(supabase)
+    total_extractions = kpis.get("extraction_count", 0)
+    total_distributors = kpis.get("distributor_count", 0)
+    total_logs = kpis.get("adjustment_count", 0)
+    user_to_dist = {r["np_user_id"]: r["nama_distributor"] for r in kpis.get("nodes", []) if r.get("np_user_id")}
 
 bot_running = (
     st.session_state.get("is_bot_running", False) or
@@ -626,7 +617,7 @@ if db_connected:
     st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
     st.markdown("<div style='margin: 0 0 16px 0; font-size: 1.05rem; color: #0F172A; background-color: #F1F5F9; border: 2px solid #0F172A; box-shadow: 3px 3px 0px 0px #0F172A; padding: 6px 12px; display: inline-block; font-weight: 900; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.05em;'>Full Activity Report</div>", unsafe_allow_html=True)
     
-    period_option = st.selectbox("Reporting Period", ["Today", "Last 7 Days", "Last 30 Days", "All Time"], index=2, key="dashboard_report_period")
+    period_option = st.selectbox("Reporting Period", ["Today", "Last 7 Days", "Last 30 Days"], index=2, key="dashboard_report_period")
         
     now_utc = datetime.now(timezone.utc)
     if period_option == "Today": cutoff_date = now_utc.replace(hour=0, minute=0, second=0, microsecond=0)
