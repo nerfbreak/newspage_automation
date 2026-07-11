@@ -241,7 +241,7 @@ if "Auto Compare" in adj_mode:
             import os
             auto_remark, _ = os.path.splitext(file2.name)
             
-        remark_text = st.text_input("Remark", value=auto_remark, max_chars=50, key="auto_remark")
+        remark_text = st.text_input("Remark", value=auto_remark, max_chars=100, key="auto_remark")
         
         log_label_placeholder = st.empty()
         log_placeholder = st.empty()
@@ -363,7 +363,7 @@ elif "Manual Entry" in adj_mode:
         import os
         manual_auto_remark, _ = os.path.splitext(uploaded_manual.name)
         
-    manual_remark_text = st.text_input("Remark", value=manual_auto_remark, max_chars=50, key="manual_remark")
+    manual_remark_text = st.text_input("Remark", value=manual_auto_remark, max_chars=100, key="manual_remark")
     
     log_label_placeholder = st.empty()
     log_placeholder = st.empty()

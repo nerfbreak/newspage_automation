@@ -613,7 +613,7 @@ def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_l
     if remark_text:
         remark_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_REMARK_Value")
         if remark_input.is_enabled():
-            remark_input.fill(remark_text[:50])
+            remark_input.fill(remark_text[:100])
             
     ui_log("SYS", "Halaman siap. Mulai memasukkan data adjustment...")
 
