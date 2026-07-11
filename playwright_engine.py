@@ -1066,13 +1066,18 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
                 _log_df_to_supabase(supabase, df_view, bot_user, current_user)
             else:
-                if remark_text:
-                    ui_log("SYS", f"Mengisi final remark: {remark_text[:100]}")
+                # Forcing evaluate to bypass ASP.NET ReadOnly restrictions or UpdatePanel clashes
+                safe_remark = remark_text[:100] if remark_text else ""
+                ui_log("SYS", f"Mengunci final remark: '{safe_remark}'")
+                try:
                     remark_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_REMARK_Value")
-                    if remark_input.is_visible():
-                        remark_input.fill(remark_text[:100])
-                        remark_input.press("Tab")
-                        page.wait_for_timeout(500)
+                    # Set DOM value explicitly first
+                    remark_input.evaluate("(el, val) => el.value = val", safe_remark)
+                    # Trigger internal Playwright change event to mimic typing
+                    remark_input.fill(safe_remark)
+                    page.wait_for_timeout(200)
+                except Exception as e:
+                    ui_log("WARN", f"Gagal mengunci final remark: {e}")
 
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
                 if dry_run:
@@ -1423,13 +1428,19 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
                 _log_df_to_supabase(supabase, df_view, bot_user, current_user, pack_mode=True)
             else:
-                if remark_text:
-                    ui_log("SYS", f"Mengisi final remark: {remark_text[:100]}")
+                # Forcing evaluate to bypass ASP.NET ReadOnly restrictions or UpdatePanel clashes
+                safe_remark = remark_text[:100] if remark_text else ""
+                ui_log("SYS", f"Mengunci final remark: '{safe_remark}'")
+                try:
                     remark_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_REMARK_Value")
-                    if remark_input.is_visible():
-                        remark_input.fill(remark_text[:100])
-                        remark_input.press("Tab")
-                        page.wait_for_timeout(500)
+                    # Set DOM value explicitly first
+                    remark_input.evaluate("(el, val) => el.value = val", safe_remark)
+                    # Trigger internal Playwright change event to mimic typing
+                    remark_input.fill(safe_remark)
+                    page.wait_for_timeout(200)
+                except Exception as e:
+                    ui_log("WARN", f"Gagal mengunci final remark: {e}")
+
 
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
                 if dry_run:
