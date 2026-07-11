@@ -71,7 +71,6 @@ with col1:
     with st.container(border=True):
         dist_a = st.selectbox("Pilih Distributor Pengirim", list_dist, key="mutasi_dist_a")
         bot_user_a, bot_pass_a = database.get_distributor_creds(supabase, dist_a)
-        remark_a = st.text_input("Remark Pengirim", max_chars=50, key="mutasi_remark_a")
 
 with col2:
     st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
@@ -80,7 +79,6 @@ with col2:
         list_dist_b = [d for d in list_dist if d != dist_a]
         dist_b = st.selectbox("Pilih Distributor Penerima", list_dist_b, key="mutasi_dist_b")
         bot_user_b, bot_pass_b = database.get_distributor_creds(supabase, dist_b)
-        remark_b = st.text_input("Remark Penerima", max_chars=50, key="mutasi_remark_b")
 
 # --- FILE UPLOAD + COLUMN MAPPING ---
 df_raw = None
@@ -187,22 +185,29 @@ can_execute = review_ready and bot_user_a and bot_pass_a and bot_user_b and bot_
 
 st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
 with st.container(border=True):
-    reason_options = {
-        "SA1": "SA1 - Transformasi Kode Barang",
-        "SA2": "SA2 - Selisih Barang",
-        "SA3": "SA3 - Transfer Gudang Internal",
-        "SA4": "SA4 - Transfer Gudang External"
-    }
-    default_reason_idx = 0
-    for i, key in enumerate(reason_options.keys()):
-        if key == REASON_CODE:
-            default_reason_idx = i
-            break
-    selected_reason_label = st.selectbox("Reason Adjustment", list(reason_options.values()), index=default_reason_idx, key="mutasi_reason")
-    selected_reason_code = [k for k, v in reason_options.items() if v == selected_reason_label][0]
-    
-st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
-execute_clicked = st.button("Execute", type="primary", width='stretch', disabled=not can_execute, icon=":material/play_arrow:")
+    with st.form(key="mutasi_execute_form", border=False):
+        reason_options = {
+            "SA1": "SA1 - Transformasi Kode Barang",
+            "SA2": "SA2 - Selisih Barang",
+            "SA3": "SA3 - Transfer Gudang Internal",
+            "SA4": "SA4 - Transfer Gudang External"
+        }
+        default_reason_idx = 0
+        for i, key in enumerate(reason_options.keys()):
+            if key == REASON_CODE:
+                default_reason_idx = i
+                break
+        selected_reason_label = st.selectbox("Reason Adjustment", list(reason_options.values()), index=default_reason_idx, key="mutasi_reason")
+        selected_reason_code = [k for k, v in reason_options.items() if v == selected_reason_label][0]
+        
+        c1, c2 = st.columns(2)
+        with c1:
+            remark_a = st.text_input("Remark Pengirim", max_chars=50, key="mutasi_remark_a")
+        with c2:
+            remark_b = st.text_input("Remark Penerima", max_chars=50, key="mutasi_remark_b")
+        
+        st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+        execute_clicked = st.form_submit_button("Execute", type="primary", use_container_width=True, disabled=not can_execute, icon=":material/play_arrow:")
 
 if execute_clicked:
     st.session_state.is_mutasi_running = True
