@@ -10,6 +10,7 @@ import bcrypt
 from datetime import datetime, timezone, timedelta
 from cryptography.fernet import Fernet
 from supabase import create_client, Client
+import streamlit as st
 
 logger = logging.getLogger(__name__)
 
@@ -70,17 +71,22 @@ def decrypt_data(encrypted_data: str) -> str:
         logging.error(f"Decryption error: {e}")
         return ""  # Return empty string instead of ciphertext to prevent silent data corruption
 
-def get_user_session_version(supabase, username):
-    """Return the current remembered-session version for a user."""
-    if not supabase or not username:
+@st.cache_data(ttl=300)
+def _cached_get_user_session_version(_supabase, username):
+    """Cached internal fetch for user session version."""
+    if not _supabase or not username:
         return ""
     try:
-        res = supabase.table("users_auth").select("session_version").eq("username", username).execute()
+        res = _supabase.table("users_auth").select("session_version").eq("username", username).execute()
         if res.data:
             return str(res.data[0].get("session_version") or "")
     except Exception as e:
         logging.error(f"Error fetching session version for user {username}: {e}")
     return ""
+
+def get_user_session_version(supabase, username):
+    """Return the current remembered-session version for a user."""
+    return _cached_get_user_session_version(supabase, username)
 
 def ensure_user_session_version(supabase, username):
     """Ensure a user has a non-secret session version for remembered-login cookies."""
@@ -95,6 +101,14 @@ def ensure_user_session_version(supabase, username):
             "session_version": new_version,
             "password_changed_at": datetime.now(timezone.utc).isoformat(),
         }).eq("username", username).execute()
+        # Instead of .clear() which requires st.cache_data runtime context, we rely on the
+        # app re-evaluating or next execution taking a new state. Since we are mutating,
+        # we can't safely clear the cache directly in offline mode.
+        try:
+            _cached_get_user_session_version.clear()
+        except AttributeError:
+            pass # Fails cleanly in offline smoke test
+        
         persisted_version = get_user_session_version(supabase, username)
         if persisted_version == new_version:
             return persisted_version
@@ -142,7 +156,33 @@ def validate_remembered_session(supabase, encrypted_payload, current_server_run_
         return payload["username"]
     return ""
 
-import streamlit as st
+
+@st.cache_data(ttl=300)
+def get_dashboard_kpis(_supabase):
+    """Fetch and aggregate dashboard KPI counts."""
+    kpis = {
+        "extraction_count": 0,
+        "distributor_count": 0,
+        "adjustment_count": 0,
+        "nodes": []
+    }
+    supabase = _supabase
+    if not supabase:
+        return kpis
+    try:
+        res_ext = supabase.table("extraction_history").select("id", count="exact").execute()
+        res_dist = supabase.table("distributor_vault").select("id", count="exact").execute()
+        res_logs = supabase.table("adjustment_logs").select("id", count="exact").execute()
+        res_nodes = supabase.table("distributor_vault").select("np_user_id, nama_distributor").execute()
+        
+        kpis["extraction_count"] = res_ext.count if res_ext.count else 0
+        kpis["distributor_count"] = res_dist.count if res_dist.count else 0
+        kpis["adjustment_count"] = res_logs.count if res_logs.count else 0
+        kpis["nodes"] = res_nodes.data if res_nodes.data else []
+    except Exception as e:
+        logging.error(f"Error fetching dashboard KPIs: {e}")
+        
+    return kpis
 
 @st.cache_data(ttl=300)
 def get_system_config(_supabase):
