@@ -609,11 +609,16 @@ def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_l
     dropdown = page.locator("id=pag_I_StkAdj_NewGeneral_drp_n_REASON_HDR_Value")
     if dropdown.is_enabled(): 
         dropdown.select_option(REASON_CODE)
+        page.wait_for_timeout(1500)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "reason code postback")
         
     if remark_text:
         remark_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_REMARK_Value")
+        remark_input.wait_for(state="attached", timeout=TIMEOUT_MS)
         if remark_input.is_enabled():
-            remark_input.fill(remark_text[:50])
+            remark_input.fill(remark_text[:100])
+            remark_input.press("Tab")
+            page.wait_for_timeout(500)
             
     ui_log("SYS", "Halaman siap. Mulai memasukkan data adjustment...")
 
