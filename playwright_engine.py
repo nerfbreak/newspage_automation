@@ -1497,7 +1497,8 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 
             st.session_state.last_success_shot = success_shot
             st.session_state.last_alert_msg = alert_msg
-            st.session_state.execute_done = True
+            if not is_mutasi:
+                st.session_state.execute_done = True
             st.session_state.is_bot_running = False
             return success_count, failed_count, elapsed, success_shot, alert_msg
 
