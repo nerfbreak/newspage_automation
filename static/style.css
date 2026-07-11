@@ -1306,14 +1306,16 @@ div[data-testid="stElementContainer"]:has(.neo-container-marker) + div > div[dat
 table.neo-table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed; /* BUG-011: Force identical column distribution */
 }
-/* BUG-011: Strict column proportions to ensure side-by-side symmetry */
-table.neo-table th:nth-child(1) { width: 14%; } /* SKU */
-table.neo-table th:nth-child(2) { width: 42%; } /* Desc */
-table.neo-table th:nth-child(3) { width: 12%; text-align: right; } /* Qty */
-table.neo-table th:nth-child(4) { width: 12%; } /* Status */
-table.neo-table th:nth-child(5) { width: 20%; } /* Ket */
+/* BUG-011: Strict column proportions to ensure side-by-side symmetry for Stock Mutation */
+div[data-testid="column"] table.neo-table {
+    table-layout: fixed;
+}
+div[data-testid="column"] table.neo-table th:nth-child(1) { width: 14%; } /* SKU */
+div[data-testid="column"] table.neo-table th:nth-child(2) { width: 42%; } /* Desc */
+div[data-testid="column"] table.neo-table th:nth-child(3) { width: 12%; text-align: right; } /* Qty */
+div[data-testid="column"] table.neo-table th:nth-child(4) { width: 12%; } /* Status */
+div[data-testid="column"] table.neo-table th:nth-child(5) { width: 20%; } /* Ket */
 
 table.neo-table td {
     word-wrap: break-word; /* Ensure long words don't overflow fixed cells */
@@ -1551,14 +1553,16 @@ div[data-testid="stProgress"] div[role="progressbar"] > div {
 table.neo-table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed; /* BUG-011: Force identical column distribution */
 }
-/* BUG-011: Strict column proportions to ensure side-by-side symmetry */
-table.neo-table th:nth-child(1) { width: 14%; } /* SKU */
-table.neo-table th:nth-child(2) { width: 42%; } /* Desc */
-table.neo-table th:nth-child(3) { width: 12%; text-align: right; } /* Qty */
-table.neo-table th:nth-child(4) { width: 12%; } /* Status */
-table.neo-table th:nth-child(5) { width: 20%; } /* Ket */
+/* BUG-011: Strict column proportions to ensure side-by-side symmetry for Stock Mutation */
+div[data-testid="column"] table.neo-table {
+    table-layout: fixed;
+}
+div[data-testid="column"] table.neo-table th:nth-child(1) { width: 14%; } /* SKU */
+div[data-testid="column"] table.neo-table th:nth-child(2) { width: 42%; } /* Desc */
+div[data-testid="column"] table.neo-table th:nth-child(3) { width: 12%; text-align: right; } /* Qty */
+div[data-testid="column"] table.neo-table th:nth-child(4) { width: 12%; } /* Status */
+div[data-testid="column"] table.neo-table th:nth-child(5) { width: 20%; } /* Ket */
 
 table.neo-table td {
     word-wrap: break-word; /* Ensure long words don't overflow fixed cells */
