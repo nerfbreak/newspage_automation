@@ -668,7 +668,13 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_
     ui_log("SYS", "Membuka daftar riwayat untuk mengambil screenshot bukti transaksi...")
     try:
         # Go to List View by clicking the side menu
-        page.locator("id=pag_InventoryRoot_tab_Main_itm_StkAdj").first.dispatch_event("click")
+        target_id = "pag_InventoryRoot_tab_Main_itm_StkAdj"
+        try:
+            # Gunakan evaluate click untuk meminimalkan kegagalan karena element visibility / tab parent
+            page.evaluate(f"document.getElementById('{target_id}').click()")
+        except:
+            page.locator(f"id={target_id}").first.dispatch_event("click")
+            
         # CRITICAL FIX: Wait for ASP.NET to actually begin the postback before waiting for networkidle
         page.wait_for_timeout(3000) 
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
@@ -679,8 +685,14 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_
             
             # Select Status to O (Open / Pending)
             page.wait_for_timeout(1000)
+            status_dropdown = page.locator("id=pag_I_StkAdj_drp_Status_Value")
+            status_dropdown.wait_for(state="attached", timeout=TIMEOUT_MS)
             page.evaluate("document.getElementById('pag_I_StkAdj_drp_Status_Value').value = 'O'")
-            page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("O")
+            # select_option terkadang lambat jika opsi belum sepenuhnya terisi, gunakan force/dispatch event jika perlu
+            try:
+                status_dropdown.select_option("O", timeout=5000)
+            except:
+                page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); select.value = 'O'; select.dispatchEvent(new Event('change'));")
             
             # Click Search
             ui_log("SYS", "Mencari transaksi Open (Pending)...")
@@ -704,8 +716,13 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_
 
         # Force Status to Approved (A) with explicit JS to avoid Playwright race conditions
         page.wait_for_timeout(1000)
+        status_dropdown = page.locator("id=pag_I_StkAdj_drp_Status_Value")
+        status_dropdown.wait_for(state="attached", timeout=TIMEOUT_MS)
         page.evaluate("document.getElementById('pag_I_StkAdj_drp_Status_Value').value = 'A'")
-        page.locator("id=pag_I_StkAdj_drp_Status_Value").select_option("A")
+        try:
+            status_dropdown.select_option("A", timeout=5000)
+        except:
+            page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); select.value = 'A'; select.dispatchEvent(new Event('change'));")
         
         # Click Search
         ui_log("SYS", "Mencari transaksi terakhir...")
