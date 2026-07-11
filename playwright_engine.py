@@ -612,14 +612,7 @@ def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_l
         page.wait_for_timeout(1500)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "reason code postback")
         
-    if remark_text:
-        remark_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_REMARK_Value")
-        remark_input.wait_for(state="attached", timeout=TIMEOUT_MS)
-        if remark_input.is_enabled():
-            remark_input.fill(remark_text[:100])
-            remark_input.press("Tab")
-            page.wait_for_timeout(500)
-            
+    # Remark is now filled right before saving to prevent UpdatePanel postback overwrites
     ui_log("SYS", "Halaman siap. Mulai memasukkan data adjustment...")
 
 def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
@@ -1073,6 +1066,14 @@ def run_execution(df_view, bot_user, bot_pass, selected_distributor, URL_LOGIN, 
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
                 _log_df_to_supabase(supabase, df_view, bot_user, current_user)
             else:
+                if remark_text:
+                    ui_log("SYS", f"Mengisi final remark: {remark_text[:100]}")
+                    remark_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_REMARK_Value")
+                    if remark_input.is_visible():
+                        remark_input.fill(remark_text[:100])
+                        remark_input.press("Tab")
+                        page.wait_for_timeout(500)
+
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
                 if dry_run:
                     ui_log("DRY_RUN", "Dry run active - bypassed save click")
@@ -1422,6 +1423,14 @@ def run_execution_manual(df_view, bot_user, bot_pass, selected_distributor, URL_
                 ui_log("SERVER", f"Aborting save. {failed_count} failures detected. Document will not be written to database.")
                 _log_df_to_supabase(supabase, df_view, bot_user, current_user, pack_mode=True)
             else:
+                if remark_text:
+                    ui_log("SYS", f"Mengisi final remark: {remark_text[:100]}")
+                    remark_input = page.locator("id=pag_I_StkAdj_NewGeneral_txt_REMARK_Value")
+                    if remark_input.is_visible():
+                        remark_input.fill(remark_text[:100])
+                        remark_input.press("Tab")
+                        page.wait_for_timeout(500)
+
                 ui_log("SERVER", "Finalizing batch. Saving document to main server...")
                 if dry_run:
                     ui_log("DRY_RUN", "Dry run active - bypassed save click")
