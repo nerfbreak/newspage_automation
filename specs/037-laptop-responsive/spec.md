@@ -2,7 +2,7 @@
 
 **Feature Branch**: `037-laptop-responsive`
 **Created**: 2026-07-11
-**Status**: Completed
+**Status**: Draft
 
 **Input**: User description: "dynamic resolution untuk laptop, kayak font-size nya yang tadinya nanggung / kepotong pas dilayar 1366x768 (laptop biasa), tolong sesuaikan juga biar kebaca enak. terus ada lagi, ukuran card dashboard nya kayak kegedean gitu di layar laptop. tolong di perbaiki ya. ingat, jangan ganggu yg responsive mobile"
 
