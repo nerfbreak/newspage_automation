@@ -667,36 +667,24 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
 def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_code=None):
     ui_log("SYS", "Membuka daftar riwayat untuk mengambil screenshot bukti transaksi...")
     try:
-        # Coba navigasi ke List View dengan explicit direct ASP.NET postback jika memungkinkan
-        # Di halaman Stock Adjustment NewGeneral, mengklik tab "List" biasanya mentrigger event postback.
-        # Atau fallback klik href
+        # Gunakan pemaksaan URL postback secara langsung karena lebih stabil dari klik elemen UI (WebForms)
+        ui_log("SYS", "Mengarahkan ke halaman List View...")
         try:
-            list_tab = page.locator("td[id*='_tab_List']").first
-            if list_tab.is_visible(timeout=3000):
-                ui_log("SYS", "Mengklik tab List...")
-                list_tab.click()
-            else:
-                raise Exception("Tab List tidak terlihat")
-        except Exception as e:
-            ui_log("WARN", f"Klik tab List gagal: {e}. Mencoba menu samping...")
+            page.evaluate("__doPostBack('pag_I_StkAdj$tab_Main$tab_List','')")
+        except:
+            # Fallback ke menu samping jika JS __doPostBack gagal dipanggil
             target_id = "pag_InventoryRoot_tab_Main_itm_StkAdj"
-            try:
-                page.locator(f"id={target_id}").first.dispatch_event("click", timeout=5000)
-            except:
-                page.evaluate(f"var el = document.getElementById('{target_id}'); if(el) el.click();")
+            page.evaluate(f"var el = document.getElementById('{target_id}'); if(el) el.click();")
             
         # CRITICAL FIX: Tunggu cukup lama untuk memastikan ASP.NET postback render grid list.
-        # Log Pengirim (Deduct) di atas gagal mendapat dropdown status setelah wait 8 detik,
-        # kemungkinan karena masih ada di form entry.
         page.wait_for_timeout(3000) 
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list")
         
         # Ekstra verifikasi: pastikan kita sudah benar-benar ada di list view
-        # Grid list (`grd_List`) harus ada. Jika tidak, paksa pindah.
         try:
             page.locator("id=pag_I_StkAdj_grd_List_SearchForm_ButtonSearch_Value").wait_for(state="attached", timeout=5000)
         except:
-            ui_log("WARN", "Halaman List belum terbuka sepenuhnya. Melakukan pemaksaan URL postback...")
+            ui_log("SYS", "Melakukan percobaan pemaksaan navigasi kedua...")
             page.evaluate("__doPostBack('pag_I_StkAdj$tab_Main$tab_List','')")
             page.wait_for_timeout(3000)
             _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "stkadj list forced")
