@@ -10,23 +10,23 @@ Use this before ending work in Codex, Antigravity, or Hermes.
 
 ## Summary
 
-- What changed: Forced remark injection via `.evaluate()` before `fill()` and removed the trailing `Tab` event. This was to combat an edge case where ASP.NET server-side state overrides the client-side value for Receiver (Penerima) accounts because of a cached "TERIMA DARI [Distributor]" default remark in Newspage's database. Also ensured it triggers even if `remark_text` is empty, so it actively clears the server's cached fallback.
-- Why it changed: The user noted that "TERIMA DARI PURWOKERTO" was being saved despite typing "ABCD". This proved Newspage was actively injecting a cached default remark on Save, which Playwright's standard `fill` (if it was skipped due to emptiness or if it clashed with the Save postback) failed to overwrite.
+- What changed: Moved `remark_a` and `remark_b` into a `st.form` along with the `execute_clicked` submit button in `pages/4_stock_mutation.py`.
+- Why it changed: The user typed "456" but the system used "EFGH" (the value from the PREVIOUS run). This is a known Streamlit race condition where clicking a button immediately after typing in a text input without pressing Enter causes the backend to use the stale state. By wrapping the final execution block (Reason, Remarks, and Execute Button) in an `st.form`, Streamlit guarantees that all widget states are batched and flushed synchronously upon submission.
 
 ## Files Changed
 
-- `playwright_engine.py`
+- `pages/4_stock_mutation.py`
 
 ## Verification
 
-- Checks run: `python -m py_compile playwright_engine.py`
+- Checks run: `python -m py_compile pages/4_stock_mutation.py`
 - Checks skipped: None
-- Known risk: None
+- Known risk: The UI layout for the remarks has moved slightly down into the execute container, but it maintains the 2-column structure and Neo-Brutalist border container.
 
 ## Memory Update
 
 - `.agents/MEMORY.md` updated? Yes.
-- Important decision captured: Always use `.evaluate(el => el.value = val)` before `.fill()` when fighting aggressive ASP.NET WebForms cached values right before a submit button is clicked.
+- Important decision captured: Always use `st.form` for text inputs that are immediately followed by an execution button to avoid Streamlit state lag.
 
 ## Next Step
 
