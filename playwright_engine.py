@@ -667,28 +667,20 @@ def _inject_adjustment_row(page, sku, qty, TIMEOUT_MS, ui_log):
 def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_code=None):
     ui_log("SYS", "Membuka daftar riwayat untuk mengambil screenshot bukti transaksi...")
     try:
-        # Go to List View by clicking the side menu
-        target_id = "pag_InventoryRoot_tab_Main_itm_StkAdj"
+        # Coba klik Tab List di atas tabel jika ada (lebih cepat dan aman dari menu samping)
         try:
-            # Gunakan evaluate click untuk meminimalkan kegagalan karena element visibility / tab parent
-            # Tambahkan pengecekan null, dan coba klik tab header Inventory jika menu tidak ditemukan
-            page.evaluate(f"""
-                var el = document.getElementById('{target_id}');
-                if (!el) {{
-                    var tab = document.querySelector('[id*="InventoryRoot_tab"]');
-                    if (tab) tab.click();
-                    el = document.querySelector('[id*="itm_StkAdj"]');
-                }}
-                if (el) el.click();
-            """)
-        except Exception as eval_e:
-            ui_log("WARN", f"JS evaluate klik menu gagal: {eval_e}. Mencoba locator fallback...")
-            
-        try:
-            page.locator(f"id={target_id}").first.dispatch_event("click", timeout=5000)
+            list_tab = page.locator("td[id*='_tab_List']").first
+            if list_tab.is_visible(timeout=2000):
+                list_tab.click()
+            else:
+                raise Exception("Tab List tidak terlihat")
         except:
-            # Fallback ekstrim: klik by text
-            page.locator("td:has-text('Stock Adjustment')").last.click(force=True, timeout=5000)
+            # Fallback ke menu samping jika Tab List tidak ada
+            target_id = "pag_InventoryRoot_tab_Main_itm_StkAdj"
+            try:
+                page.locator(f"id={target_id}").first.dispatch_event("click", timeout=5000)
+            except:
+                page.evaluate(f"var el = document.getElementById('{target_id}'); if(el) el.click();")
             
         # CRITICAL FIX: Wait for ASP.NET to actually begin the postback before waiting for networkidle
         page.wait_for_timeout(3000) 
@@ -701,11 +693,16 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_
             # Select Status to O (Open / Pending)
             page.wait_for_timeout(2000)
             status_dropdown = page.locator("id=pag_I_StkAdj_drp_Status_Value")
-            status_dropdown.wait_for(state="attached", timeout=TIMEOUT_MS)
+            try:
+                status_dropdown.wait_for(state="attached", timeout=15000)
+            except Exception:
+                ui_log("WARN", "Dropdown status tidak ditemukan di halaman. Navigasi ke List View gagal.")
+                return None
+
             page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); if(select) select.value = 'O';")
             # select_option terkadang lambat jika opsi belum sepenuhnya terisi, gunakan force/dispatch event jika perlu
             try:
-                status_dropdown.select_option("O", timeout=5000)
+                status_dropdown.select_option("O", timeout=3000)
             except:
                 page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); if(select) { select.value = 'O'; select.dispatchEvent(new Event('change')); }")
             
@@ -735,10 +732,15 @@ def _capture_stkadj_success_screenshot(page, TIMEOUT_MS, ui_log, prefix, reason_
         # Force Status to Approved (A) with explicit JS to avoid Playwright race conditions
         page.wait_for_timeout(2000)
         status_dropdown = page.locator("id=pag_I_StkAdj_drp_Status_Value")
-        status_dropdown.wait_for(state="attached", timeout=TIMEOUT_MS)
+        try:
+            status_dropdown.wait_for(state="attached", timeout=10000)
+        except:
+            ui_log("WARN", "Dropdown status Approved tidak ditemukan. Melewati pencarian akhir.")
+            return None
+
         page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); if(select) select.value = 'A';")
         try:
-            status_dropdown.select_option("A", timeout=5000)
+            status_dropdown.select_option("A", timeout=3000)
         except:
             page.evaluate("var select = document.getElementById('pag_I_StkAdj_drp_Status_Value'); if(select) { select.value = 'A'; select.dispatchEvent(new Event('change')); }")
         
