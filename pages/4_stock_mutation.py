@@ -105,6 +105,11 @@ with st.container(border=True):
             </style>
             {make_solid_box(f"FILE LOADED: {uploaded_file.name}", "#FFDE59", "#0F172A")}
         """, unsafe_allow_html=True)
+        
+        # Show uploaded raw data preview
+        st.markdown("<div class='header-wrapper-center-notop'><span class='section-header-underline'>Preview Uploaded Data</span></div>", unsafe_allow_html=True)
+        st.dataframe(df_raw.head(5), use_container_width=True, hide_index=True)
+        
         st.markdown("<span class='red-btn-marker'></span>", unsafe_allow_html=True)
         st.button(
             "Hapus File Upload",
