@@ -342,3 +342,4 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 - feat(stock_mutation): Add success screenshots and custom Telegram alerts (MUTASI STOCK REPORT) for Stock Mutation module.
 - feat(stock_mutation): Add auto-approve and screenshot for SA3 and SA4 stock mutations (Spec-036).
 - fix(database): Correct indentation for reset_failed_login, register_active_task, clear_active_task, and get_active_tasks.
+- **2026-07-12**: **UI Bugfix (Preview Table Layout Collapse - BUG-001)**: Changed the manual entry preview in `pages/1_inventory_adjustment.py` to use native `st.dataframe` to prevent the global `.neo-table` 5-column strict layout from distorting arbitrary uploaded CSV schemas.

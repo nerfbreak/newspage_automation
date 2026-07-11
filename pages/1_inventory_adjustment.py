@@ -304,7 +304,7 @@ elif "Manual Entry" in adj_mode:
 
         if st.session_state.get("manual_uploaded_df") is not None:
             df_up = st.session_state.manual_uploaded_df
-            utils.render_responsive_dataframe(df_up.head(5))
+            st.dataframe(df_up.head(5), use_container_width=True, hide_index=True)
             
             st.markdown("<div class='header-wrapper-center-notop'><span class='section-header-underline'>Column Mapping</span></div>", unsafe_allow_html=True)
             mcol1, mcol2, mcol3, mcol4 = st.columns(4)

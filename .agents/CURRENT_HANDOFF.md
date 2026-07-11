@@ -5,34 +5,35 @@ Use this before ending work in Codex, Antigravity, or Hermes.
 ## Agent
 
 - Tool: Antigravity
-- Date: 2026-07-11
+- Date: 2026-07-12
 - Branch: main
 
 ## Summary
 
-- What changed: Completed Spec `038-perf-optimize`. Implemented UI latency optimizations (caching user session version), dashboard KPI caching, and bounded log retrieval. Tasks verified and committed.
-- Why it changed: User requested to resolve performance issues with uncached auth checks and slow dashboard metric queries.
+- What changed: Fixed BUG-001 (Preview Table Layout Collapse). Replaced `render_responsive_dataframe` with native `st.dataframe` for the manual entry preview in `pages/1_inventory_adjustment.py` to prevent global `.neo-table` constraints from breaking layout on generic uploaded dataframes. Ran full bugfix workflow (report, patch, verify).
+- Why it changed: The layout broke due to fixed CSS column widths designed only for the execution module.
 
 ## Files Changed
 
-- `database.py`
-- `app.py`
-- `pages/0_dashboard.py`
+- `pages/1_inventory_adjustment.py`
+- `specs/038-perf-optimize/spec.md`
+- `specs/038-perf-optimize/tasks.md`
+- `specs/038-perf-optimize/bugs/BUG-001.md`
 
 ## Verification
 
-- Checks run: `/speckit-verify-run`, `/speckit-verify-tasks-run`, `git push`
+- Checks run: `/speckit-bugfix-verify`
 - Checks skipped: None
 - Known risk: None
 
 ## Memory Update
 
 - `.agents/MEMORY.md` updated? Yes.
-- Important decision captured: Log limit set to 30 days and KPIs cached.
+- Important decision captured: `.neo-table` class should not be applied to dynamic dataframe previews.
 
 ## Next Step
 
-- The feature branch is completed and pushed to main. Awaiting user's next request.
+- The bug fix is complete. Awaiting user's next request or feature implementation.
 
 ## Do Not Touch
 
