@@ -71,7 +71,7 @@ with col1:
     with st.container(border=True):
         dist_a = st.selectbox("Pilih Distributor Pengirim", list_dist, key="mutasi_dist_a")
         bot_user_a, bot_pass_a = database.get_distributor_creds(supabase, dist_a)
-        remark_a = st.text_input("Remark Pengirim", max_chars=100, key="mutasi_remark_a")
+        remark_a = st.text_input("Remark Pengirim", max_chars=50, key="mutasi_remark_a")
 
 with col2:
     st.markdown("<span class='neo-container-marker'></span>", unsafe_allow_html=True)
@@ -80,7 +80,7 @@ with col2:
         list_dist_b = [d for d in list_dist if d != dist_a]
         dist_b = st.selectbox("Pilih Distributor Penerima", list_dist_b, key="mutasi_dist_b")
         bot_user_b, bot_pass_b = database.get_distributor_creds(supabase, dist_b)
-        remark_b = st.text_input("Remark Penerima", max_chars=100, key="mutasi_remark_b")
+        remark_b = st.text_input("Remark Penerima", max_chars=50, key="mutasi_remark_b")
 
 # --- FILE UPLOAD + COLUMN MAPPING ---
 df_raw = None
