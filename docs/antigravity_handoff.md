@@ -1,47 +1,35 @@
 # Antigravity Handoff
 
-Use this when continuing the production-readiness flow outside Codex.
+Use this when continuing the operations flow in Antigravity.
 
 ## Current State
 
 - Branch: `main` (fully merged, pushed, and up-to-date with `origin/main`)
-- Latest completed checkpoint: run `git log -1 --oneline` (Commit `aaa9d00` or later)
+- Latest completed features:
+  - **Spec-035 (Bot Task Monitor Dashboard)**: Realtime active task tracking connected with Playwright lifecycle hooks.
+  - **Spec-036 (Mutation Auto-Approve)**: Added full auto-approve postback execution on Stock Mutation logic specifically targeting `SA3` and `SA4` reason codes, ensuring screenshots capture the Approved state.
+  - **UI/UX Polishes**: Added *Copy/Download* buttons to Stock Mutation screenshots, extended global `max_chars` to 100 on remarks, fixed table/UI alignments in split columns.
 - Constitution: `v2.6.0` (includes Principle XII: Minimal & Clean Dependency Architecture)
-- Requirements: Pruned down to 163 clean, cross-platform requirements (removed Windows-only `pywin32`, unused AI/ML/cloud bloat like `litellm`, `mcp`, `opentelemetry`, and unused vulnerable direct requirements `ecdsa`, `python-jose`, `PyPDF2`).
-- GitHub Actions on latest checkpoint:
-  - `Smoke Tests`: success (77/77 tests passing)
-  - `Security Audit`: success (0 vulnerabilities found after dependency pruning)
-- Local & Live production gates:
-  - `python scripts/production_readiness_audit.py`: PASS (21/21 rules pass)
-  - `python -m unittest discover -s tests/smoke`: 68 tests OK (in < 2s)
-  - `python scripts/supabase_schema_check.py`: PASS (10/10 required tables reachable)
-  - `python scripts/supabase_rls_index_check.py`: PASS (all 20 live RLS/index checks pass; inspection RPC installed)
-  - `python -m scripts.check_invalid_creds`: PASS (100% stored distributor passwords decrypt cleanly)
-- Live Streamlit Cloud smoke test: PASS on `https://newspage.streamlit.app` (`/healthz`, login, dashboard, authenticated Inventory Adjustment routing, dry-run visible; no mutating action executed)
-- Error Taxonomy: 100% adopted across all UI modules (`app.py`, `utils.py`, `pages/0_dashboard.py` through `pages/6_initial_stock.py`) using Neo-Brutalist containers without touching frozen business logic.
+- Testing & Gates:
+  - `python -m pytest tests/smoke/`: 103 tests passing.
+  - `python scripts/production_readiness_audit.py`: PASS
+  - AST Verification checks on core modules: PASS
+- Live Deployments: Code has been pushed and is running on Streamlit Cloud.
 
 ## Continue Commands
 
 ```powershell
 cd C:\Users\Reckitt\Documents\Optimize
+git pull
 git status --short --branch
-git log -1 --oneline
+git log -3 --oneline
 python scripts\production_readiness_audit.py
-python -m unittest discover -s tests\smoke
-python scripts\supabase_schema_check.py
-python scripts\supabase_rls_index_check.py
-python -m scripts.check_invalid_creds
+python -m pytest tests\smoke -q --tb=short
 ```
-
-## Resolved Manual Supabase Action
-
-- Table `uploaded_files` has been created and verified in live Supabase.
-- All 10 required tables now pass live schema verification.
-- The `verify_rls_and_indexes()` inspection RPC has been installed in live Supabase.
-- All 10 required tables now pass live RLS verification and index presence checks.
 
 ## Do Not Miss
 
 - Do not print or paste `.streamlit/secrets.toml`.
 - Do not modify frozen Playwright/Newspage workflows without the project unlock process (Password: `"Dama"`).
 - Maintain Neo-Brutalism design rules (`border: 3px solid #0F172A`, `box-shadow: 6px 6px 0px 0px #0F172A`, `border-radius: 0px`).
+- Pay attention to `_capture_stkadj_success_screenshot` inside `playwright_engine.py` if there are any lingering ASP.NET postback visibility bugs on slow networks.
