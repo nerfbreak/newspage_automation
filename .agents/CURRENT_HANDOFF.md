@@ -4,33 +4,35 @@ Use this before ending work in Codex, Antigravity, or Hermes.
 
 ## Agent
 
-- Tool: Hermes
+- Tool: Antigravity
 - Date: 2026-07-11
 - Branch: main
 
 ## Summary
 
-- What changed: I am handing this off to Antigravity. The previous task (Spec-036 / Stock Mutation Auto-Approve & Screenshot for SA3 & SA4) has been implemented and committed.
-- Why it changed: The user requested a handoff prompt for Antigravity to take over the session.
+- What changed: Completed Spec `038-perf-optimize`. Implemented UI latency optimizations (caching user session version), dashboard KPI caching, and bounded log retrieval. Tasks verified and committed.
+- Why it changed: User requested to resolve performance issues with uncached auth checks and slow dashboard metric queries.
 
 ## Files Changed
 
-- (None in this session, previous commits handled Spec-036)
+- `database.py`
+- `app.py`
+- `pages/0_dashboard.py`
 
 ## Verification
 
-- Checks run: `git status`, `git branch` (working tree clean on `main`)
+- Checks run: `/speckit-verify-run`, `/speckit-verify-tasks-run`, `git push`
 - Checks skipped: None
 - Known risk: None
 
 ## Memory Update
 
-- `.agents/MEMORY.md` updated? Yes (by previous agent for Spec-036)
-- Important decision captured: None required for this handoff.
+- `.agents/MEMORY.md` updated? Yes.
+- Important decision captured: Log limit set to 30 days and KPIs cached.
 
 ## Next Step
 
-- Antigravity: Please review the current state and ask the user for the next task or feature implementation.
+- The feature branch is completed and pushed to main. Awaiting user's next request.
 
 ## Do Not Touch
 
