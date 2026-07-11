@@ -283,6 +283,7 @@ if st.session_state.get("mutasi_execute_done"):
     import os
     import base64
     import re
+    import streamlit.components.v1 as components
     
     with st.expander("BUKTI TRANSAKSI (SCREENSHOT)", expanded=False):
         st.markdown("""
@@ -296,8 +297,77 @@ if st.session_state.get("mutasi_execute_done"):
         with c1:
             st.markdown("<div class='header-wrapper-center-notop'><span class='section-header-underline'>PENGIRIM (DEDUCT)</span></div>", unsafe_allow_html=True)
             shot_a = st.session_state.get("mutasi_shot_a")
+            msg_a = st.session_state.get("mutasi_msg_a", "")
             if shot_a and os.path.exists(shot_a):
                 with open(shot_a, "rb") as f: b64_a = base64.b64encode(f.read()).decode("utf-8")
+                
+                plain_msg_a = re.sub(r'<b>(.*?)</b>', r'*\1*', msg_a)
+                plain_msg_a = re.sub(r'<[^>]+>', '', plain_msg_a)
+                js_msg_a = plain_msg_a.replace('\n', '\\n').replace('"', '\\"').replace("'", "\\'")
+                
+                button_html_a = f"""
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <style>
+                  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap');
+                  body {{ margin: 0; padding: 4px 10px 10px 4px; display: flex; gap: 12px; overflow: hidden; font-family: 'Source Sans 3', sans-serif; }}
+                  .neo-btn {{ flex: 1; display: inline-flex; align-items: center; justify-content: center; height: 42px; background-color: #0068C9; color: #FFFFFF; border: 2px solid #0F172A; border-radius: 0px; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 4px 4px 0px 0px #0F172A; cursor: pointer; transition: all 0.1s; box-sizing: border-box; padding: 0 8px; }}
+                  .neo-btn:hover {{ transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A; }}
+                  .neo-btn:active {{ transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }}
+                  .neo-btn.success {{ background-color: #10B981; }}
+                  svg {{ margin-right: 6px; }}
+                </style>
+                <script>
+                let preloadedBlobItem = null;
+                const textToCopy = "{js_msg_a}";
+
+                async function preloadImage() {{
+                    try {{
+                        const res = await fetch("data:image/png;base64,{b64_a}");
+                        const blob = await res.blob();
+                        preloadedBlobItem = new ClipboardItem({{"image/png": blob}});
+                    }} catch (e) {{ console.error("Preload failed", e); }}
+                }}
+                window.addEventListener("DOMContentLoaded", preloadImage);
+
+                function showSuccess(btn, originalHtml) {{
+                    btn.innerHTML = '✔ DISALIN!';
+                    btn.classList.add('success');
+                    setTimeout(() => {{ btn.innerHTML = originalHtml; btn.classList.remove('success'); }}, 2000);
+                }}
+
+                function copyImage(event) {{
+                    const btn = event.currentTarget;
+                    const originalHtml = btn.innerHTML;
+                    if (preloadedBlobItem) {{
+                        navigator.clipboard.write([preloadedBlobItem]).then(() => {{ showSuccess(btn, originalHtml); }})
+                        .catch(err => {{ alert("Gagal copy gambar. Browser mungkin tidak support."); }});
+                    }} else {{ alert("Gambar sedang disiapkan, tunggu sebentar."); }}
+                }}
+
+                function copyText(event) {{
+                    const btn = event.currentTarget;
+                    const originalHtml = btn.innerHTML;
+                    navigator.clipboard.writeText(textToCopy).then(() => {{ showSuccess(btn, originalHtml); }})
+                    .catch(err => {{ alert("Gagal copy teks."); }});
+                }}
+                </script>
+                </head>
+                <body>
+                  <a href="data:image/png;base64,{b64_a}" download="{os.path.basename(shot_a)}" class="neo-btn" style="background-color: #F8FAFC; color: #0F172A;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg> UNDUH
+                  </a>
+                  <button class="neo-btn" onclick="copyImage(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg> COPY GAMBAR
+                  </button>
+                  <button class="neo-btn" onclick="copyText(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg> COPY TEKS
+                  </button>
+                </body>
+                </html>
+                """
+                components.html(button_html_a, height=60)
                 st.markdown(f'<div style="border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; padding: 4px; background: #FFF;"><img src="data:image/png;base64,{b64_a}" style="width: 100%; display: block;"/></div>', unsafe_allow_html=True)
             else:
                 st.info("Screenshot Pengirim tidak tersedia.")
@@ -305,8 +375,77 @@ if st.session_state.get("mutasi_execute_done"):
         with c2:
             st.markdown("<div class='header-wrapper-center-notop'><span class='section-header-underline'>PENERIMA (ADD)</span></div>", unsafe_allow_html=True)
             shot_b = st.session_state.get("mutasi_shot_b")
+            msg_b = st.session_state.get("mutasi_msg_b", "")
             if shot_b and os.path.exists(shot_b):
                 with open(shot_b, "rb") as f: b64_b = base64.b64encode(f.read()).decode("utf-8")
+                
+                plain_msg_b = re.sub(r'<b>(.*?)</b>', r'*\1*', msg_b)
+                plain_msg_b = re.sub(r'<[^>]+>', '', plain_msg_b)
+                js_msg_b = plain_msg_b.replace('\n', '\\n').replace('"', '\\"').replace("'", "\\'")
+                
+                button_html_b = f"""
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <style>
+                  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap');
+                  body {{ margin: 0; padding: 4px 10px 10px 4px; display: flex; gap: 12px; overflow: hidden; font-family: 'Source Sans 3', sans-serif; }}
+                  .neo-btn {{ flex: 1; display: inline-flex; align-items: center; justify-content: center; height: 42px; background-color: #0068C9; color: #FFFFFF; border: 2px solid #0F172A; border-radius: 0px; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 4px 4px 0px 0px #0F172A; cursor: pointer; transition: all 0.1s; box-sizing: border-box; padding: 0 8px; }}
+                  .neo-btn:hover {{ transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #0F172A; }}
+                  .neo-btn:active {{ transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #0F172A; }}
+                  .neo-btn.success {{ background-color: #10B981; }}
+                  svg {{ margin-right: 6px; }}
+                </style>
+                <script>
+                let preloadedBlobItem = null;
+                const textToCopy = "{js_msg_b}";
+
+                async function preloadImage() {{
+                    try {{
+                        const res = await fetch("data:image/png;base64,{b64_b}");
+                        const blob = await res.blob();
+                        preloadedBlobItem = new ClipboardItem({{"image/png": blob}});
+                    }} catch (e) {{ console.error("Preload failed", e); }}
+                }}
+                window.addEventListener("DOMContentLoaded", preloadImage);
+
+                function showSuccess(btn, originalHtml) {{
+                    btn.innerHTML = '✔ DISALIN!';
+                    btn.classList.add('success');
+                    setTimeout(() => {{ btn.innerHTML = originalHtml; btn.classList.remove('success'); }}, 2000);
+                }}
+
+                function copyImage(event) {{
+                    const btn = event.currentTarget;
+                    const originalHtml = btn.innerHTML;
+                    if (preloadedBlobItem) {{
+                        navigator.clipboard.write([preloadedBlobItem]).then(() => {{ showSuccess(btn, originalHtml); }})
+                        .catch(err => {{ alert("Gagal copy gambar. Browser mungkin tidak support."); }});
+                    }} else {{ alert("Gambar sedang disiapkan, tunggu sebentar."); }}
+                }}
+
+                function copyText(event) {{
+                    const btn = event.currentTarget;
+                    const originalHtml = btn.innerHTML;
+                    navigator.clipboard.writeText(textToCopy).then(() => {{ showSuccess(btn, originalHtml); }})
+                    .catch(err => {{ alert("Gagal copy teks."); }});
+                }}
+                </script>
+                </head>
+                <body>
+                  <a href="data:image/png;base64,{b64_b}" download="{os.path.basename(shot_b)}" class="neo-btn" style="background-color: #F8FAFC; color: #0F172A;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg> UNDUH
+                  </a>
+                  <button class="neo-btn" onclick="copyImage(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg> COPY GAMBAR
+                  </button>
+                  <button class="neo-btn" onclick="copyText(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg> COPY TEKS
+                  </button>
+                </body>
+                </html>
+                """
+                components.html(button_html_b, height=60)
                 st.markdown(f'<div style="border: 3px solid #0F172A; box-shadow: 4px 4px 0px 0px #0F172A; margin-bottom: 16px; padding: 4px; background: #FFF;"><img src="data:image/png;base64,{b64_b}" style="width: 100%; display: block;"/></div>', unsafe_allow_html=True)
             else:
                 st.info("Screenshot Penerima tidak tersedia.")
