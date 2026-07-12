@@ -32,6 +32,9 @@ REQUIRED_FILES = (
     "docs/supabase_live_schema_check_2026-07-07.md",
     "docs/dependency_pruning_review.md",
     "docs/antigravity_handoff.md",
+    "docs/release_readiness_checklist.md",
+    "docs/live_operations_runbook.md",
+    ".github/dependabot.yml",
 )
 
 LOCAL_SECRET_PATHS = (
@@ -43,6 +46,13 @@ IGNORED_SPEC_PATHS = (
     ".agents/",
     ".specify/",
     "specs/",
+)
+
+ROOT_DEBUG_ARTIFACT_PATTERNS = (
+    "scratch*.py",
+    "test_*.py",
+    "tmp*.py",
+    "dump*.py",
 )
 
 PYTHON_SCAN_GLOBS = (
@@ -183,6 +193,24 @@ def check_static_python_safety() -> list[AuditFinding]:
     return findings
 
 
+def check_root_debug_artifacts() -> list[AuditFinding]:
+    hits: list[str] = []
+    for pattern in ROOT_DEBUG_ARTIFACT_PATTERNS:
+        for path in REPO_ROOT.glob(pattern):
+            if path.is_file():
+                hits.append(path.name)
+
+    return [
+        AuditFinding(
+            "root-debug-artifacts",
+            "PASS" if not hits else "FAIL",
+            "no root-level scratch/debug Python files found"
+            if not hits
+            else f"root-level scratch/debug files found: {', '.join(sorted(hits))}",
+        )
+    ]
+
+
 def check_spec_policy(tracked_files: set[str]) -> list[AuditFinding]:
     policy_exists = _repo_path("docs/spec_artifact_policy.md").is_file()
     tracked_ignored = [
@@ -211,6 +239,7 @@ def run_audit() -> list[AuditFinding]:
     findings.extend(check_secret_tracking(tracked_files))
     findings.extend(check_requirements_pinned())
     findings.extend(check_static_python_safety())
+    findings.extend(check_root_debug_artifacts())
     findings.extend(check_spec_policy(tracked_files))
     return findings
 
