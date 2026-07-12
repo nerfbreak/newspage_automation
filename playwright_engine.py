@@ -161,8 +161,9 @@ def _click_next_with_retry(page, TIMEOUT_MS, ui_log, context_name="Next"):
         page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"{context_name} Next")
         try:
-            # Check if we successfully reached the next tab by looking for the select input OR the disclaimer popup
-            page.locator("css=#pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton, #pag_FW_DisclaimerMessage_btn_okay_Value").first.wait_for(state="attached", timeout=5000)
+            # Check if we successfully reached the next tab.
+            # Newspage removed INTF_ID_SelectButton popup (2026-07-12), now check for INTF_ID_Value textbox OR disclaimer popup.
+            page.locator("css=#pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value, #pag_FW_DisclaimerMessage_btn_okay_Value").first.wait_for(state="attached", timeout=5000)
             return
         except Exception:
             if attempt < 2:
@@ -252,21 +253,16 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     
     if progress_bar: progress_bar.progress(0.4)
     ui_log("INJECT", "Menyiapkan ID Interface Inventory Master.")
-    page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
-    page.wait_for_timeout(1000)
-    
-    ui_log("INJECT", "Menunggu popup muncul (bisa s/d 3 menit jika lambat)...")
-    search_field = page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value")
-    search_field.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
-    search_field.fill("E_20150315090000028")
-    page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
-    page.wait_for_timeout(800)
+    # NOTE (2026-07-13): Newspage removed the INTF_ID_SelectButton popup interface.
+    # Using direct fill() into INTF_ID_Value textbox + Tab to trigger AutoPostBack.
+    intf_id_field = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value")
+    intf_id_field.wait_for(state="visible", timeout=TIMEOUT_MS)
+    intf_id_field.fill("E_20150315090000028")
+    page.wait_for_timeout(500)
+    intf_id_field.press("Tab")
     
     if progress_bar: progress_bar.progress(0.5)
     ui_log("INJECT", "Mengkonfirmasi ID Interface ke sistem (AutoPostBack).")
-    target_text = page.get_by_text("E_20150315090000028", exact=True)
-    target_text.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
-    target_text.click(force=True)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "INTF_ID postback")
     page.wait_for_timeout(1000)
     
