@@ -255,6 +255,7 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
     page.wait_for_timeout(1000)
     
+    ui_log("INJECT", "Menunggu popup muncul (bisa s/d 3 menit jika lambat)...")
     search_field = page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value")
     search_field.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
     search_field.fill("E_20150315090000028")
