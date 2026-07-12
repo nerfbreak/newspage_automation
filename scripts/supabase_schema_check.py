@@ -22,7 +22,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SECRETS_FILE = REPO_ROOT / ".streamlit" / "secrets.toml"
 
 REQUIRED_SCHEMA: dict[str, tuple[str, ...]] = {
-    "users_auth": ("username", "password"),
+    "users_auth": ("username", "password", "session_version", "password_changed_at"),
     "login_attempts": ("username", "attempts", "last_attempt", "lockout_until"),
     "distributor_vault": ("nama_distributor", "np_user_id", "np_password"),
     "system_config": ("config_key", "config_value"),
