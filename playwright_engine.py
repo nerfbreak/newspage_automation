@@ -227,10 +227,13 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     
     if progress_bar: progress_bar.progress(0.3)
     ui_log("SYS", "Mengonfirmasi pesan awal Newspage.")
-    ok_btn = page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value")
-    ok_btn.wait_for(state="visible", timeout=TIMEOUT_MS)
-    ok_btn.click(force=True)
-    page.wait_for_timeout(500)
+    try:
+        ok_btn = page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value")
+        ok_btn.wait_for(state="visible", timeout=10000)
+        ok_btn.click(force=True)
+        page.wait_for_timeout(500)
+    except Exception:
+        pass
     
     if progress_bar: progress_bar.progress(0.4)
     ui_log("NAV", "Membuka daftar pilihan data yang akan di-extract.")
@@ -403,10 +406,13 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "sales Next")
     page.wait_for_timeout(2000)
-    page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
-    page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").click(force=True)
-    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "sales disclaimer")
-    page.wait_for_timeout(2000)
+    try:
+        page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").wait_for(state="visible", timeout=10000)
+        page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "sales disclaimer")
+        page.wait_for_timeout(2000)
+    except Exception:
+        pass
     
     interfaces = [
         {"id": "E_28880804000000001", "status": "Invoiced"},
@@ -1206,10 +1212,13 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "promo Next")
     page.wait_for_timeout(2000)
-    page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
-    page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").click(force=True)
-    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "promo disclaimer")
-    page.wait_for_timeout(2000)
+    try:
+        page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").wait_for(state="visible", timeout=10000)
+        page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "promo disclaimer")
+        page.wait_for_timeout(2000)
+    except Exception:
+        pass
 
     for i, target_id in enumerate(promo_ids):
         ui_log("INJECT", f"[{i+1}/{len(promo_ids)}] Binding interface: {target_id}")
