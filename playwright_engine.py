@@ -161,8 +161,8 @@ def _click_next_with_retry(page, TIMEOUT_MS, ui_log, context_name="Next"):
         page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"{context_name} Next")
         try:
-            # Check if we successfully reached the next tab by looking for the select button
-            page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").wait_for(state="attached", timeout=5000)
+            # Check if we successfully reached the next tab by looking for the select button OR the disclaimer popup
+            page.locator("css=#pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton, #pag_FW_DisclaimerMessage_btn_okay_Value").first.wait_for(state="attached", timeout=5000)
             return
         except Exception:
             if attempt < 2:
