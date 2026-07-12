@@ -4,6 +4,8 @@ Handles auth, encryption, system config, and distributor vault.
 import os
 import time
 import logging
+import json
+import uuid
 import bcrypt
 from datetime import datetime, timezone, timedelta
 from cryptography.fernet import Fernet
@@ -67,6 +69,75 @@ def decrypt_data(encrypted_data: str) -> str:
     except Exception as e:
         logging.error(f"Decryption error: {e}")
         return ""  # Return empty string instead of ciphertext to prevent silent data corruption
+
+def get_user_session_version(supabase, username):
+    """Return the current remembered-session version for a user."""
+    if not supabase or not username:
+        return ""
+    try:
+        res = supabase.table("users_auth").select("session_version").eq("username", username).execute()
+        if res.data:
+            return str(res.data[0].get("session_version") or "")
+    except Exception as e:
+        logging.error(f"Error fetching session version for user {username}: {e}")
+    return ""
+
+def ensure_user_session_version(supabase, username):
+    """Ensure a user has a non-secret session version for remembered-login cookies."""
+    current_version = get_user_session_version(supabase, username)
+    if current_version:
+        return current_version
+    if not supabase or not username:
+        return ""
+    try:
+        new_version = uuid.uuid4().hex
+        supabase.table("users_auth").update({
+            "session_version": new_version,
+            "password_changed_at": datetime.now(timezone.utc).isoformat(),
+        }).eq("username", username).execute()
+        persisted_version = get_user_session_version(supabase, username)
+        if persisted_version == new_version:
+            return persisted_version
+    except Exception as e:
+        logging.error(f"Error ensuring session version for user {username}: {e}")
+    return ""
+
+def create_remembered_session_payload(username, session_version):
+    """Create an encrypted structured remembered-session payload."""
+    if not username or not session_version:
+        return ""
+    payload = json.dumps(
+        {"username": username, "session_version": session_version},
+        separators=(",", ":"),
+    )
+    return encrypt_data(payload)
+
+def parse_remembered_session_payload(encrypted_payload):
+    """Decrypt and parse a remembered-session cookie payload."""
+    decrypted = decrypt_data(encrypted_payload)
+    if not decrypted:
+        return {}
+    try:
+        payload = json.loads(decrypted)
+    except json.JSONDecodeError:
+        return {}
+    if not isinstance(payload, dict):
+        return {}
+    username = str(payload.get("username") or "")
+    session_version = str(payload.get("session_version") or "")
+    if not username or not session_version:
+        return {}
+    return {"username": username, "session_version": session_version}
+
+def validate_remembered_session(supabase, encrypted_payload):
+    """Return username only when the remembered session matches current user metadata."""
+    payload = parse_remembered_session_payload(encrypted_payload)
+    if not payload:
+        return ""
+    current_version = get_user_session_version(supabase, payload["username"])
+    if current_version and current_version == payload["session_version"]:
+        return payload["username"]
+    return ""
 
 import streamlit as st
 
