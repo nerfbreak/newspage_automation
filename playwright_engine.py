@@ -253,16 +253,19 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     if progress_bar: progress_bar.progress(0.4)
     ui_log("INJECT", "Menyiapkan ID Interface Inventory Master.")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
-    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "INTF_ID popup window")
     page.wait_for_timeout(1000)
     
-    page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").fill("E_20150315090000028")
+    search_field = page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value")
+    search_field.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
+    search_field.fill("E_20150315090000028")
     page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
-    page.wait_for_timeout(1500)
+    page.wait_for_timeout(800)
     
     if progress_bar: progress_bar.progress(0.5)
     ui_log("INJECT", "Mengkonfirmasi ID Interface ke sistem (AutoPostBack).")
-    page.locator("id=pop_Dynamic_grd_Main_ctl02_DynCol_INTF_ID_Value").click(force=True)
+    target_text = page.get_by_text("E_20150315090000028", exact=True)
+    target_text.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
+    target_text.click(force=True)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "INTF_ID postback")
     page.wait_for_timeout(1000)
     
@@ -450,14 +453,17 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
             page.wait_for_timeout(2000)
             
         page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
-        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"sales intf popup {intf_id}")
         page.wait_for_timeout(1000)
         
-        page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").fill(intf_id)
+        search_field = page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value")
+        search_field.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
+        search_field.fill(intf_id)
         page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
-        page.wait_for_timeout(1500)
+        page.wait_for_timeout(800)
         
-        page.locator("id=pop_Dynamic_grd_Main_ctl02_DynCol_INTF_ID_Value").click(force=True)
+        target_text = page.get_by_text(intf_id, exact=True)
+        target_text.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
+        target_text.click(force=True)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"sales intf select {intf_id}")
         page.wait_for_timeout(1000)
         
@@ -1233,14 +1239,17 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
     for i, intf_id in enumerate(promo_ids):
         ui_log("INJECT", f"[{i+1}/{len(promo_ids)}] Binding interface: ")
         page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
-        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"promo intf popup {intf_id}")
         page.wait_for_timeout(1000)
         
-        page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").fill(intf_id)
+        search_field = page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value")
+        search_field.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
+        search_field.fill(intf_id)
         page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
-        page.wait_for_timeout(1500)
+        page.wait_for_timeout(800)
         
-        page.locator("id=pop_Dynamic_grd_Main_ctl02_DynCol_INTF_ID_Value").click(force=True)
+        target_text = page.get_by_text(intf_id, exact=True)
+        target_text.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
+        target_text.click(force=True)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"promo intf select {intf_id}")
         page.wait_for_timeout(1000)
         
