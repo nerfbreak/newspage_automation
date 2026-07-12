@@ -161,8 +161,8 @@ def _click_next_with_retry(page, TIMEOUT_MS, ui_log, context_name="Next"):
         page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"{context_name} Next")
         try:
-            # Check if we successfully reached the next tab by looking for the select button OR the disclaimer popup
-            page.locator("css=#pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton, #pag_FW_DisclaimerMessage_btn_okay_Value").first.wait_for(state="attached", timeout=5000)
+            # Check if we successfully reached the next tab by looking for the select input OR the disclaimer popup
+            page.locator("css=#pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value, #pag_FW_DisclaimerMessage_btn_okay_Value").first.wait_for(state="attached", timeout=5000)
             return
         except Exception:
             if attempt < 2:
@@ -251,27 +251,19 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
         pass
     
     if progress_bar: progress_bar.progress(0.4)
-    ui_log("NAV", "Membuka daftar pilihan data yang akan di-extract.")
-    page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
-    page.wait_for_timeout(1000)
+    ui_log("INJECT", "Menyiapkan ID Interface Inventory Master.")
+    intf_field = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value")
+    intf_field.wait_for(state="visible", timeout=TIMEOUT_MS)
+    intf_field.fill("E_20150315090000028")
+    page.wait_for_timeout(500)
     
     if progress_bar: progress_bar.progress(0.5)
-    ui_log("INJECT", "Mencari template data Inventory Master.")
-    search_field = page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value")
-    # Popups are extremely heavy and slow to load on the Newspage server. Increase search field wait timeout to 180s.
-    search_field.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
-    search_field.fill("E_20150315090000028")
-    page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
-    page.wait_for_timeout(800)
+    ui_log("INJECT", "Mengkonfirmasi ID Interface ke sistem (AutoPostBack).")
+    intf_field.press("Tab")
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "INTF_ID postback")
+    page.wait_for_timeout(1000)
     
     if progress_bar: progress_bar.progress(0.6)
-    ui_log("INJECT", "Memilih template Inventory Master dari hasil pencarian.")
-    target_text = page.get_by_text("E_20150315090000028", exact=True)
-    target_text.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
-    target_text.click(force=True)
-    page.wait_for_timeout(800)
-    
-    if progress_bar: progress_bar.progress(0.7)
     ui_log("INJECT", "Menyiapkan format file hasil extract.")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0").check()
@@ -454,17 +446,13 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
             page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_btn_New_Value").click(force=True)
             page.wait_for_timeout(2000)
             
-        page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
-        page.wait_for_timeout(2000)
-        
-        # Target elements in the interface selection popup - slow loading popups on laggy server
-        page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
-        page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").fill(intf_id)
-        page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
-        page.wait_for_timeout(2000)
-        page.locator("id=pop_Dynamic_grd_Main_ctl02_DynCol_INTF_ID_Value").click(force=True)
+        intf_field = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value")
+        intf_field.wait_for(state="visible", timeout=TIMEOUT_MS)
+        intf_field.fill(intf_id)
+        page.wait_for_timeout(500)
+        intf_field.press("Tab")
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"sales intf select {intf_id}")
-        page.wait_for_timeout(2000)
+        page.wait_for_timeout(1000)
         
         ui_log("INJECT", f"Mengatur format data sales {idx+1}/{total_steps}.")
         page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
@@ -1237,17 +1225,13 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
 
     for i, target_id in enumerate(promo_ids):
         ui_log("INJECT", f"[{i+1}/{len(promo_ids)}] Binding interface: {target_id}")
-        page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
-        page.wait_for_timeout(2000)
-        
-        # Popup selection - slow loading popups on laggy server
-        page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
-        page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").fill(target_id)
-        page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
-        page.wait_for_timeout(2000)
-        page.get_by_text(target_id, exact=True).click(force=True)
+        intf_field = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value")
+        intf_field.wait_for(state="visible", timeout=TIMEOUT_MS)
+        intf_field.fill(target_id)
+        page.wait_for_timeout(500)
+        intf_field.press("Tab")
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"promo intf select [{i+1}]")
-        page.wait_for_timeout(2000)
+        page.wait_for_timeout(1000)
         
         ui_log("INJECT", f"[{i+1}/{len(promo_ids)}] Setting file params and dates...")
         page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
