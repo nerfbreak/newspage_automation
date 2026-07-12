@@ -162,7 +162,7 @@ def _click_next_with_retry(page, TIMEOUT_MS, ui_log, context_name="Next"):
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"{context_name} Next")
         try:
             # Check if we successfully reached the next tab by looking for the select input OR the disclaimer popup
-            page.locator("css=#pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value, #pag_FW_DisclaimerMessage_btn_okay_Value").first.wait_for(state="attached", timeout=5000)
+            page.locator("css=#pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton, #pag_FW_DisclaimerMessage_btn_okay_Value").first.wait_for(state="attached", timeout=5000)
             return
         except Exception:
             if attempt < 2:
@@ -252,14 +252,17 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     
     if progress_bar: progress_bar.progress(0.4)
     ui_log("INJECT", "Menyiapkan ID Interface Inventory Master.")
-    intf_field = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value")
-    intf_field.wait_for(state="visible", timeout=TIMEOUT_MS)
-    intf_field.fill("E_20150315090000028")
-    page.wait_for_timeout(500)
+    page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "INTF_ID popup window")
+    page.wait_for_timeout(1000)
+    
+    page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").fill("E_20150315090000028")
+    page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
+    page.wait_for_timeout(1500)
     
     if progress_bar: progress_bar.progress(0.5)
     ui_log("INJECT", "Mengkonfirmasi ID Interface ke sistem (AutoPostBack).")
-    intf_field.press("Tab")
+    page.locator("id=pop_Dynamic_grd_Main_ctl02_DynCol_INTF_ID_Value").click(force=True)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "INTF_ID postback")
     page.wait_for_timeout(1000)
     
@@ -446,11 +449,15 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
             page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_btn_New_Value").click(force=True)
             page.wait_for_timeout(2000)
             
-        intf_field = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value")
-        intf_field.wait_for(state="visible", timeout=TIMEOUT_MS)
-        intf_field.fill(intf_id)
-        page.wait_for_timeout(500)
-        intf_field.press("Tab")
+        page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"sales intf popup {intf_id}")
+        page.wait_for_timeout(1000)
+        
+        page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").fill(intf_id)
+        page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
+        page.wait_for_timeout(1500)
+        
+        page.locator("id=pop_Dynamic_grd_Main_ctl02_DynCol_INTF_ID_Value").click(force=True)
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"sales intf select {intf_id}")
         page.wait_for_timeout(1000)
         
@@ -1223,14 +1230,18 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
     except Exception:
         pass
 
-    for i, target_id in enumerate(promo_ids):
-        ui_log("INJECT", f"[{i+1}/{len(promo_ids)}] Binding interface: {target_id}")
-        intf_field = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value")
-        intf_field.wait_for(state="visible", timeout=TIMEOUT_MS)
-        intf_field.fill(target_id)
-        page.wait_for_timeout(500)
-        intf_field.press("Tab")
-        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"promo intf select [{i+1}]")
+    for i, intf_id in enumerate(promo_ids):
+        ui_log("INJECT", f"[{i+1}/{len(promo_ids)}] Binding interface: ")
+        page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"promo intf popup {intf_id}")
+        page.wait_for_timeout(1000)
+        
+        page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value").fill(intf_id)
+        page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
+        page.wait_for_timeout(1500)
+        
+        page.locator("id=pop_Dynamic_grd_Main_ctl02_DynCol_INTF_ID_Value").click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"promo intf select {intf_id}")
         page.wait_for_timeout(1000)
         
         ui_log("INJECT", f"[{i+1}/{len(promo_ids)}] Setting file params and dates...")
