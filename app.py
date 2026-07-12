@@ -45,46 +45,71 @@ init_session_state(
     last_activity=0,
     logout_requested=False,
     ignore_cookie=False,
+    current_session_version="",
 )
+
+def clear_auth_session():
+    if "auth_user" in cookies:
+        cookie_manager.delete("auth_user")
+        cookies.pop("auth_user", None)
+    st.session_state.logged_in = False
+    st.session_state.current_user = "unknown"
+    st.session_state.current_session_version = ""
+    st.session_state.login_attempts = 0
+    st.session_state.ignore_cookie = True
 
 # --- SESSION TIMEOUT ---
 if st.session_state.logged_in and st.session_state.last_activity > 0:
     idle = time.time() - st.session_state.last_activity
     if idle > SESSION_TIMEOUT_SECONDS:
-        st.session_state.logged_in = False
-        st.session_state.current_user = "unknown"
-        st.session_state.login_attempts = 0
-        st.session_state.ignore_cookie = True
+        clear_auth_session()
         st.toast(format_user_error("SESSION-001"))
         st.rerun()
     else:
         st.session_state.last_activity = time.time()
 
+if st.session_state.logged_in:
+    active_user = st.session_state.get("current_user")
+    active_session_version = st.session_state.get("current_session_version")
+    current_session_version = database.get_user_session_version(supabase, active_user)
+    if (
+        not active_user
+        or active_user == "unknown"
+        or not active_session_version
+        or not current_session_version
+        or active_session_version != current_session_version
+    ):
+        clear_auth_session()
+        st.toast(format_user_error("SESSION-001"))
+        st.rerun()
+
 if not st.session_state.logged_in:
     auth_cookie = cookies.get("auth_user") if cookies else None
     if auth_cookie and not st.session_state.get("ignore_cookie"):
-        decrypted_user = database.decrypt_data(auth_cookie)
-        if decrypted_user:
+        remembered_user = database.validate_remembered_session(supabase, auth_cookie)
+        if remembered_user:
             st.session_state.logged_in = True
-            st.session_state.current_user = decrypted_user
+            st.session_state.current_user = remembered_user
+            st.session_state.current_session_version = database.get_user_session_version(supabase, remembered_user)
             st.session_state.last_activity = time.time()
             st.rerun()
         else:
-            if "auth_user" in cookies:
-                cookie_manager.delete("auth_user")
-                cookies.pop("auth_user", None)
+            clear_auth_session()
 
 if not st.session_state.logged_in:
     inject_css("login.css")
 
     if st.session_state.get("login_success"):
         st.markdown("<div style='max-width: 400px; margin: 0 auto; background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 16px 20px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 1.1rem; font-weight: 800; margin: 0; text-align: center;'>Authentication Successful.<br>Welcome Back!</p></div>", unsafe_allow_html=True)
-        encrypted_cookie = database.encrypt_data(st.session_state.current_user)
-        cookie_manager.set("auth_user", encrypted_cookie, max_age=86400 * 7) # 7 days
+        session_version = st.session_state.get("current_session_version") or database.ensure_user_session_version(supabase, st.session_state.current_user)
+        encrypted_cookie = database.create_remembered_session_payload(st.session_state.current_user, session_version)
+        if encrypted_cookie:
+            cookie_manager.set("auth_user", encrypted_cookie, max_age=86400 * 7) # 7 days
         time.sleep(1.2)
         st.session_state.logged_in = True
         st.session_state.ignore_cookie = False
         del st.session_state["login_success"]
+        st.session_state.current_session_version = session_version
         st.rerun()
     else:
         with st.form("login_form"):
@@ -121,6 +146,7 @@ if not st.session_state.logged_in:
                     else:
                         if database.authenticate_user(supabase, username, password):
                             database.reset_failed_login(supabase, username)
+                            st.session_state.current_session_version = database.ensure_user_session_version(supabase, username)
                             st.session_state.login_success = True
                             st.session_state.current_user = username
                             st.session_state.last_activity = time.time()
