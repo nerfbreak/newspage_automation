@@ -69,6 +69,7 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 
 ## Changelog & Decisions
 
+- **2026-07-12**: **Critical UI Adaptation (Newspage Update):** The Newspage developers completely removed the `INTF_ID_SelectButton` popup search interface from the Job Details page. Replaced the entire popup logic in `playwright_engine.py` (for Inventory, Sales, and Promo jobs) with direct `fill()` operations into the `INTF_ID_Value` textbox, followed by a `Tab` keypress to manually trigger the `__doPostBack` event.
 - **2026-07-12**: **Fixed Disclaimer Timeout:** Wrapped the wait_for call for the 'pag_FW_DisclaimerMessage_btn_okay_Value' popup in a try-except block in `playwright_engine.py` (run_extract, run_sales_extract, run_execution) and reduced the wait time to 10s to prevent 60-second timeouts when the popup doesn't appear.
 - **2026-07-12**: **Fixed `NoneType` container crash:** Added `ext_label_placeholder` as a keyword argument to `run_extract` in `5_clearance_stock.py` to fix a crash where `_setup_progress_layout` receives `None` and throws `'NoneType' object has no attribute 'container'`.
 - **2026-07-12**: **Fixed Next Button Race Condition:** Replaced all "Next" button clicks in `playwright_engine.py` with a custom `_click_next_with_retry` helper function. This function attempts to click Next, waits for networkidle, and actively verifies if the DOM transitioned to the next tab by checking if `INTF_ID_SelectButton` is attached. If swallowed by an ASP.NET AutoPostBack, it retries up to 3 times, guaranteeing transition.
