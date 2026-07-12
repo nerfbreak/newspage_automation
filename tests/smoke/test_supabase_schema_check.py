@@ -5,6 +5,8 @@ from scripts.supabase_schema_check import REQUIRED_SCHEMA, _summarize_supabase_e
 
 class SupabaseSchemaCheckSmokeTests(unittest.TestCase):
     def test_required_schema_tracks_critical_added_columns(self):
+        self.assertIn("session_version", REQUIRED_SCHEMA["users_auth"])
+        self.assertIn("password_changed_at", REQUIRED_SCHEMA["users_auth"])
         self.assertIn("run_by", REQUIRED_SCHEMA["adjustment_logs"])
         self.assertIn("status", REQUIRED_SCHEMA["extraction_history"])
         self.assertIn("file_content_base64", REQUIRED_SCHEMA["uploaded_files"])
