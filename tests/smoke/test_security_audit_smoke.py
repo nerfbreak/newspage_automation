@@ -6,8 +6,51 @@ and US3 (input sanitization, XSS/RCE resistance, and Neo-Brutalist error boxes).
 
 import html
 import os
+import sys
+import types
 import unittest
 from pathlib import Path
+
+if "streamlit" not in sys.modules:
+    streamlit_stub = types.SimpleNamespace(
+        cache_data=lambda *args, **kwargs: (lambda fn: fn),
+        secrets={},
+    )
+    sys.modules["streamlit"] = streamlit_stub
+
+if "bcrypt" not in sys.modules:
+    bcrypt_stub = types.SimpleNamespace(checkpw=lambda *args, **kwargs: False)
+    sys.modules["bcrypt"] = bcrypt_stub
+
+if "supabase" not in sys.modules:
+    supabase_stub = types.SimpleNamespace(create_client=lambda *args, **kwargs: None, Client=object)
+    sys.modules["supabase"] = supabase_stub
+
+if "cryptography" not in sys.modules:
+    cryptography_stub = types.ModuleType("cryptography")
+    fernet_stub = types.ModuleType("cryptography.fernet")
+
+    class FakeFernet:
+        def __init__(self, key):
+            self.key = key
+
+        @classmethod
+        def generate_key(cls):
+            return b"k_3XzV9vT8wP2qR7yL5mN1jH4gF6dD0sA="
+
+        def encrypt(self, value):
+            val_bytes = value.encode("utf-8") if isinstance(value, str) else value
+            return b"gAAAA_" + val_bytes
+
+        def decrypt(self, value):
+            val_str = value.decode("utf-8") if isinstance(value, bytes) else str(value)
+            if not val_str.startswith("gAAAA_"):
+                raise Exception("Invalid token")
+            return val_str[6:].encode("utf-8")
+
+    fernet_stub.Fernet = FakeFernet
+    sys.modules["cryptography"] = cryptography_stub
+    sys.modules["cryptography.fernet"] = fernet_stub
 
 import database
 from error_taxonomy import format_user_error
@@ -50,6 +93,17 @@ class SecurityAuditSmokeTests(unittest.TestCase):
         self.assertIn("LOCKOUT_SECONDS = 300", content)
         self.assertIn("SESSION_TIMEOUT_SECONDS =", content)
         self.assertIn("cookie_manager.set(\"auth_user\"", content)
+        self.assertIn("database.validate_remembered_session", content)
+        self.assertIn("database.create_remembered_session_payload", content)
+
+    def test_active_streamlit_session_revalidates_session_version(self):
+        """BUG-001: Logged-in Streamlit sessions must be revoked after password rotation."""
+        app_path = REPO_ROOT / "app.py"
+        content = app_path.read_text(encoding="utf-8")
+        self.assertIn("current_session_version", content)
+        self.assertIn("database.get_user_session_version(supabase, active_user)", content)
+        self.assertIn("active_session_version != current_session_version", content)
+        self.assertIn("clear_auth_session()", content)
 
     def test_input_sanitization_and_html_escaping(self):
         """US3: Verify HTML escaping behavior against XSS payloads."""
