@@ -155,6 +155,22 @@ def _wait_for_page_ready(page, timeout_ms, ui_log=None, context=""):
         if ui_log:
             ui_log("WAIT", f"Halaman agak lambat{label} — mencoba melanjutkan dengan hati-hati.")
 
+def _click_next_with_retry(page, TIMEOUT_MS, ui_log, context_name="Next"):
+    ui_log("NAV", f"Melanjutkan ke pengaturan {context_name}.")
+    for attempt in range(3):
+        page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
+        _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"{context_name} Next")
+        try:
+            # Check if we successfully reached the next tab by looking for the select button
+            page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").wait_for(state="attached", timeout=5000)
+            return
+        except Exception:
+            if attempt < 2:
+                ui_log("WAIT", "Server lambat merespon navigasi, mencoba ulang klik Next...")
+                page.wait_for_timeout(2000)
+            else:
+                raise Exception("Gagal berpindah ke halaman berikutnya. Server (ASP.NET AutoPostBack) tidak merespon tombol Next.")
+
 def _navigate_to_import_export(page, TIMEOUT_MS, ui_log, progress_bar=None):
     ui_log("NAV", "Membuka menu System...")
     if progress_bar: progress_bar.progress(0.35)
@@ -221,9 +237,7 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     page.wait_for_timeout(1000)
     
     if progress_bar: progress_bar.progress(0.2)
-    ui_log("NAV", "Melanjutkan ke pengaturan extract.")
-    page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
-    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "extraction Next")
+    _click_next_with_retry(page, TIMEOUT_MS, ui_log, "extract")
     page.wait_for_timeout(1000)
     
     if progress_bar: progress_bar.progress(0.3)
@@ -405,8 +419,7 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "General Tab AutoPostBack")
     page.wait_for_timeout(1000)
     
-    page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
-    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "sales Next")
+    _click_next_with_retry(page, TIMEOUT_MS, ui_log, "sales")
     page.wait_for_timeout(2000)
     try:
         page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").wait_for(state="visible", timeout=10000)
@@ -1212,8 +1225,7 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "General Tab AutoPostBack")
     page.wait_for_timeout(1000)
     
-    page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Next_Value").click(force=True)
-    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "promo Next")
+    _click_next_with_retry(page, TIMEOUT_MS, ui_log, "promo")
     page.wait_for_timeout(2000)
     try:
         page.locator("id=pag_FW_DisclaimerMessage_btn_okay_Value").wait_for(state="visible", timeout=10000)
