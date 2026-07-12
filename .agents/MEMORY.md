@@ -69,6 +69,7 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 
 ## Changelog & Decisions
 
+- **2026-07-12**: **Bugfix (Clearance Stock Extract)**: Fixed a missing `ext_label_placeholder` argument in `5_clearance_stock.py` that caused a `'NoneType' object has no attribute 'container'` error when running stock extraction.
 - **2026-07-12**: **Bugfix (Stock Mutation Remark)**: Fixed an ASP.NET race condition where the Playwright script filled the remark text before the Reason Code dropdown's `AutoPostBack` response arrived, causing the server to overwrite the newly filled receiver remark with the previous run's state. Added explicit waits for the postback, increased truncation logic to 100 characters, and triggered a Tab event to persist the value. (BUG-004 / Spec 024)
 - **2026-07-12**: **Feature (Stock Mutation Preview)**: Added raw Excel data preview using `st.dataframe` immediately after file upload in `pages/4_stock_mutation.py` (Spec 039). This matches the Inventory Adjustment manual entry layout and fulfills FR-001 through FR-004.
 - **2026-07-11**: **Performance Enhancement (Dashboard KPI & Auth Polling)**: Implemented session state caching for user auth validation to eliminate synchronous Supabase API calls on every UI interaction. Added a cached aggregator for dashboard metrics (`get_dashboard_kpis` in `database.py`), preventing sequential un-cached DB queries on load. Capped the historical logs fetch query with `.gte()` (last 30 days) to prevent full-table server-side OOM errors. Spec Kit: 038-perf-optimize.

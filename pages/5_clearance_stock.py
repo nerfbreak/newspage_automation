@@ -99,7 +99,8 @@ if st.session_state.get("_pending_clearance_extract", False):
 
     playwright_engine.run_extract(
         bot_user, bot_pass, selected_distributor, URL_LOGIN, TIMEOUT_MS, WAREHOUSE,
-        ext_ui_log, send_telegram_alert, supabase, st.session_state.current_user
+        ext_ui_log, send_telegram_alert, supabase, st.session_state.current_user,
+        ext_label_placeholder=ext_label_placeholder
     )
 
 # --- REVIEW EXTRACTED DATA ---
