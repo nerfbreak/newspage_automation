@@ -162,8 +162,8 @@ def _click_next_with_retry(page, TIMEOUT_MS, ui_log, context_name="Next"):
         _wait_for_page_ready(page, TIMEOUT_MS, ui_log, f"{context_name} Next")
         try:
             # Check if we successfully reached the next tab.
-            # Newspage removed INTF_ID_SelectButton popup (2026-07-12), now check for INTF_ID_Value textbox OR disclaimer popup.
-            page.locator("css=#pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value, #pag_FW_DisclaimerMessage_btn_okay_Value").first.wait_for(state="attached", timeout=5000)
+            # INTF_ID_SelectButton popup confirmed still present (2026-07-13 HTML verification).
+            page.locator("css=#pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton, #pag_FW_DisclaimerMessage_btn_okay_Value").first.wait_for(state="attached", timeout=5000)
             return
         except Exception:
             if attempt < 2:
@@ -253,30 +253,39 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     
     if progress_bar: progress_bar.progress(0.4)
     ui_log("INJECT", "Menyiapkan ID Interface Inventory Master.")
-    # NOTE (2026-07-13): Newspage removed the INTF_ID_SelectButton popup interface.
-    # Using direct fill() into INTF_ID_Value textbox + Tab to trigger AutoPostBack.
-    intf_id_field = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_Value")
-    intf_id_field.wait_for(state="visible", timeout=TIMEOUT_MS)
-    intf_id_field.fill("E_20150315090000028")
-    page.wait_for_timeout(500)
-    intf_id_field.press("Tab")
-    
+    # NOTE (2026-07-13): Popup confirmed still present in Newspage HTML.
+    # Must use popup-based selection so server properly registers INTF_ID and renders grd_DynamicFilter.
+    # Direct fill() on INTF_ID_Value does not trigger proper server-side postback → warehouse filter never appears.
+    page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_INTF_ID_SelectButton").click(force=True)
+    page.wait_for_timeout(1000)
+
+    ui_log("INJECT", "Menunggu popup muncul (bisa s/d 3 menit jika lambat)...")
+    search_field = page.locator("id=pop_Dynamic_gft_List_2_FilterField_Value")
+    search_field.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
+    search_field.fill("E_20150315090000028")
+    page.locator("id=pop_Dynamic_grd_Main_SearchForm_ButtonSearch_Value").click(force=True)
+    page.wait_for_timeout(800)
+
     if progress_bar: progress_bar.progress(0.5)
     ui_log("INJECT", "Mengkonfirmasi ID Interface ke sistem (AutoPostBack).")
+    target_text = page.get_by_text("E_20150315090000028", exact=True)
+    target_text.wait_for(state="visible", timeout=max(TIMEOUT_MS, 180000))
+    target_text.click(force=True)
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "INTF_ID postback")
     page.wait_for_timeout(1000)
-    
+
     if progress_bar: progress_bar.progress(0.6)
     ui_log("INJECT", "Menyiapkan format file hasil extract.")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
+    # Wait for FILE_TYPE AutoPostBack to complete before checking separator
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "FILE_TYPE AutoPostBack")
+    page.wait_for_timeout(1000)
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0").check()
-    # Wait for UpdatePanel to settle after FILE_TYPE and SEPARATOR selections (both trigger AutoPostBack)
-    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "file format AutoPostBack")
     page.wait_for_timeout(2000)
-    
+
     if progress_bar: progress_bar.progress(0.8)
     ui_log("INJECT", f"Menggunakan filter gudang: {WAREHOUSE}.")
-    # Explicitly wait for the warehouse filter field to be stable before interacting
+    # Wait for grd_DynamicFilter to render (depends on INTF_ID being properly set server-side)
     whs_field = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_grd_DynamicFilter_ctl02_dyn_Field_txt_Value")
     whs_field.wait_for(state="visible", timeout=TIMEOUT_MS)
     whs_field.fill(WAREHOUSE)
