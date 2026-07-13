@@ -270,12 +270,18 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     ui_log("INJECT", "Menyiapkan format file hasil extract.")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0").check()
+    # Wait for UpdatePanel to settle after FILE_TYPE and SEPARATOR selections (both trigger AutoPostBack)
+    _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "file format AutoPostBack")
     page.wait_for_timeout(2000)
     
     if progress_bar: progress_bar.progress(0.8)
     ui_log("INJECT", f"Menggunakan filter gudang: {WAREHOUSE}.")
-    page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_grd_DynamicFilter_ctl02_dyn_Field_txt_Value").fill(WAREHOUSE)
+    # Explicitly wait for the warehouse filter field to be stable before interacting
+    whs_field = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_grd_DynamicFilter_ctl02_dyn_Field_txt_Value")
+    whs_field.wait_for(state="visible", timeout=TIMEOUT_MS)
+    whs_field.fill(WAREHOUSE)
     page.wait_for_timeout(1500)
+
     
     if progress_bar: progress_bar.progress(0.9)
     ui_log("SYS", "Menyimpan pengaturan extract sementara.")
