@@ -279,8 +279,10 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
     # Wait for FILE_TYPE AutoPostBack to complete before checking separator
     _wait_for_page_ready(page, TIMEOUT_MS, ui_log, "FILE_TYPE AutoPostBack")
-    page.wait_for_timeout(1000)
-    page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0").check()
+    page.wait_for_timeout(1500)
+    sep = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0")
+    sep.wait_for(state="visible", timeout=max(TIMEOUT_MS, 60000))
+    sep.check()
     page.wait_for_timeout(2000)
 
     if progress_bar: progress_bar.progress(0.8)
@@ -305,7 +307,7 @@ def _dispatch_extraction_job(page, TIMEOUT_MS, WAREHOUSE, ui_log, browser, dry_r
     page.locator("id=pag_FW_SYS_INTF_JOB_RootNew_btn_Save_Value").click(force=True)
     
     ui_log("SERVER", "Menunggu konfirmasi dari Newspage.")
-    page.locator("id=TF_Prompt_btn_Ok_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
+    page.locator("id=TF_Prompt_btn_Ok_Value").wait_for(state="visible", timeout=max(TIMEOUT_MS, 300000))
     page.locator("id=TF_Prompt_btn_Ok_Value").click(force=True)
     
     ui_log("SERVER", "Menunggu Newspage menyiapkan file. Proses ini bisa beberapa menit.")
@@ -482,7 +484,9 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
         ui_log("INJECT", f"Mengatur format data sales {idx+1}/{total_steps}.")
         page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
         page.wait_for_timeout(1500)
-        page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0").check()
+        sep = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0")
+        sep.wait_for(state="visible", timeout=max(TIMEOUT_MS, 60000))
+        sep.check()
         page.wait_for_timeout(1500)
         
         if status_val:
@@ -544,7 +548,7 @@ def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser,
     page.wait_for_timeout(2000)
     
     ui_log("SERVER", "Menunggu konfirmasi dari Newspage.")
-    page.locator("id=TF_Prompt_btn_Ok_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
+    page.locator("id=TF_Prompt_btn_Ok_Value").wait_for(state="visible", timeout=max(TIMEOUT_MS, 300000))
     page.locator("id=TF_Prompt_btn_Ok_Value").click(force=True)
     
     ui_log("SERVER", "Menunggu Newspage menyiapkan file sales.")
@@ -1267,7 +1271,11 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
         
         ui_log("INJECT", f"[{i+1}/{len(promo_ids)}] Setting file params and dates...")
         page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FILE_TYPE_Value").select_option("D")
-        page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0").check()
+        page.wait_for_timeout(1500)
+        sep = page.locator("id=pag_FW_SYS_INTF_JOB_DTL_PopupNew_FLD_SEPARATOR_STD_Value_0")
+        sep.wait_for(state="visible", timeout=max(TIMEOUT_MS, 60000))
+        sep.check()
+        page.wait_for_timeout(1500)
         
         # JS Date Injection
         sd_d, sd_m, sd_y = start_date.split('/')
@@ -1312,7 +1320,7 @@ def _dispatch_promotion_job(page, TIMEOUT_MS, start_date, end_date, ui_log, brow
     page.wait_for_timeout(2000)
     
     ui_log("SERVER", "Awaiting server confirmation...")
-    page.locator("id=TF_Prompt_btn_Ok_Value").wait_for(state="visible", timeout=TIMEOUT_MS)
+    page.locator("id=TF_Prompt_btn_Ok_Value").wait_for(state="visible", timeout=max(TIMEOUT_MS, 300000))
     page.locator("id=TF_Prompt_btn_Ok_Value").click(force=True)
     
     ui_log("SERVER", "Intercepting batch download...")
