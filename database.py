@@ -219,15 +219,44 @@ def get_system_config(_supabase):
     return cfg
 
 def authenticate_user(supabase, username, password):
+    with open("auth_debug.txt", "a") as f:
+        f.write(f"Attempting login for '{username}', password length: {len(password) if password else 0}\n")
+    logging.info(f"DEBUG AUTH: Authenticating username={username}, password_len={len(password) if password else 0}")
     if supabase:
         try:
             res_user = supabase.table("users_auth").select("password").eq("username", username).execute()
             if res_user.data:
-                hashed_pw = res_user.data[0]['password'].encode('utf-8')
-                if bcrypt.checkpw(password.encode('utf-8'), hashed_pw):
+                pw_db = res_user.data[0]['password']
+                with open("auth_debug.txt", "a") as f:
+                    f.write(f"Found user. pw_db: {pw_db[:15]}... starts with $2: {pw_db.startswith('$2')}\n")
+                
+                # Check if password is in plain text (bcrypt hashes start with $2)
+                if not pw_db.startswith('$2'):
+                    if password == pw_db:
+                        new_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                        supabase.table("users_auth").update({"password": new_hash}).eq("username", username).execute()
+                        logging.info("DEBUG AUTH: Plaintext password matched, hashed and returning True")
+                        return True
+                    logging.info("DEBUG AUTH: Plaintext password did not match")
+                    return False
+                
+                hashed_pw = pw_db.encode('utf-8')
+                match = bcrypt.checkpw(password.encode('utf-8'), hashed_pw)
+                with open("auth_debug.txt", "a") as f:
+                    f.write(f"bcrypt checkpw returned: {match}\n")
+                if match:
                     return True
+            else:
+                with open("auth_debug.txt", "a") as f:
+                    f.write("User not found in DB\n")
         except Exception as e:
+            with open("auth_debug.txt", "a") as f:
+                f.write(f"Exception during auth: {str(e)}\n")
             logging.error(f"Error authenticating user {username}: {e}")
+            logging.error(f"DEBUG AUTH ERROR: {str(e)}")
+    else:
+        with open("auth_debug.txt", "a") as f:
+            f.write("Supabase client is None\n")
     return False
 
 @st.cache_data(ttl=300)

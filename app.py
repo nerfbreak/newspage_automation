@@ -105,7 +105,7 @@ if not st.session_state.logged_in:
     inject_css("login.css")
 
     if st.session_state.get("login_success"):
-        st.markdown("<div style='max-width: 400px; margin: 0 auto; background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 16px 20px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 1.1rem; font-weight: 800; margin: 0; text-align: center;'>Authentication Successful.<br>Welcome Back!</p></div>", unsafe_allow_html=True)
+        st.markdown("<div style='max-width: 400px; margin: 0 auto; background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 16px 20px; margin-top: 16px; margin-bottom: 12px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 1.1rem; font-weight: 800; margin: 0; text-align: center;'>Authentication Successful.<br>Welcome Back!</p></div>", unsafe_allow_html=True)
         session_version = st.session_state.get("current_session_version") or database.ensure_user_session_version(supabase, st.session_state.current_user)
         encrypted_cookie = database.create_remembered_session_payload(st.session_state.current_user, session_version, get_server_run_id())
         if encrypted_cookie:
@@ -139,15 +139,15 @@ if not st.session_state.logged_in:
             
             if submit:
                 if username:
-                    username = username.strip().title()
+                    username = username.strip()
                 
                 if not username:
-                    st.markdown("<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>Please enter a username.</p></div>", unsafe_allow_html=True)
+                    st.markdown("<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px; margin-bottom: 12px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>Please enter a username.</p></div>", unsafe_allow_html=True)
                 else:
                     is_locked, remaining, attempts = database.check_login_lockout(supabase, username)
                     
                     if is_locked:
-                        st.markdown(f"<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>{format_user_error('AUTH-002', f'(Try again in {remaining}s)')}</p></div>", unsafe_allow_html=True)
+                        st.markdown(f"<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px; margin-bottom: 12px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>{format_user_error('AUTH-002', f'(Try again in {remaining}s)')}</p></div>", unsafe_allow_html=True)
                     else:
                         if database.authenticate_user(supabase, username, password):
                             database.reset_failed_login(supabase, username)
@@ -163,10 +163,10 @@ if not st.session_state.logged_in:
                             
                             if new_attempts >= MAX_LOGIN_ATTEMPTS:
                                 send_telegram_alert(f"[ALERT] Account lockout triggered for user: <b>{_html.escape(username)}</b>\n{MAX_LOGIN_ATTEMPTS} failed attempts.")
-                                st.markdown(f"<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>{format_user_error('AUTH-002', f'(- account locked for {LOCKOUT_SECONDS // 60} min)')}</p></div>", unsafe_allow_html=True)
+                                st.markdown(f"<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px; margin-bottom: 12px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>{format_user_error('AUTH-002', f'(- account locked for {LOCKOUT_SECONDS // 60} min)')}</p></div>", unsafe_allow_html=True)
                             else:
                                 time.sleep(1.5)  # Slow down brute-force attempts
-                                st.markdown(f"<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>{format_user_error('AUTH-001', f'({attempts_left} attempt(s) remaining)')}</p></div>", unsafe_allow_html=True)
+                                st.markdown(f"<div style='background-color: #FFFFFF; border: 3px solid #0F172A; box-shadow: 6px 6px 0px 0px #0F172A; padding: 12px 16px; margin-top: 16px; margin-bottom: 12px;'><p style='color: #0F172A; font-family: \"Source Sans 3\", sans-serif; font-size: 0.9rem; font-weight: 700; margin: 0; text-align: center;'>{format_user_error('AUTH-001', f'({attempts_left} attempt(s) remaining)')}</p></div>", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
     with st.expander("What's New & Changelog", expanded=False):

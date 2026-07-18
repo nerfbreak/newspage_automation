@@ -57,9 +57,20 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 9. **Background rule** â€” global page bg is always `#dbeafe`; all card/container bg is always `#FFFFFF`.
 10. **Modals are CSS-only** â€” use `<input type="checkbox">` toggle pattern. Never use JavaScript for modal open/close.
 
+1. **NO glassmorphism** — no `backdrop-filter` on content cards, no `rgba` semi-transparent backgrounds on main UI elements.
+2. **NO border-radius** on any card, button, input, or container — always `0px`.
+3. **NO emoji in UI** — use Streamlit Material Icons (`:material/icon_name:`) only.
+4. **NO box-shadow blur** — always `box-shadow: X Y 0px 0px #0F172A` (blur and spread values always `0px`).
+5. **NO inline style drift** — all values must match the design token table above exactly.
+6. **NO Streamlit default header/sidebar** — always hidden via `display: none !important` in CSS.
+7. **CSS sibling targeting** must use the `:has()` selector pattern for Streamlit element targeting — never `~` alone.
+8. **Safe HTML** — always run dynamic user-facing text through `html.escape()` before injecting into `st.markdown`.
+9. **Background rule** — global page bg is always `#dbeafe`; all card/container bg is always `#FFFFFF`.
+10. **Modals are CSS-only** — use `<input type="checkbox">` toggle pattern. Never use JavaScript for modal open/close.
+
 ---
 
-## ðŸ”’ Locked Features & Code Freeze
+## 🔒 Locked Features & Code Freeze
 - **Frozen Modules**: **Stock Mutation**, **Inventory Adjustment**, **Sales Extraction**, **Promotion Comparison**, **Clearance Stock**, **Initial Stock**, and **Credential Auto-Encryption**.
 - **Rule**: All core execution flow, Playwright steps, Supabase connections, and credential handling for these features are locked. Any future development or new features must build on top of or alongside these modules without modifying their verified core logics.
 - **Unlock Password**: If modification to the frozen logic is explicitly requested, you must verify the password `"Dama"` in the chat before doing any changes.
@@ -69,6 +80,8 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 
 ## Changelog & Decisions
 
+- **2026-07-18**: **Security/Admin**: Reset passwords for all main users (`noval`, `fadli`, `bagus`, `rizki`) to `qwe123` based on explicit request after login failures.
+- **2026-07-18**: **Security/Admin**: Created and executed `scripts/bulk_encrypt.py` to automatically scan and convert any remaining plain text passwords in Supabase (`users_auth` hashed with bcrypt, `distributor_vault` encrypted with Fernet AES-256).
 - **2026-07-13**: **Bugfix (Inventory Extract INTF_ID):** `_dispatch_extraction_job` in `playwright_engine.py` was still using the old popup-based `INTF_ID_SelectButton` logic which Newspage had removed on 2026-07-12. Replaced with direct `fill()` into `INTF_ID_Value` textbox + `Tab` keypress (matching the pattern already used for Sales/Promo jobs). Also updated `_click_next_with_retry` success-check selector from `INTF_ID_SelectButton` to `INTF_ID_Value` to correctly detect navigation to the next tab. (Unlocked via password verification)
 - **2026-07-12**: **Critical UI Adaptation (Newspage Update):** The Newspage developers completely removed the `INTF_ID_SelectButton` popup search interface from the Job Details page. Replaced the entire popup logic in `playwright_engine.py` (for Inventory, Sales, and Promo jobs) with direct `fill()` operations into the `INTF_ID_Value` textbox, followed by a `Tab` keypress to manually trigger the `__doPostBack` event.
 - **2026-07-12**: **Fixed Disclaimer Timeout:** Wrapped the wait_for call for the 'pag_FW_DisclaimerMessage_btn_okay_Value' popup in a try-except block in `playwright_engine.py` (run_extract, run_sales_extract, run_execution) and reduced the wait time to 10s to prevent 60-second timeouts when the popup doesn't appear.
