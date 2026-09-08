@@ -12,6 +12,13 @@ import database
 import utils
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
+# Configure bundled Linux shared libraries for Playwright in serverless/container environments
+_libs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "libs")
+if os.path.exists(_libs_dir):
+    _current_ld = os.environ.get("LD_LIBRARY_PATH", "")
+    if _libs_dir not in _current_ld:
+        os.environ["LD_LIBRARY_PATH"] = f"{_libs_dir}:{_current_ld}" if _current_ld else _libs_dir
+
 def _setup_event_loop():
     try: asyncio.get_event_loop()
     except RuntimeError: asyncio.set_event_loop(asyncio.new_event_loop())
