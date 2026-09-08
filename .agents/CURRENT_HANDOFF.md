@@ -5,33 +5,34 @@ Use this before ending work in Codex, Antigravity, or Hermes.
 ## Agent
 
 - Tool: Antigravity
-- Date: 2026-07-12
+- Date: 2026-09-08
 - Branch: main
 
 ## Summary
 
-- What changed: Moved `remark_a` and `remark_b` into a `st.form` along with the `execute_clicked` submit button in `pages/4_stock_mutation.py`.
-- Why it changed: The user typed "456" but the system used "EFGH" (the value from the PREVIOUS run). This is a known Streamlit race condition where clicking a button immediately after typing in a text input without pressing Enter causes the backend to use the stale state. By wrapping the final execution block (Reason, Remarks, and Execute Button) in an `st.form`, Streamlit guarantees that all widget states are batched and flushed synchronously upon submission.
+- What changed: Updated `packages.txt` with full Playwright Linux system dependencies (including `libglib2.0-0` which caused the missing `libglib-2.0.so.0` crash).
+- Why it changed: Removing `packages.txt` allowed Streamlit Cloud to build past the expired Debian Bullseye mirror error, but Playwright's `chrome-headless-shell` failed at runtime due to missing `libglib-2.0.so.0`. Re-adding the full dependency list and guiding the user to redeploy on Python 3.12 (Debian Bookworm) resolves both the build-time mirror expiration and the runtime library crash.
 
 ## Files Changed
 
-- `pages/4_stock_mutation.py`
+- `packages.txt`
+- `.agents/MEMORY.md`
+- `.agents/CURRENT_HANDOFF.md`
 
 ## Verification
 
-- Checks run: `python -m py_compile pages/4_stock_mutation.py`
-- Checks skipped: None
-- Known risk: The UI layout for the remarks has moved slightly down into the execute container, but it maintains the 2-column structure and Neo-Brutalist border container.
+- Checks run: Validated `packages.txt` package names against Debian package indices.
+- Known risk: User must delete and re-deploy the app in Streamlit Cloud selecting Python 3.12 so it provisions the modern Debian Bookworm image without the expired Bullseye mirror.
 
 ## Memory Update
 
 - `.agents/MEMORY.md` updated? Yes.
-- Important decision captured: Always use `st.form` for text inputs that are immediately followed by an execution button to avoid Streamlit state lag.
 
 ## Next Step
 
-- Fix committed. Awaiting user test.
+- User pushes changes to GitHub and redeploys app on Streamlit Cloud with Python 3.12.
 
 ## Do Not Touch
 
 - Frozen business logic (requires "Dama" password).
+
