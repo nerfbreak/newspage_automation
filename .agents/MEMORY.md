@@ -80,6 +80,10 @@ This file acts as the "Distributed Project Memory" for AI agents. It tracks arch
 
 ## Changelog & Decisions
 
+- **2026-09-08**: **Bugfix (Newspage Login Form & Fontconfig Fix)**:
+  1. Fixed font rendering in headless Chromium container by creating a standalone `fonts_config/fonts.conf` with direct `<dir>` search paths and runtime copying of bundled Liberation TrueType fonts to `~/.fonts` and `/tmp/fonts`. This resolves zero-height collapsed input fields, missing "User ID"/"Password" labels, and blank login buttons.
+  2. Fixed ASP.NET resolution redirect loop: Normalized `URL_LOGIN` to include `?SR=1366x768` and set desktop viewport (`1366x768`) and Windows User-Agent in Playwright context, preventing Newspage's client-side `location.replace` from canceling form submission.
+  3. Added input field value verification before login submission and 10s URL heartbeat logs during login wait loop for live observability.
 - **2026-07-18**: **Security/Admin**: Reset passwords for all main users (`noval`, `fadli`, `bagus`, `rizki`) to `qwe123` based on explicit request after login failures.
 - **2026-07-18**: **Security/Admin**: Created and executed `scripts/bulk_encrypt.py` to automatically scan and convert any remaining plain text passwords in Supabase (`users_auth` hashed with bcrypt, `distributor_vault` encrypted with Fernet AES-256).
 - **2026-07-13**: **Bugfix (Inventory Extract INTF_ID):** `_dispatch_extraction_job` in `playwright_engine.py` was still using the old popup-based `INTF_ID_SelectButton` logic which Newspage had removed on 2026-07-12. Replaced with direct `fill()` into `INTF_ID_Value` textbox + `Tab` keypress (matching the pattern already used for Sales/Promo jobs). Also updated `_click_next_with_retry` success-check selector from `INTF_ID_SelectButton` to `INTF_ID_Value` to correctly detect navigation to the next tab. (Unlocked via password verification)

@@ -22,38 +22,29 @@ if os.path.exists(_libs_dir):
 
 _fonts_dir = os.path.join(_base_dir, "fonts")
 _fonts_conf_dir = os.path.join(_base_dir, "fonts_config")
-if os.path.exists(_fonts_dir) and os.path.exists(_fonts_conf_dir):
-    _local_conf = os.path.join(_fonts_conf_dir, "local.conf")
+if os.path.exists(_fonts_dir):
     try:
-        _linux_fonts_dir = _fonts_dir.replace("\\", "/")
-        with open(_local_conf, "w", encoding="utf-8") as f:
-            f.write(f"""<?xml version="1.0"?>
-<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-<fontconfig>
-  <dir>{_linux_fonts_dir}</dir>
-  <cachedir>/tmp/fontconfig-cache</cachedir>
-  <match target="pattern">
-    <test qual="any" name="family"><string>sans-serif</string></test>
-    <edit name="family" mode="prepend" binding="strong"><string>Liberation Sans</string></edit>
-  </match>
-  <match target="pattern">
-    <test qual="any" name="family"><string>Arial</string></test>
-    <edit name="family" mode="prepend" binding="strong"><string>Liberation Sans</string></edit>
-  </match>
-  <match target="pattern">
-    <test qual="any" name="family"><string>Segoe UI</string></test>
-    <edit name="family" mode="prepend" binding="strong"><string>Liberation Sans</string></edit>
-  </match>
-  <match target="pattern">
-    <test qual="any" name="family"><string>Tahoma</string></test>
-    <edit name="family" mode="prepend" binding="strong"><string>Liberation Sans</string></edit>
-  </match>
-</fontconfig>
-""")
+        home_fonts = os.path.expanduser("~/.fonts")
+        os.makedirs(home_fonts, exist_ok=True)
+        os.makedirs("/tmp/fonts", exist_ok=True)
+        for fname in os.listdir(_fonts_dir):
+            if fname.endswith(".ttf"):
+                src = os.path.join(_fonts_dir, fname)
+                dst_home = os.path.join(home_fonts, fname)
+                dst_tmp = os.path.join("/tmp/fonts", fname)
+                if not os.path.exists(dst_home):
+                    import shutil
+                    shutil.copy2(src, dst_home)
+                if not os.path.exists(dst_tmp):
+                    import shutil
+                    shutil.copy2(src, dst_tmp)
     except Exception:
         pass
-    os.environ["FONTCONFIG_PATH"] = _fonts_conf_dir
-    os.environ["FONTCONFIG_FILE"] = os.path.join(_fonts_conf_dir, "fonts.conf")
+
+    if os.path.exists(_fonts_conf_dir):
+        _conf_file = os.path.join(_fonts_conf_dir, "fonts.conf")
+        os.environ["FONTCONFIG_PATH"] = _fonts_conf_dir
+        os.environ["FONTCONFIG_FILE"] = _conf_file
 
 def _setup_event_loop():
     try: asyncio.get_event_loop()
@@ -80,8 +71,35 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
             headless=True,
             args=args
         )
-        context = browser.new_context(viewport={"width": 1920, "height": 1080})
+        context = browser.new_context(
+            viewport={"width": 1366, "height": 768},
+            screen={"width": 1366, "height": 768},
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            locale="en-US",
+            timezone_id="Asia/Jakarta",
+        )
         page = context.new_page()
+        page.add_init_script("""
+            (() => {
+                try {
+                    Object.defineProperty(screen, 'width', { get: () => 1366 });
+                    Object.defineProperty(screen, 'height', { get: () => 768 });
+                } catch(e) {}
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    input[type="text"], input[type="password"] {
+                        min-height: 22px !important;
+                        font-size: 13px !important;
+                        line-height: normal !important;
+                    }
+                `;
+                if (document.head) {
+                    document.head.appendChild(style);
+                } else {
+                    document.addEventListener('DOMContentLoaded', () => document.head.appendChild(style));
+                }
+            })();
+        """)
 
         def _on_dialog(dlg):
             try:
@@ -153,12 +171,43 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
         is_super = False
     account_desc = "SUPERUSER" if is_super else f"[{selected_distributor}]"
     
-    page.goto(URL_LOGIN, wait_until="networkidle")
+    # Pastikan parameter resolusi layar disertakan agar Newspage tidak melakukan redirect gantung
+    target_url = URL_LOGIN
+    if "Logon.aspx" in target_url and "SR=" not in target_url:
+        sep = "&" if "?" in target_url else "?"
+        target_url = f"{target_url}{sep}SR=1366x768"
+
+    page.goto(target_url, wait_until="networkidle")
+
+    # Jika server Newspage mengarahkan ke Logon.aspx tanpa SR, normalisasi kembali
+    if "Logon.aspx" in page.url and "SR=" not in page.url:
+        sep = "&" if "?" in page.url else "?"
+        page.goto(f"{page.url}{sep}SR=1366x768", wait_until="networkidle")
+
     ui_log("AUTH", f"Halaman siap. Memasukkan akses kredensial {account_desc}...")
     if progress_bar: progress_bar.progress(0.15)
-    page.locator("id=txtUserid").fill(user_id_np)
-    page.locator("id=txtPasswd").fill(pass_np)
-    page.locator("id=btnLogin").click(force=True)
+
+    txt_user = page.locator("id=txtUserid")
+    txt_pass = page.locator("id=txtPasswd")
+    btn_login = page.locator("id=btnLogin")
+
+    # Tunggu field input siap
+    txt_user.wait_for(state="visible", timeout=30000)
+    txt_user.click()
+    txt_user.fill(user_id_np)
+
+    txt_pass.wait_for(state="visible", timeout=10000)
+    txt_pass.click()
+    txt_pass.fill(pass_np)
+
+    # Validasi input benar-benar terisi di DOM
+    if txt_user.input_value() != user_id_np:
+        txt_user.fill(user_id_np)
+    if not txt_pass.input_value():
+        txt_pass.fill(pass_np)
+
+    ui_log("AUTH", f"Kredensial terisi ({txt_user.input_value()}). Mengirim formulir login...")
+    btn_login.click(force=True)
     
     # Menunggu secara dinamis (hingga TIMEOUT_MS) agar Newspage memproses login.
     # Bisa langsung masuk ke Default.aspx ATAU memunculkan popup interceptor.
@@ -195,14 +244,14 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
         now = time.time()
         if now - last_wait_log >= 10:
             elapsed = int(now - start_time)
-            ui_log("WAIT", f"Menunggu respon server Newspage ({elapsed}s)...")
+            ui_log("WAIT", f"Menunggu respon server Newspage ({elapsed}s, URL: {page.url})...")
             last_wait_log = now
             
         page.wait_for_timeout(500)
     else:
         # Jika loop habis tapi URL belum berubah dan popup tidak ada
         if "Default.aspx" not in page.url:
-            raise Exception("Timeout: Server tidak merespon saat verifikasi login. Kredensial mungkin salah atau server down.")
+            raise Exception(f"Timeout: Server tidak merespon saat verifikasi login ({page.url}). Kredensial mungkin salah atau server down.")
     
     # Harus menggunakan networkidle agar semua JS click handler (actionpath) terpasang sebelum _navigate_to_stock_adjustment dijalankan.
     if progress_bar: progress_bar.progress(0.25)

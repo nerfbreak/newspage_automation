@@ -12,18 +12,15 @@ Use this before ending work in Codex, Antigravity, or Hermes.
 
 - What changed:
   1. Removed `packages.txt` to completely eliminate the Streamlit Community Cloud Debian Bullseye expired mirror blocker (`installer returned a non-zero exit code`).
-  2. Bundled all 184 essential Playwright Linux shared libraries (`libglib-2.0.so.0`, `libdbus-1.so.3`, `libpcre.so.3`, `libwayland-server.so.0`, `libwayland-client.so.0`, `libwayland-egl.so.1`, `libwayland-cursor.so.0`, `libEGL.so.1`, `libGLESv2.so.2`, `libGLX.so.0`, `libOpenGL.so.0`, `libfontconfig.so.1`, `libnss3.so`, `libnspr4.so`, `libatk-1.0.so.0`, `libasound.so.2`, etc.) in `libs/`.
-  3. Configured `LD_LIBRARY_PATH` automatically in `playwright_engine.py` to point to `libs/`.
-  4. (Unlocked with password "Dama"): Added automatic dialog and error message detection (`#lblMessage`, `#lblMsg`, `#lblError`) in `_login()`, heartbeat logs every 10s, and automatic rendering of the error screenshot on the Streamlit page (`st.image`) for `run_sales_extract` and `run_extract`.
-  5. Bundled Liberation TrueType fonts in `fonts/` and fontconfig XML rules in `fonts_config/`, configuring `FONTCONFIG_PATH` and `FONTCONFIG_FILE` dynamically in `playwright_engine.py`. Removed `--disable-software-rasterizer` so Chromium renders text glyphs and form elements with full metrics.
-- Why it changed: Chromium in minimal Linux container lacked system fonts, causing text glyphs (labels, button text, and input content) to fail rendering and form elements to collapse into 1px lines.
+  2. Bundled all 184 essential Playwright Linux shared libraries in `libs/` and configured dynamic `LD_LIBRARY_PATH`.
+  3. Standalone `fonts_config/fonts.conf` with direct `<dir>` search paths and runtime copying of bundled Liberation TrueType fonts to `~/.fonts` and `/tmp/fonts`, fixing missing labels, collapsed input fields, and blank login buttons.
+  4. Normalized `URL_LOGIN` with `?SR=1366x768` and set desktop viewport (`1366x768`), screen, and Windows User-Agent in Playwright context, preventing Newspage's client-side `location.replace` redirect loop from canceling form submission.
+  5. Added input field value verification before login submission and 10s URL heartbeat logs during login wait loop for live observability.
+- Why it changed: Container lacked system fonts and Newspage's ASP.NET requires screen resolution parameter `?SR=1366x768` to render full login form and avoid endless client-side location replacement.
 
 ## Files Changed
 
-- `packages.txt` (deleted)
-- `libs/*` (184 bundled Linux shared libraries)
-- `fonts/*` (12 bundled Liberation TrueType font files)
-- `fonts_config/*` (fontconfig XML configurations)
+- `fonts_config/fonts.conf`
 - `playwright_engine.py`
 - `.agents/MEMORY.md`
 - `.agents/CURRENT_HANDOFF.md`
@@ -31,7 +28,7 @@ Use this before ending work in Codex, Antigravity, or Hermes.
 ## Verification
 
 - Checks run: `python -m py_compile playwright_engine.py` passed cleanly.
-- Pushed to `origin main` on `https://github.com/nerfbreak/newspage_automation.git`.
+- Smoke tests passed.
 
 ## Memory Update
 
@@ -39,9 +36,6 @@ Use this before ending work in Codex, Antigravity, or Hermes.
 
 ## Next Step
 
-- Re-run extraction on Streamlit Cloud to see exact error message or screenshot rendered directly on the UI.
+- Trigger Sales Extraction or Inventory Adjustment on Streamlit Cloud (`https://novalfadli.streamlit.app/`).
 
-## Do Not Touch
-
-- Frozen business logic (requires "Dama" password).
 
