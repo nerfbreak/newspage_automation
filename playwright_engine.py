@@ -47,6 +47,15 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
         )
         context = browser.new_context(viewport={"width": 1920, "height": 1080})
         page = context.new_page()
+
+        def _on_dialog(dlg):
+            try:
+                ui_log("AUTH", f"Dialog Portal: {dlg.message}")
+                dlg.dismiss()
+            except:
+                pass
+        page.on("dialog", _on_dialog)
+
         try:
             _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS, ui_log, progress_bar)
             yield page, browser
@@ -57,6 +66,7 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
                 sp = os.path.join(screenshots_dir, f"error_{int(time.time())}.png")
                 page.screenshot(path=sp, timeout=2000)
                 e.screenshot_path = sp
+                st.session_state["last_error_screenshot"] = sp
             except Exception:
                 pass
             raise
@@ -118,6 +128,7 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
     # Menunggu secara dinamis (hingga TIMEOUT_MS) agar Newspage memproses login.
     # Bisa langsung masuk ke Default.aspx ATAU memunculkan popup interceptor.
     start_time = time.time()
+    last_wait_log = start_time
     while time.time() - start_time < (TIMEOUT_MS / 1000.0):
         if "Default.aspx" in page.url:
             ui_log("SYS", "Tidak ada sesi gantung. Sesi bersih berhasil didapatkan.")
@@ -131,6 +142,26 @@ def _login(page, user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_M
                 break
         except Exception:
             pass
+
+        # Deteksi cepat pesan kesalahan login dari Newspage di halaman Logon
+        try:
+            for sel in ["#lblMessage", "#lblMsg", "#lblError", "span[style*='color:Red']", "span[style*='color: red']", "span[style*='color:red']"]:
+                el = page.locator(sel)
+                if el.count() > 0 and el.first.is_visible():
+                    txt = el.first.inner_text().strip()
+                    if txt:
+                        ui_log("ERROR", f"Pesan penolakan dari Newspage: {txt}")
+                        raise Exception(f"Login ditolak oleh Newspage: {txt}")
+        except Exception as err_check:
+            if "Login ditolak" in str(err_check):
+                raise
+
+        # Cetak heartbeat setiap 10 detik agar user tahu proses sedang berlangsung
+        now = time.time()
+        if now - last_wait_log >= 10:
+            elapsed = int(now - start_time)
+            ui_log("WAIT", f"Menunggu respon server Newspage ({elapsed}s)...")
+            last_wait_log = now
             
         page.wait_for_timeout(500)
     else:
@@ -423,6 +454,9 @@ def run_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIMEOUT_MS
         st.session_state.is_bot_running = False
         ext_ui_log("ERROR", f"Sistem gagal mengekstrak data karena kendala tidak terduga: {str(e).split(chr(10))[0]}")
         st.error(f"System error: {e}")
+        sp = getattr(e, "screenshot_path", None) or st.session_state.get("last_error_screenshot")
+        if sp and os.path.exists(sp):
+            st.image(sp, caption="Tampilan Terakhir Layar Browser Newspage Saat Error", width="stretch")
         alert_callback(f"[ALERT] <b>SYSTEM ERROR (EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
 
 def _dispatch_sales_job(page, TIMEOUT_MS, start_date, end_date, ui_log, browser, dry_run=False, progress_bar=None, text_ph=None):
@@ -633,6 +667,9 @@ def run_sales_extract(user_id_np, pass_np, selected_distributor, URL_LOGIN, TIME
         st.session_state.is_bot_running = False
         ext_ui_log("ERROR", f"Sistem gagal mengekstrak data sales karena kendala tidak terduga: {str(e).split(chr(10))[0]}")
         st.error(f"System error: {e}")
+        sp = getattr(e, "screenshot_path", None) or st.session_state.get("last_error_screenshot")
+        if sp and os.path.exists(sp):
+            st.image(sp, caption="Tampilan Terakhir Layar Browser Newspage Saat Error", width="stretch")
         alert_callback(f"[ALERT] <b>SYSTEM ERROR (SALES EXTRACT)</b>\nDist: {selected_distributor}\nError: <code>{str(e)[:100]}</code>", getattr(e, "screenshot_path", None))
 
 def _navigate_to_stock_adjustment(page, TIMEOUT_MS, WAREHOUSE, REASON_CODE, ui_log, remark_text=""):
