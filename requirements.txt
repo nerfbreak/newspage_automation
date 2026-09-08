@@ -16,7 +16,7 @@ bidict==0.23.1
 blinker==1.9.0
 bs4==0.0.2
 CacheControl==0.14.4
-cachetools==6.2.6
+cachetools==7.1.4
 certifi==2026.6.17
 cffi==2.0.0
 charset-normalizer==3.4.7
