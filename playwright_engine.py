@@ -12,12 +12,48 @@ import database
 import utils
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
-# Configure bundled Linux shared libraries for Playwright in serverless/container environments
-_libs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "libs")
+# Configure bundled Linux shared libraries and fonts for Playwright in serverless/container environments
+_base_dir = os.path.dirname(os.path.abspath(__file__))
+_libs_dir = os.path.join(_base_dir, "libs")
 if os.path.exists(_libs_dir):
     _current_ld = os.environ.get("LD_LIBRARY_PATH", "")
     if _libs_dir not in _current_ld:
         os.environ["LD_LIBRARY_PATH"] = f"{_libs_dir}:{_current_ld}" if _current_ld else _libs_dir
+
+_fonts_dir = os.path.join(_base_dir, "fonts")
+_fonts_conf_dir = os.path.join(_base_dir, "fonts_config")
+if os.path.exists(_fonts_dir) and os.path.exists(_fonts_conf_dir):
+    _local_conf = os.path.join(_fonts_conf_dir, "local.conf")
+    try:
+        _linux_fonts_dir = _fonts_dir.replace("\\", "/")
+        with open(_local_conf, "w", encoding="utf-8") as f:
+            f.write(f"""<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <dir>{_linux_fonts_dir}</dir>
+  <cachedir>/tmp/fontconfig-cache</cachedir>
+  <match target="pattern">
+    <test qual="any" name="family"><string>sans-serif</string></test>
+    <edit name="family" mode="prepend" binding="strong"><string>Liberation Sans</string></edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family"><string>Arial</string></test>
+    <edit name="family" mode="prepend" binding="strong"><string>Liberation Sans</string></edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family"><string>Segoe UI</string></test>
+    <edit name="family" mode="prepend" binding="strong"><string>Liberation Sans</string></edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family"><string>Tahoma</string></test>
+    <edit name="family" mode="prepend" binding="strong"><string>Liberation Sans</string></edit>
+  </match>
+</fontconfig>
+""")
+    except Exception:
+        pass
+    os.environ["FONTCONFIG_PATH"] = _fonts_conf_dir
+    os.environ["FONTCONFIG_FILE"] = os.path.join(_fonts_conf_dir, "fonts.conf")
 
 def _setup_event_loop():
     try: asyncio.get_event_loop()
@@ -37,8 +73,7 @@ def managed_browser_session(user_id_np, pass_np, selected_distributor, URL_LOGIN
             "--disable-setuid-sandbox",
             "--disable-dev-shm-usage",
             "--disable-gpu",
-            "--no-zygote",
-            "--disable-software-rasterizer"
+            "--no-zygote"
         ]
             
         browser = p.chromium.launch(
